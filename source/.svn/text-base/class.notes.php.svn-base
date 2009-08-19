@@ -1,0 +1,261 @@
+<?
+class notes extends module {
+
+    // Author: Herman Tolentino MD
+    // CHITS Project 2004
+    // configurable notes system
+    //
+
+    function notes() {
+    //
+    // constructor
+    // do not forget to update version
+    //
+        $this->author = 'Herman Tolentino MD';
+        $this->version = "0.3-".date("Y-m-d");
+        $this->module = "notes";
+        $this->description = "CHITS Module - Consult Notes";
+        // 0.2 Fixed template system
+        // 0.3 debugged system
+    }
+
+    // --------------- STANDARD MODULE FUNCTIONS ------------------
+
+    function init_deps() {
+    //
+    // insert dependencies in module_dependencies
+    // use multiple inserts
+    //
+        module::set_dep($this->module, "module");
+        module::set_dep($this->module, "template");
+
+    }
+
+    function init_lang() {
+    //
+    // insert necessary language directives
+    //
+        module::set_lang("LBL_NOTES_HISTORY", "english", "HISTORY", "Y");
+        module::set_lang("LBL_NOTES_PHYSICALEXAM", "english", "PHYSICAL EXAM", "Y");
+        module::set_lang("LBL_NOTES_PLAN", "english", "PLAN", "Y");
+        module::set_lang("FTITLE_CONSULT_NOTES", "english", "CONSULT NOTES", "Y");
+        module::set_lang("FTITLE_CONSULT_NOTES_ARCHIVE", "english", "CONSULT NOTES ARCHIVE", "Y");
+
+    }
+
+    function init_menu() {
+        // use this for updating menu system
+        // under LIBRARIES
+        if (func_num_args()>0) {
+            $arg_list = func_get_args();
+        }
+        // _<modulename> in SQl refers to function _<modulename>() below
+        // _barangay in SQL refers to function _barangay() below;
+
+        // put in more details
+        module::set_detail($this->description, $this->version, $this->author, $this->module);
+
+    }
+
+    function init_stats() {
+    }
+
+    function init_help() {
+    }
+
+    function init_sql() {
+        if (func_num_args()>0) {
+            $arg_list = func_get_args();
+        }
+
+        module::execsql("CREATE TABLE `m_consult_notes` (".
+            "`notes_id` float NOT NULL auto_increment,".
+            "`consult_id` float NOT NULL default '0',".
+            "`notes_history` text NOT NULL,".
+            "`notes_physicalexam` text NOT NULL,".
+            "`notes_plan` text NOT NULL,".
+            "`user_id` float NOT NULL default '0',".
+            "`notes_timestamp` timestamp(14) NOT NULL,".
+            "PRIMARY KEY  (`notes_id`),".
+            "KEY `key_consult` (`consult_id`), ".
+            "FOREIGN KEY (`consult_id`) REFERENCES `m_consult`(`consult_id`) ON DELETE CASCADE".
+            ") TYPE=InnoDB; ");
+
+    }
+
+    function drop_tables() {
+        $sql = "DROP TABLE `m_consult_notes`;";
+        module::execsql($sql);
+    }
+
+    // --------------- CUSTOM MODULE FUNCTIONS ------------------
+
+    function display_notes() {
+        if (func_num_args()) {
+            $arg_list = func_get_args();
+            $menu_id = $arg_list[0];
+            $post_vars = $arg_list[1];
+            $get_vars = $arg_list[2];
+            $validuser = $arg_list[3];
+            $isadmin = $arg_list[4];
+        }
+        print "<b>".FTITLE_CONSULT_NOTES_ARCHIVE."</b><br>";
+        $sql_list = "select notes_id, date_format(notes_timestamp, '%a %d %b %Y, %h:%i%p') ts ".
+                    "from m_consult_notes where consult_id = '".$get_vars["consult_id"]."'";
+        if ($result_list = mysql_query($sql_list)) {
+            if (mysql_num_rows($result_list)) {
+                while (list($id, $ts) = mysql_fetch_array($result_list)) {
+                    print "<img src='../images/arrow_redwhite.gif' border='0'/> ";
+                    print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&notes_id=$id'>$ts</a><br/>";
+                    if ($get_vars["notes_id"]==$id) {
+                        notes::display_details($menu_id, $post_vars, $get_vars);
+                    }
+                }
+            }
+        }
+    }
+
+    function display_details() {
+        if (func_num_args()) {
+            $arg_list = func_get_args();
+            $menu_id = $arg_list[0];
+            $post_vars = $arg_list[1];
+            $get_vars = $arg_list[2];
+            $validuser = $arg_list[3];
+            $isadmin = $arg_list[4];
+        }
+        $sql = "select notes_id, consult_id, notes_history, ".
+               "notes_physicalexam, notes_plan, user_id, date_format(notes_timestamp, '%a %d %b %Y, %h:%i%p') ts ".
+               "from m_consult_notes where consult_id = '".$get_vars["consult_id"]."' and ".
+               "notes_id = '".$get_vars["notes_id"]."'";
+        if ($result = mysql_query($sql)) {
+            if (mysql_num_rows($result)) {
+                $notes = mysql_fetch_array($result);
+                print "<table width='300' cellpadding='2' style='border: 1px dashed black'><tr><td>";
+                print "<span class='tinylight'>";
+                print "<b>DATE/TIME:</b> ".$notes["ts"]."<br/>";
+                print "<b>TAKEN BY:</b> ".user::get_username($notes["user_id"])."<br/><br/>";
+                print "<b>HISTORY:</b><br/>";
+                print "<blockquote>".stripslashes(nl2br($notes["notes_history"]))."</blockquote>";
+                print "<b>PHYSICAL EXAM:</b><br/>";
+                print "<blockquote>".stripslashes(nl2br($notes["notes_physicalexam"]))."</blockquote>";
+                print "<b>PLAN:</b><br/>";
+                print "<blockquote>".stripslashes(nl2br($notes["notes_plan"]))."</blockquote>";
+                print "</span>";
+                print "</td></tr></table><br>";
+            }
+        }
+    }
+
+    function process_notes() {
+        if (func_num_args()>0) {
+            $arg_list = func_get_args();
+            $menu_id = $arg_list[0];
+            $post_vars = $arg_list[1];
+            $get_vars = $arg_list[2];
+            $validuser = $arg_list[3];
+            $isadmin = $arg_list[4];
+            //print_r($arg_list);
+        }
+        if ($post_vars["submitnotes"]) {
+                switch($post_vars["submitnotes"]) {
+                case "Save Notes":
+                    if ($post_vars["notes_history"] && $post_vars["notes_physicalexam"]) {
+                        $sql = "insert into m_consult_notes (consult_id, notes_history, notes_physicalexam, notes_plan, user_id, notes_timestamp) ".
+                               "values ('".$get_vars["consult_id"]."', '".$post_vars["notes_history"]."', '".$post_vars["notes_physicalexam"]."', '".$post_vars["notes_plan"]."', '".$_SESSION["userid"]."', sysdate())";
+                        if ($result = mysql_query($sql))  {
+                            header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES");
+                        }
+                    }
+                    break;
+                case "Update Notes":
+                    if ($post_vars["notes_history"] && $post_vars["notes_physicalexam"]) {
+                        $sql = "update m_consult_notes set ".
+                               "notes_history = '".$post_vars["notes_history"]."', ".
+                               "notes_physicalexam = '".$post_vars["notes_physicalexam"]."', ".
+                               "notes_plan = '".$post_vars["notes_plan"]."' ".
+                               "where notes_id = '".$post_vars["notes_id"]."'";
+                        if ($result = mysql_query($sql)) {
+                            header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES");
+                        }
+                    }
+                    break;
+                case "Delete Notes":
+                    if (module::confirm_delete($menu_id, $post_vars, $get_vars)) {
+                        $sql = "delete from m_consult_notes where notes_id = '".$post_vars["notes_id"]."'";
+                        if ($result = mysql_query($sql)) {
+                            header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES");
+                        }
+                    } else {
+                        if ($post_vars["confirm_delete"]=="No") {
+                            header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES");
+                        }
+                    }
+                    break;
+                }
+        }
+    }
+
+    function form_notes() {
+        if (func_num_args()) {
+            $arg_list = func_get_args();
+            $menu_id = $arg_list[0];
+            $post_vars = $arg_list[1];
+            $get_vars = $arg_list[2];
+            if ($get_vars["notes_id"]) {
+                $sql = "select notes_history, notes_physicalexam, notes_plan ".
+                       "from m_consult_notes where notes_id = '".$get_vars["notes_id"]."'";
+                if ($result = mysql_query($sql)) {
+                    if (mysql_num_rows($result)) {
+                        $notes = mysql_fetch_array($result);
+                    }
+                }
+            }
+        }
+        print "<table width='300'>";
+        print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES' name='form_notes' method='post'>";
+        print "<tr valign='top'><td>";
+        print "<b>".FTITLE_CONSULT_NOTES."</b>";
+        print "<br><br>";
+        print "<span class='boxtitle'>".LBL_NOTES_HISTORY."</span><br> ";
+        print template::show_history_templates($post_vars["hx_template"]);
+        $default_history = template::get_template($post_vars["hx_template"]);
+        print "<textarea class='tinylight' rows='8' cols='40' name='notes_history' style='border: 1px dotted #000000'>".($default_history?$default_history:$notes["notes_history"])."</textarea><br>";
+        print "<small>Select template from history template library.</small><br/><br/>";
+        print "</td></tr>";
+        print "<tr valign='top'><td>";
+        print "<span class='boxtitle'>".LBL_NOTES_PHYSICALEXAM."</span><br>";
+        print template::show_pe_templates($post_vars["pe_template"]);
+        $default_physicalexam = template::get_template($post_vars["pe_template"]);
+        print "<textarea class='tinylight' rows='8' cols='40' name='notes_physicalexam' style='border: 1px dotted #000000'>".($default_physicalexam?$default_physicalexam:$notes["notes_physicalexam"])."</textarea><br>";
+        print "<small>Select template from PE template library.</small><br/><br/>";
+        print "</td></tr>";
+        print "<tr valign='top'><td>";
+        print "<span class='boxtitle'>".LBL_NOTES_PLAN."</span><br> ";
+        print template::show_plan_templates($post_vars["plan_template"]);
+        $default_plan = $post_vars["notes_plan"]."\n".template::get_template($post_vars["plan_template"]);
+        print "<textarea class='tinylight' rows='8' cols='40' name='notes_plan' style='border: 1px dotted #000000'>".($notes["notes_plan"]?$notes["notes_plan"]:$default_plan)."</textarea><br>";
+        print "<small>Select template from plan template library. You can select multiple templates.</small><br/><br/>";
+        print "</td></tr>";
+        print "<tr><td><br>";
+        if ($get_vars["notes_id"]) {
+            print "<input type='hidden' name='notes_id' value='".$get_vars["notes_id"]."'>";
+            if ($_SESSION["priv_update"]) {
+                print "<input type='submit' value = 'Update Notes' class='textbox' name='submitnotes' style='border: 1px solid #000000'> ";
+            }
+            if ($_SESSION["priv_delete"]) {
+                print "<input type='submit' value = 'Delete Notes' class='textbox' name='submitnotes' style='border: 1px solid #000000'> ";
+            }
+        } else {
+            if ($_SESSION["priv_add"]) {
+                print "<input type='submit' value = 'Save Notes' class='textbox' name='submitnotes' style='border: 1px solid #000000'> ";
+            }
+        }
+        print "</td></tr>";
+        print "</form>";
+        print "</table><br>";
+    }
+
+}
+// end of class
+?>

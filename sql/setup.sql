@@ -1,0 +1,637 @@
+-- MySQL dump 9.10
+--
+-- Host: localhost    Database: game
+-- ------------------------------------------------------
+-- Server version	4.0.18-Max
+
+--
+-- Table structure for table `content`
+--
+
+CREATE TABLE content (
+  content_id int(11) NOT NULL auto_increment,
+  content_module varchar(25) NOT NULL default '',
+  content_column int(11) NOT NULL default '0',
+  content_active char(1) NOT NULL default '',
+  content_display int(11) NOT NULL default '10',
+  content_level int(11) NOT NULL default '0',
+  PRIMARY KEY  (content_id),
+  KEY key_module (content_module),
+  CONSTRAINT `content_ibfk_1` FOREIGN KEY (`content_module`) REFERENCES `modules` (`module_id`) ON DELETE CASCADE
+) TYPE=InnoDB;
+
+--
+-- Dumping data for table `content`
+--
+
+INSERT INTO content VALUES (1,'news',1,'Y',10,1);
+
+--
+-- Table structure for table `errorcodes`
+--
+
+CREATE TABLE errorcodes (
+  error_id char(3) NOT NULL default '',
+  error_name varchar(100) NOT NULL default '',
+  PRIMARY KEY  (error_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table `errorcodes`
+--
+
+INSERT INTO errorcodes VALUES ('001','Invalid account.');
+INSERT INTO errorcodes VALUES ('002','Please complete entries');
+
+--
+-- Table structure for table `game_user`
+--
+
+CREATE TABLE game_user (
+  user_id float NOT NULL auto_increment,
+  user_lastname varchar(100) NOT NULL default '',
+  user_firstname varchar(100) NOT NULL default '',
+  user_middle varchar(100) NOT NULL default '',
+  user_dob date NOT NULL default '0000-00-00',
+  user_gender char(1) NOT NULL default '',
+  user_role varchar(5) NOT NULL default '',
+  user_admin char(1) NOT NULL default '',
+  user_login varchar(10) NOT NULL default '',
+  user_password varchar(32) NOT NULL default '',
+  user_lang varchar(10) NOT NULL default 'english',
+  user_email varchar(100) default '',
+  user_cellular varchar(100) NOT NULL default '',
+  user_pin varchar(4) NOT NULL default '',
+  user_active char(1) NOT NULL default '',
+  PRIMARY KEY  (user_id)
+) TYPE=InnoDB;
+
+--
+-- Dumping data for table `game_user`
+--
+
+INSERT INTO game_user VALUES (1,'User','Admin','','0000-00-00','','','Y','admin','43e9a4ab75570f5b','english','','','','Y');
+--
+-- Table structure for table `location`
+--
+
+CREATE TABLE location (
+  location_id varchar(10) NOT NULL default '',
+  location_name varchar(50) NOT NULL default '',
+  PRIMARY KEY  (location_id)
+) TYPE=InnoDB;
+
+--
+-- Dumping data for table `location`
+--
+
+INSERT INTO location VALUES ('ADM','Admissions');
+INSERT INTO location VALUES ('CONS','Consultations');
+INSERT INTO location VALUES ('LAB','Laboratory');
+INSERT INTO location VALUES ('TX','Treatment');
+
+CREATE TABLE module_dependencies (
+  module_id varchar(25) NOT NULL default '',
+  req_module varchar(25) NOT NULL default '',
+  PRIMARY KEY  (module_id,req_module),
+  CONSTRAINT `foreign` FOREIGN KEY (`module_id`) REFERENCES `modules` (`module_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) TYPE=InnoDB;
+
+CREATE TABLE module_menu (
+  menu_id int(11) NOT NULL auto_increment,
+  module_id varchar(25) NOT NULL default '0',
+  menu_cat varchar(10) NOT NULL default '',
+  menu_title varchar(20) NOT NULL default '',
+  menu_rank int(11) NOT NULL default '0',
+  menu_visible char(1) NOT NULL default 'Y',
+  menu_action varchar(100) NOT NULL default '',
+  PRIMARY KEY  (menu_id,module_id),
+  UNIQUE KEY ukey_modulemenu (module_id,menu_action),
+  KEY key_module (module_id),
+  CONSTRAINT `module_menu_ibfk_1` FOREIGN KEY (`module_id`) REFERENCES `modules` (`module_id`) ON DELETE CASCADE
+) TYPE=InnoDB;
+
+--
+-- Table structure for table `module_menu_location`
+--
+
+CREATE TABLE module_menu_location (
+  location_id varchar(10) NOT NULL default '',
+  module_id varchar(25) NOT NULL default '',
+  menu_id int(11) NOT NULL default '0',
+  PRIMARY KEY  (location_id,menu_id,module_id),
+  KEY key_menu (menu_id),
+  KEY key_module (module_id),
+  KEY key_location (location_id),
+  CONSTRAINT `module_menu_location_ibfk_1` FOREIGN KEY (`module_id`) REFERENCES `modules` (`module_id`) ON DELETE CASCADE,
+  CONSTRAINT `module_menu_location_ibfk_2` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`) ON DELETE CASCADE,
+  CONSTRAINT `module_menu_location_ibfk_3` FOREIGN KEY (`menu_id`) REFERENCES `module_menu` (`menu_id`) ON DELETE CASCADE
+) TYPE=InnoDB;
+
+--
+-- Table structure for table `module_menu_permissions`
+--
+
+CREATE TABLE module_menu_permissions (
+  module_id varchar(25) NOT NULL default '',
+  menu_id float NOT NULL default '0',
+  user_id float NOT NULL default '0',
+  PRIMARY KEY  (module_id,menu_id,user_id),
+  KEY key_module (module_id),
+  KEY key_menu (menu_id),
+  KEY key_user (user_id),
+  CONSTRAINT `module_menu_permissions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `game_user` (`user_id`) ON DELETE CASCADE
+) TYPE=InnoDB;
+
+--
+-- Table structure for table `module_permissions`
+--
+
+CREATE TABLE module_permissions (
+  module_id varchar(25) NOT NULL default '0',
+  user_id float NOT NULL default '0',
+  PRIMARY KEY  (module_id,user_id),
+  KEY key_module (module_id),
+  KEY key_user (user_id),
+  CONSTRAINT `module_permissions_ibfk_1` FOREIGN KEY (`module_id`) REFERENCES `modules` (`module_id`) ON DELETE CASCADE
+) TYPE=InnoDB;
+
+--
+-- Table structure for table `module_user_location`
+--
+
+CREATE TABLE module_user_location (
+  location_id varchar(10) NOT NULL default '',
+  user_id float NOT NULL default '0',
+  PRIMARY KEY  (location_id,user_id),
+  KEY key_user (user_id),
+  KEY key_location (location_id),
+  CONSTRAINT `module_user_location_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`) ON DELETE CASCADE,
+  CONSTRAINT `module_user_location_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `game_user` (`user_id`) ON DELETE CASCADE
+) TYPE=InnoDB;
+
+--
+-- Table structure for table `modules`
+--
+
+CREATE TABLE modules (
+  module_id varchar(25) NOT NULL default '',
+  module_init char(1) NOT NULL default 'N',
+  module_version varchar(25) default '',
+  module_desc text NOT NULL,
+  module_author varchar(50) NOT NULL default '',
+  module_name varchar(100) NOT NULL default '',
+  PRIMARY KEY  (module_id),
+  UNIQUE KEY ukey_modules (module_name)
+) TYPE=InnoDB;
+
+--
+-- Table structure for table `role`
+--
+
+CREATE TABLE role (
+  role_id varchar(10) NOT NULL default '',
+  role_dataaccess char(3) NOT NULL default '',
+  role_name varchar(100) NOT NULL default '',
+  PRIMARY KEY  (role_id)
+) TYPE=InnoDB;
+
+--
+-- Dumping data for table `role`
+--
+
+INSERT INTO role VALUES ('BHW','110','Barangay Health Worker');
+INSERT INTO role VALUES ('MD','111','Physician');
+INSERT INTO role VALUES ('MWIFE','110','Midwife');
+INSERT INTO role VALUES ('RN','110','Nurse');
+
+--
+-- Table structure for table `terms`
+--
+
+CREATE TABLE terms (
+  termid varchar(50) NOT NULL default '',
+  languageid varchar(10) NOT NULL default '',
+  langtext text,
+  remarks text,
+  translationof varchar(50) default NULL,
+  module_id varchar(25) NOT NULL default '',
+  isenglish char(1) NOT NULL default 'Y',
+  PRIMARY KEY  (termid,languageid)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table `terms`
+--
+
+INSERT INTO terms VALUES ('LBL_PATIENT_DOB','english','BIRTH DATE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_SIGN_IN','english','SIGN IN',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_LOGIN_NAME','english','LOGIN NAME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_PASSWORD','english','PASSWORD',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_SIGN_OUT','english','SIGN OUT',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('BTN_SIGN_OUT','english','Sign Out',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_SIGN_IN','tagalog','MAG-SIGN IN',NULL,NULL,'','N');
+INSERT INTO terms VALUES ('BTN_SIGN_OUT','tagalog','Sign Out',NULL,NULL,'','N');
+INSERT INTO terms VALUES ('LBL_NAVIGATION','english','NAVIGATION',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_NAVIGATION','tagalog','MAPA',NULL,NULL,'','N');
+INSERT INTO terms VALUES ('LBL_SIGN_OUT','tagalog','MAG-SIGN OUT',NULL,NULL,'','N');
+INSERT INTO terms VALUES ('MENU_PATIENTS','tagalog','PASYENTE',NULL,NULL,'','N');
+INSERT INTO terms VALUES ('MENU_CONSULTS','tagalog','KONSULTA',NULL,NULL,'','N');
+INSERT INTO terms VALUES ('MENU_PATIENTS','english','PATIENTS',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('MENU_CONSULTS','english','CONSULTS',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_HOME','english','HOME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_HOME','tagalog','UMPISA',NULL,NULL,'','N');
+INSERT INTO terms VALUES ('FTITLE_VACCINE_FORM','english','VACCINE FORM',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_VACCINE_ID','english','VACCINE ID',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_VACCINE_NAME','english','VACCINE NAME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('THEAD_NAME','english','NAME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('THEAD_DESCRIPTION','english','DESCRIPTION',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_VACCINES','english','VACCINES',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('THEAD_POPULATION','english','POPULATION',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_BARANGAY_LIST','english','BARANGAY LIST',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_BARANGAY_FORM','english','BARANGAY FORM',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_BARANGAY_NUMBER','english','BARANGAY NUMBER',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_AREA_CODE','english','AREA CODE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_POPULATION','english','POPULATION',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_BARANGAY_NAME','english','BARANGAY NAME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_OLD_PATIENT','english','OLD PATIENT',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_NEW_PATIENT','english','NEW PATIENT',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_FIRST_NAME','english','FIRST NAME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_LAST_NAME','english','LAST NAME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_PATIENT_ID','english','PATIENT ID',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_FAMILY_NUMBER','english','FAMILY NUMBER',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_BARANGAY','english','BARANGAY',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_MIDDLE_NAME','english','MIDDLE NAME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_PATIENT_AGE','english','PATIENT AGE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_GENDER','english','GENDER',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_PATIENT_GROUPING','english','PATIENT GROUPING',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('INFO_SITE','english','<b>WELCOME</b><br>\r\n<b>LOCATION</b><br>\r\nThe Lagrosa Health Center is located at... \r\n<b>MHO</b><br>\r\nDr. Peachy Sy',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('INFO_STAFF','english','Staff:\r\n',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_PTGROUP','english','PATIENT GROUP',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_COMPLAINTCAT','english','COMPLAINT CATEGORY',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_SITE_USER_FORM','english','SITE USER FORM',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_SITE_USERS','english','SITE USER LIST',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_DATE_OF_BIRTH','english','DATE OF BIRTH',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_PIN','english','PERSONAL ID NUMBER (PIN)',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ROLE','english','USER ROLE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_LANGUAGE_DIALECT','english','LANGUAGE/DIALECT',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_CONFIRM_PASSWORD_AGAIN','english','CONFIRM PASSWORD AGAIN',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ICD_CODE','english','ICD CODE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ICD_DESCRIPTION','english','DESCRIPTION',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ICD_CLASS_SUB','english','SUB CLASS',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ICD_INCLUSIVE','english','INCLUSIVE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ICD_EXCLUSIVE','english','EXCLUSIVE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ICD_NOTES','english','NOTES',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_ICD_CODE','english','ICD CODE FORM',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_BARANGAY_LIST','tagalog','LISTAHAN NG BARANGAY',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_FAMILY_RECORDS','english','FAMILY FOLDERS',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_REGISTERED_TODAY','english','PATIENTS REGISTERED TODAY',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_REMOVE_PATIENT','english','REMOVE PATIENT FROM FAMILY?',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_FAMILY_ADDRESS','english','FAMILY ADDRESS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_FOLDER_HOWTO','english','FAMILY FOLDER HOWTO',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_FAMILY_BARANGAY','english','FAMILY BARANGAY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULT_COMPLAINT','english','CONSULT COMPLAINT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_COMPLAINT','english','COMPLAINT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_COMPLAINT_MODULE','english','COMPLAINT MODULE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_MODULE','english','COMPLAINT MODULE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_COMPLAINT_ID','english','COMPLAINT ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_COMPLAINT_NAME','english','COMPLAINT NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_COMPLAINT_LIST','english','COMPLAINT LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULT_MODULE','english','CONSULT MODULE FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CONSULT_MODULE','english','CONSULT MODULE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_LOADED_CONSULT_MODULES','english','LOADED CONSULT MODULE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_CARD','english','PHILHEALTH CARD FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PATIENT_GROUPS','english','PATIENT GROUP LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_ID','english','ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_GROUP_MODULE','english','GROUP MODULE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PATIENT_GROUPS_FORM','english','PATIENT GROUP FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GROUP_ID','english','GROUP ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GROUP_NAME','english','GROUP NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GROUP_MODULE','english','GROUP MODULE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_DESCRIPTION','english','GROUP DESCRIPTION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_BLOODPRESSURE','english','BLOOD PRESSURE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_HEARTRATE','english','HEART RATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_RESPRATE','english','RESPIRATORY RATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_WEIGHT','english','BODY WEIGHT (KG)',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_BODYTEMP','english','BODY TEMP (C)',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_VISIT_TYPE','english','VISIT TYPE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_TEMPLATE_LIST','english','TEMPLATE LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_TEMPLATE_KEY','english','TEMPLATE KEY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_TEMPLATE_TEXT','english','TEMPLATE TEXT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_TEMPLATE_FORM','english','TEMPLATE FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TEMPLATE_KEY','english','TEMPLATE KEY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TEMPLATE_TEXT','english','TEMPLATE TEXT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_NOTES_HISTORY','english','HISTORY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_NOTES_PHYSICALEXAM','english','PHYSICAL EXAM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_NOTES_PLAN','english','PLAN',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REGISTRATION_DATE','english','REGISTRATION DATE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_NEW_PATIENT','tagalog','BAGONG PASYENTE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_OLD_PATIENT','tagalog','DATING PASYENTE',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ACTIVE_USER','english','ACTIVE USER',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('MENU_HOWTO','english','HOWTO',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('MENU_ABOUT','english','ABOUT',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('MENU_CREDITS','english','CREDITS',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_ROLE_FORM','english','USER ROLE FORM ',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('INSTR_ROLE_FORM','english','<b>INSTRUCTIONS: After creating users, be sure to set permissions for the modules and menu items under <b>MODULES-&gt;Grant Permissions</b>.</b>',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ROLE_ID','english','ROLE ID',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ROLE_NAME','english','ROLE NAME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_ROLE_LIST','english','ROLE LIST',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_ADMIN_USER','english','ADMIN USER',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_PATIENTS','english','PATIENTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_LOADED_PATIENT_MODULES','english','LOADED PATIENT MODULES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_CORRECT_VALUES','english','INSTRUCTIONS: Fill in the form below with correct values:',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_VITAL_SIGNS_RECORD','english','VITAL SIGNS RECORD',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PREVIOUS_VISITS','english','PREVIOUS VISITS:',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TOTAL_VISITS','english','TOTAL VISITS:',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LAST_VISIT','english','LAST VISIT:',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_ELAPSED_TIME','english','ELAPSED TIME:',NULL,NULL,'','');
+INSERT INTO terms VALUES ('BTN_END_CONSULT','english','END CONSULT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PATIENT_GROUP','english','PATIENT GROUP',NULL,NULL,'','');
+INSERT INTO terms VALUES ('BTN_SAVE_DETAILS','english','Save Details',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_VISIT_DETAILS','english','VISIT DETAILS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_APPTS','english','APPTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_VITAL_SIGNS','english','VITAL SIGNS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_LABS','english','LABS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_NOTES','english','NOTES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_PROFILES','english','PROFILES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_MODULES','english','MODULES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_INJURY_CODE','english','INJURY CODE FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_QUESTION_FORM','english','QUESTION FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_QUESTION','english','QUESTION TEXT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_ANSWER_TYPE','english','ANSWER TYPE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_QUESTION_LIST','english','QUESTION LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_TEXT','english','QUESTION TEXT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_TYPE','english','ANS TYPE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_ALERT','english','ALERT FLAG',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_QUESTION_CAT_LIST','english','QUESTION CATEGORY LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_QUESTION_CAT_FORM','english','QUESTION CATEGORY FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CAT_ID','english','CATEGORY ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CAT_NAME','english','CATEGORY NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_ALERT_FLAG','english','ALERT FLAG',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_ALERT_FLAG_TEXT','english','Check this to alert physician',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_ACCESS','english','DATA ACCESS',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_DATA_ACCESS','english','DATA ACCESS',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_MOTHERS_NAME','english','MOTHER\'S NAME',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('LBL_SYSTEM_USER','english','SYSTEM USER',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CELLULAR_NUMBER','english','CELLULAR NUMBER',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SMS_MESSAGE','english','SMS MESSAGE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NEWS_FORM','english','NEWS FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_NEWS_AUTHOR','english','NEWS AUTHOR',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_NEWS_TITLE','english','NEWS TITLE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_NEWS_LEAD','english','NEWS LEAD',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_NEWS_TEXT','english','NEWS TEXT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_NEWS_ACTIVE','english','ACTIVE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_CHECK_ACTIVATE','english','Check to activate',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_SITE_NEWS','english','SITE NEWS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NEWS_ARCHIVE','english','NEWS ARCHIVE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CONDITION','english','MODULE CONDITION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_CONDITION','english','Type in conditional processing method or function.',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PATIENT_TYPE_FORM','english','PATIENT TYPE FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TYPE_ID','english','TYPE ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TYPE_NAME','english','TYPE NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_PATIENT_TYPE','english','NTP PATIENT TYPES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_TREATMENT_OUTCOME_FORM','english','TREATMENT OUTCOME FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_TREATMENT_OUTCOME','english','TREATMENT OUTCOMES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_OUTCOME_ID','english','OUTCOME ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_OUTCOME_NAME','english','OUTCOME NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_TREATMENT_PARTNER','english','TREATMENT PARTNERS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_TREATMENT_PARTNER_FORM','english','TREATMENT PARTNER FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_PARTNER_ID','english','PARTNER ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_PARTNER_NAME','english','PARTNER NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_LAB_EXAMS','english','LAB EXAMS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_LAB_EXAM_FORM','english','LAB EXAM FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LAB_ID','english','LAB ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LAB_NAME','english','LAB NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SPUTUM_EXAM','english','SPUTUM EXAM DONE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_PATIENT_TYPE','english','PATIENT TYPE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TREATMENT_CAT','english','TREATMENT CATEGORY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TREATMENT_PARTNER','english','TREATMENT PARTNER',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_DATA_FORM','english','NTP CONSULT DATA',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_LAB_FORM','english','NTP LAB REQUEST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LAB_EXAM','english','LAB EXAM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_LABS','english','NTP LAB EXAMS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LABS','english','LAB EXAMS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TREATMENT_OUTCOME','english','TREATMENT OUTCOME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULT_COMPLAINTS','english','COMPLAINTS THIS CONSULT',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_OCCUPATION_FORM','english','OCCUPATION FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_OCCUPATION_ID','english','OCCUPATION ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_OCCUPATION_NAME','english','OCCUPATION NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_OCCUPATION_LIST','english','OCCUPATION LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_OCCUPATION_CATEGORY_FORM','english','OCCUPATION CATEGORY FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_OCCUPATION_CATEGORY_LIST','english','OCCUPATION CATEGORY LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_OCCUPATION_CAT','english','OCCUPATION CATEGORY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_EDUCATION_FORM','english','EDUCATION LEVEL FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_EDUC_ID','english','EDUCATION LEVEL ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_EDUC_NAME','english','EDUCATION LEVEL NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_EDUCATION_LEVEL__LIST','english','EDUCATION LEVEL LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CCDEV_SERVICE_FORM','english','CHILD CARE SERVICE FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SERVICE_ID','english','SERVICE ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SERVICE_NAME','english','SERVICE NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CCDEV_SERVICES_LIST','english','CHILD CARE SERVICES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_VACCINE_INTERVALS','english','VACCINE INTERVALS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_VACCINE_DESCRIPTION','english','VACCINE DESCRIPTION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_VACCINE_INTERVALS','english','Enter intervals separated by commas: 6w,10w,14,10y',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_INTERVAL','english','INTERVAL',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CCDEV_DATA_FORM','english','CHILD CARE DATA FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_MOTHERS_OCCUPATION','english','MOTHER\'S OCCUPATION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_MOTHERS_EDUCATION','english','MOTHER\'S EDUCATION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_FATHERS_NAME','english','FATHER\'S NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_FATHERS_OCCUPATION','english','FATHER\'S OCCUPATION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_FATHERS_EDUCATION','english','FATHER\'S EDUCATION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_BIRTH_WEIGHT','english','BIRTH WEIGHT (kg)',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CIVIL_REGISTRATION_DATE','english','DATE OF REGISTRATION CIVIL REGISTRY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_DELIVERY_LOCATION','english','LOCATION OF DELIVERY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LAB_MODULES','english','LAB MODULES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PENDING_LAB_REQUESTS','english','PENDING LAB REQUESTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_COMPLETED_LAB_REQUESTS','english','COMPLETED LAB REQUESTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_LAB_REQUEST','english','MAKE LAB REQUESTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_VISIT1_DATA','english','NTP FIRST VISIT DATA',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_OCCUPATION','english','OCCUPATION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_HOUSEHOLD_CONTACTS','english','NUMBER OF HOUSEHOLD CONTACTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_BCG_SCAR','english','BCG SCAR PRESENT?',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_PREVIOUS_TREATMENT','english','PREVIOUS TREATMENT?',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_PREVIOUS_TREATMENT_DURATION','english','DURATION OF PREVIOUS TREATMENT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_PREVIOUS_TREATMENT_DRUGS','english','DRUGS IN PREVIOUS TREATMENT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CCDEV_SERVICES','english','CHILD CARE SERVICES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SERVICES','english','SERVICES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_VACCINATIONS','english','VACCINATIONS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_ADVERSE_VACCINE_REACTION','english','Check for adverse vaccine reaction',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_OTHER_FAMILY_MEMBERS','english','OTHER FAMILY MEMBERS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SELECT_SIBLING','english','SELECT SIBLING',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_FIRST_VISIT_DATA','english','FIRST VISIT DATA',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PATIENT_DATA','english','PATIENT DATA',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_VACCINE_RECORD','english','VACCINE RECORD',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_SERVICE_RECORD','english','SERVICE RECORD',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PATIENT_SIBLINGS','english','PATIENT SIBLINGS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_FAMILIES','english','FAMILIES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_COUNT','english','COUNT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_AGE_IN_WEEKS','english','AGE IN WEEKS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_WT_FOR_AGE','english','WEIGHT FOR AGE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CONTACT_PERSON','english','CONTACT PERSON',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_NTP_VISIT1_DATA','english','NOTE: The form below is for first visit confirmed TB patients only. ',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_INTAKE_DATA_FORM','english','NTP INTAKE DATA',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INTENSIVE_PHASE','english','INTENSIVE PHASE ONLY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REGISTRY_ID','english','SELECT REGISTRY ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TREATMENT_DATE','english','TREATMENT DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_TREATMENT_DATE','english','Select date from calendar above.',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INTAKE_FLAG','english','INTAKE COMPLETED?',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INTAKE_REMARKS','english','INTAKE REMARKS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_EDIT_PATIENT','english','EDIT PATIENT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_SEARCH_RESULTS','english','SEARCH RESULTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REGISTERED_BY','english','REGISTERED BY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_CARD_REGISTRATION','english','PHILHEALTH CARD REGISTRATION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_LOOKUP_PATIENT','english','INSTRUCTIONS: Look up patient name you want to register by using the form below.',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_PHILHEALTH_CARD','english','INSTRUCTIONS: Fill in the following form with the correct values for this patient.',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_RECORD_FOR','english','PHILHEALTH RECORD FOR ',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_PHILHEALTH_NUMBER','english','PHILHEALTH ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_EXPIRY_DATE','english','EXPIRY DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULTS_TODAY','english','CONSULTS TODAY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_LAB_MODULE','english','LAB MODULE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_INJURY_CODE_LIST','english','INJURY CODES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INJURY_ID','english','INJURY ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INJURY_NAME','english','INJURY NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_INJURY_LOCATION_FORM','english','INJURY LOCATION FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LOCATION_ID','english','LOCATION ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LOCATION_NAME','english','LOCATION NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_INJURY_LOCATION_LIST','english','INJURY LOCATIONS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_INJURY_MECHANISM_FORM','english','INJURY MECHANISM FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_MECHANISM_ID','english','MECHANISM ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_MECHANISM_NAME','english','MECHANISM NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_INJURY_MECHANISM_LIST','english','INJURY MECHANISM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_INJURY_DATA','english','INJURY DATA',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INJURY_CODE','english','INJURY CODE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INJURY_MECHANISM','english','INJURY MECHANISM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INJURY_LOCATION','english','INJURY LOCATION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INJURY_DATE','english','INJURY DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INJURY_TIME','english','INJURY TIME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_INJURY_LOCATION_DETAILS','english','LOCATION DETAILS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_APPOINTMENT_LIST','english','APPOINTMENT TYPE LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_APPOINTMENT_FORM','english','APPOINTMENT FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_APPOINTMENT_ID','english','APPOINTMENT ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_APPOINTMENT_NAME','english','APPOINTMENT NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_APPOINTMENT_SCHEDULER','english','APPOINTMENT SCHEDULER',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_APPOINTMENT_DATE','english','APPOINTMENT DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_APPOINTMENT_CODE','english','APPOINTMENT CODE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REMINDER_FLAG','english','SEND REMINDER?',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_APPOINTMENTS_MADE_TODAY','english','APPOINTMENTS MADE TODAY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PREVIOUS_APPOINTMENTS','english','PREVIOUS APPOINTMENTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_EXPECTED_TO_ARRIVE_TODAY','english','THE FOLLOWING PATIENTS ARE EXPECTED TO ARRIVE TODAY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_APPOINTMENTS_TODAY','english','APPOINTMENTS TODAY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULT_NOTES','english','CONSULT NOTES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULT_NOTES_ARCHIVE','english','CONSULT NOTES ARCHIVE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_DRUGS','english','DRUGS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_VITAL_SIGNS','english','VITAL SIGNS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULT_MODULES','english','CONSULT MODULES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_EXPIRY_DATE','english','EXPIRY DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_LAB_LIST','english','PHILHEALTH LAB EXAMS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_EXISTING_LAB_EXAMS','english','THE FOLLOWING ARE EXISTING PHILHEALTH ACCREDITED LAB EXAMS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_LAB_FORM','english','PHILHEALTH LAB EXAM FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SELECT_LAB_ID','english','SELECT LAB EXAM TO INCLUDE IN PHILHEALTH',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_SERVICES_LIST','english','PHILHEALTH SERVICES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_SERVICE_FORM','english','PHILHEALTH SERVICE FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_RECORD','english','PHILHEALTH RECORD',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_PHILHEALTH_LAB','english','CHARGEABLE EXAMS TO PHILHEALTH CARD',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_WHICH_EXAMS_USED','english','CHECK WHICH EXAMS WERE USED TODAY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_LABS','english','PHILHEALTH LABS TODAY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PHILHEALTH_SERVICES','english','PHILHEALTH SERVICES TODAY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_PHILHEALTH_SERVICE','english','CHARGEABLE SERVICES TO PHILHEALTH CARD',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_WHICH_SERVICES_USED','english','CHECK WHICH SERVICES WERE USED TODAY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_REGION_FORM','english','REGION FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REGION_ID','english','REGION ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REGION_NAME','english','REGION NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REGION_PROVINCES','english','REGION PROVINCES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_PROVINCES','english','NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_REGION_LIST','english','REGION LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REGION','english','REGION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_TREATMENT_CATEGORY','english','NTP TREATMENT CATEGORIES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_TREATMENT_CATEGORY_FORM','english','NTP TREATMENT CATEGORY FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CATEGORY_ID','english','CATEGORY ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CATEGORY_NAME','english','CATEGORY NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CATEGORY_DETAILS','english','CATEGORY DETAILS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_DETAILS','english','DETAILS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_COLLECTION_DATA_FORM','english','NTP MAINTENANCE PHASE DATA',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_MAINTENANCE_PHASE','english','MAINTENANCE PHASE ONLY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_FOLLOWUP_DATE','english','FOLLOW UP DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_TB_CLASS','english','TB CLASS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_ACTUAL_DATE','english','ACTUAL FOLLOWUP DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REMARKS','english','REMARKS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_SPUTUM_APPEARANCE_LIST','english','SPUTUM VISUAL APPEARANCE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_APPEARANCE_ID','english','APPEARANCE ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_APPEARANCE_NAME','english','APPEARANCE NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_SPUTUM_APPEARANCE_FORM','english','SPUTUM VISUAL APPEARANCE FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LAB_REQUEST_DETAILS','english','LAB REQUEST DETAILS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_DATE_REQUESTED','english','DATE REQUESTED',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REQUESTED_BY','english','REQUESTED BY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SPECIMEN','english','SPECIMEN',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_VISUAL_APPEARANCE','english','VISUAL APPEARANCE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_READING','english','READING',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_LAB_DIAGNOSIS','english','LAB DIAGNOSIS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_RELEASE_FLAG','english','RELEASE FLAG',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_RELEASE_FLAG','english','Check if lab exam complete and to be released',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_COLLECTION_DATE','english','COLLECTION DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_TREATMENT_OUTCOME','english','Selecting any other choice aside from <b>Under Treatment</b> ends treatment course.',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_DATE_PROCESSED','english','DATE PROCESSED',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_PROCESSED_BY','english','PROCESSED BY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SPUTUM_PERIOD','english','PERIOD OF SPUTUM EXAM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_ASSIGN_NON_NTP_LABS','english','ASSIGN NON-NTP LABS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_ASSIGN_NON_NTP_LABS','english','SELECT LAB EXAM TO ASSIGN NTP COVERAGE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_VIEW_REGISTRY_DATA','english','CLICK ON DATE TO VIEW REGISTRY DATA',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_CLICK_VIEW_RESULTS','english','CLICK THIS TO VIEW RESULTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NTP_REPORTS','english','NTP REPORTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_TCL','english','TARGET CLIENT LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_GRAPHS','english','GRAPHS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_INCLUSIVE_DATES_FORM','english','INCLUSIVE DATES FOR THIS REPORT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_START_DATE','english','START DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_END_DATE','english','END DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NOTIFIABLE_DISEASE_LIST','english','NOTIFIABLE DISEASE LIST',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NOTIFIABLE_DISEASE_FORM','english','NOTIFIABLE DISEASE FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_DISEASE_ID','english','DISEASE ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_DISEASE_NAME','english','DISEASE NAME',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NOTIFIABLE_REGISTRATION','english','NOTIFIABLE DISEASE REGISTRATION',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_NOTIFIABLE_DISEASE_SELECTION','english','SELECT NOTIFIABLE DISEASES FOR THIS PATIENT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NOTIFIABLE_DISEASES_CONSULT','english','NOTIFIABLE DISEASE THIS CONSULT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NOTIFIABLE_DISEASES_CONSULT_HX','english','NOTIFIABLE DISEASE HISTORY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_ICD10_SEARCH_FORM','english','ICD10 SEARCH FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_SEARCH_TERM','english','ENTER SEARCH TERM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_RELEVANCE','english','RELEVANCE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_ICD','english','ICD',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_SEARCH_EXAMPLES','english','SEARCH EXAMPLES',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULT_ICD10','english','ICD10 CODES THIS CONSULT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULT_ICD10_HX','english','ICD10 CODES THIS PATIENT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_ICD10_NOTIFIABLE','english','MAP DISEASE TO ICD10 CODE BELOW',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_SEARCH_TERM_NOTIFIABLE','english','TYPE SEARCH TERM BELOW',NULL,NULL,'','');
+INSERT INTO terms VALUES ('THEAD_MAPPED_ICD10','english','ICD10 MAPPING',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_NOTIFIABLE_REPORTS','english','NOTIFIABLE DISEASE REPORTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_ONSET_DATE','english','ONSET DATE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PIEGRAPH_FORM','english','PIE GRAPH FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GRAPH_TITLE','english','GRAPH TITLE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GRAPH_MODULE','english','GRAPH MODULE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GRAPH_HEIGHT','english','GRAPH HEIGHT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GRAPH_WIDTH','english','GRAPH WIDTH',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GRAPH_SQL','english','GRAPH SQL STATEMENT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GRAPH_FLAGS','english','GRAPH FLAGS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_PIEGRAPH_LIST','english','PIE GRAPHS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_SUMMARY','english','SUMMARY REPORTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('MENU_CONSULT','english','CONSULT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_CONSULT_MANAGEMENT','english','THIS PAGE ENABLES YOU TO DO SOMETHING POTENTIALLY CATASTROPHIC TO PATIENT DATA. TO END THIS CONSULT, IF PATIENT IS ABOUT TO LEAVE THE HEALTH CENTER PRESS THE <b>END CONSULT</b> BUTTON. TO DELETE THIS CONSULT, IF CREATED BY MISTAKE, PRESS THE <b>DELETE CONSULT</b> BUTTON.',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_END_CONSULT','english','DO YOU WANT TO <u>END</u> THIS CONSULT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_DELETE_CONSULT','english','DO YOU WANT TO <u>DELETE</u> THIS CONSULT',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_CLICK_TO_VIEW_RECORD','english','CLICK TO VIEW RECORD',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_APPOINTMENTS_TODAY','tagalog','MGA APPOINTMENT NGAYON',NULL,NULL,'','Y');
+INSERT INTO terms VALUES ('FTITLE_PATIENT_GROUP_HX','english','PATIENT GROUP HISTORY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_ICDCODES_INJURY','english','ICD MAPPING FOR THIS INJURY CODE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_SEARCH_TERM_INJURY','english','TYPE SEARCH TERM FOR ICD CODE FOR INJURY',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_INJURY_REPORTS','english','INJURY REPORTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_NO_WEIGHT_AVAILABLE','english','NO WEIGHT AVAILABLE',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_IMMUNIZATION_STATUS','english','IMMUNIZATION STATUS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_CCDEV_ID','english','REGISTRY ID',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_REPORT_WEEK','english','REPORT WEEK',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_CONSULT_REPORTS','english','HEALTH CENTER REPORTS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_BARGRAPH_FORM','english','BAR GRAPH FORM',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GRAPH_BARCOLOR','english','BAR COLOR',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GRAPH_XLABEL','english','X-AXIS (HORIZONTAL) LABEL',NULL,NULL,'','');
+INSERT INTO terms VALUES ('LBL_GRAPH_YLABEL','english','Y-AXIS (VERTICAL) LABEL',NULL,NULL,'','');
+INSERT INTO terms VALUES ('FTITLE_BARGRAPH_LIST','english','BAR GRAPHS',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_PIEGRAPH_LIST','english','CLICK ON GRAPH TITLE TO EDIT GRAPH DEFINITION.',NULL,NULL,'','');
+INSERT INTO terms VALUES ('INSTR_BARGRAPH_LIST','english','CLICK ON GRAPH TITLE TO EDIT GRAPH DEFINITION.',NULL,NULL,'','');
+

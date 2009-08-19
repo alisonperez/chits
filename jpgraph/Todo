@@ -1,0 +1,70 @@
+Version: $Id: Todo,v 1.7 2002/07/04 10:44:21 aditus Exp $
+
+
+Documentation update
+--------------------
+* Rewrite preferred way to handle client side image maps
+* Revise documentation of classes. Class diagram update
+* Review of theme management for pie
+
+Additions
+---------
+* [Tentatively] Add possibility to set the default start value for text labels
+* [Tentatively] Add date/time scale/axis type
+* [Tentatively] The best way to handle multiple graphs in the same image.
+
+Verifications/Investigations:
+-----------------------------
+* Possible bug when mixing grouped bar and lineplots
+* What is the common mistake people make with image maps to
+  get the streaming not possible error?
+* Implement multi line text for legends
+* Check legends for grouped bar plots. Can we make that easier to use?
+* Check autoscaling with several scatterplots in a graph
+* Check potential problem with linlin and supplying both X and Y 
+  coordinates for a line plot
+* Check what happens with negative values for impuls plots when
+  adding a line y=0. Possible scale bug?
+* Add testcase for negative/positive accumulated bar graphs
+* Fix problem whereby the first label on the x-axis is hidden when
+  Y-axis has negative values and x-axis is positioned at 0 and 
+  setcenter() is used for the lineplot. Add a check to see if Setcenter
+  is used and if that is the case the first label should not be hidden
+  even if position is 0.
+* Merge the patch to make it possible to do CSIM without running the script off-line.
+* CSIM for legends. Does this make sense?
+* Investigate the following report
+	Also,  I  have  discovered that in a graph with bars and lines, if the
+	values  are  low  (<50),  the  graph goes wrong (oversized bars, wrong
+	scale, very big parse-time...). I have solved this.
+
+	But  if the values are lower (<10), the scale gets crazy. For example,
+	for   0  to  3, the Y-Scale say : "blank-0-0-1-2-2-3" or similar. Also
+	the graph takes VERY more time to generate.
+
+	Also, I did notice that in sections 6.3.25 and 6.3.26 in the manual, the
+	headings on the charts say "SpiderGraph" rather than "PieGraph."  The
+	General Description paragraph in both of those sections needs to be changed,
+	too.
+* Possibility to just plot ticks/labels where the label is != "". Does
+  this make sense? How should it work?
+* Linear scale investigation: Many datapoints and only show a grouped 
+  name for all values, for example sampling every hour but label each day 
+  (which is centered)
+* Filled line plots with negative values. What is the way to handle this?
+* Possibility to add text-labels directly in the new xxPlot() creation?
+* Difference between minor/major tick marks for text-scale, i.e. 
+  ticks with and without text labels
+
+
+
+
+
+
+
+
+
+
+
+
+

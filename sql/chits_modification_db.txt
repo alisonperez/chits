@@ -1,0 +1,120 @@
+--1 m_consult_vitals, height
+ALTER TABLE `m_consult_vitals` ADD `vitals_height` INT( 5 ) NOT NULL AFTER `vitals_resprate` ; 
+
+--2-4 m_consult_mc_prenatal, note : all PK's should be removed (??)
+ALTER TABLE `m_consult_mc_prenatal` ADD `prenatal_id` INT( 11 ) NOT NULL AFTER `mc_id` ;
+ALTER TABLE `m_consult_mc_prenatal` DROP PRIMARY KEY  
+
+
+--5 m_consult_mc_services
+ALTER TABLE `m_consult_mc_services` ADD `actual_service_date` DATE NOT NULL AFTER `service_id` ,
+ADD `service_qty` INT( 11 ) NOT NULL AFTER `actual_service_date` ;
+
+--6 insert having 4th baby in m_lib_mc_risk_factors
+INSERT INTO `m_lib_mc_risk_factors` (
+`risk_id` ,
+`risk_name` ,
+`hospital_flag` ,
+`monitor_flag`
+)
+VALUES (
+NULL , 'Having a fourth baby or more baby (grandmulti)', 'N', 'Y'
+);
+
+
+--7 m_consult_mc_visit_risk
+ ALTER TABLE `m_consult_mc_visit_risk` DROP PRIMARY KEY  
+
+
+--8, m_patient_mc
+ ALTER TABLE `m_patient_mc` ADD `prenatal_remarks` TEXT NOT NULL AFTER `end_pregnancy_flag` ,
+ADD `postpartum_remarks` TEXT NOT NULL AFTER `prenatal_remarks` ;
+
+--9 
+
+ALTER TABLE `m_patient_mc` ADD `date_breastfed` DATE NOT NULL AFTER `postpartum_remarks` ;
+
+--10 database: chitsquery, table: question (just load my own chitsquery)
+
+
+--11 m_lib_population
+
+CREATE TABLE IF NOT EXISTS `m_lib_population` (
+  `population_id` int(10) NOT NULL auto_increment,
+  `barangay_id` int(5) NOT NULL,
+  `population` int(10) NOT NULL,
+  `population_year` year(4) NOT NULL,
+  PRIMARY KEY  (`population_id`)
+) ENGINE=MyISAM;
+
+
+--12 m_patient_ccdev
+
+ALTER TABLE m_patient_ccdev ADD date_registered DATE NOT NULL DEFAULT '0000-00-00' AFTER civil_registry_date
+
+--13
+
+ALTER TABLE m_patient_ccdev ADD mother_px_id INT NOT NULL AFTER date_registered ; 
+
+--14 m_consult_ccdev_services
+
+ALTER TABLE `m_consult_ccdev_services` ADD `ccdev_service_date` DATE NOT NULL AFTER `age_on_service` ;
+
+
+--19 added lbw_date_started, lbw_date_completed in m_patient_ccdev
+
+ALTER TABLE `m_patient_ccdev` ADD `lbw_date_started` DATE NOT NULL AFTER `mother_px_id` ,
+ADD `lbw_date_completed` DATE NOT NULL AFTER `lbw_date_started` ;
+
+
+
+--15 m_patient_ccdev
+ALTER TABLE m_patient_ccdev ADD bfed_month1 SET( 'Y', 'N' ) NOT NULL DEFAULT 'N' AFTER lbw_date_completed,
+ADD bfed_month2 SET( 'Y', 'N' ) NOT NULL DEFAULT 'N' AFTER bfed_month1,
+ADD bfed_month3 SET( 'Y', 'N' ) NOT NULL DEFAULT 'N' AFTER bfed_month2,
+ADD bfed_month4 SET( 'Y', 'N' ) NOT NULL DEFAULT 'N' AFTER bfed_month3,
+ADD bfed_month5 SET( 'Y', 'N' ) NOT NULL DEFAULT 'N' AFTER bfed_month4,
+ADD bfed_month6 SET( 'Y', 'N' ) NOT NULL DEFAULT 'N' AFTER bfed_month5;
+
+
+--16  m_patient_ccdev
+ALTER TABLE m_patient_ccdev ADD bfed_month6_date DATE NOT NULL AFTER bfed_month6 ;
+
+
+--17 m_consult_notes
+
+ALTER TABLE m_consult_notes ADD anemia_start_date DATE NOT NULL AFTER notes_timestamp,
+ADD anemia_completed_date DATE NOT NULL AFTER anemia_start_date,
+ADD diarrhea_ort DATE NOT NULL AFTER anemia_completed_date,
+ADD diarrhea_ors DATE NOT NULL AFTER diarrhea_ort,
+ADD diarrhea_orswz DATE NOT NULL AFTER diarrhea_ors,
+ADD pneumonia_date_given DATE NOT NULL AFTER diarrhea_orswz;
+
+
+--18 m_consult_notes
+
+ALTER TABLE m_consult_notes ADD vita_date DATE NOT NULL AFTER notes_timestamp ; 
+
+
+--20 m_consult_mc_visit_risk
+
+ALTER TABLE m_consult_mc_visit_risk ADD date_detected DATE NOT NULL AFTER user_id
+
+-- 21 m_patient_ccdev
+
+ALTER TABLE m_patient_ccdev ADD ccdev_remarks TEXT NOT NULL AFTER bfed_month6_date
+
+--22 MC -> Prenatal TCL -> date_detected (m_consult_mc_visit_risk)
+
+ALTER TABLE m_consult_mc_visit_risk ADD date_detected DATE NOT NULL AFTER user_id
+
+--23 Child Care -> Sick children  TCL -> Warning array_multisort, array sizes are inconsistent class.querydb.php 
+-- remove lines 687 and 689 in class.querydb.php
+
+--24 Mc -> Child Care Under 1 TCL -> Page 2 -> ccdev_remarks, m_patient_ccdev
+
+ALTER TABLE 'm_patient_ccdev' ADD 'ccdev_remarks' TEXT NOT NULL AFTER 'bfed_month6_date'
+
+--25 New Patient -> Add cellphone field
+
+ ALTER TABLE `m_patient` ADD `patient_cellphone` VARCHAR( 11 ) NOT NULL AFTER `patient_gender`;

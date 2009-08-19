@@ -1,0 +1,95 @@
+
+
+A. Setting up necessary softwares (Apache, MySQL , PHP)
+
+1. sudo gedit /etc/apt/sources.list (check if repositories are active
+(commented out))
+2. sudo apt-get update (this will take some time to update)
+3. sudo apt-get install apache2
+4. sudo apt-get install mysql-server
+5. sudo apt-get install php5
+6. sudo apt-get install php5-mysql
+7. sudo apt-get install dhcp3-server
+
+B. Activating Apache and Mysql:
+Both Apache and Mysql are automatically activated during startup
+(runlevel 2)
+1. To activate/start Apache: sudo /etc/init.d/apache2 restart
+   To check if Apache is up and running: ps aux|grep apache
+
+2. To activate/start MySQL: sudo /etc/init.d/mysql restart
+   To check if mysql is up and running: ps aux|grep mysql
+
+
+C. Configuring php.ini, httpd.conf, mysql
+
+1. sudo gedit /etc/php5/apache2/php.ini
+   Locate the following parameters and assign the following values:
+
+    a. short_open_tags -> On
+    b. register_globals -> On
+    c. memory_limit -> 128MB
+    d. session.auto_start -> 1
+    e. session.save_path -> /var/tmp
+    d. max_upload_size -> 20MB
+    f. post_max_size -> 128 MB
+
+2. sudo gedit /etc/apache2/apache2.conf
+
+    a. line where there is index.htmls. append index.php at the end of
+the line
+
+3. Default Mysql root password after installation is "".
+    a. login to Mysql using root account:
+
+               $ mysql -u root -p
+
+    b. create a database called 'chits':
+
+        mysql> create database chits
+
+    c. exit to the Mysql terminal
+
+        mysql> quit
+
+    d. Populate chits database:
+
+        $ mysql -u root -p chits < <location of chitszero.sql>
+
+    e. login to Mysql again using root account
+
+        $ mysql -u root -p
+
+    f. choose chits as your database
+
+        mysql> use chits
+
+    g. create an ordinary user for chits
+
+        mysql> insert into user set user='chits',password=password('whateverpassword'),host='localhost';
+
+    h. flush privileges
+
+        mysql> flush privileges; # don't forget the semicolon
+
+    i. grant privileges to user chits
+
+        mysql> grant all privileges on chits.* to chits@localhost
+identified by 'whateverpassword';
+
+    j. flush privileges (see step h)
+
+    k. log off then login using the newly create account
+(chits,whateverpassword) to check if it works
+
+        mysql> quit
+
+        $ mysql -u chits -p
+
+D. Configuring CHITS config file
+    a. Go to /var/www and locate chits folder.
+    b. Go to 'modules' folder and open '_dbselect.php' using text editor. Under the 'chits_query' directory, set the $dbname to the database containing CHITS tables and $dbname for the database of the chits query tool. The sql file of chits query tool can be found inside the 'sql' folder on main chits directory.
+    c. replace $dbname, $dbpwd, $dbname with 'chits','whateverpassword','chits'
+    d. Access CHITS in the browser thru the URL: http://localhost/chits/
+    e. Login using 'admin' and password 'admin'
+

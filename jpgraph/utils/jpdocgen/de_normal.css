@@ -1,0 +1,205 @@
+
+body  {
+	margin-top : 10px;
+	margin-left : 10px;
+	margin-right : 10px; 
+	//background-color: #D8F8FF;
+	background-color: #F0F4F8;
+	color : Black;
+	font-family :  Arial,sans-serif;
+}
+
+table.mainmeny {
+	background-color:lightblue;
+	border:navy solid 2pt;
+}
+
+span.menytitle {
+	font-weight : bold;
+	font-size : 120%;
+	color : white;
+}
+
+table.projectindex {
+	background-color:lightyellow;
+	border:navy solid 2pt;
+}
+
+td.projindexheader {
+	background-color:navy;
+	color : white;
+	font-family : Arial, Helvetica, sans-serif;
+	font-size : 1.3em;
+	font-weight : bold;
+	text-align : center;
+}	
+	
+
+A.mainmeny:link  {
+	font-family : Arial, Helvetica, sans-serif;
+	text-decoration : none;
+	color : black;
+}
+
+A.mainmeny:visited  {
+	font-family : Arial, Helvetica, sans-serif;
+	text-decoration : none;
+	color : black;
+}
+
+A.mainmeny:hover  {
+	font-family : Arial, Helvetica, sans-serif;
+	text-decoration : none;
+	color : black;
+	background-color : Yellow;
+}
+
+h1.mainmeny {
+	font-family : Arial, Helvetica, sans-serif;
+	font-size : 1.1em;
+	text-decoration : none;
+	color : white;
+	//background-color : blue;
+}	
+
+td.mainmeny {
+	text-align : center;
+	background-color : navy;
+	border-bottom : black solid 2pt;
+}
+
+
+table.stdinputform {
+	background-color : lightblue;
+	border:navy solid 2pt;
+}
+
+td.stdinputtitle {
+	font-family : Arial, Helvetica, sans-serif;
+	font-size : 1em;
+	color : white;
+	text-align : center;
+	background-color : navy;
+	border-bottom : black solid 2pt;	
+}	
+
+
+A:link  {
+	font-family : Arial, Helvetica, sans-serif;
+	text-decoration : none;
+	color : blue;
+}
+
+A:visited  {
+	font-family : Arial, Helvetica, sans-serif;
+	text-decoration : none;
+	color : blue;
+}
+
+A:hover  {
+	font-family : Arial, Helvetica, sans-serif;
+	text-decoration : none;
+	color : blue;
+	background-color : Yellow;
+}
+*/
+
+/* Normal headlines should almost never be used. Use named headers below insted*/
+h1,h2,h3,h4,h5  {
+	font-family : Arial, Helvetica, serif;
+	font-size: 100%;
+	margin-bottom:0;
+}
+
+h1 strong, h2 strong, h3 strong, h4 strong {
+	color:#cc0000;
+}
+
+
+.title h1 {
+	font-family : Arial, Helvetica, sans-serif;
+	background : #eeeeee;
+	font-size : 1.5em;
+	margin:0;
+	font-weight : bold;
+	text-align : center;
+	color:darkblue;
+	border-top: black solid 2pt;
+	border-bottom: black solid 2pt;
+}
+
+.subtitle {
+	text-align :center;
+	margin-left: 2em;
+	margin-right: 2em;
+	margin-bottom:0.5em;
+	font-family : Times Roman, Helvetica, sans-serif;
+	font-weight : normal;
+	font-style:italic; 
+	font-size :1.0em;
+	color : Navy;
+}
+
+
+.normfldlabel {
+	font-family : Arial, Helvetica, serif;
+	font-size : 100%;
+	font-weight : bold;
+	color : navy;
+}
+
+.errfldlabel {
+	font-family : Arial, Helvetica, serif;
+	font-size : 100%;
+	font-weight : bold;
+	color : red;
+}
+
+.error {
+	font-family : Arial, Helvetica, serif;
+	font-weight : bold;
+	color : darkred;
+}
+
+.note {
+	font-family : Arial, Helvetica, serif;
+	font-size : 0.8em;
+	font-weight : normal;
+	color : black;
+}
+
+.note strong {
+	color : #990000;
+	font-weight : bold;
+}
+
+input.submitbutton {
+	font-size : 90%;
+	font-weight : bold;
+}
+	
+.footer {
+	font-size : 0.65em;
+}
+
+
+table.datainput {
+  	background : LightBlue;	
+	color : Black;
+	//font-size:1em;
+	border: black solid 2pt;
+}	
+
+td.datainput {
+	font-size : 90%;
+}
+
+input {
+	font-size:90%;
+}
+
+textarea {
+	font-size:90%;
+}
+
+	

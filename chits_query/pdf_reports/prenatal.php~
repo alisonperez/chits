@@ -1,0 +1,207 @@
+<?php
+session_start();
+require('./fpdf/fpdf.php');
+
+$db_conn = mysql_connect("localhost","$_SESSION[dbuser]","$_SESSION[dbpass]");
+mysql_select_db("cuartero");
+
+
+class PDF extends FPDF
+{
+	var $widths;
+	var $aligns;
+
+
+
+function SetWidths($w)
+{
+    //Set the array of column widths
+    $this->widths=$w;
+}
+
+function SetAligns($a)
+{
+    //Set the array of column alignments
+    $this->aligns=$a;
+}
+
+function Row($data)
+{
+    //Calculate the height of the row
+    $nb=0;
+    for($i=0;$i<count($data);$i++)
+        $nb=max($nb,$this->NbLines($this->widths[$i],$data[$i]));
+    $h=5*$nb;
+    //Issue a page break first if needed
+    $this->CheckPageBreak($h);
+    //Draw the cells of the row
+    for($i=0;$i<count($data);$i++)
+    {
+        $w=$this->widths[$i];
+        $a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'L';
+        //Save the current position
+        $x=$this->GetX();
+        $y=$this->GetY();
+        //Draw the border
+        $this->Rect($x,$y,$w,$h);
+        //Print the text
+        $this->MultiCell($w,5,$data[$i],0,$a);
+        //Put the position to the right of the cell
+        $this->SetXY($x+$w,$y);
+    }
+    //Go to the next line
+    $this->Ln($h);
+}
+
+
+function CheckPageBreak($h)
+{
+    //If the height h would cause an overflow, add a new page immediately
+    if($this->GetY()+$h>$this->PageBreakTrigger)
+        $this->AddPage($this->CurOrientation);
+}
+
+
+function NbLines($w,$txt)
+{
+    //Computes the number of lines a MultiCell of width w will take
+    $cw=&$this->CurrentFont['cw'];
+    if($w==0)
+        $w=$this->w-$this->rMargin-$this->x;
+    $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
+    $s=str_replace("\r",'',$txt);
+    $nb=strlen($s);
+    if($nb>0 and $s[$nb-1]=="\n")
+        $nb--;
+    $sep=-1;
+    $i=0;
+    $j=0;
+    $l=0;
+    $nl=1;
+    while($i<$nb)
+    {
+        $c=$s[$i];
+        if($c=="\n")
+        {
+            $i++;
+            $sep=-1;
+            $j=$i;
+            $l=0;
+            $nl++;
+            continue;
+        }
+        if($c==' ')
+            $sep=$i;
+        $l+=$cw[$c];
+        if($l>$wmax)
+        {
+            if($sep==-1)
+            {
+                if($i==$j)
+                    $i++;
+            }
+            else
+                $i=$sep+1;
+            $sep=-1;
+            $j=$i;
+            $l=0;
+            $nl++;
+        }
+        else
+            $i++;
+    }
+    return $nl;
+}
+
+function Header()
+{
+	$w = array(30,30,55,85,10,30,25,25,25,25);
+	$header = array('Registration Date','Family Serial No.','Name','Address','Age','LMP / GP','EDC','1st Trimester','2nd Trimester','3rd Trimester');
+
+	
+
+	for($i=0;$i<count($header);$i++)
+		$this->Cell($w[$i],7,$header[$i],1,0,'C');
+	
+	$this->Ln();	
+}
+
+function show_records(){	
+
+	$r_prenatal = $_SESSION[prenatal_mc_px];
+	$w = array(30,30,55,85,10,30,25,25,25,25);
+	$r_rec = array();
+	for($i=0;$i<count($r_prenatal);$i++){
+		$q_px = mysql_query("SELECT patient_lastname,patient_firstname,TO_DAYS(patient_dob) as kaarawan FROM m_patient WHERE patient_id='$r_prenatal[$i]'") or die(mysql_error());
+
+		$q_name = mysql_query("SELECT a.patient_id,a.patient_lastname,a.patient_firstname,TO_DAYS(a.patient_dob) as day_bday,b.family_id,c.address,d.barangay_name FROM m_patient a,m_family_members b,m_family_address c,m_lib_barangay d WHERE a.patient_id='$r_prenatal[$i]' AND a.patient_id=b.patient_id AND b.family_id=c.family_id AND c.barangay_id=d.barangay_id") or die("Cannot query: 137");
+
+
+		$r_name = mysql_fetch_array($q_name);
+
+		$q_prenatal = mysql_query("SELECT a.patient_lmp,a.patient_edc,a.obscore_gp,b.prenatal_date,TO_DAYS(b.prenatal_date) as day_prenatal FROM m_patient_mc a, m_consult_mc_prenatal b WHERE a.patient_id='$r_prenatal[$i]' AND a.patient_id=b.patient_id AND b.visit_sequence='1' AND end_pregnancy_flag='N'") or die(mysql_error());
+
+		$result_prenatal = mysql_fetch_array($q_prenatal);
+
+		if(empty($r_name[patient_lastname]) && empty($r_name[patient_firstname])):
+			$r_px = mysql_fetch_array($q_px);
+			$pangalan = $r_px[patient_lastname].', '.$r_px[patient_firstname];
+			$edad_sa_prenatal = floor(($result_prenatal[day_prenatal] - $r_name[kaarawan])/365);		
+			$tirahan = '';
+		else:
+			$pangalan = $r_name[patient_lastname].', '.$r_name[patient_firstname];
+			$tirahan = $r_name[address]. ', '.$r_name[barangay_name];
+			$edad_sa_prenatal = floor(($result_prenatal[day_prenatal] - $r_name[day_bday])/365);		
+		endif;
+
+		list($predate,$pretime) = explode(' ',$result_prenatal[prenatal_date]);
+		list($prenataldate,$prenataltime) = explode(' ',$result_prenatal[prenatal_date]);
+		
+		
+		
+		$q_prenatal_visits = mysql_query("SELECT a.patient_id,a.prenatal_date,a.trimester FROM m_consult_mc_prenatal a,m_patient_mc b WHERE a.patient_id='$r_prenatal[$i]' AND a.patient_id=b.patient_id AND b.end_pregnancy_flag='N' ORDER by a.prenatal_date DESC") or die(mysql_error());
+		
+		$first='';
+		$second='';
+		$third='';
+
+		while($r_prenatal_visits=mysql_fetch_array($q_prenatal_visits)){
+			list($d,$t) = explode(' ',$r_prenatal_visits[prenatal_date]);			
+
+			switch($r_prenatal_visits[trimester]){
+				case 1:
+					$first.= $d."\n";
+					break;
+				case 2:
+					$second = $d."\n";
+					break;
+				case 3:
+					$third = $d."\n";
+					break;
+				default:			
+			}
+		}
+
+		array_push($r_rec,array("datereg"=>$prenataldate,"familyserial"=>$r_name[family_id],"ngalan"=>$pangalan,"bahay"=>$tirahan,"edad"=>$edad_sa_prenatal,"lmp_gp"=>$result_prenatal[patient_lmp].', '.$result_prenatal[obscore_gp],"edc"=>$result_prenatal[patient_edc],"first_tri"=>$first,"second_tri"=>$second,"third_tri"=>$third));			
+	}
+			
+		$this->SetWidths($w);		
+		for($j=0;$j<count($r_rec);$j++){  //rows
+			$this->Row(array($r_rec[$j]['datereg'],$r_rec[$j]['familyserial'],$r_rec[$j]['ngalan'],$r_rec[$j]['bahay'],$r_rec[$j]['edad'],$r_rec[$j]['lmp_gp'],$r_rec[$j]['edc'],$r_rec[$j]['first_tri'],$r_rec[$j]['second_tri'],$r_rec[$j]['third_tri']));
+		}	
+}
+
+
+}
+
+$pdf=new PDF('L','mm','Legal');
+
+$pdf->SetFont('Arial','',10);
+$pdf->AddPage();
+
+$pdf->show_records();
+//print_r($_SESSION[prenatal_mc_px]);
+
+$pdf->Output();
+
+?>

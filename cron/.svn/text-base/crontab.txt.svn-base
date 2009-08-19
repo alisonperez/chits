@@ -1,0 +1,13 @@
+# MUDFISH.CQI crontab
+# DO NOT CHANGE
+#
+# Author: Herman Tolentino MD
+# Copyright 2003
+# MUDFISH.CQI
+# INSTRUCTIONS:
+# Copy and paste this in crontab text
+# As root do crontab -e
+#
+2 * * * * /usr/bin/php -q /home/herman/public_html/cqi/cron/cronsmsqueue.php
+5 * * * * /usr/bin/php -q /home/herman/public_html/cqi/cron/cronsmsdigest.php
+15 20 * * * /usr/bin/php -q /home/herman/public_html/cqi/cron/cronsmsfeedback.php

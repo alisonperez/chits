@@ -1,0 +1,842 @@
+#!/bin/sh
+#
+# Copyright(C) 2002-2003 Macromedia, Inc.  All rights reserved.
+#
+# Macromedia Flash Player Installer
+#
+
+PRODUCT="Macromedia Flash Player"
+VERSION="7"
+PLATFORM="Linux"
+
+FPVERSIONMAJ=7
+FPVERSIONMIN=0
+FPVERSIONREV=70
+
+# Environment variables
+PATH=.:/bin:/usr/bin:/usr/local/bin:/sbin:$PATH
+export PATH
+
+# Get the path of this script
+cwd=`dirname $0`
+
+# Minimum glibc
+MIN_GLIBCMAJOR=2
+MIN_GLIBCMINOR=2
+
+
+##############################
+# Subroutines
+##############################
+
+# the os is not supported
+exit_os () {
+  echo ""
+  echo "ERROR: Your operating system is not supported by the"
+  echo "       $PRODUCT installer."
+  echo ""
+  exit 1
+}
+
+# the architecture is not supported
+exit_cpu () {
+  echo ""
+  echo "ERROR: Your architecture, \'$1\', is not supported by the"
+  echo "       $PRODUCT installer."
+  echo ""
+  exit 1
+}
+
+# glibc is older than supported
+exit_glibc () {
+  echo ""
+  echo "ERROR: Your glibc library is older than $MIN_GLIBCMAJOR.$MIN_GLIBCMINOR."
+  echo "       Please update your glibc library."
+  echo ""
+  exit 1
+}
+
+# exit installer
+exit_error () {
+  echo ""
+  echo "Exiting the $PRODUCT $VERSION installer."
+  echo ""
+  exit 1
+}
+
+# check glibc
+check_glibc () {
+  ICONV=`iconv --version | sed -e '2,$d'`
+  if [ $? -ne 0 ]; then
+    echo "no-iconv"
+  else
+    ICONVVER=`echo "$ICONV" | awk '{print $4}'`
+    GLIBCMAJOR=`echo $ICONVVER | cut -d'.' -f1`
+    GLIBCMINOR=`echo $ICONVVER | cut -d'.' -f2`
+    if [ \( $GLIBCMAJOR -ge $MIN_GLIBCMAJOR \) -a \( $GLIBCMINOR -ge $MIN_GLIBCMINOR \) ]; then
+      echo "valid-glibc"
+    else
+      echo "invalid-glibc"
+    fi
+  fi
+}
+
+# check entered directory
+check_browser_dir () {
+  CHECKDIR="$1"
+  # blank?
+  if [ -z "$CHECKDIR" ]; then
+    echo "blank"
+    exit
+  fi
+  # is a directory? 
+  if [ -d "$CHECKDIR" ]; then
+    # is writable?
+    if [ -w "$CHECKDIR" ]; then
+      # contains plugins and components dirs?
+      if [ -d "$CHECKDIR/plugins" -a -d "$CHECKDIR/components" ]; then
+        # could be Mozilla or Netscape
+        if [ ! -w "$CHECKDIR/plugins" ]; then
+          echo "invalid-plugins-not-writable"
+          return
+        else
+          echo "valid"
+          return
+        fi
+      elif [ -d "$CHECKDIR/plugins" ]; then
+        if [ ! -w "$CHECKDIR/plugins" ]; then
+          echo "invalid-plugins-not-writable"
+          return
+        fi
+        # is Opera or Netscape Communicator?
+        OPERABIN=`find $CHECKDIR -type f -name "opera" -print`
+        if [ -f "$OPERABIN" ]; then
+          echo "valid-opera"
+          return
+        elif [ -f "$CHECKDIR/netscape-communicator" ]; then
+          echo "valid-communicator"
+          return
+        fi
+      fi
+    else
+      echo "invalid-not-writable"
+      return
+    fi
+  else
+    echo "invalid-not-directory"
+    return
+  fi
+  echo "invalid"
+}
+
+# fix dir if necessary
+fix_dir () {
+  FIXDIR="$1"
+  FIRSTCHAR=`expr "$FIXDIR" : '\(.\).*'`
+  if [ "$FIRSTCHAR" != '/' ]; then
+    currentdir=`pwd`
+    echo "$currentdir/$FIXDIR"
+  else
+    echo "$1"
+  fi
+}
+
+# warn libflashplayer.so is a symbolic link
+warn_symbolic_link () {
+  echo ""
+  echo "WARNING: The $PRODUCT binary is a symbolic link."
+  echo "         The installer will replace this symbolic link with the actual binary."
+  echo ""
+}
+
+# compare versions
+compare_versions () {
+  BIN="$1"
+  MYFPVERSIONSTR=`strings "$1" | grep -e "^Shockwave Flash [.\d+]*" | sed -e "s/Shockwave Flash //g"`
+  MYFPVERSION=`echo "$MYFPVERSIONSTR" | awk '{print $1}'`
+  MYFPVERSIONMAJ=`echo "$MYFPVERSION" | cut -d'.' -f1`
+  MYFPVERSIONMIN=`echo "$MYFPVERSION" | cut -d'.' -f2`
+  MYFPVERSIONREV=`echo "$MYFPVERSIONSTR" | awk '{print $2}' | sed -e "s/^r//g"`
+  # check major version
+  if [ \( $MYFPVERSIONMAJ -lt $FPVERSIONMAJ \) ]; then
+    echo "version-older"
+  elif [ \( $MYFPVERSIONMAJ -gt $FPVERSIONMAJ \) ]; then
+    echo "version-newer"
+  elif [ \( $MYFPVERSIONMAJ -eq $FPVERSIONMAJ \) ]; then
+    # check minor version
+    if [ \( $MYFPVERSIONMIN -lt $FPVERSIONMIN \) ]; then
+      echo "version-older"
+    elif [ \( $MYFPVERSIONMIN -gt $FPVERSIONMIN \) ]; then
+      echo "version-newer"
+    elif [ \( $MYFPVERSIONMIN -eq $FPVERSIONMIN \) ]; then
+      # check rev version
+      if [ \( $MYFPVERSIONREV -lt $FPVERSIONREV \) ]; then
+        echo "version-older"
+      elif [ \( $MYFPVERSIONREV -gt $FPVERSIONREV \) ]; then
+        echo "version-newer"
+      elif [ \( $MYFPVERSIONREV -eq $FPVERSIONREV \) ]; then
+        echo "version-same"
+      fi
+    fi
+  fi
+}
+
+# check plugins dir
+check_plugins_dir () {
+  CHECKPLUGINSDIR="$1"
+  if [ -d "$CHECKPLUGINSDIR" ]; then
+    # does it exist?
+    if [ -e "$CHECKPLUGINSDIR/libflashplayer.so" ]; then
+      # is it a file?
+      if [ -f "$CHECKPLUGINSDIR/libflashplayer.so" ]; then
+        # is it a symbolic link?
+        if [ -L "$CHECKPLUGINSDIR/libflashplayer.so" ]; then
+          warn_symbolic_link "$CHECKPLUGINSDIR/libflashplayer.so"
+          SYMBOLIC_LINK=1
+        else
+          VERSIONSTATUS=`compare_versions "$CHECKPLUGINSDIR/libflashplayer.so"`
+          case $VERSIONSTATUS in
+            version-older)
+              echo ""
+              echo "WARNING: An older version of the $PRODUCT has been detected in"
+              echo "         $CHECKPLUGINSDIR."
+              echo "         The installer will overwrite this existing binary."
+              echo ""
+              ;;
+            version-newer)
+              echo ""
+              echo "WARNING: A newer version of the $PRODUCT has been detected in"
+              echo "         $CHECKPLUGINSDIR."
+              echo "         The installer will overwrite this existing binary."
+              echo ""
+              ;;
+            version-same)
+              echo ""
+              echo "WARNING: The same version of the $PRODUCT has been detected in"
+              echo "         $CHECKPLUGINSDIR."
+              echo "         The installer will overwrite this existing binary."
+              echo ""
+              ;;
+          esac
+        fi
+      fi
+    fi
+  fi
+}
+
+
+##############################
+# Main Section
+##############################
+
+ROOTINSTALL=0
+
+# check user
+USERID=`id | sed -e 's/).*//; s/^.*(//;'`
+if [ "X$USERID" = "Xroot" ]; then
+  ROOTINSTALL=1
+fi
+
+# check OS
+os=`uname -s`
+if [ "X$os" != "XLinux" ]; then
+  exit_os
+fi
+
+# check architecture
+TEMPARCH=`uname -m`
+case $TEMPARCH in
+  i[3456]86)
+    ARCH=i386
+    ;;
+  *)
+    exit_cpu $TEMPARCH
+    ;;
+esac
+
+# check for iconv and version of glibc
+GLIBCSTATUS=`check_glibc`
+case $GLIBCSTATUS in
+  invalid-glibc)
+    exit_glibc
+    ;;
+esac
+
+##################
+# Welcome user
+##################
+echo ""
+echo "Copyright(C) 2002-2003 Macromedia, Inc.  All rights reserved."
+echo ""
+echo "$PRODUCT $VERSION for $PLATFORM"
+echo ""
+echo "$PRODUCT $VERSION will be installed on this machine."
+echo ""
+if [ $ROOTINSTALL -eq 1 ]; then
+echo "You are running the $PRODUCT installer as the \"root\" user."
+echo "$PRODUCT $VERSION will be installed system-wide."
+else
+echo "You are running the $PRODUCT installer as a non-root user."
+echo "$PRODUCT $VERSION will be installed in your home directory."
+fi
+echo ""
+echo "Support is available at http://www.macromedia.com/support/flashplayer/"
+echo ""
+echo "To install $PRODUCT $VERSION now, press ENTER."
+echo ""
+echo "To cancel the installation at any time, press Control-C."
+echo ""
+read cont < /dev/tty
+
+echo ""
+echo "NOTE: $PRODUCT requires two font packages"
+if [ -e /etc/debian_version ]; then
+echo "      to be installed, gsfonts and gsfonts-x11."
+else
+echo "      to be installed, ttfonts and urw-fonts."
+fi
+echo ""
+echo "Press ENTER to continue..."
+echo ""
+read cont < /dev/tty
+
+echo ""
+echo "NOTE: Please exit any browsers you may have running."
+echo ""
+echo "Press ENTER to continue..."
+echo ""
+read cont < /dev/tty
+
+# Loop until user is done installing one or more times
+okToRepeat=0
+while [ $okToRepeat -eq 0 ]; do
+
+# Loop until user is comfortable with their choices
+okToProceed=0
+while [ $okToProceed -eq 0 ]; do
+
+  # default variables
+  BROWSERDIR=""
+  DIRSTATUS=""
+  HOMEDIR=""
+  MOZILLA=0
+  MOZILLADIR=""
+  MOZILLA_NOT_W=0
+  MOZILLAPLUGIN_NOT_W=0
+  MOZILLASTATUS="valid"
+  NETSCAPE=0
+  NETSCAPEDIR=""
+  NETSCAPE_NOT_W=0
+  NETSCAPEPLUGIN_NOT_W=0
+  NETSCAPESTATUS="valid"
+  OPERA=0
+  OPERADIR=""
+  OPERA_NOT_W=0
+  OPERAPLUGIN_NOT_W=0
+  OPERASTATUS="valid"
+  SYMBOLIC_LINK=0
+  VERSIONSTATUS=0
+
+  ############################
+  # Get destination directory
+  ############################
+  echo ""
+  get_browser_dir () {
+    echo "Please enter the installation path of the Mozilla, Netscape,"
+    printf "or Opera browser (i.e., /usr/lib/mozilla): "
+    read dir
+
+    # fix the entered dir if necessary
+    FIXED_DIR=`fix_dir "$dir"`
+    dir="$FIXED_DIR"
+
+    # check given dir if valid
+    DIRSTATUS=`check_browser_dir "$dir"`
+
+    case $DIRSTATUS in
+      blank)
+        echo ""
+        echo "WARNING: Please do not enter a blank installation path."
+        echo ""
+        get_browser_dir
+        ;;
+      invalid)
+        echo ""
+        echo "WARNING: Please enter a valid installation path."
+        echo ""
+        get_browser_dir
+        ;;
+      invalid-not-writable)
+        echo ""
+        echo "WARNING: $dir is not writable."
+        echo ""
+        get_browser_dir
+        ;;
+      invalid-plugins-not-writable)
+        echo ""
+        echo "WARNING: $dir/plugins is not writable."
+        echo ""
+        get_browser_dir
+        ;;
+      invalid-not-directory)
+        echo ""
+        echo "WARNING: $dir is not a directory."
+        echo ""
+        get_browser_dir
+        ;;
+      valid)
+        BROWSERDIR="$dir"
+        check_plugins_dir "$dir/plugins"
+        ;;
+      valid-opera)
+        OPERA=1
+        BROWSERDIR="$dir"
+        check_plugins_dir "$dir/plugins"
+        ;;
+      valid-communicator)
+        echo ""
+        echo "WARNING: You have entered the installation path to Netscape Communicator."
+        echo "         Netscape Communicator is not officially supported."
+        echo ""
+        NETSCAPE=1
+        BROWSERDIR="$dir"
+        check_plugins_dir "$dir/plugins"
+        ;;
+      invalid-opera)
+        echo ""
+        echo "ERROR: The version of the Opera browser is invalid."
+        echo ""
+        exit 1
+        ;;
+    esac
+  }
+  if [ $ROOTINSTALL -eq 1 ]; then
+    get_browser_dir
+  else
+    HOMEDIR=`(cd ; pwd)`
+    COUNT=0
+    STATUSCOUNT=0
+    ERRORCOUNT=0
+    # Mozilla user directory
+    if [ -d "$HOMEDIR/.mozilla" ]; then
+      MOZILLA=1
+      MOZILLADIR="$HOMEDIR/.mozilla"
+      COUNT=`expr $COUNT + 1`
+      if [ ! -w "$HOMEDIR/.mozilla" ]; then
+        MOZILLA_NOT_W=1
+        MOZILLASTATUS="invalid"
+        ERRORCOUNT=`expr $ERRORCOUNT + 1`
+      elif [ \( -d "$HOMEDIR/.mozilla/plugins" \) -a \( ! -w "$HOMEDIR/.mozilla/plugins" \) ]; then
+        MOZILLAPLUGIN_NOT_W=1
+        MOZILLASTATUS="invalid"
+        ERRORCOUNT=`expr $ERRORCOUNT + 1`
+      else
+        STATUSCOUNT=`expr $STATUSCOUNT + 1`
+      fi
+    fi
+    # Netscape user directory
+    if [ -d "$HOMEDIR/.netscape" ]; then
+      NETSCAPE=1
+      NETSCAPEDIR="$HOMEDIR/.netscape"
+      COUNT=`expr $COUNT + 1`
+      if [ ! -w "$HOMEDIR/.netscape" ]; then
+        NETSCAPE_NOT_W=1
+        NETSCAPESTATUS="invalid"
+        ERRORCOUNT=`expr $ERRORCOUNT + 1`
+      elif [ \( -d "$HOMEDIR/.netscape/plugins" \) -a \( ! -w "$HOMEDIR/.netscape/plugins" \) ]; then
+        NETSCAPEPLUGIN_NOT_W=1
+        NETSCAPESTATUS="invalid"
+        ERRORCOUNT=`expr $ERRORCOUNT + 1`
+      else
+        STATUSCOUNT=`expr $STATUSCOUNT + 1`
+      fi
+    fi
+    # Opera user directory
+    if [ -d "$HOMEDIR/.opera" ]; then
+      OPERA=1
+      OPERADIR="$HOMEDIR/.opera"
+      COUNT=`expr $COUNT + 1`
+      if [ ! -w "$HOMEDIR/.opera" ]; then
+        OPERA_NOT_W=1
+        OPERASTATUS="invalid"
+        ERRORCOUNT=`expr $ERRORCOUNT + 1`
+      elif [ \( -d "$HOMEDIR/.opera/plugins" \) -a \( ! -w "$HOMEDIR/.opera/plugins" \) ]; then
+        OPERAPLUGIN_NOT_W=1
+        OPERASTATUS="invalid"
+        ERRORCOUNT=`expr $ERRORCOUNT + 1`
+      else
+        STATUSCOUNT=`expr $STATUSCOUNT + 1`
+      fi
+    fi
+    if [ \( $MOZILLA -eq 0 \) -a \( $NETSCAPE -eq 0 \) -a \( $OPERA -eq 0 \) ]; then
+      echo ""
+      echo "ERROR: Your home directory does not have a Mozilla, Netscape, or Opera"
+      echo "       browser user directory. Run one of these browsers at least once."
+      echo ""
+      exit 1
+    fi
+  fi
+
+  # if local install, ask which dirs to install to if more than one
+  if [ $ROOTINSTALL -ne 1 ]; then
+    if [ \( $COUNT -gt 1 \) -a \( $STATUSCOUNT -gt 1 \) ]; then
+      echo ""
+      echo "Please choose which directory to install $PRODUCT $VERSION:"
+      echo ""
+      if [ $MOZILLA -eq 1 ]; then
+        if [ "$MOZILLASTATUS" = "valid" ]; then
+        echo "  [m] Install $PRODUCT $VERSION into Mozilla user"
+        echo "      directory: $MOZILLADIR"
+        else
+        echo "   *  The installer has detected a Mozilla user directory but cannot install"
+        echo "      into the following path: $MOZILLADIR"
+        echo "      because of the following:"
+        fi
+        if [ $MOZILLA_NOT_W -eq 1 ]; then
+        echo ""
+        echo "      WARNING: $MOZILLADIR is not writable."
+        fi
+        if [ \( $MOZILLA_NOT_W -eq 0 \) -a \( $MOZILLAPLUGIN_NOT_W -eq 1 \) ]; then
+        echo ""
+        echo "      WARNING: $MOZILLADIR/plugins is not writable."
+        fi
+        echo ""
+      fi
+      if [ $NETSCAPE -eq 1 ]; then
+        if [ "$NETSCAPESTATUS" = "valid" ]; then
+        echo "  [n] Install $PRODUCT $VERSION into Netscape user"
+        echo "      directory: $NETSCAPEDIR"
+        else
+        echo "   *  The installer has detected a Netscape user directory but cannot install"
+        echo "      into the following path: $NETSCAPEDIR"
+        echo "      because of the following:"
+        fi
+        if [ $NETSCAPE_NOT_W -eq 1 ]; then
+        echo ""
+        echo "      WARNING: $NETSCAPEDIR is not writable."
+        fi
+        if [ \( $NETSCAPE_NOT_W -eq 0 \) -a \( $NETSCAPEPLUGIN_NOT_W -eq 1 \) ]; then
+        echo ""
+        echo "      WARNING: $NETSCAPEDIR/plugins is not writable."
+        fi
+        echo ""
+      fi
+      if [ $OPERA -eq 1 ]; then
+        if [ "$OPERASTATUS" = "valid" ]; then
+        echo "  [o] Install $PRODUCT $VERSION into Opera user"
+        echo "      directory: $OPERADIR"
+        else
+        echo "   *  The installer has detected a Opera user directory but cannot install"
+        echo "      into the following path: $OPERADIR"
+        echo "      because of the following:"
+        fi
+        if [ $OPERA_NOT_W -eq 1 ]; then
+        echo ""
+        echo "      WARNING: $OPERADIR is not writable."
+        fi
+        if [ \( $OPERA_NOT_W -eq 0 \) -a \( $OPERAPLUGIN_NOT_W -eq 1 \) ]; then
+        echo ""
+        echo "      WARNING: $OPERADIR/plugins is not writable."
+        fi
+        echo ""
+      fi
+      echo "  [a] All"
+      echo ""
+    else
+      # only one browser user directory
+      if [ $MOZILLA -eq 1 ]; then
+        if [ "$MOZILLASTATUS" = "invalid" ]; then
+          echo "The installer has detected a Mozilla user directory but cannot install"
+          echo "into the following path: $MOZILLADIR"
+          echo "because of the following:"
+          if [ $MOZILLA_NOT_W -eq 1 ]; then
+            echo ""
+            echo "WARNING: $MOZILLADIR is not writable."
+            echo ""
+          fi
+          if [ \( $MOZILLA_NOT_W -eq 0 \) -a \( $MOZILLAPLUGIN_NOT_W -eq 1 \) ]; then
+            echo ""
+            echo "WARNING: $MOZILLADIR/plugins is not writable."
+            echo ""
+          fi
+        fi
+      fi
+      if [ $NETSCAPE -eq 1 ]; then
+        if [ "$NETSCAPESTATUS" = "invalid" ]; then
+          echo "The installer has detected a Netscape user directory but cannot install"
+          echo "into the following path: $NETSCAPEDIR"
+          echo "because of the following:"
+          if [ $NETSCAPE_NOT_W -eq 1 ]; then
+            echo ""
+            echo "WARNING: $NETSCAPEDIR is not writable."
+            echo ""
+          fi
+          if [ \( $NETSCAPE_NOT_W -eq 0 \) -a \( $NETSCAPEPLUGIN_NOT_W -eq 1 \) ]; then
+            echo ""
+            echo "WARNING: $NETSCAPEDIR/plugins is not writable."
+            echo ""
+          fi
+        fi
+      fi 
+      if [ $OPERA -eq 1 ]; then
+        if [ "$OPERASTATUS" = "invalid" ]; then
+          echo "The installer has detected a Opera user directory but cannot install"
+          echo "into the following path: $OPERADIR"
+          echo "because of the following:"
+          if [ $OPERA_NOT_W -eq 1 ]; then
+            echo ""
+            echo "WARNING: $OPERADIR is not writable."
+            echo ""
+          fi
+          if [ \( $OPERA_NOT_W -eq 0 \) -a \( $OPERAPLUGIN_NOT_W -eq 1 \) ]; then
+            echo ""
+            echo "WARNING: $OPERADIR/plugins is not writable."
+            echo ""
+          fi
+        fi
+      fi
+    fi
+  fi
+  select_local_install () {
+    printf "Please choose a directory: "
+    read inum
+
+    if [ \( \( "$inum" = "m" \) -o \( "$inum" = "M" \) \) -a \( \( $MOZILLA -eq 1 \) -a \( "$MOZILLASTATUS" = "valid" \) \) ]; then
+      NETSCAPE=0
+      OPERA=0
+      check_plugins_dir "$MOZILLADIR/plugins"
+    elif [ \( \( $NETSCAPE -eq 1 \) -a \( "$NETSCAPESTATUS" = "valid" \) \) -a \( \( "$inum" = "n" \) -o \( "$inum" = "N" \) \) ]; then
+      MOZILLA=0
+      OPERA=0
+      check_plugins_dir "$NETSCAPEDIR/plugins"
+    elif [ \( \( $OPERA -eq 1 \) -a \( "$OPERASTATUS" = "valid" \) \) -a \( \( "$inum" = "o" \) -o \( "$inum" = "O" \) \) ]; then
+      MOZILLA=0
+      NETSCAPE=0
+      check_plugins_dir "$OPERADIR/plugins"
+    elif [ \( "$inum" = "a" \) -o \( "$inum" = "A" \) ]; then
+      # do nothing
+      NOTHING=1
+      if [ \( $MOZILLA -eq 1 \) -a \( "$MOZILLASTATUS" = "valid" \) ]; then
+        check_plugins_dir "$MOZILLADIR/plugins"
+      fi
+      if [ \( $NETSCAPE -eq 1 \) -a \( "$NETSCAPESTATUS" = "valid" \) ]; then
+        check_plugins_dir "$NETSCAPEDIR/plugins"
+      fi
+      if [ \( $OPERA -eq 1 \) -a \( "$OPERASTATUS" = "valid" \) ]; then
+        check_plugins_dir "$OPERADIR/plugins"
+      fi
+    else
+      echo ""
+      echo "ERROR: Please choose a directory from the list."
+      echo ""
+      select_local_install
+    fi
+  }
+  if [ $ROOTINSTALL -ne 1 ]; then
+    if [ \( $COUNT -gt 1 \) -a \( $STATUSCOUNT -gt 1 \) ]; then
+      select_local_install
+    fi
+    if [ $COUNT -eq $ERRORCOUNT ]; then
+      exit_error
+    fi
+  fi
+
+
+  ##########
+  # Summary
+  ##########
+  echo ""
+  echo ""
+  echo "----------- Install Action Summary -----------"
+  echo ""
+  echo "$PRODUCT $VERSION will be installed in the following directory:"
+  echo ""
+  if [ $ROOTINSTALL -eq 1 ]; then
+    echo "Browser installation directory = $BROWSERDIR"
+  else
+    if [ \( $MOZILLA -eq 1 \) -a \( "$MOZILLASTATUS" = "valid" \) ]; then
+      echo "Mozilla installation directory  = $MOZILLADIR"
+    fi
+    if [ \( $NETSCAPE -eq 1 \) -a \( "$NETSCAPESTATUS" = "valid" \) ]; then
+      echo "Netscape installation directory = $NETSCAPEDIR"
+    fi
+    if [ \( $OPERA -eq 1 \) -a \( "$OPERASTATUS" = "valid" \) ]; then
+      echo "Opera installation directory    = $OPERADIR"
+    fi
+  fi
+  echo ""
+
+  # okay to continue?
+  get_installagreement () {
+    printf 'Proceed with the installation? (y/n/q): '
+    read yn
+
+    case $yn in
+      y | Y)
+        okToProceed=1
+        ;;
+      n | N)
+        continue
+        ;;
+      q | Q)
+        exit 1
+        ;;
+      *)
+        echo ""
+        echo "Please enter 'y', 'n', or 'q'."
+        get_installagreement
+        ;;
+    esac
+  }
+  get_installagreement
+
+done
+
+
+#######################
+# Perform installation
+#######################
+
+#--------------
+# copy plug-in
+#--------------
+# system-wide
+if [ $ROOTINSTALL -eq 1 ]; then
+  # copy plug-in
+  # remove symbolic link before copying
+  if [ $SYMBOLIC_LINK -eq 1 ]; then
+    rm -f "$BROWSERDIR/plugins/libflashplayer.so"
+  fi
+  cp -f "$cwd/libflashplayer.so" "$BROWSERDIR/plugins"
+  # copy xpt file
+  cp -f "$cwd/flashplayer.xpt" "$BROWSERDIR/plugins"
+else
+# local
+  if [ $MOZILLA -eq 1 ]; then
+    if [ \( ! -d "$MOZILLADIR/plugins" \) -a \( $MOZILLA_NOT_W -eq 0 \) ]; then
+      mkdir -p "$MOZILLADIR/plugins"
+    fi
+    if [ \( $MOZILLA_NOT_W -eq 0 \) -a \( $MOZILLAPLUGIN_NOT_W -eq 0 \) ]; then
+      cp -f "$cwd/libflashplayer.so" "$MOZILLADIR/plugins"
+      cp -f "$cwd/flashplayer.xpt" "$MOZILLADIR/plugins"
+    fi
+  fi
+  if [ $NETSCAPE -eq 1 ]; then
+    if [ \( ! -d "$NETSCAPEDIR/plugins" \) -a \( $NETSCAPE_NOT_W -eq 0 \) ]; then
+      mkdir -p "$NETSCAPEDIR/plugins"
+    fi
+    if [ \( $NETSCAPE_NOT_W -eq 0 \) -a \( $NETSCAPEPLUGIN_NOT_W -eq 0 \) ]; then
+      cp -f "$cwd/libflashplayer.so" "$NETSCAPEDIR/plugins"
+      cp -f "$cwd/flashplayer.xpt" "$NETSCAPEDIR/plugins"
+    fi
+  fi
+  if [ $OPERA -eq 1 ]; then
+    if [ \( ! -d "$OPERADIR/plugins" \) -a \( $OPERA_NOT_W -eq 0 \) ]; then
+      mkdir -p "$OPERADIR/plugins"
+    fi
+    if [ \( $OPERA_NOT_W -eq 0 \) -a \( $OPERAPLUGIN_NOT_W -eq 0 \) ]; then
+      cp -f "$cwd/libflashplayer.so" "$OPERADIR/plugins"
+    fi
+  fi
+fi
+
+#----------------------
+# remove xpti.dat file
+#----------------------
+if [ $ROOTINSTALL -eq 1 ]; then
+  if [ -f "$BROWSERDIR/components/xpti.dat" ]; then
+    rm -f "$BROWSERDIR/components/xpti.dat"
+  fi
+else
+  if [ \( $MOZILLA -eq 1 \) -o \( $NETSCAPE -eq 1 \) ]; then
+    # don't know where xpti.dat file is located
+    echo ""
+    echo "NOTE: Please ask your administrator to remove the xpti.dat from the"
+    echo "      components directory of the Mozilla or Netscape browser."
+    echo ""
+  fi
+fi
+
+#-----------------
+# set permissions
+#-----------------
+if [ $ROOTINSTALL -eq 1 ]; then
+  chmod 755 "$BROWSERDIR/plugins/libflashplayer.so"
+  chmod 755 "$BROWSERDIR/plugins/flashplayer.xpt"
+else
+  if [ $MOZILLA -eq 1 ]; then
+    if [ \( $MOZILLA_NOT_W -eq 0 \) -a \( $MOZILLAPLUGIN_NOT_W -eq 0 \) ]; then
+      chmod 755 "$MOZILLADIR/plugins/libflashplayer.so"
+      chmod 755 "$MOZILLADIR/plugins/flashplayer.xpt"
+    fi
+  fi
+  if [ $NETSCAPE -eq 1 ]; then
+    if [ \( $NETSCAPE_NOT_W -eq 0 \) -a \( $NETSCAPEPLUGIN_NOT_W -eq 0 \) ]; then
+      chmod 755 "$NETSCAPEDIR/plugins/libflashplayer.so"
+      chmod 755 "$NETSCAPEDIR/plugins/flashplayer.xpt"
+    fi
+  fi
+  if [ $OPERA -eq 1 ]; then
+    if [ \( $OPERA_NOT_W -eq 0 \) -a \( $OPERAPLUGIN_NOT_W -eq 0 \) ]; then
+      chmod 755 "$OPERADIR/plugins/libflashplayer.so"
+    fi
+  fi
+fi
+
+echo ""
+echo "Installation complete."
+echo ""
+
+# Ask to repeat installation?
+ask_to_repeat () {
+  echo ""
+  printf 'Perform another installation? (y/n): '
+  read yn
+
+  case $yn in
+    y | Y)
+      continue
+      ;;
+    n | N)
+      okToRepeat=1
+      break
+      ;;
+    *)
+      echo ""
+      echo "Please enter 'y' or 'n'."
+      ask_to_repeat
+      ;;
+  esac
+}
+ask_to_repeat
+
+done
+
+# Final messages.
+
+# check MOZ_PLUGIN_PATH
+if [ ! -z "$MOZ_PLUGIN_PATH" ]; then
+  echo ""
+  echo "WARNING: You have the MOZ_PLUGIN_PATH environment variable set."
+  echo "         Either unset this environment variable or set the path in this"
+  echo "         environment variable to the path you are installing the plug-in."
+  echo ""
+fi
+
+# check OPERA_PLUGIN_PATH
+if [ ! -z "$OPERA_PLUGIN_PATH" ]; then
+  echo ""
+  echo "WARNING: You have the OPERA_PLUGIN_PATH environment variable set."
+  echo "         Either unset this environment variable or append the path"
+  echo "         you are installing the plug-in to this variable."
+  echo ""
+fi
+
+echo ""
+echo ""
+echo "Please log out of this session and log in for the changes to take effect."
+echo ""
+
+echo ""
+echo "The $PRODUCT installation is complete."
+echo ""

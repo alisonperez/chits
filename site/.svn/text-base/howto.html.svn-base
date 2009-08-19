@@ -1,0 +1,9 @@
+<h3>CHITS HOWTO</h3>
+<p>CHITS is deployed in a health center intranet setting.</p>
+<p>MINIMUM REQUIREMENTS:
+<ol>
+<li>One Pentium-class server running Linux-Apache-MySQL-PHP software.</li>
+<li>The GAME Engine installed.</li>
+<li>CHITS modules installed.</li>
+</ol>
+</p>

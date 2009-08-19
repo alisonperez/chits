@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config>
+    <node>
+        <name>Lagrosa</name>
+        <code>001</code>
+        <telephone>8310998</telephone>
+        <level>self</level>
+    </node>
+    <node>
+        <name>CHO</name>
+        <code>001</code>
+        <telephone>8310998</telephone>
+        <level>parent</level>
+    </node>
+    <node>
+        <name>Malibay</name>
+        <code>001</code>
+        <telephone>8310998</telephone>
+        <level>child</level>
+    </node>
+</config>

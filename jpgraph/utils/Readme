@@ -1,0 +1,110 @@
+Ver: $Id: Readme,v 1.5 2002/05/22 14:19:15 aditus Exp $
+
+Utility directory with a few _COMPLETELY_ UNSUPPORTED utilities.
+They are only made available due to some requests.
+
+Summary
+=======
+Most of the file in this directory form the basis of the JpGraph
+documentation system soon to be released. 
+
+Directory ./misc
+----------------
+
+adjimg.php
+	Lets you adjust the contrast, brightness and saturation
+	in a image.
+	Usage:adjimg.php?file=name&[b=value][&c=value][&s=scale][&sat=saturation]	
+
+gencolorchart.php
+	Generates a color chart with all colors available in
+	JpGraph
+
+
+Directory ./jpdocgen
+--------------------
+This directory contains all the scripts that make up the DDDA 
+documentation architecture that is used to generate the database
+based documentation architecture used for JpGraph. This is completely
+generic and could be used for any PHP project which needs to combine
+both automtic and manual documentation.
+
+The main entry point is jpdocedit.php
+
+
+jpdb.php
+	An OO interface to a MySQL database.
+
+db_jpgraph.sql
+	MySQL database scheme for the DDDA arcitecture. This also contains
+	the tabels for a one example project, JpGraph. The DB
+	is initially populated from the source files through the 
+	jpgendb.php script.
+
+jplintphp.php
+	A very rudimentary "lint" and parser for PHP which parses 
+	a valid PHP file and extracts funtions, variables and classes.
+	It also checks for unused class variables and missing
+	'$this->' Used as a base library for extracting class and method
+	information in jpgendb.php. This contains generic classes which
+	are meant to be overridden.
+
+jplintdriver.php
+	A simple driver for the parser in jplintphp.php you invoke
+	this with a URL variable 'target' which is set to the file
+	you would like to parse. This could be considered as a test
+	harness for jplintphp.php
+
+jpgendoc.php
+	A "fancy" version of jplintdriver.php which applies some
+	formatting to generate a nice template to do reference
+	documentation for a PHP script file. Again, this could be
+	considered a proof of concept of the basic design of the
+	jplintphp.php 	
+
+jpgendb.php
+	Read one or several PHP file and add classes and methods
+	to database. The classes to populate the DB from source
+	are normally instantiated from jpgendoc.php and this 
+	script is not meant to be called directly.
+
+jpdbdelclass.php
+	Safely delete a class from the database. Some extra safety
+ 	features built in to avoid greaf.
+
+jpclassref.php
+	Basic framework to read information from DB and generate
+    	indexed documentation. This is a framework which needs
+	a "formatter" plugin which does the actual formatting
+	of the data, see jpgenhtmldoc.php for a simple implementation
+	of a HTML formatter plugin.
+
+jpgenhtmldoc.php
+	Basic formatter plugin + driver to generate a HTML based
+	documentation from the information stored in the DB. The
+	generation of documentation is normally initialted from 
+	jpdocgen.php
+
+de_utils.php
+	A number of utility classes which are used throughout the
+	DDDA architecture.
+
+jpd_editclass.php
+	Main form to edit DB data for a class
+
+jpd_editmethod.php
+	Main form to edit DB data for methods
+
+jpd_editproject.php
+	Main form to edit project meta data
+
+jpdocedit.php
+	Main entry point for the DDDA architecture. Opens the main
+	meny and lets the user work and update different projects as
+	well as presenting statictics on the various projects.
+
+<EOF>
+
+
+
+

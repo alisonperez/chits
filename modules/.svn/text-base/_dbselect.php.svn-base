@@ -1,0 +1,9 @@
+<?php
+
+$_SESSION["dbname"] = "localhost";
+$_SESSION["dbuser"] = "root";
+$_SESSION["dbpass"] = "root";
+$conn = mysql_connect("localhost", "root", "root");
+$db->connectdb("chits");
+
+?>

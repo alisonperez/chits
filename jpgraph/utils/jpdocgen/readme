@@ -1,0 +1,46 @@
+$Id: README,v 1.1 2002/07/04 13:12:17 aditus Exp $
+
+DDDA Public release 1
+=====================
+
+This directory contains all the files necessary to
+run the DDDA (Database Driven Documentation Architecture).
+
+1. Introduction.
+
+The DDDA system lets you parse a project which may consist
+of multiple PHP source file and record all classes, methods 
+and global functions in a database.
+
+When this is done you can add comments and examples which
+is also stored in the database. All this is done through a
+GUI provided in this application.
+
+Whenever the source is changed you just update the DB
+and the new methods and classes will be added while keeping
+any old comments and description.
+
+It will automatically calculate a percentage figure for
+each class and method that indicates how well it is documented.
+
+When you are happy with the result you can automatically
+generate reference documentation from this DB.
+
+2. Installation
+
+You need to edit you MySQL DB server, user and pwd to match
+your system in 'de_utils.php'.
+
+The point your browser to jpdocedit.php.
+
+3. Usage
+
+Most should be self explaining. The first thing you must
+do is to create a project and define a number of files
+belonging to this project. After that you need to update
+the DB by first going into the project view and then
+pressing the 'Update DB' button.
+
+[EOF]
+
+

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<db>
+    <dbname>chits2</dbname>
+    <dbhost>localhost</dbhost>
+    <dbuser>root</dbuser>
+    <dbpass></dbpass>
+</db>
