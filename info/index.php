@@ -112,8 +112,8 @@ small { font-family: verdana, sans serif}
 
 <body text="black" bgcolor="#FFFFCC" link="black" vlink="black">
 <? 
-	// echo "Print page module: ";
-	// print_r($_GET);
+	//echo "Print page module: ";
+	//print_r($_GET);
 
 ?>;
 <br/>
@@ -249,7 +249,7 @@ small { font-family: verdana, sans serif}
             } else {
                 print "<font color='red'>You have no authorization for this page.</font>";
             }
-            break;
+		            break;
         default:
             if ($errorinfo) {
                 // since this the default page errors appear here
