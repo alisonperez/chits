@@ -180,7 +180,6 @@ small { font-family: verdana, sans serif}
             if ($_SESSION["isadmin"]) {
                 $site->main_cat($_SESSION["validuser"], $_SESSION["isadmin"], $_GET, $menu_array);
             }
-
             ?>
             </td>
         </tr>
