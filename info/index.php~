@@ -115,7 +115,7 @@ small { font-family: verdana, sans serif}
 	//echo "Print page module: ";
 	//print_r($_GET);
 
-?>;
+?>
 <br/>
 <table border="0" cellspacing="0" bgcolor="#000000" style="border: 4px solid black" width="100%" cellpadding="0">
   <tr bgcolor="#FF0000">
