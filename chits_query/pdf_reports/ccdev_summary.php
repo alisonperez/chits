@@ -549,10 +549,13 @@ function compute_indicators(){
 								}
 
 							elseif($vita_key=='12*59'):
-								foreach($r_consult[1] as $consult_key=>$consult_id){
-									$q_vita = mysql_query("SELECT a.vita_date,b.patient_id FROM m_consult_notes a,m_patient b WHERE a.patient_id=b.patient_id AND a.consult_id='$consult_id' AND b.patient_gender='$sex_label'") or die("Cannot query: 530");								
+								
+								
+								foreach($r_consult[1] as $consult_key=>$consult_id){																
+									$q_vita = mysql_query("SELECT a.vita_date,b.patient_id FROM m_consult_notes a,m_patient b WHERE a.patient_id=b.patient_id AND a.consult_id='$consult_id' AND b.patient_gender='$sex_label'") or die("Cannot query: 530");
 								}
-
+								
+								if($q_vita):		
 								if(mysql_num_rows($q_vita)!=0):
 									list($vita_date,$pxid) = mysql_fetch_array($q_vita);
 									
@@ -560,12 +563,18 @@ function compute_indicators(){
 										$month_stat[$this->get_max_month($vita_date)] += 1;
 									endif;
 								endif;
+								
+								endif;
+								
+						
 
 							elseif($vita_key=='60*71'):
 								foreach($r_consult[2] as $consult_key=>$consult_id){
 									$q_vita = mysql_query("SELECT a.vita_date,b.patient_id FROM m_consult_notes a,m_patient b WHERE a.patient_id=b.patient_id AND a.consult_id='$consult_id' AND b.patient_gender='$sex_label'") or die("Cannot query: 530");								
 								}
 
+								if($q_vita):
+								
 								if(mysql_num_rows($q_vita)!=0):
 									list($vita_date,$pxid) = mysql_fetch_array($q_vita);
 
@@ -574,6 +583,7 @@ function compute_indicators(){
 										endif;
 								endif;
 
+								endif;
 							else:
 							endif;
 						array_push($arr_sick_vita,$month_stat);

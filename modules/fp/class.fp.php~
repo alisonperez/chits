@@ -282,11 +282,11 @@ class fp extends module
     
     // initial data for m_lib_fp_methods    
     module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`) VALUES ('PILLS', 'Pills')");
-    //module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`) VALUES ('INJECT', 'Injection')");
+    module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`) VALUES ('INJECT', 'Injection')");
     module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`) VALUES ('CONDOM', 'Condom')");
     module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`) VALUES ('IUD', 'IUD')");
-    module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`) VALUES ('NFPLAM', 'NFP Lactational amenorrhea')");
-    //module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`) VALUES ('OMBBTSTM', 'Ovulation/Basal Body Temp./Sympto-thermal')");
+    module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`) VALUES ('LAM', 'Lactational amenorrhea')");
+    module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`) VALUES ('OMBBTSTM', 'Ovulation/Basal Body Temp./Sympto-thermal')");
     
     }
     

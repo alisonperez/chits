@@ -1,4 +1,0 @@
-<?php
-$conn = mysql_connect("localhost", "root", "kambing");
-$db->connectdb("game");
-?>

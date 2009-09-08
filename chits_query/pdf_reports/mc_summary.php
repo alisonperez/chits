@@ -257,8 +257,9 @@ function compute_indicator($crit){
 
 							list($sec_date) = mysql_fetch_array($q_min_date);						
 							list($latestdate) = explode(' ',$sec_date);
-							list($latesty,$latestm,$latestd) = explode('-',$latestdate);						
-							$max_date = date("n",mktime(0,0,0,$latestm,$latestd,$latesty)); //get the unix timestamp then return month without trailing 0
+							list($latesty,$latestm,$latestd) = explode('-',$latestdate);
+							$yr = date('Y');
+							$max_date = date("n",mktime(0,0,0,$latestm,$latestd,$yr)); //get the unix timestamp then return month without trailing 0
 							$arr[$j] = ($num>=2)?1:0; //check if the third trimester has at least 2 visits
 
 						  endif;						
