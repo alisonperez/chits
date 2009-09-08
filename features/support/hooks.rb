@@ -1,4 +1,3 @@
-
 Before ('@reset_users') do
   # Save user table data
   save_table("game_user")
@@ -10,12 +9,10 @@ After ('@reset_users') do
 end
 
 def save_table(table_name)
-  puts "Saving #{table_name}";
   run "mysqldump -u #{@@test_database_username} --password=#{@@test_database_password} #{@@test_database_name} #{table_name}> /tmp/#{table_name}"
 
 end
 
 def load_table(table_name)
-  puts "Loading #{table_name}";
   run "mysql -u #{@@test_database_username} --password=#{@@test_database_password} #{@@test_database_name} < /tmp/#{table_name}"
 end

@@ -3,6 +3,15 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "pat
 # Commonly used webrat steps
 # http://github.com/brynary/webrat
 
+Given /^Debug$/ do
+  puts response_body
+  filepath = '/tmp/webrat_debug.html'
+  File.open(filepath, "w") do |file|
+    file.puts response_body
+  end
+  raise "Debugged! Current URL: #{current_url}\nResponse saved: #{filepath}"
+end
+
 Given /^I am on(?: the)* (.+)$/ do |page_name|
   visit path_to(page_name)
 end

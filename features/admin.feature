@@ -8,6 +8,7 @@ Feature: Manage users
     When I click "ADMIN"
     Then I should see "SITE USER FORM"
 
+# @reset_users uses cucumber before and after tags to specify that this scenario should save the game_user table before executing the scenario, and then reload the original after the scenario executes. The code for @reset_users is defined in support/hooks.rb
   @reset_users
   Scenario: Create a user
     Given I am logged in as "admin" with password "admin"
@@ -34,7 +35,23 @@ Feature: Manage users
     And I press "Login"
     Then I should see "logged in"
 
+  @reset_users
   Scenario: Update a user
-
+    Given I am logged in as "admin" with password "admin"
+    And I am on the admin page
+    When I click "Perez, Alison"
+    And I should not see "alison@kung.fu"
+    And I fill in "user_email" with "alison@kung.fu"
+    And I press "Update User"
+    And I click "Perez, Alison"
+    Then I should not see "alison@cm.upm.edu.ph"
+    And I should see "alison@kung.fu"
+    
+  @reset_users
   Scenario: Delete a user
-
+    Given I am logged in as "admin" with password "admin"
+    And I am on the admin page
+    When I click "Perez, Alison"
+    And I press "Delete User"
+    And I press "Yes"
+    Then I should not see "Perez, Alison"

@@ -19,11 +19,16 @@ World do
 end
 
 # Helper method for running shell commands
-def run(command)
-  puts command
-  result = `#{command}`
-  puts result
-  return result
+def run(command, verbose = false, message = nil)
+  if verbose then
+    puts "#{message}"
+    puts command
+    result = `#{command}`
+    puts result
+    return result
+  else
+    `#{command}`
+  end
 end
 
 # Switch to the test database
@@ -80,5 +85,35 @@ end
 
 at_exit do
 #  rollback_to_core_data
+end
+
+module Webrat
+  # For some reason we are getting duplicated GET params on the current_url, so monkeypatch to fix it
+  class Link
+    def absolute_href
+      if href =~ /^\?/
+        "#{@session.current_url.gsub(/\?.*/,"")}#{href}"
+      elsif href !~ %r{^https?://} && (href !~ /^\//)
+        "#{@session.current_url}/#{href}"
+      else
+        href
+      end
+    end
+  end
+
+  # For extra debug info we monkeypatch this in
+  module Locators  
+    class Locator # :nodoc:
+      def locate!
+        locate || raise(NotFoundError.new(error_message))        
+      rescue Webrat::NotFoundError => e
+        filepath = '/tmp/webrat_debug.html'
+        File.open(filepath, "w") do |file|
+          file.puts @session.send(:response_body)
+        end
+        raise "#{e.message}\n#{@session.send(:response_body).gsub(/\n/, "\n  ")}\nURL: #{@session.current_url}\nResponse saved: #{filepath}"  
+      end
+    end
+  end
 end
 
