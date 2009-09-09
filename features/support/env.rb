@@ -31,6 +31,8 @@ def run(command, verbose = false, message = nil)
   end
 end
 
+
+
 # Switch to the test database
 @database_config_path = File.dirname(__FILE__)+"/../../modules/_dbselect.php"
 @original_database_config = File.read(@database_config_path)
@@ -60,19 +62,16 @@ end
 # Check to see if test database exists, if not create the user p
 puts "Checking that test database exists, then switching to it"
 unless(run("echo \"SHOW DATABASES;\" | mysql -u #{@@test_database_username} --password=#{@@test_database_password}").match @@test_database_name ) then
-  create_test_database
-end
-
-
-def create_test_database
   puts "You need to create the test database. Run the following commands and enter your password when necessary (your root mysql password may be blank)."
   puts "echo \"CREATE DATABASE #{@@test_database_name};\" | mysql -u root -p;"
 #  puts "echo \"INSERT INTO user SET user='#{@@test_database_username}',password=password('#{@@test_database_password}'),host='#{@@test_database_location}';\" | mysql -u root -p mysql;"
 
   puts "echo \"GRANT ALL PRIVILEGES ON #{@@test_database_name}.* TO #{@@test_database_username}@#{@@test_database_location} IDENTIFIED BY '#{@@test_database_password}'\" | mysql -u root -p"
   puts "mysql -u #{@@test_database_username} --password=#{@@test_database_password} #{@@test_database_name} < #{@path_to_core_data};"
-
+  exit
 end
+
+
 
 # Switch back to whatever was loaded originally
 def rollback_to_core_data
