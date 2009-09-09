@@ -571,11 +571,15 @@ class patient extends module{
             $dob = "$month/$day/$year";
         }
         //print "<input type='text' size='10' maxlength='10' class='textbox' name='patient_dob' value='".($dob?$dob:$post_vars["patient_dob"])."' style='border: 1px solid #000000'><br>";
-		print "<input type='text' size='10' maxlength='10' class='textbox' name='patient_dob' value='".($dob?$dob:"")."' style='border: 1px solid #000000'><br>";
-        print "<small>Use format MM/DD/YYYY.</small>";
+        //print "<input type='text' size='10' maxlength='10' class='textbox' name='patient_dob' value='".($dob?$dob:"")."' style='border: 1px solid #000000'>";
+        
+        print "<input type='text' size='10' maxlength='10' class='textbox' name='patient_dob' value='".($dob?$dob:"")."' style='border: 1px solid #000000'>&nbsp;"; 
+
+        print "<a href=\"javascript:show_calendar4('document.form_patient.patient_dob', document.form_patient.patient_dob.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";              
+        
         print "</td></tr>";
 
-		print "<tr valign='top'><td>";
+        print "<tr valign='top'><td>";
         print "<span class='boxtitle'>".LBL_GENDER."</span><font style='color:red; font-weight: bold'>&nbsp;*</font><br> ";
         print "<select name='patient_gender' ".($get_vars["patient_id"]?'':'')." class='textbox'>";
         print "<option ".($patient["patient_gender"]=='M'?'selected':'')." value='M'>Male</option>";

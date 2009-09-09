@@ -270,8 +270,11 @@ class User {
         if ($user["user_dob"]) {
             list($year, $month, $day) = explode("-", $user["user_dob"]);
         }
-        print "<input type='text' size='15' maxlength='15' class='textbox' name='user_dob' value='".($user["user_dob"]?"$month/$day/$year":$post_vars["user_dob"])."' style='border: 1px solid #000000'> <font color='red'>*</font><br>";
-        print "<small>Use MM/DD/YYYY format.</small><br>";
+        print "<input type='text' size='10' maxlength='10' class='textbox' name='user_dob' value='".($user["user_dob"]?"$month/$day/$year":$post_vars["user_dob"])."' style='border: 1px solid #000000'> &nbsp;";
+        //print "<small>Use MM/DD/YYYY format.</small><br>";
+        
+        print "<a href=\"javascript:show_calendar4('document.form_user.user_dob', document.form_user.user_dob.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a>&nbsp;<font color='red'>*</font>";
+        
         print "</td></tr>";
         print "<tr valign='top'><td>";
         print "<span class='boxtitle'>".LBL_GENDER."</span> <font color='red'>*</font><br> ";

@@ -10,7 +10,7 @@ class fp extends module
     //
     // do not forget to update version
     //
-    $this->author = 'darth_ali / Roxanne Ramos';
+    $this->author = 'darth_ali';
     $this->version = "0.1-".date("Y-m-d");
     $this->module = "fp";
     $this->description = "CHITS Module - Family Planning";
