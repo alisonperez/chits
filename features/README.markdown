@@ -16,6 +16,7 @@ Feature: Readme file
     And I run "sudo ruby setup.rb"
     # Add github's gem source list
     And I run "gem sources -a http://gems.github.com"
+    And I run "sudo apt-get install libxslt1-dev libxml2-dev"
     And I run "sudo gem install cucumber mechanize rspec webrat"
     And from the top level chits directory (var/www/chits)I run "cucumber"
     Then I should see cucumber successfully execute all of the stories in the features directory
