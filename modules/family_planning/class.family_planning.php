@@ -14,8 +14,7 @@ class family_planning extends module{
 			   Pelvic Examination. One FP patient = 1 family planning service record regardless of how many methods he/she has enrolled
 			2. FP patient will be enrolled for a particular program. Female - 15 to 49, Male - Vasectomy or Condom
 			3. If a patient is new to the method classify him or her to as NEW ACCEPTOR and CURRENT USER
-			4. A patient is considered as dropout if: 1). conditions for being dropout based on the methods are applied, 2). the patient decided to
-			   be drop out on purpose based on the conditions
+			4. A patient is considered as dropout if: 1). conditions for being dropout based on the methods are applied, 2). the patient 				   decided to be drop out on purpose based on the conditions
 		        5. If a patient re-applies again:
 		            a. same method before drop out - RESTART , CURRENT USER (i.e. pills-drop out-pills)
 		            b. different method before the drop out
@@ -58,6 +57,95 @@ class family_planning extends module{
 		if(func_num_args()>0){
 			$arg_list = func_get_args();
 		}
+		
+		//m_patient_fp -- create
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp` (
+  				  `fp_id` float NOT NULL auto_increment,
+  				  `patient_id` float NOT NULL default '0',
+				  `date_enrolled` date NOT NULL,
+				  `date_encoded` date NOT NULL,
+				  `consult_id` float NOT NULL,
+				  `last_edited` date NOT NULL,
+				  `plan_more_children` char(1) NOT NULL default '',
+				  `no_of_living_children_desired` tinyint(2) NOT NULL default '0',
+				  `no_of_living_children_actual` tinyint(2) NOT NULL,
+				  `birth_interval_desired` tinyint(2) NOT NULL,
+				  `educ_id` varchar(10) NOT NULL default '',
+				  `occup_id` varchar(10) NOT NULL default '',
+				  `spouse_name` varchar(100) NOT NULL default '',
+				  `spouse_educ_id` varchar(10) NOT NULL default '',
+				  `spouse_occup_id` varchar(10) NOT NULL default '',
+				  `ave_monthly_income` float NOT NULL default '0',
+				  `user_id` int(11) NOT NULL default '0',
+				  PRIMARY KEY  (`fp_id`),
+				  KEY `key_patient` (`patient_id`),
+				  KEY `key_educ` (`educ_id`),
+				  KEY `key_occup` (`occup_id`),
+				  KEY `key_spouse_educ` (`spouse_educ_id`),
+				  KEY `key_spouse_occup` (`spouse_occup_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+
+		//m_patient_fp_hx -- create
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_hx` (
+				  `fp_id` float NOT NULL,
+				  `patient_id` float NOT NULL,
+				  `history_id` varchar(100) NOT NULL,
+				  `date_encoded` date NOT NULL,
+				  `user_id` int(11) NOT NULL,
+				  `last_edited` date NOT NULL,
+				  `user_id_edited` int(11) NOT NULL
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1; ");
+		
+
+		//m_patient_fp_pe -- create
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_pe` (
+			  	`fp_id` float NOT NULL,
+				`patient_id` float NOT NULL,
+			  	`pe_id` int(5) NOT NULL,
+			  	`date_encoded` date NOT NULL,
+			  	`user_id` int(3) NOT NULL,
+			  	`last_edited` date NOT NULL,
+			  	`user_id_edited` int(3) NOT NULL
+				) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+
+		//m_patient_fp_pelvic --create
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_pelvic` (
+			  	`fp_id` float NOT NULL,
+  				`patient_id` float NOT NULL,
+  				`pelvic_id` int(5) NOT NULL,
+  				`date_encoded` date NOT NULL,
+  				`user_id` int(3) NOT NULL,
+  				`last_edited` date NOT NULL,
+  				`user_id_edited` int(3) NOT NULL
+				) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+		
+		//m_patient_fp_obgyn -- create
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_obgyn` (
+				  `fp_id` int(11) NOT NULL,
+				  `patient_id` int(11) NOT NULL,
+				  `obshx_id` int(5) NOT NULL,
+				  `date_encoded` date NOT NULL,
+				  `user_id` int(3) NOT NULL,
+				  `last_edited` date NOT NULL,
+				  `user_id_edited` int(3) NOT NULL
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+		//m_patient_fp_obgyn_details -- create
+
+
+		//m_lib_fp_obsgyn -- create
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_obgyn` (
+			  	`obshx_id` int(2) NOT NULL auto_increment,
+			  	`obshx_name` varchar(200) NOT NULL,
+			  	`obshx_cat` varchar(200) NOT NULL,
+			   	PRIMARY KEY  (`obshx_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+
+		//m_lib_fp_obsgyn -- insert		
+		module::execsql("INSERT INTO `m_lib_fp_obgyn` (`obshx_id`, `obshx_name`, `obshx_cat`) VALUES
+				(1, 'Scanty', 'MENSES'),(2, 'Painful', 'MENSES'),(3, 'Moderate', 'MENSES'),(4, 'Regular', 'MENSES'),
+				(5, 'Heavy', 'MENSES'),(6, 'Hydaditiform Mole', 'OTHERS'),(7, 'Ecplopic Pregnancy', 'OTHERS'),
+				(8, 'No abnormal history', 'OTHERS');");
 		
 
 		//m_lib_fp_methods -- create
@@ -232,8 +320,9 @@ class family_planning extends module{
 	}
 
 			
-
+        
 	function drop_tables(){
+		module::execsql("DROP table m_patient_fp");
 		module::execsql("DROP table m_lib_fp_methods");
 		module::execsql("DROP table m_lib_fp_history_cat");
 		module::execsql("DROP table m_lib_fp_history");
