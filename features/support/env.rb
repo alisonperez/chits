@@ -78,12 +78,12 @@ def rollback_to_core_data
   File.open(@database_config_path, "w") do |file|
     file.puts @original_database_config
   end
-  puts "Cucumber finished, Resetting test database"
-  run "mysql -u #{@@test_database_username} --password=#{@@test_database_password} #{@@test_database_name} < #{@path_to_core_data}"
+#  puts "Cucumber finished, Resetting test database"
+#  run "mysql -u #{@@test_database_username} --password=#{@@test_database_password} #{@@test_database_name} < #{@path_to_core_data}"
 end
 
 at_exit do
-#  rollback_to_core_data
+  rollback_to_core_data
 end
 
 module Webrat
