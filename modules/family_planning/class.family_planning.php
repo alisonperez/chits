@@ -131,6 +131,80 @@ class family_planning extends module{
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
 		//m_patient_fp_obgyn_details -- create
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_obgyn_details` (
+  				`fp_id` float NOT NULL,
+				  `patient_id` float NOT NULL,
+				  `no_pregnancies` int(2) NOT NULL,
+				  `fpal` varchar(10) NOT NULL,
+				  `no_living_children` int(2) NOT NULL,
+				  `date_last_delivery` date NOT NULL,
+				  `type_last_delivery` varchar(50) NOT NULL,
+				  `age_menarch` int(11) NOT NULL,
+				  `past_menstrual_date` date NOT NULL,
+				  `date_encoded` date NOT NULL,
+				  `user_id` int(11) NOT NULL
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+		
+		//m_patient_fp_method -- create
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_method` (
+				  `fp_px_id` float NOT NULL auto_increment,
+				  `fp_id` float NOT NULL,
+				  `patient_id` float NOT NULL,
+				  `consult_id` float NOT NULL,
+				  `date_registered` date NOT NULL,
+				  `date_encoded` date NOT NULL,
+				  `method_id` int(3) NOT NULL,
+				  `treatment_partner` varchar(200) NOT NULL,
+				  `permanent_method` set('Y','N') NOT NULL default 'N',
+				  `permanent_reason` varchar(200) NOT NULL,
+				  `drop_out` set('Y','N') NOT NULL default 'N',
+				  `date_dropout` date NOT NULL,
+				  `user_id` float NOT NULL,
+				  `last_edited` date NOT NULL,
+				  `user_id_edited` float NOT NULL,
+				  PRIMARY KEY  (`fp_px_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+
+
+		//m_patient_fp_method_service -- create		
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_method_service` (
+				  `fp_service_id` float NOT NULL auto_increment,
+				  `fp_id` float NOT NULL,
+				  `patient_id` float NOT NULL,
+				  `consult_id` float NOT NULL,
+				  `date_service` date NOT NULL,
+				  `remarks` text NOT NULL,
+				  `date_encoded` date NOT NULL,
+				  `user_id` float NOT NULL,
+				  `next_service_date` date NOT NULL,
+				  PRIMARY KEY  (`fp_service_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+
+		//m_patient_fp_dropout -- create
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_dropout` (
+				  `dropout_id` float NOT NULL auto_increment,
+				  `fp_id` float NOT NULL,
+				  `patient_id` float NOT NULL,
+				  `fp_px_id` float NOT NULL,
+				  `reason_id` int(11) NOT NULL,
+				  PRIMARY KEY  (`dropout_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+		
+
+		//m_lib_fp_dropoutreasons
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_dropoutreason` (
+				  `reason_id` int(5) NOT NULL auto_increment,
+				  `reason_label` varchar(200) NOT NULL,
+				  `fhsis_code` char(1) NOT NULL,
+				  PRIMARY KEY  (`reason_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+
+
+		module::execsql("INSERT INTO `m_lib_fp_dropoutreason` (`reason_id`, `reason_label`, `fhsis_code`) VALUES
+				(1, 'Pregnant', 'A'),(2, 'Desire to become pregnant', 'B'),(3, 'Medical complications', 'C'),
+				(4, 'Fear of side effects', 'D'),(5, 'Changed clinic', 'E'),(6, 'Husband disapproves', 'F'),
+				(7, 'Menopause', 'G'),(8, 'Lost or moved out of the area or residence', 'H'),(9, 'Failed to get supply', 'I'),
+				(10, 'IUD expelled', 'J'),(11, 'Unknown', 'K');");
 
 
 		//m_lib_fp_obsgyn -- create
@@ -140,6 +214,7 @@ class family_planning extends module{
 			  	`obshx_cat` varchar(200) NOT NULL,
 			   	PRIMARY KEY  (`obshx_id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+
 
 		//m_lib_fp_obsgyn -- insert		
 		module::execsql("INSERT INTO `m_lib_fp_obgyn` (`obshx_id`, `obshx_name`, `obshx_cat`) VALUES

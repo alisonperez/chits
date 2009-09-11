@@ -25,6 +25,7 @@ class healthcenter extends module{
         // 0.95 added drug module
 	// 0.96 added BMI and vitals_height in m_consult_vitals table
 	// 0.97 (2009-06-16) re-ordered the search results alphabetically based on last name
+        // 0.98 (2009-09-11) added m_lib_supply_source, contains library of sources of supplies and drugs
     }
 
     // --------------- STANDARD MODULE FUNCTIONS ------------------
@@ -209,7 +210,20 @@ class healthcenter extends module{
                "`module_id` varchar(25) NOT NULL default '',".
                "PRIMARY KEY  (`module_id`)".
                ") TYPE=InnoDB;");
+	
+	//m_lib_supply_source
 
+	module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_supply_source` (
+		  `source_id` int(5) NOT NULL auto_increment,
+		  `source_name` varchar(200) NOT NULL,
+		  `source_cat` set('F','B','NA') NOT NULL,
+		  PRIMARY KEY  (`source_id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+
+	module::execsql("INSERT INTO `m_lib_supply_source` (`source_id`, `source_name`, `source_cat`) VALUES
+			(1, 'MLGU', 'F'),(2, 'PLGU', 'F'),(3, 'DOH', 'F'),(4, 'NGO', 'F'),(5, 'N/A', 'NA'),(6, 'Bought at own expense', 'B');");
+
+	
     }
 
     function drop_tables() {
@@ -220,6 +234,7 @@ class healthcenter extends module{
         module::execsql("DROP TABLE `m_consult_vitals`;");
         module::execsql("DROP TABLE `m_consult_ptgroup`;");
         module::execsql("DROP TABLE `m_consult`;");
+	module::execsql("DROP TABLE `m_lib_supply_source`");
         module::execsql("SET foreign_key_checks=1;");
     }
 
