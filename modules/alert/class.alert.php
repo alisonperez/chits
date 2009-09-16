@@ -42,7 +42,6 @@ class alert extends module {
         module::set_lang("FTITLE_VACCINE_FORM", "english", "VACCINE FORM", "Y");
         module::set_lang("LBL_VACCINE_ID", "english", "VACCINE ID", "Y");
         module::set_lang("LBL_VACCINE_NAME", "english", "VACCINE NAME", "Y");
-
     }
 
     function init_help() {
