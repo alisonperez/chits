@@ -38,8 +38,8 @@ end
 @original_database_config = File.read(@database_config_path)
 @@test_database_location = "localhost"
 @@test_database_name = "chits_testing"
-@@test_database_username = "chits"
-@@test_database_password = "password"
+@@test_database_username = "chits_tester"
+@@test_database_password = "useless_password"
 @path_to_core_data = File.dirname(__FILE__)+"/../../db/core_data.sql"
 
 File.open(@database_config_path, "w") do |file|
@@ -60,9 +60,9 @@ $db->connectdb($database_name);
 end
 
 # Check to see if test database exists, if not create the user p
-puts "Checking that test database exists, then switching to it"
-unless(run("echo \"SHOW DATABASES;\" | mysql -u #{@@test_database_username} --password=#{@@test_database_password}").match @@test_database_name ) then
-  puts "You need to create the test database. Run the following commands and enter your password when necessary (your root mysql password may be blank)."
+puts "Checking that test database exists, then switching to it..."
+unless(run("echo \"SHOW DATABASES;\" | mysql -u #{@@test_database_username} --password=#{@@test_database_password} 2>&1").match @@test_database_name ) then
+  puts "\nOops! Looks like you don't have a test database yet, so you need to create one. Luckily this is easy!\nRun the following commands and enter your password when necessary (your root mysql password may be blank).\n\n"
   puts "echo \"CREATE DATABASE #{@@test_database_name};\" | mysql -u root -p;"
 #  puts "echo \"INSERT INTO user SET user='#{@@test_database_username}',password=password('#{@@test_database_password}'),host='#{@@test_database_location}';\" | mysql -u root -p mysql;"
 
@@ -78,12 +78,12 @@ def rollback_to_core_data
   File.open(@database_config_path, "w") do |file|
     file.puts @original_database_config
   end
-  puts "Cucumber finished, Resetting test database"
-  run "mysql -u #{@@test_database_username} --password=#{@@test_database_password} #{@@test_database_name} < #{@path_to_core_data}"
+#  puts "Cucumber finished, Resetting test database"
+#  run "mysql -u #{@@test_database_username} --password=#{@@test_database_password} #{@@test_database_name} < #{@path_to_core_data}"
 end
 
 at_exit do
-#  rollback_to_core_data
+  rollback_to_core_data
 end
 
 module Webrat
