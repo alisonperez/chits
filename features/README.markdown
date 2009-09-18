@@ -7,7 +7,7 @@ Feature: Readme file
     Given I am running Ubuntu
     And I have followed the instructions and installed CHITS from github
     And I have not yet installed cucumber
-    When I run "apt-get install ruby ruby-dev irb"
+    When I run "apt-get install ruby ruby-dev irb libxml2-dev libxslt1-dev"
     # We install rubygems by hand because the apt version uses strange paths
     And I run "wget http://rubyforge.org/frs/download.php/60718/rubygems-1.3.5.tgz"
     And I run "tar xvf rubygems-1.3.5.tgz"

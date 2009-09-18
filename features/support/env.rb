@@ -71,8 +71,6 @@ unless(run("echo \"SHOW DATABASES;\" | mysql -u #{@@test_database_username} --pa
   exit
 end
 
-
-
 # Switch back to whatever was loaded originally
 def rollback_to_core_data
   File.open(@database_config_path, "w") do |file|
