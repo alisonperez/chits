@@ -8,7 +8,7 @@ class mc extends module {
         //
         // do not forget to update version
         //
-        $this->author = 'Herman Tolentino MD';
+        $this->author = 'Herman Tolentino MD / darth_ali';
         $this->version = "0.96-".date("Y-m-d");
         $this->module = "mc";
         $this->description = "CHITS Library - Maternal Care";
