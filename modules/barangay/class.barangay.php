@@ -208,7 +208,7 @@ class barangay extends module {
         } else {
             $disable = "";
         }
-        print "<input type='text' class='textbox' size='5' $disable maxlength='10' name='barangay_id' value='".($barangay["barangay_id"]?$barangay["barangay_id"]:$post_vars["barangay_id"])."' style='border: 1px solid #000000'><br>";
+        print "<input type='text' class='textbox' size='10' $disable maxlength='10' name='barangay_id' value='".($barangay["barangay_id"]?$barangay["barangay_id"]:$post_vars["barangay_id"])."' style='border: 1px solid #000000'><br>";
         print "</td></tr>";
         print "<tr valign='top'><td>";
         print "<span class='boxtitle'>".LBL_AREA_CODE."</span><br> ";
