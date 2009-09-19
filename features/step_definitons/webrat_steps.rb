@@ -12,7 +12,7 @@ Given /^Debug$/ do
   raise "Debugged! Current URL: #{current_url}\nResponse saved: #{filepath}"
 end
 
-Given /^I am on(?: the)* (.+)$/ do |page_name|
+Given /^I am on(?: the)* (.+)$/ do |page_name|    # assign the variable in second parenthesis to page_name
   visit path_to(page_name)
 end
 

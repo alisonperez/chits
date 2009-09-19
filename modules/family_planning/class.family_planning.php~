@@ -14,7 +14,7 @@ class family_planning extends module{
 			   Pelvic Examination. One FP patient = 1 family planning service record regardless of how many methods he/she has enrolled
 			2. FP patient will be enrolled for a particular program. Female - 15 to 49, Male - Vasectomy or Condom
 			3. If a patient is new to the method classify him or her to as NEW ACCEPTOR and CURRENT USER
-			4. A patient is considered as dropout if: 1). conditions for being dropout based on the methods are applied, 2). the patient 				   decided to be drop out on purpose based on the conditions
+			4. A patient is considered as dropout if: 1). conditions for being dropout based on the methods are applied, 2). the patient decided to be drop out on purpose based on the conditions
 		        5. If a patient re-applies again:
 		            a. same method before drop out - RESTART , CURRENT USER (i.e. pills-drop out-pills)
 		            b. different method before the drop out
@@ -147,23 +147,24 @@ class family_planning extends module{
 		
 		//m_patient_fp_method -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_method` (
-				  `fp_px_id` float NOT NULL auto_increment,
-				  `fp_id` float NOT NULL,
-				  `patient_id` float NOT NULL,
-				  `consult_id` float NOT NULL,
-				  `date_registered` date NOT NULL,
-				  `date_encoded` date NOT NULL,
-				  `method_id` int(3) NOT NULL,
-				  `treatment_partner` varchar(200) NOT NULL,
-				  `permanent_method` set('Y','N') NOT NULL default 'N',
-				  `permanent_reason` varchar(200) NOT NULL,
-				  `drop_out` set('Y','N') NOT NULL default 'N',
-				  `date_dropout` date NOT NULL,
-				  `user_id` float NOT NULL,
-				  `last_edited` date NOT NULL,
-				  `user_id_edited` float NOT NULL,
-				  PRIMARY KEY  (`fp_px_id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+							  `fp_px_id` float NOT NULL auto_increment,
+							  `fp_id` float NOT NULL,
+							  `patient_id` float NOT NULL,
+							  `consult_id` float NOT NULL,
+							  `date_registered` date NOT NULL,
+							  `date_encoded` date NOT NULL,
+							  `method_id` varchar(10) NOT NULL,
+							  `treatment_partner` varchar(200) NOT NULL,
+							  `permanent_method` set('Y','N') NOT NULL default 'N',
+							  `permanent_reason` varchar(200) NOT NULL,
+							  `drop_out` set('Y','N') NOT NULL default 'N',
+							  `date_dropout` date NOT NULL,
+							  `dropout_reason` text NOT NULL,
+							  `user_id` float NOT NULL,
+							  `last_edited` date NOT NULL,
+							  `user_id_edited` float NOT NULL,
+							  PRIMARY KEY  (`fp_px_id`)
+							) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
 
 
 		//m_patient_fp_method_service -- create		
@@ -359,7 +360,7 @@ class family_planning extends module{
 		
 		module::execsql(" CREATE TABLE `m_lib_fp_pelvic_cat` (
 				`pelvic_cat_id` VARCHAR( 20 ) NOT NULL ,
-				`pelvic_cat_name` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY 					( `pelvic_cat_id` )) ENGINE = MYISAM ");
+				`pelvic_cat_name` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( `pelvic_cat_id` )) ENGINE = MYISAM ");
 
 
 		module::execsql("INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('PERENIUM','PERENIUM')");
@@ -436,17 +437,30 @@ class family_planning extends module{
 		
 		if(func_num_args()>0){
 		      $menu_id = $arg_list[0];	   //from $_GET
-		      $post_vars = $arg_list[1];   //from form submissions
-		      $get_vars = $arg_list[2];    //from $_GET
-		      $validuser = $arg_list[3];   //from $_SESSION
-		      $isadmin = $arg_list[4];	   //from $_SESSION	
+		      $post_vars = $arg_list[1];      //from form submissions
+		      $get_vars = $arg_list[2];       //from $_GET
+		      $validuser = $arg_list[3];       //from $_SESSION
+		      $isadmin = $arg_list[4];	       //from $_SESSION	
 		}
 
 		$fp = new family_planning;
 		$fp->fp_menu($_GET["menu_id"],$_POST,$_GET,$_SESSION["validuser"],$_SESSION["isadmin"]);
-		$fp->form_fp($menu_id,$post_vars,$get_vars,$isadmin);
+		//$fp->form_fp($menu_id,$post_vars,$get_vars,$isadmin);
+		$fp->form_fp();
 		if($_POST["submit_fp"]):
+		
 			print_r($_POST);
+
+			switch($_POST["submit_fp"]){
+			
+				case "Save Family Planning Method":
+					$fp->submit_method_visit();
+					
+					break;
+
+				default:
+					break;
+			}			
 		endif;
 	}
 
@@ -504,7 +518,9 @@ class family_planning extends module{
 		echo "<table>";
 		echo "<tr><td>";
 		
-		echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#services' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'METHODS','METHODS')."</a>";
+			echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'METHODS','METHODS')."</a>";
+
+			echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'CHART','FP CHART')."</a>";		
 		
 	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1#visit1' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'VISIT1','VISIT1')."</a>";
 				
@@ -514,12 +530,7 @@ class family_planning extends module{
 
 	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PE#pe' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'PE','FP PE')."</a>";
 
-	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PELVIC#pelvic' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'PELVIC','PELVIC EXAM')."</a>";
-
-		echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'CHART','FP CHART')."</a>";		
-
-		
-
+	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PELVIC#pelvic' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'PELVIC','PELVIC EXAM')."</a>";		
 				
 		echo "</td></tr>";
 		echo "<table>";
@@ -532,20 +543,78 @@ class family_planning extends module{
 			3. patient with existing FP method also with previous FP methods (METHOD (label),PREVIOUS - label, show history)
 		*/
 		
-		$pxid = healthcenter::get_patient_id($_GET[consult_id]);		
+		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);		
 		
-		$q_fp_methods = mysql_query("SELECT a.fp_id,b.method_id,c.method_name FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id") or die("Cannot query: 534");
+		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,(unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24) as duration,b.date_dropout,b.dropout_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_enrolled DESC") or die("Cannot query: 534");
 		
-		echo "<form name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS' method='POST'>";
+		echo "<form name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' method='POST'>";
+
 		echo "<table>";
-			if(mysql_num_rows($q_fp_methods)==0):
-								
-				$this->show_method_list('form_methods','sel_methods');	
-			
-			else:
-			
+		echo "<a name='methods'></a>";
+
+			if(mysql_num_rows($q_fp_methods)==0): //scenario 1
+				
+				$this->show_method_list('form_methods','sel_methods');
+				$this->show_previous_method("None");
+				echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";
+				echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning Method'></input></td></tr>";
+
+			else: //scenario 2-3	
+				$arr_current = $this->show_current_method($q_fp_methods); //return the most current FP method used
+				
+				//print_r($arr_current);
+
+				switch($arr_current[0]["drop_out"]){			
+					case "Y":     //previous user of FP method, not present user
+						/*echo "<tr><td>SELECT METHOD:</td><td>";
+						echo $this->get_methods("sel_methods");
+						echo "</td></tr>"; */
+
+						$this->show_method_list('form_methods','sel_methods');						
+
+						echo "<tr><td>PREVIOUS METHOD:</td><td>";
+						echo (isset($arr_current[0]["method_name"]))?$arr_current[0]["method_name"]:'None';
+						echo "</td></tr>";
+
+						echo "<tr><td>DATE OF DROPOUT:</td><td>";
+						echo (isset($arr_current[0]["method_name"]))?$arr_current[0]["date_dropout"]:'None';
+						echo "</td></tr>";
+	
+						echo "<tr><td>DURATION OF USE:</td><td>".$arr_current[0]["duration"]."</td></tr>";
+						echo "<tr><td>REASON FOR DROPOUT</td><td>".$arr_current[0]["dropout_reason"]."</td></tr>";
+
+						echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning Methodxx'></input></td></tr>";
+						
+						break;
+
+					case "N":		//current users of FP method
+						echo "<tr><td>CURRENT METHOD:</td><td>".$arr_current[0]["method_name"]."</td></tr>"; 
+
+						echo "<tr><td>DATE OF REGISTRATION:</td><td>".$arr_current[0]["date_registered"]."</td></tr>";
+
+						echo "<tr><td>TREATMENT PARTNER:</td><td>".$arr_current[0]["treatment_partner"]."</td></tr>";
+
+						echo "<tr><td>PREVIOUS METHOD:</td><td>";
+						echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["method_name"]:'None';
+						echo "</td></tr>";
+
+						echo "<tr><td>DURATION OF USE:</td><td>";
+						echo (isset($arr_current[1]["method_name"]))?'to do':'NA';
+						echo "</td></tr>";
+
+						echo "<tr><td>REASON FOR DISCONTINUATION:</td><td>";
+						echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["dropout_reason"]:'NA';
+						echo "</td></tr>";						
+						break;
+
+
+					default:
+
+						break;
+				}
+
 			endif;
-			
+		
 		echo "</table>";
 		echo "</form>";
 	
@@ -850,7 +919,6 @@ class family_planning extends module{
 		
 		
 		echo "<tr><td>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'></textarea></td></tr>";
-		echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";
 		echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11'>";
 		echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";				
 		echo "</input></td></tr>"; 
@@ -904,6 +972,52 @@ class family_planning extends module{
 		echo "<tr><td>TYPE OF METHOD</td><td>";
 		$this->get_methods($sel_dropdown);
 		echo "</td></tr>";		
+	}
+
+	function show_previous_method($prev_method){
+		echo "<tr><td>Previous Method Used</td>";
+		echo "<td>".$prev_method."</td>";
+		echo "</tr>";
+	}
+
+	function submit_method_visit(){
+		list($month,$date,$year) = explode('/',$_POST["txt_date_reg"]);
+		$permanent = ($_POST["method_id"]=='FSTRBTL' || $_POST["method_id"]=='MSV')?'Y':'N';
+
+		$reg_date = $year.'-'.$month.'-'.$date;
+
+		if(!empty($_POST[txt_date_reg])):
+
+		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);		
+		
+		$insert_fp_method = mysql_query("INSERT INTO m_patient_fp SET patient_id='$pxid',date_enrolled='$reg_date', date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'), consult_id='$_GET[consult_id]',user_id='$_SESSION[userid]'") or die("Cannot query: 941");
+		
+		$fpid = mysql_insert_id(); 			
+
+		$insert_fp_method_service = mysql_query("INSERT INTO m_patient_fp_method SET fp_id='$fpid',patient_id='$pxid',consult_id='$_GET[consult_id]',date_registered='$reg_date',date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'),method_id='$_POST[sel_methods]',treatment_partner='$_POST[txt_tx_partner]',user_id='$_SESSION[userid]',permanent_method='$permanent'") or die(mysql_error());
+
+			if($insert_fp_method && $insert_fp_method_service):
+				echo "<font color='red'>Patient was successfully been enrolled in $_POST[sel_methods]</font>";
+			else:
+				echo "<font color='red'>Patient was not enrolled in $_POST[sel_methods]</font>";
+			endif;  
+		
+		else:
+			echo "<script language='javascript'''>";
+			echo "alert('Please supply date of registration')";
+			echo "</script>";
+		endif;
+	}
+
+	function show_current_method($q_fp_methods){
+			$arr_current = array();
+			
+			while($r_methods = mysql_fetch_array($q_fp_methods)){
+				array_push($arr_current,$r_methods);
+			}
+			
+			//$arr_current = mysql_fetch_array($q_fp_methods);
+			return $arr_current;
 	}
 	
 }
