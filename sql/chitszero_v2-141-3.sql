@@ -1,22 +1,16 @@
 -- phpMyAdmin SQL Dump
--- version 3.1.2deb1ubuntu0.1
+-- version 2.11.3deb1ubuntu1.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 23, 2009 at 12:07 PM
--- Server version: 5.0.75
--- PHP Version: 5.2.6-3ubuntu4.1
+-- Generation Time: Sep 19, 2009 at 05:58 PM
+-- Server version: 5.0.51
+-- PHP Version: 5.2.4-2ubuntu5.6
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
 --
--- Database: `chits`
+-- Database: `chits_kasibu`
 --
 
 -- --------------------------------------------------------
@@ -154,7 +148,6 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 ('education', 'Y', '0.2-2004-05-03', 'CHITS Module - Education', 'Herman Tolentino MD', 'education'),
 ('epi_report', 'Y', '0.2-2005-01-07', 'CHITS Module - EPI Weekly Report', 'Herman Tolentino MD', 'epi_report'),
 ('family', 'Y', '0.8-2004-06-14', 'CHITS Module - Family', 'Herman Tolentino MD', 'family'),
-('family_planning', 'Y', '', '', '', 'family_planning'),
 ('graph', 'Y', '0.4-2004-05-18', 'CHITS Module - Graph Abstraction', 'Herman Tolentino MD', 'graph'),
 ('healthcenter', 'Y', '0.95-2004-06-04', 'CHITS Module - Health Center', 'Herman Tolentino MD', 'healthcenter'),
 ('icd10', 'Y', '0.5-2004-06-14', 'CHITS Module - ICD10 Codes', 'Herman Tolentino MD', 'icd10'),
@@ -2354,351 +2347,6 @@ CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `m_lib_fp_history`
---
-
-CREATE TABLE IF NOT EXISTS `m_lib_fp_history` (
-  `history_id` varchar(10) NOT NULL default '',
-  `history_text` varchar(100) NOT NULL default '',
-  `history_cat` varchar(15) NOT NULL default '',
-  PRIMARY KEY  (`history_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `m_lib_fp_history`
---
-
-INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES
-('EPILEPSY', 'Epilepsy/Convulsion/Seizure', 'HEENT'),
-('HEADACHE', 'Severe headache/dizziness', 'HEENT'),
-('VISION', 'Visual disturbance/blurring of vision', 'HEENT'),
-('YCONJ', 'Yellowish conjunctive', 'HEENT'),
-('ETHY', 'Enlarged thyroid', 'HEENT'),
-('CXPAIN', 'Severe chest pain', 'CXHRT'),
-('FATIGUE', 'Shortness of breath and easy fatiguability', 'CXHRT'),
-('BRSTMASS', 'Breast/axillary masses', 'CXHRT'),
-('NIPBLOOD', 'Nipple discharges (blood)', 'CXHRT'),
-('NIPPUS', 'Nipple discharges (pus)', 'CXHRT'),
-('SYS140', 'Systolic of 140 & above', 'CXHRT'),
-('DIAS90', 'Diastolic of 90 & above', 'CXHRT'),
-('CVAHARHD', 'Family history of CVA (strokes), hypertension, asthma, rheumatic heart disease', 'CXHRT'),
-('MASSABD', 'Mass in the abdomen', 'ABD'),
-('GALL', 'History of gallbladder disease', 'ABD'),
-('LIVER', 'History of liver disease', 'ABD'),
-('UTERUS', 'Mass in the uterus', 'GEN'),
-('VAGDISCH', 'Vaginal discharge', 'GEN'),
-('INTERBLEED', 'Intermenstrual bleeding', 'GEN'),
-('POSTBLEED', 'Postcoital bleeding', 'GEN'),
-('VARICOSE', 'Severe varicosities', 'EXT'),
-('LEGPAIN', 'Swelling or severe pain in the legs not related to injuries', 'EXT'),
-('YELLOWSKIN', 'Yellowish skin', 'SKIN'),
-('SMOKING', 'Smoking', 'ANY'),
-('ALLERGY', 'Allergies', 'ANY'),
-('DRUGINTAKE', 'Drug intake (anti-TB, anti-diabetic, anticonvulsant)', 'ANY'),
-('STD', 'STD', 'ANY'),
-('MPARTNERS', 'Multiple partners', 'ANY'),
-('BLEEDING', 'Bleeding tendencies (nose, gums, etc.)', 'ANY'),
-('ANEMIA', 'Anemia', 'ANY'),
-('DIABETES', 'Diabetes', 'ANY'),
-('HMOLE', 'Hydatidiform mole (w/in the last 12 mos.)', 'ANY'),
-('ECTPREG', 'Ectopic pregnancy', 'ANY');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `m_lib_fp_history_cat`
---
-
-CREATE TABLE IF NOT EXISTS `m_lib_fp_history_cat` (
-  `cat_id` varchar(10) NOT NULL default '',
-  `cat_name` varchar(50) NOT NULL default '',
-  PRIMARY KEY  (`cat_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `m_lib_fp_history_cat`
---
-
-INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES
-('HEENT', 'HEENT'),
-('CXHRT', 'CHEST/HEART'),
-('ABD', 'ABDOMEN'),
-('GEN', 'GENITAL'),
-('EXT', 'EXTREMITIES'),
-('SKIN', 'SKIN'),
-('ANY', 'HISTORY OF ANY OF THE FOLLOWING');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `m_lib_fp_methods`
---
-
-CREATE TABLE IF NOT EXISTS `m_lib_fp_methods` (
-  `method_id` varchar(10) NOT NULL default '',
-  `method_name` varchar(100) NOT NULL default '',
-  `method_gender` set('M','F') NOT NULL default '',
-  PRIMARY KEY  (`method_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `m_lib_fp_methods`
---
-
-INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`) VALUES
-('PILLS', 'Pills', 'F'),
-('CONDOM', 'Condom', 'M'),
-('IUD', 'IUD', 'F'),
-('NFPLAM', 'NFP Lactational amenorrhea', 'F'),
-('DMPA', 'Depo-Lactational Amenorrhea ', 'F'),
-('NFPBBT', 'NFP Basal Body Temperature', 'F'),
-('NFPCM', 'NFP Cervical Mucus Method', 'F'),
-('NFPSTM', 'NFP Sympothermal Method', 'F'),
-('NFPSDM', 'NFP Standard Days Method', 'F'),
-('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F'),
-('MSV', 'Male Sterilization /Vasectomy', 'M'),
-('INJECT', 'Injection', ''),
-('LAM', 'Lactational amenorrhea', ''),
-('OMBBTSTM', 'Ovulation/Basal Body Temp./Sympto-thermal', '');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `m_lib_fp_pe`
---
-
-CREATE TABLE IF NOT EXISTS `m_lib_fp_pe` (
-  `pe_id` int(5) NOT NULL auto_increment,
-  `pe_name` varchar(100) NOT NULL,
-  `pe_cat` varchar(20) NOT NULL,
-  PRIMARY KEY  (`pe_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=91 ;
-
---
--- Dumping data for table `m_lib_fp_pe`
---
-
-INSERT INTO `m_lib_fp_pe` (`pe_id`, `pe_name`, `pe_cat`) VALUES
-(1, 'Pale', 'CONJUNCTIVA'),
-(2, 'Yellowish', 'CONJUNCTIVA'),
-(3, 'Enlarged Thyroid', 'NECK'),
-(4, 'Enlarged Lymph Nodes', 'NECK'),
-(5, 'Mass', 'BREAST'),
-(6, 'Nipple Discharge', 'BREAST'),
-(7, 'Skin-orange-peel or dimpling', 'BREAST'),
-(8, 'Enlarged Axillary Lymph Nodes', 'BREAST'),
-(9, 'Abnormal Heart Sounds/Cardiac Rate', 'THORAX'),
-(10, 'Abnormal Breath Sounds/Respiratory Rate', 'THORAX'),
-(11, 'Enlarge Liver', 'ABDOMEN'),
-(12, 'Mass', 'ABDOMEN'),
-(13, 'Tenderness', 'ABDOMEN'),
-(14, 'Edema', 'EXTREMITIES'),
-(15, 'Varicosities', 'EXTREMITIES'),
-(16, 'Pale', 'CONJUNCTIVA'),
-(17, 'Yellowish', 'CONJUNCTIVA'),
-(18, 'Enlarged Thyroid', 'NECK'),
-(19, 'Enlarged Lymph Nodes', 'NECK'),
-(20, 'Mass', 'BREAST'),
-(21, 'Nipple Discharge', 'BREAST'),
-(22, 'Skin-orange-peel or dimpling', 'BREAST'),
-(23, 'Enlarged Axillary Lymph Nodes', 'BREAST'),
-(24, 'Abnormal Heart Sounds/Cardiac Rate', 'THORAX'),
-(25, 'Abnormal Breath Sounds/Respiratory Rate', 'THORAX'),
-(26, 'Enlarge Liver', 'ABDOMEN'),
-(27, 'Mass', 'ABDOMEN'),
-(28, 'Tenderness', 'ABDOMEN'),
-(29, 'Edema', 'EXTREMITIES'),
-(30, 'Varicosities', 'EXTREMITIES'),
-(31, 'Pale', 'CONJUNCTIVA'),
-(32, 'Yellowish', 'CONJUNCTIVA'),
-(33, 'Enlarged Thyroid', 'NECK'),
-(34, 'Enlarged Lymph Nodes', 'NECK'),
-(35, 'Mass', 'BREAST'),
-(36, 'Nipple Discharge', 'BREAST'),
-(37, 'Skin-orange-peel or dimpling', 'BREAST'),
-(38, 'Enlarged Axillary Lymph Nodes', 'BREAST'),
-(39, 'Abnormal Heart Sounds/Cardiac Rate', 'THORAX'),
-(40, 'Abnormal Breath Sounds/Respiratory Rate', 'THORAX'),
-(41, 'Enlarge Liver', 'ABDOMEN'),
-(42, 'Mass', 'ABDOMEN'),
-(43, 'Tenderness', 'ABDOMEN'),
-(44, 'Edema', 'EXTREMITIES'),
-(45, 'Varicosities', 'EXTREMITIES'),
-(46, 'Pale', 'CONJUNCTIVA'),
-(47, 'Yellowish', 'CONJUNCTIVA'),
-(48, 'Enlarged Thyroid', 'NECK'),
-(49, 'Enlarged Lymph Nodes', 'NECK'),
-(50, 'Mass', 'BREAST'),
-(51, 'Nipple Discharge', 'BREAST'),
-(52, 'Skin-orange-peel or dimpling', 'BREAST'),
-(53, 'Enlarged Axillary Lymph Nodes', 'BREAST'),
-(54, 'Abnormal Heart Sounds/Cardiac Rate', 'THORAX'),
-(55, 'Abnormal Breath Sounds/Respiratory Rate', 'THORAX'),
-(56, 'Enlarge Liver', 'ABDOMEN'),
-(57, 'Mass', 'ABDOMEN'),
-(58, 'Tenderness', 'ABDOMEN'),
-(59, 'Edema', 'EXTREMITIES'),
-(60, 'Varicosities', 'EXTREMITIES'),
-(61, 'Pale', 'CONJUNCTIVA'),
-(62, 'Yellowish', 'CONJUNCTIVA'),
-(63, 'Enlarged Thyroid', 'NECK'),
-(64, 'Enlarged Lymph Nodes', 'NECK'),
-(65, 'Mass', 'BREAST'),
-(66, 'Nipple Discharge', 'BREAST'),
-(67, 'Skin-orange-peel or dimpling', 'BREAST'),
-(68, 'Enlarged Axillary Lymph Nodes', 'BREAST'),
-(69, 'Abnormal Heart Sounds/Cardiac Rate', 'THORAX'),
-(70, 'Abnormal Breath Sounds/Respiratory Rate', 'THORAX'),
-(71, 'Enlarge Liver', 'ABDOMEN'),
-(72, 'Mass', 'ABDOMEN'),
-(73, 'Tenderness', 'ABDOMEN'),
-(74, 'Edema', 'EXTREMITIES'),
-(75, 'Varicosities', 'EXTREMITIES'),
-(76, 'Pale', 'CONJUNCTIVA'),
-(77, 'Yellowish', 'CONJUNCTIVA'),
-(78, 'Enlarged Thyroid', 'NECK'),
-(79, 'Enlarged Lymph Nodes', 'NECK'),
-(80, 'Mass', 'BREAST'),
-(81, 'Nipple Discharge', 'BREAST'),
-(82, 'Skin-orange-peel or dimpling', 'BREAST'),
-(83, 'Enlarged Axillary Lymph Nodes', 'BREAST'),
-(84, 'Abnormal Heart Sounds/Cardiac Rate', 'THORAX'),
-(85, 'Abnormal Breath Sounds/Respiratory Rate', 'THORAX'),
-(86, 'Enlarge Liver', 'ABDOMEN'),
-(87, 'Mass', 'ABDOMEN'),
-(88, 'Tenderness', 'ABDOMEN'),
-(89, 'Edema', 'EXTREMITIES'),
-(90, 'Varicosities', 'EXTREMITIES');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `m_lib_fp_pelvic`
---
-
-CREATE TABLE IF NOT EXISTS `m_lib_fp_pelvic` (
-  `pelvic_id` int(5) NOT NULL auto_increment,
-  `pelvic_name` varchar(50) NOT NULL,
-  `pelvic_cat` varchar(50) NOT NULL,
-  PRIMARY KEY  (`pelvic_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=81 ;
-
---
--- Dumping data for table `m_lib_fp_pelvic`
---
-
-INSERT INTO `m_lib_fp_pelvic` (`pelvic_id`, `pelvic_name`, `pelvic_cat`) VALUES
-(1, 'Scars', 'PERENIUM'),
-(2, 'Warts', 'PERENIUM'),
-(3, 'Reddish', 'PERENIUM'),
-(4, 'Laceration', 'PERENIUM'),
-(5, 'Congested', 'VAGINA'),
-(6, 'Warts', 'VAGINA'),
-(7, 'Rectocele', 'VAGINA'),
-(8, 'Cytocele', 'VAGINA'),
-(9, 'Congested', 'CERVIX'),
-(10, 'Erosion', 'CERVIX'),
-(11, 'Discharge', 'CERVIX'),
-(12, 'Polyps/Cyst', 'CERVIX'),
-(13, 'Laceration', 'CERVIX'),
-(14, 'Pinkish', 'CERVIXCOLOR'),
-(15, 'Bluish', 'CERVIXCOLOR'),
-(16, 'Firm', 'CERVIXCONSISTENCY'),
-(17, 'Soft', 'CERVIXCONSISTENCY'),
-(18, 'Mid', 'UTERUSPOS'),
-(19, 'Anteflexed', 'UTERUSPOS'),
-(20, 'Retroflexed', 'UTERUSPOS'),
-(21, 'Normal', 'UTERUSSIZE'),
-(22, 'Small', 'UTERUSSIZE'),
-(23, 'Large', 'UTERUSSIZE'),
-(24, 'Normal', 'ADNEXA'),
-(25, 'Mass', 'ADNEXA'),
-(26, 'Tenderness', 'ADNEXA'),
-(27, 'Scars', 'PERENIUM'),
-(28, 'Warts', 'PERENIUM'),
-(29, 'Reddish', 'PERENIUM'),
-(30, 'Laceration', 'PERENIUM'),
-(31, 'Congested', 'VAGINA'),
-(32, 'Warts', 'VAGINA'),
-(33, 'Rectocele', 'VAGINA'),
-(34, 'Cytocele', 'VAGINA'),
-(35, 'Congested', 'CERVIX'),
-(36, 'Erosion', 'CERVIX'),
-(37, 'Discharge', 'CERVIX'),
-(38, 'Polyps/Cyst', 'CERVIX'),
-(39, 'Laceration', 'CERVIX'),
-(40, 'Pinkish', 'CERVIXCOLOR'),
-(41, 'Bluish', 'CERVIXCOLOR'),
-(42, 'Firm', 'CERVIXCONSISTENCY'),
-(43, 'Soft', 'CERVIXCONSISTENCY'),
-(44, 'Mid', 'UTERUSPOS'),
-(45, 'Anteflexed', 'UTERUSPOS'),
-(46, 'Retroflexed', 'UTERUSPOS'),
-(47, 'Normal', 'UTERUSSIZE'),
-(48, 'Small', 'UTERUSSIZE'),
-(49, 'Large', 'UTERUSSIZE'),
-(50, 'Normal', 'ADNEXA'),
-(51, 'Mass', 'ADNEXA'),
-(52, 'Tenderness', 'ADNEXA'),
-(53, 'Scars', 'PERENIUM'),
-(54, 'Scars', 'PERENIUM'),
-(55, 'Scars', 'PERENIUM'),
-(56, 'Warts', 'PERENIUM'),
-(57, 'Reddish', 'PERENIUM'),
-(58, 'Laceration', 'PERENIUM'),
-(59, 'Congested', 'VAGINA'),
-(60, 'Warts', 'VAGINA'),
-(61, 'Rectocele', 'VAGINA'),
-(62, 'Cytocele', 'VAGINA'),
-(63, 'Congested', 'CERVIX'),
-(64, 'Erosion', 'CERVIX'),
-(65, 'Discharge', 'CERVIX'),
-(66, 'Polyps/Cyst', 'CERVIX'),
-(67, 'Laceration', 'CERVIX'),
-(68, 'Pinkish', 'CERVIXCOLOR'),
-(69, 'Bluish', 'CERVIXCOLOR'),
-(70, 'Firm', 'CERVIXCONSISTENCY'),
-(71, 'Soft', 'CERVIXCONSISTENCY'),
-(72, 'Mid', 'UTERUSPOS'),
-(73, 'Anteflexed', 'UTERUSPOS'),
-(74, 'Retroflexed', 'UTERUSPOS'),
-(75, 'Normal', 'UTERUSSIZE'),
-(76, 'Small', 'UTERUSSIZE'),
-(77, 'Large', 'UTERUSSIZE'),
-(78, 'Normal', 'ADNEXA'),
-(79, 'Mass', 'ADNEXA'),
-(80, 'Tenderness', 'ADNEXA');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `m_lib_fp_pelvic_cat`
---
-
-CREATE TABLE IF NOT EXISTS `m_lib_fp_pelvic_cat` (
-  `pelvic_cat_id` varchar(20) NOT NULL,
-  `pelvic_cat_name` varchar(50) NOT NULL,
-  PRIMARY KEY  (`pelvic_cat_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `m_lib_fp_pelvic_cat`
---
-
-INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`, `pelvic_cat_name`) VALUES
-('PERENIUM', 'PERENIUM'),
-('VAGINA', 'VAGINA'),
-('CERVIX', 'CERVIX'),
-('CERVIXCOLOR', 'Color'),
-('CERVIXCONSISTENCY', 'Consistency'),
-('UTERUSPOS', 'UTERUS POSITION'),
-('UTERUSSIZE', 'UTERUS SIZE'),
-('UTERUSMASS', 'UTERUS MASS'),
-('ADNEXA', 'ADNEXA');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `m_lib_fp_pelvic```
 --
 
@@ -2713,30 +2361,6 @@ CREATE TABLE IF NOT EXISTS `m_lib_fp_pelvic``` (
 -- Dumping data for table `m_lib_fp_pelvic```
 --
 
-
--- --------------------------------------------------------
-
---
--- Table structure for table `m_lib_fp_pe_cat`
---
-
-CREATE TABLE IF NOT EXISTS `m_lib_fp_pe_cat` (
-  `pe_cat_id` varchar(20) NOT NULL,
-  `pe_cat_name` varchar(50) NOT NULL,
-  PRIMARY KEY  (`pe_cat_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `m_lib_fp_pe_cat`
---
-
-INSERT INTO `m_lib_fp_pe_cat` (`pe_cat_id`, `pe_cat_name`) VALUES
-('CONJUNCTIVA', 'CONJUNCTIVA'),
-('NECK', 'NECK'),
-('BREAST', 'BREAST'),
-('THORAX', 'THORAX'),
-('ABDOMEN', 'ABDOMEN'),
-('EXTREMITIES', 'EXTREMITIES');
 
 -- --------------------------------------------------------
 
@@ -12340,6 +11964,30 @@ INSERT INTO `m_lib_mc_birth_attendant` (`attendant_id`, `attendant_name`) VALUES
 ('RN', 'Nurse'),
 ('TRH', 'Trained Hilot'),
 ('UTH', 'Untrained Hilot');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `m_lib_mc_delivery_location`
+--
+
+CREATE TABLE IF NOT EXISTS `m_lib_mc_delivery_location` (
+  `delivery_id` varchar(10) NOT NULL,
+  `delivery_name` text NOT NULL,
+  PRIMARY KEY  (`delivery_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `m_lib_mc_delivery_location`
+--
+
+INSERT INTO `m_lib_mc_delivery_location` (`delivery_id`, `delivery_name`) VALUES
+('HOME', 'Home'),
+('HOSP', 'Hospital'),
+('LYIN', 'Private Lying-In Clinic'),
+('HC', 'Health Center'),
+('BHS', 'Barangay Health Station'),
+('OTHERS', 'Others');
 
 -- --------------------------------------------------------
 

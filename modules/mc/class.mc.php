@@ -8,7 +8,7 @@ class mc extends module {
         //
         // do not forget to update version
         //
-        $this->author = 'Herman Tolentino MD';
+        $this->author = 'Herman Tolentino MD / darth_ali';
         $this->version = "0.96-".date("Y-m-d");
         $this->module = "mc";
         $this->description = "CHITS Library - Maternal Care";
@@ -413,6 +413,15 @@ class mc extends module {
         module::execsql("insert into m_lib_mc_outcome (outcome_id, outcome_name) values ('NSDM', 'Live baby boy NSD')");
         module::execsql("insert into m_lib_mc_outcome (outcome_id, outcome_name) values ('LSCSF', 'Live baby girl LSCS')");
         module::execsql("insert into m_lib_mc_outcome (outcome_id, outcome_name) values ('LSCSM', 'Live baby boy LSCS')");
+
+	//create m_lib_mc_delivery_location
+	module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_mc_delivery_location` (
+		  `delivery_id` varchar(10) NOT NULL,`delivery_name` text NOT NULL,  PRIMARY KEY  (`delivery_id`)
+		   ) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+
+	module::execsql("INSERT INTO `m_lib_mc_delivery_location` (`delivery_id`, `delivery_name`) VALUES
+			('HOME', 'Home'),('HOSP', 'Hospital'),('LYIN', 'Private Lying-In Clinic'),
+			('HC', 'Health Center'),('BHS', 'Barangay Health Station'),('OTHERS', 'Others');");
 
     }
 
@@ -1098,6 +1107,8 @@ class mc extends module {
 
 						$delivery_date = "$year-".str_pad($month,2,"0",STR_PAD_LEFT)."-".str_pad($day,2,"0",STR_PAD_LEFT);
 						
+						echo $delivery_date;
+
 						if(isset($_POST[breastfeeding_flag])):
 							$bfeed_date = "$byr-".str_pad($bmonth,2,"0",STR_PAD_LEFT)."-".str_pad($bday,2,"0",STR_PAD_LEFT);
 						else:
@@ -3196,12 +3207,15 @@ class mc extends module {
             $arg_list = func_get_args();
             $location_id = $arg_list[0];
         }
-        $ret_val .= "<select name='delivery_location' class='textbox'>";
+
+	$q_delivery = mysql_query("SELECT * FROM m_lib_mc_delivery_location") or die(mysql_error());
+	$ret_val = "<select name='delivery_location' class='textbox'>";
         $ret_val .= "<option value=''>Select Location</option>";
-        $ret_val .= "<option value='HOME' ".($location_id=="HOME"?"selected":"").">Home</option>";
-        $ret_val .= "<option value='HOSP' ".($location_id=="HOSP"?"selected":"").">Hospital</option>";
-        $ret_val .= "<option value='LYIN' ".($location_id=="LYIN"?"selected":"").">Lying-In Clinic</option>";
-        $ret_val .= "</select>";
+	while($r_delivery = mysql_fetch_array($q_delivery)){
+		$ret_val .= "<option value='$r_delivery[delivery_id]' ".($location_id=="$r_delivery[delivery_id]"?"selected":"").">$r_delivery[delivery_name]</option>";
+	}
+	$ret_val .= "</select>";
+
         return $ret_val;
     }
 

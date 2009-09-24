@@ -1,7 +1,7 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2009-09-03 13:59:25
+// Generated 2009-09-24 14:57:04
 // Module: _module.php
 // Author: Herman Tolentino MD
 //
@@ -80,17 +80,6 @@ if (file_exists('../modules/complaint/class.complaint.php')) {
 		$complaint->init_deps();
 		$complaint->init_lang();
 		$complaint->init_help();
-	}
-}
-if (file_exists('../modules/computebmi/class.computebmi.php')) {
-	include '../modules/computebmi/class.computebmi.php';
-	$computebmi = new computebmi;
-	if (!$module->activated('computebmi') && $initmod) {
-		$computebmi->init_sql();
-		$computebmi->init_menu();
-		$computebmi->init_deps();
-		$computebmi->init_lang();
-		$computebmi->init_help();
 	}
 }
 if (file_exists('../modules/consult_report/class.consult_report.php')) {
