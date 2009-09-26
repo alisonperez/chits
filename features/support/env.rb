@@ -62,7 +62,7 @@ end
 # Check to see if test database exists, if not create the user p
 puts "Checking that test database exists, then switching to it..."
 unless(run("echo \"SHOW DATABASES;\" | mysql -u #{@@test_database_username} --password=#{@@test_database_password} 2>&1").match @@test_database_name ) then
-  puts "\nOops! Looks like you don't have a test database yet, so you need to create one. Luckily this is easy!\nRun the following commands and enter your password when necessary (your root mysql password may be blank).\n\n"
+  puts "\nOops! Looks like you don't have a test database yet, so you need to create one. Luckily this is easy!\nRun the following commands. You can actually copy and paste the whole line 'echo \"GRANT...' right onto the command line. Enter your password when necessary (your root mysql password may be blank).\n\n"
   puts "echo \"CREATE DATABASE #{@@test_database_name};\" | mysql -u root -p;"
 #  puts "echo \"INSERT INTO user SET user='#{@@test_database_username}',password=password('#{@@test_database_password}'),host='#{@@test_database_location}';\" | mysql -u root -p mysql;"
 
