@@ -27,7 +27,7 @@ Feature: Manage Patients
 		And I fill in "last" with "Bonifacio"
 		Then I should see "Found 1 Record: Andres Bonifacio"
 	Scenario: Update patient information
-		Given I am on the old patient form
+		Given I am on the patient management form
 		When I fill in "first" with "Andres"
 		And I fill in "last" with "Bonifacio"
 		And I press "submitsearch"
@@ -42,7 +42,7 @@ Feature: Manage Patients
 		Then I should see "patient_middlename" is "Santos"
 		And "patient_dob" is "12/23/1990";
 	Scenario: Delete patient information
-		Given I am on the old patient form
+		Given I am on the patient management form
 		When I fill in "first" with "Andres"
 		And I fill in "last" with "Bonifacio"
 		And I press "submitsearch"
