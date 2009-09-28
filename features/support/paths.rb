@@ -1,6 +1,6 @@
 module NavigationHelpers
   def path_to(page_name)
-    "http://localhost/chits" +
+    "http://localhost/chits-ph" +
     case page_name
     
     when /a page/
