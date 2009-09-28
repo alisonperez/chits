@@ -30,8 +30,8 @@ Feature: Manage Patients
 		Given I am on the patient management form
 		When I fill in "first" with "Andres"
 		And I fill in "last" with "Bonifacio"
-		And I press "submitsearch"
-		And I should see "Found 1 Record: Andres Bonifacio"
+		And I press "Search"
+		And I should see "Found"
 		And I click "Andres Bonifacio"
 		And I should see patient information at the edit patient form
 		And I fill in the "patient_middlename" with "Santos"
@@ -45,7 +45,7 @@ Feature: Manage Patients
 		Given I am on the patient management form
 		When I fill in "first" with "Andres"
 		And I fill in "last" with "Bonifacio"
-		And I press "submitsearch"
+		And I press "Search"
 		And I should see "Found 1 Record: Andres Bonifacio"
 		And I click "Andres Bonifacio"
 		And I should see patient information at the edit patient form
