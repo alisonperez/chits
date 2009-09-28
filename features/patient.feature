@@ -24,7 +24,7 @@ Feature: Manage Patients
 		And I am on the old patient form
 		And I fill "first" with "Andres"
 		And I fill in "last" with "Bonifacio"
-		The I should see "Found 1 Record: Andres Bonifacio"
+		Then I should see "Found 1 Record: Andres Bonifacio"
 	Scenario: Update patient information
 		Given I am on the old patient form
 		When I fill in "first" with "Andres"
