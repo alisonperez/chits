@@ -12,7 +12,9 @@ Feature: Manage Patients
 		Then I should see "No records found"
 
 	Scenario: Add a new patient
-		Given I am on the patient management form
+		Given I am logged in as "admin" with password "admin"
+		And I click "PATIENTS"
+		And I am on the patient management form
 		When I fill in the "patient_firstname" with "Andres"
 		And I fill in the "patient_middlename" with "Cruz"
 		And I fill in the "patient_lastname" with "Bonifacio"
@@ -26,12 +28,13 @@ Feature: Manage Patients
 		And I fill "first" with "Andres"
 		And I fill in "last" with "Bonifacio"
 		Then I should see "Found 1 Record: Andres Bonifacio"
+
 	Scenario: Update patient information
 		Given I am on the patient management form
 		When I fill in "first" with "Andres"
 		And I fill in "last" with "Bonifacio"
 		And I press "Search"
-		And I should see "Found"
+		And I should see "Found 1 Record: Andres Bonifacio"
 		And I click "Andres Bonifacio"
 		And I should see patient information at the edit patient form
 		And I fill in the "patient_middlename" with "Santos"
@@ -41,6 +44,7 @@ Feature: Manage Patients
 		And I click "Andres Bonifacio"
 		Then I should see "patient_middlename" is "Santos"
 		And "patient_dob" is "12/23/1990";
+
 	Scenario: Delete patient information
 		Given I am on the patient management form
 		When I fill in "first" with "Andres"
