@@ -3,14 +3,14 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 11, 2009 at 04:10 PM
+-- Generation Time: Sep 30, 2009 at 12:07 PM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.4-2ubuntu5.6
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Database: `chits`
+-- Database: `chits_testing`
 --
 
 -- --------------------------------------------------------
@@ -19,6 +19,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `content`
 --
 
+DROP TABLE IF EXISTS `content`;
 CREATE TABLE IF NOT EXISTS `content` (
   `content_id` int(11) NOT NULL auto_increment,
   `content_module` varchar(25) NOT NULL default '',
@@ -44,6 +45,7 @@ INSERT INTO `content` (`content_id`, `content_module`, `content_column`, `conten
 -- Table structure for table `errorcodes`
 --
 
+DROP TABLE IF EXISTS `errorcodes`;
 CREATE TABLE IF NOT EXISTS `errorcodes` (
   `error_id` char(3) NOT NULL default '',
   `error_name` varchar(100) NOT NULL default '',
@@ -64,6 +66,7 @@ INSERT INTO `errorcodes` (`error_id`, `error_name`) VALUES
 -- Table structure for table `game_user`
 --
 
+DROP TABLE IF EXISTS `game_user`;
 CREATE TABLE IF NOT EXISTS `game_user` (
   `user_id` float NOT NULL auto_increment,
   `user_lastname` varchar(100) NOT NULL default '',
@@ -81,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `game_user` (
   `user_pin` varchar(4) NOT NULL default '',
   `user_active` char(1) NOT NULL default '',
   PRIMARY KEY  (`user_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `game_user`
@@ -89,7 +92,8 @@ CREATE TABLE IF NOT EXISTS `game_user` (
 
 INSERT INTO `game_user` (`user_id`, `user_lastname`, `user_firstname`, `user_middle`, `user_dob`, `user_gender`, `user_role`, `user_admin`, `user_login`, `user_password`, `user_lang`, `user_email`, `user_cellular`, `user_pin`, `user_active`) VALUES
 (1, 'user', 'admin', '', '1982-02-03', 'M', '', 'Y', 'admin', '43e9a4ab75570f5b', 'english', 'darth_ali@yahoo.com', '09154038801', '1234', 'Y'),
-(2, 'Perez', 'Alison', 'O', '1982-02-03', 'M', 'MWIFE', 'N', 'alison', '4588bf225067c6e4', 'english', '', '', '1234', 'Y');
+(2, 'Perez', 'Alison', 'O', '1982-02-03', 'M', 'MWIFE', 'N', 'alison', '4588bf225067c6e4', 'english', '', '', '1234', 'Y'),
+(3, 'User', 'User', 'User', '1980-01-01', 'M', 'MWIFE', 'N', 'user', '1a486e7929011a28', 'english', '', '', '1234', 'Y');
 
 -- --------------------------------------------------------
 
@@ -97,6 +101,7 @@ INSERT INTO `game_user` (`user_id`, `user_lastname`, `user_firstname`, `user_mid
 -- Table structure for table `location`
 --
 
+DROP TABLE IF EXISTS `location`;
 CREATE TABLE IF NOT EXISTS `location` (
   `location_id` varchar(10) NOT NULL default '',
   `location_name` varchar(50) NOT NULL default '',
@@ -119,6 +124,7 @@ INSERT INTO `location` (`location_id`, `location_name`) VALUES
 -- Table structure for table `modules`
 --
 
+DROP TABLE IF EXISTS `modules`;
 CREATE TABLE IF NOT EXISTS `modules` (
   `module_id` varchar(25) NOT NULL default '',
   `module_init` char(1) NOT NULL default 'N',
@@ -185,6 +191,7 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 -- Table structure for table `module_dependencies`
 --
 
+DROP TABLE IF EXISTS `module_dependencies`;
 CREATE TABLE IF NOT EXISTS `module_dependencies` (
   `module_id` varchar(25) NOT NULL default '',
   `req_module` varchar(25) NOT NULL default '',
@@ -356,6 +363,7 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 -- Table structure for table `module_menu`
 --
 
+DROP TABLE IF EXISTS `module_menu`;
 CREATE TABLE IF NOT EXISTS `module_menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `module_id` varchar(25) NOT NULL default '0',
@@ -453,6 +461,7 @@ INSERT INTO `module_menu` (`menu_id`, `module_id`, `menu_cat`, `menu_title`, `me
 -- Table structure for table `module_menu_location`
 --
 
+DROP TABLE IF EXISTS `module_menu_location`;
 CREATE TABLE IF NOT EXISTS `module_menu_location` (
   `location_id` varchar(10) NOT NULL default '',
   `module_id` varchar(25) NOT NULL default '',
@@ -489,6 +498,7 @@ INSERT INTO `module_menu_location` (`location_id`, `module_id`, `menu_id`) VALUE
 -- Table structure for table `module_menu_permissions`
 --
 
+DROP TABLE IF EXISTS `module_menu_permissions`;
 CREATE TABLE IF NOT EXISTS `module_menu_permissions` (
   `module_id` varchar(25) NOT NULL default '',
   `menu_id` float NOT NULL default '0',
@@ -2822,6 +2832,7 @@ INSERT INTO `module_menu_permissions` (`module_id`, `menu_id`, `user_id`) VALUES
 -- Table structure for table `module_permissions`
 --
 
+DROP TABLE IF EXISTS `module_permissions`;
 CREATE TABLE IF NOT EXISTS `module_permissions` (
   `module_id` varchar(25) NOT NULL default '0',
   `user_id` float NOT NULL default '0',
@@ -2965,6 +2976,7 @@ INSERT INTO `module_permissions` (`module_id`, `user_id`) VALUES
 -- Table structure for table `module_user_location`
 --
 
+DROP TABLE IF EXISTS `module_user_location`;
 CREATE TABLE IF NOT EXISTS `module_user_location` (
   `location_id` varchar(10) NOT NULL default '',
   `user_id` float NOT NULL default '0',
@@ -2986,6 +2998,10 @@ INSERT INTO `module_user_location` (`location_id`, `user_id`) VALUES
 ('CONS', 2),
 ('LAB', 2),
 ('TX', 2),
+('ADM', 3),
+('CONS', 3),
+('LAB', 3),
+('TX', 3),
 ('ADM', 33),
 ('CONS', 33),
 ('LAB', 33),
@@ -3114,6 +3130,7 @@ INSERT INTO `module_user_location` (`location_id`, `user_id`) VALUES
 -- Table structure for table `m_consult`
 --
 
+DROP TABLE IF EXISTS `m_consult`;
 CREATE TABLE IF NOT EXISTS `m_consult` (
   `consult_id` float NOT NULL auto_increment,
   `patient_id` float NOT NULL default '0',
@@ -3145,6 +3162,7 @@ INSERT INTO `m_consult` (`consult_id`, `patient_id`, `user_id`, `healthcenter_id
 -- Table structure for table `m_consult_appointments`
 --
 
+DROP TABLE IF EXISTS `m_consult_appointments`;
 CREATE TABLE IF NOT EXISTS `m_consult_appointments` (
   `schedule_id` float NOT NULL auto_increment,
   `visit_date` date NOT NULL default '0000-00-00',
@@ -3174,6 +3192,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_appointments` (
 -- Table structure for table `m_consult_ccdev_report_dailyservice`
 --
 
+DROP TABLE IF EXISTS `m_consult_ccdev_report_dailyservice`;
 CREATE TABLE IF NOT EXISTS `m_consult_ccdev_report_dailyservice` (
   `patient_id` float NOT NULL default '0',
   `patient_name` varchar(100) NOT NULL default '',
@@ -3201,6 +3220,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ccdev_report_dailyservice` (
 -- Table structure for table `m_consult_ccdev_services`
 --
 
+DROP TABLE IF EXISTS `m_consult_ccdev_services`;
 CREATE TABLE IF NOT EXISTS `m_consult_ccdev_services` (
   `ccdev_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3228,6 +3248,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ccdev_services` (
 -- Table structure for table `m_consult_ccdev_vaccine`
 --
 
+DROP TABLE IF EXISTS `m_consult_ccdev_vaccine`;
 CREATE TABLE IF NOT EXISTS `m_consult_ccdev_vaccine` (
   `ccdev_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3257,6 +3278,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ccdev_vaccine` (
 -- Table structure for table `m_consult_complaint`
 --
 
+DROP TABLE IF EXISTS `m_consult_complaint`;
 CREATE TABLE IF NOT EXISTS `m_consult_complaint` (
   `consult_id` float NOT NULL default '0',
   `complaint_id` varchar(10) NOT NULL default '',
@@ -3276,6 +3298,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_complaint` (
 -- Table structure for table `m_consult_diagnosis`
 --
 
+DROP TABLE IF EXISTS `m_consult_diagnosis`;
 CREATE TABLE IF NOT EXISTS `m_consult_diagnosis` (
   `consult_id` float NOT NULL default '0',
   `diagnosis_code` varchar(12) NOT NULL default '',
@@ -3294,6 +3317,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_diagnosis` (
 -- Table structure for table `m_consult_disease_notifiable`
 --
 
+DROP TABLE IF EXISTS `m_consult_disease_notifiable`;
 CREATE TABLE IF NOT EXISTS `m_consult_disease_notifiable` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -3318,6 +3342,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_disease_notifiable` (
 -- Table structure for table `m_consult_disease_notifiable_report`
 --
 
+DROP TABLE IF EXISTS `m_consult_disease_notifiable_report`;
 CREATE TABLE IF NOT EXISTS `m_consult_disease_notifiable_report` (
   `disease_id` varchar(10) NOT NULL default '',
   `consult_date` date NOT NULL default '0000-00-00',
@@ -3349,6 +3374,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_disease_notifiable_report` (
 -- Table structure for table `m_consult_epi_report`
 --
 
+DROP TABLE IF EXISTS `m_consult_epi_report`;
 CREATE TABLE IF NOT EXISTS `m_consult_epi_report` (
   `vaccine_id` varchar(10) NOT NULL default '',
   `vaccine_total_child` int(11) NOT NULL default '0',
@@ -3370,6 +3396,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_epi_report` (
 -- Table structure for table `m_consult_icd10`
 --
 
+DROP TABLE IF EXISTS `m_consult_icd10`;
 CREATE TABLE IF NOT EXISTS `m_consult_icd10` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -3391,6 +3418,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_icd10` (
 -- Table structure for table `m_consult_imci_drug`
 --
 
+DROP TABLE IF EXISTS `m_consult_imci_drug`;
 CREATE TABLE IF NOT EXISTS `m_consult_imci_drug` (
   `imci_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3418,6 +3446,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_imci_drug` (
 -- Table structure for table `m_consult_imci_dxclass`
 --
 
+DROP TABLE IF EXISTS `m_consult_imci_dxclass`;
 CREATE TABLE IF NOT EXISTS `m_consult_imci_dxclass` (
   `imci_id` float NOT NULL auto_increment,
   `consult_id` float NOT NULL default '0',
@@ -3444,6 +3473,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_imci_dxclass` (
 -- Table structure for table `m_consult_injury`
 --
 
+DROP TABLE IF EXISTS `m_consult_injury`;
 CREATE TABLE IF NOT EXISTS `m_consult_injury` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -3471,6 +3501,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_injury` (
 -- Table structure for table `m_consult_injury_report`
 --
 
+DROP TABLE IF EXISTS `m_consult_injury_report`;
 CREATE TABLE IF NOT EXISTS `m_consult_injury_report` (
   `injury_id` varchar(10) NOT NULL default '',
   `consult_date` date NOT NULL default '0000-00-00',
@@ -3502,6 +3533,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_injury_report` (
 -- Table structure for table `m_consult_lab`
 --
 
+DROP TABLE IF EXISTS `m_consult_lab`;
 CREATE TABLE IF NOT EXISTS `m_consult_lab` (
   `request_id` float NOT NULL auto_increment,
   `patient_id` float NOT NULL default '0',
@@ -3531,6 +3563,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_lab` (
 -- Table structure for table `m_consult_lab_sputum`
 --
 
+DROP TABLE IF EXISTS `m_consult_lab_sputum`;
 CREATE TABLE IF NOT EXISTS `m_consult_lab_sputum` (
   `consult_id` float NOT NULL default '0',
   `request_id` float NOT NULL default '0',
@@ -3566,6 +3599,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_lab_sputum` (
 -- Table structure for table `m_consult_mc_consolidation_report`
 --
 
+DROP TABLE IF EXISTS `m_consult_mc_consolidation_report`;
 CREATE TABLE IF NOT EXISTS `m_consult_mc_consolidation_report` (
   `barangay_name` varchar(50) NOT NULL default '',
   `barangay_population` int(11) NOT NULL default '0',
@@ -3599,6 +3633,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_mc_consolidation_report` (
 -- Table structure for table `m_consult_mc_labs_request`
 --
 
+DROP TABLE IF EXISTS `m_consult_mc_labs_request`;
 CREATE TABLE IF NOT EXISTS `m_consult_mc_labs_request` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -3623,6 +3658,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_mc_labs_request` (
 -- Table structure for table `m_consult_mc_postpartum`
 --
 
+DROP TABLE IF EXISTS `m_consult_mc_postpartum`;
 CREATE TABLE IF NOT EXISTS `m_consult_mc_postpartum` (
   `mc_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3659,6 +3695,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_mc_postpartum` (
 -- Table structure for table `m_consult_mc_prenatal`
 --
 
+DROP TABLE IF EXISTS `m_consult_mc_prenatal`;
 CREATE TABLE IF NOT EXISTS `m_consult_mc_prenatal` (
   `mc_id` float NOT NULL default '0',
   `prenatal_id` int(11) NOT NULL default '0',
@@ -3694,6 +3731,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_mc_prenatal` (
 -- Table structure for table `m_consult_mc_report_dailyservice`
 --
 
+DROP TABLE IF EXISTS `m_consult_mc_report_dailyservice`;
 CREATE TABLE IF NOT EXISTS `m_consult_mc_report_dailyservice` (
   `patient_id` float NOT NULL default '0',
   `patient_name` varchar(100) NOT NULL default '',
@@ -3725,6 +3763,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_mc_report_dailyservice` (
 -- Table structure for table `m_consult_mc_services`
 --
 
+DROP TABLE IF EXISTS `m_consult_mc_services`;
 CREATE TABLE IF NOT EXISTS `m_consult_mc_services` (
   `mc_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3753,6 +3792,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_mc_services` (
 -- Table structure for table `m_consult_mc_vaccine`
 --
 
+DROP TABLE IF EXISTS `m_consult_mc_vaccine`;
 CREATE TABLE IF NOT EXISTS `m_consult_mc_vaccine` (
   `mc_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3781,6 +3821,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_mc_vaccine` (
 -- Table structure for table `m_consult_mc_visit_risk`
 --
 
+DROP TABLE IF EXISTS `m_consult_mc_visit_risk`;
 CREATE TABLE IF NOT EXISTS `m_consult_mc_visit_risk` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -3805,6 +3846,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_mc_visit_risk` (
 -- Table structure for table `m_consult_notes`
 --
 
+DROP TABLE IF EXISTS `m_consult_notes`;
 CREATE TABLE IF NOT EXISTS `m_consult_notes` (
   `notes_id` float NOT NULL auto_increment,
   `consult_id` float NOT NULL default '0',
@@ -3837,6 +3879,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_notes` (
 -- Table structure for table `m_consult_notes_complaint`
 --
 
+DROP TABLE IF EXISTS `m_consult_notes_complaint`;
 CREATE TABLE IF NOT EXISTS `m_consult_notes_complaint` (
   `notes_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3862,6 +3905,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_notes_complaint` (
 -- Table structure for table `m_consult_notes_dxclass`
 --
 
+DROP TABLE IF EXISTS `m_consult_notes_dxclass`;
 CREATE TABLE IF NOT EXISTS `m_consult_notes_dxclass` (
   `notes_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3888,6 +3932,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_notes_dxclass` (
 -- Table structure for table `m_consult_ntp_collection_maintenance`
 --
 
+DROP TABLE IF EXISTS `m_consult_ntp_collection_maintenance`;
 CREATE TABLE IF NOT EXISTS `m_consult_ntp_collection_maintenance` (
   `ntp_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3916,6 +3961,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_collection_maintenance` (
 -- Table structure for table `m_consult_ntp_due_dates`
 --
 
+DROP TABLE IF EXISTS `m_consult_ntp_due_dates`;
 CREATE TABLE IF NOT EXISTS `m_consult_ntp_due_dates` (
   `ntp_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3943,6 +3989,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_due_dates` (
 -- Table structure for table `m_consult_ntp_intake_intensive`
 --
 
+DROP TABLE IF EXISTS `m_consult_ntp_intake_intensive`;
 CREATE TABLE IF NOT EXISTS `m_consult_ntp_intake_intensive` (
   `ntp_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
@@ -3971,6 +4018,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_intake_intensive` (
 -- Table structure for table `m_consult_ntp_labs`
 --
 
+DROP TABLE IF EXISTS `m_consult_ntp_labs`;
 CREATE TABLE IF NOT EXISTS `m_consult_ntp_labs` (
   `lab_id` varchar(10) NOT NULL default '',
   PRIMARY KEY  (`lab_id`)
@@ -3987,6 +4035,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_labs` (
 -- Table structure for table `m_consult_ntp_labs_request`
 --
 
+DROP TABLE IF EXISTS `m_consult_ntp_labs_request`;
 CREATE TABLE IF NOT EXISTS `m_consult_ntp_labs_request` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -4011,6 +4060,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_labs_request` (
 -- Table structure for table `m_consult_ntp_sputum`
 --
 
+DROP TABLE IF EXISTS `m_consult_ntp_sputum`;
 CREATE TABLE IF NOT EXISTS `m_consult_ntp_sputum` (
   `consult_id` float NOT NULL default '0',
   `ntp_id` float NOT NULL default '0',
@@ -4032,6 +4082,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_sputum` (
 -- Table structure for table `m_consult_philhealth_labs`
 --
 
+DROP TABLE IF EXISTS `m_consult_philhealth_labs`;
 CREATE TABLE IF NOT EXISTS `m_consult_philhealth_labs` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -4055,6 +4106,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_philhealth_labs` (
 -- Table structure for table `m_consult_philhealth_services`
 --
 
+DROP TABLE IF EXISTS `m_consult_philhealth_services`;
 CREATE TABLE IF NOT EXISTS `m_consult_philhealth_services` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -4078,6 +4130,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_philhealth_services` (
 -- Table structure for table `m_consult_ptgroup`
 --
 
+DROP TABLE IF EXISTS `m_consult_ptgroup`;
 CREATE TABLE IF NOT EXISTS `m_consult_ptgroup` (
   `ptgroup_id` varchar(10) NOT NULL default '',
   `consult_id` float NOT NULL default '0',
@@ -4099,6 +4152,7 @@ INSERT INTO `m_consult_ptgroup` (`ptgroup_id`, `consult_id`, `ptgroup_timestamp`
 -- Table structure for table `m_consult_reminder`
 --
 
+DROP TABLE IF EXISTS `m_consult_reminder`;
 CREATE TABLE IF NOT EXISTS `m_consult_reminder` (
   `reminder_id` float NOT NULL auto_increment,
   `patient_id` float NOT NULL default '0',
@@ -4126,6 +4180,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_reminder` (
 -- Table structure for table `m_consult_report`
 --
 
+DROP TABLE IF EXISTS `m_consult_report`;
 CREATE TABLE IF NOT EXISTS `m_consult_report` (
   `consult_date` date NOT NULL default '0000-00-00',
   `M_less1` int(11) NOT NULL default '0',
@@ -4156,6 +4211,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_report` (
 -- Table structure for table `m_consult_report_dailyservice`
 --
 
+DROP TABLE IF EXISTS `m_consult_report_dailyservice`;
 CREATE TABLE IF NOT EXISTS `m_consult_report_dailyservice` (
   `patient_id` float NOT NULL default '0',
   `patient_name` varchar(100) NOT NULL default '',
@@ -4184,6 +4240,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_report_dailyservice` (
 -- Table structure for table `m_consult_vaccine`
 --
 
+DROP TABLE IF EXISTS `m_consult_vaccine`;
 CREATE TABLE IF NOT EXISTS `m_consult_vaccine` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -4211,6 +4268,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_vaccine` (
 -- Table structure for table `m_consult_vitals`
 --
 
+DROP TABLE IF EXISTS `m_consult_vitals`;
 CREATE TABLE IF NOT EXISTS `m_consult_vitals` (
   `consult_id` float NOT NULL default '0',
   `vitals_timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -4238,6 +4296,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_vitals` (
 -- Table structure for table `m_family`
 --
 
+DROP TABLE IF EXISTS `m_family`;
 CREATE TABLE IF NOT EXISTS `m_family` (
   `family_id` int(11) NOT NULL auto_increment,
   `head_patient_id` int(11) NOT NULL default '0',
@@ -4255,6 +4314,7 @@ CREATE TABLE IF NOT EXISTS `m_family` (
 -- Table structure for table `m_family_address`
 --
 
+DROP TABLE IF EXISTS `m_family_address`;
 CREATE TABLE IF NOT EXISTS `m_family_address` (
   `family_id` int(11) NOT NULL default '0',
   `address_year` year(4) NOT NULL default '0000',
@@ -4275,6 +4335,7 @@ CREATE TABLE IF NOT EXISTS `m_family_address` (
 -- Table structure for table `m_family_members`
 --
 
+DROP TABLE IF EXISTS `m_family_members`;
 CREATE TABLE IF NOT EXISTS `m_family_members` (
   `family_id` int(11) NOT NULL default '0',
   `family_role` varchar(10) NOT NULL default '',
@@ -4295,6 +4356,7 @@ CREATE TABLE IF NOT EXISTS `m_family_members` (
 -- Table structure for table `m_healthcenter_modules`
 --
 
+DROP TABLE IF EXISTS `m_healthcenter_modules`;
 CREATE TABLE IF NOT EXISTS `m_healthcenter_modules` (
   `module_id` varchar(25) NOT NULL default '',
   PRIMARY KEY  (`module_id`)
@@ -4320,6 +4382,7 @@ INSERT INTO `m_healthcenter_modules` (`module_id`) VALUES
 -- Table structure for table `m_lib_appointment`
 --
 
+DROP TABLE IF EXISTS `m_lib_appointment`;
 CREATE TABLE IF NOT EXISTS `m_lib_appointment` (
   `appointment_id` varchar(10) NOT NULL default '',
   `appointment_name` varchar(50) NOT NULL default '',
@@ -4352,6 +4415,7 @@ INSERT INTO `m_lib_appointment` (`appointment_id`, `appointment_name`) VALUES
 -- Table structure for table `m_lib_barangay`
 --
 
+DROP TABLE IF EXISTS `m_lib_barangay`;
 CREATE TABLE IF NOT EXISTS `m_lib_barangay` (
   `barangay_id` int(11) NOT NULL default '0',
   `barangay_name` varchar(50) NOT NULL default '',
@@ -4375,6 +4439,7 @@ INSERT INTO `m_lib_barangay` (`barangay_id`, `barangay_name`, `barangay_populati
 -- Table structure for table `m_lib_ccdev_services`
 --
 
+DROP TABLE IF EXISTS `m_lib_ccdev_services`;
 CREATE TABLE IF NOT EXISTS `m_lib_ccdev_services` (
   `service_id` varchar(10) NOT NULL default '',
   `service_name` varchar(50) NOT NULL default '',
@@ -4397,6 +4462,7 @@ INSERT INTO `m_lib_ccdev_services` (`service_id`, `service_name`) VALUES
 -- Table structure for table `m_lib_complaint`
 --
 
+DROP TABLE IF EXISTS `m_lib_complaint`;
 CREATE TABLE IF NOT EXISTS `m_lib_complaint` (
   `complaint_id` varchar(10) NOT NULL default '',
   `complaint_module` varchar(25) NOT NULL default '',
@@ -4508,6 +4574,7 @@ INSERT INTO `m_lib_complaint` (`complaint_id`, `complaint_module`, `complaint_na
 -- Table structure for table `m_lib_disease_icdcode`
 --
 
+DROP TABLE IF EXISTS `m_lib_disease_icdcode`;
 CREATE TABLE IF NOT EXISTS `m_lib_disease_icdcode` (
   `disease_id` varchar(10) NOT NULL default '',
   `icd_code` varchar(12) NOT NULL default '',
@@ -4531,6 +4598,7 @@ INSERT INTO `m_lib_disease_icdcode` (`disease_id`, `icd_code`) VALUES
 -- Table structure for table `m_lib_disease_notifiable`
 --
 
+DROP TABLE IF EXISTS `m_lib_disease_notifiable`;
 CREATE TABLE IF NOT EXISTS `m_lib_disease_notifiable` (
   `disease_id` varchar(10) NOT NULL default '',
   `disease_name` varchar(50) NOT NULL default '',
@@ -4585,6 +4653,7 @@ INSERT INTO `m_lib_disease_notifiable` (`disease_id`, `disease_name`) VALUES
 -- Table structure for table `m_lib_drugs`
 --
 
+DROP TABLE IF EXISTS `m_lib_drugs`;
 CREATE TABLE IF NOT EXISTS `m_lib_drugs` (
   `drug_id` varchar(10) NOT NULL default '',
   `drug_cat` varchar(10) NOT NULL default '',
@@ -4607,6 +4676,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_drugs` (
 -- Table structure for table `m_lib_drug_category`
 --
 
+DROP TABLE IF EXISTS `m_lib_drug_category`;
 CREATE TABLE IF NOT EXISTS `m_lib_drug_category` (
   `cat_id` varchar(10) NOT NULL default '',
   `cat_name` varchar(50) NOT NULL default '',
@@ -4638,6 +4708,7 @@ INSERT INTO `m_lib_drug_category` (`cat_id`, `cat_name`) VALUES
 -- Table structure for table `m_lib_drug_formulation`
 --
 
+DROP TABLE IF EXISTS `m_lib_drug_formulation`;
 CREATE TABLE IF NOT EXISTS `m_lib_drug_formulation` (
   `form_id` int(11) NOT NULL auto_increment,
   `form_name` varchar(100) NOT NULL default '',
@@ -4680,6 +4751,7 @@ INSERT INTO `m_lib_drug_formulation` (`form_id`, `form_name`) VALUES
 -- Table structure for table `m_lib_drug_manufacturer`
 --
 
+DROP TABLE IF EXISTS `m_lib_drug_manufacturer`;
 CREATE TABLE IF NOT EXISTS `m_lib_drug_manufacturer` (
   `manufacturer_id` varchar(10) NOT NULL default '',
   `manufacturer_name` varchar(50) NOT NULL default '',
@@ -4697,6 +4769,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_drug_manufacturer` (
 -- Table structure for table `m_lib_drug_preparation`
 --
 
+DROP TABLE IF EXISTS `m_lib_drug_preparation`;
 CREATE TABLE IF NOT EXISTS `m_lib_drug_preparation` (
   `prep_id` varchar(10) NOT NULL default '',
   `prep_name` varchar(50) NOT NULL default '',
@@ -4722,6 +4795,7 @@ INSERT INTO `m_lib_drug_preparation` (`prep_id`, `prep_name`) VALUES
 -- Table structure for table `m_lib_drug_source`
 --
 
+DROP TABLE IF EXISTS `m_lib_drug_source`;
 CREATE TABLE IF NOT EXISTS `m_lib_drug_source` (
   `source_id` varchar(10) NOT NULL default '',
   `source_name` varchar(40) NOT NULL default '',
@@ -4742,6 +4816,7 @@ INSERT INTO `m_lib_drug_source` (`source_id`, `source_name`) VALUES
 -- Table structure for table `m_lib_education`
 --
 
+DROP TABLE IF EXISTS `m_lib_education`;
 CREATE TABLE IF NOT EXISTS `m_lib_education` (
   `educ_id` varchar(10) NOT NULL default '',
   `educ_name` varchar(50) NOT NULL default '',
@@ -4765,6 +4840,7 @@ INSERT INTO `m_lib_education` (`educ_id`, `educ_name`) VALUES
 -- Table structure for table `m_lib_fp_client`
 --
 
+DROP TABLE IF EXISTS `m_lib_fp_client`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (
   `client_id` int(7) NOT NULL auto_increment,
   `client_code` varchar(2) NOT NULL,
@@ -4783,6 +4859,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (
 -- Table structure for table `m_lib_fp_history`
 --
 
+DROP TABLE IF EXISTS `m_lib_fp_history`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_history` (
   `history_id` varchar(10) NOT NULL default '',
   `history_text` varchar(100) NOT NULL default '',
@@ -4835,6 +4912,7 @@ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VAL
 -- Table structure for table `m_lib_fp_history_cat`
 --
 
+DROP TABLE IF EXISTS `m_lib_fp_history_cat`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_history_cat` (
   `cat_id` varchar(10) NOT NULL default '',
   `cat_name` varchar(50) NOT NULL default '',
@@ -4860,6 +4938,7 @@ INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES
 -- Table structure for table `m_lib_fp_methods`
 --
 
+DROP TABLE IF EXISTS `m_lib_fp_methods`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_methods` (
   `method_id` varchar(10) NOT NULL default '',
   `method_name` varchar(100) NOT NULL default '',
@@ -4893,6 +4972,7 @@ INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`) VAL
 -- Table structure for table `m_lib_fp_pe`
 --
 
+DROP TABLE IF EXISTS `m_lib_fp_pe`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_pe` (
   `pe_id` int(5) NOT NULL auto_increment,
   `pe_name` varchar(100) NOT NULL,
@@ -5032,6 +5112,7 @@ INSERT INTO `m_lib_fp_pe` (`pe_id`, `pe_name`, `pe_cat`) VALUES
 -- Table structure for table `m_lib_fp_pelvic`
 --
 
+DROP TABLE IF EXISTS `m_lib_fp_pelvic`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_pelvic` (
   `pelvic_id` int(5) NOT NULL auto_increment,
   `pelvic_name` varchar(50) NOT NULL,
@@ -5183,6 +5264,7 @@ INSERT INTO `m_lib_fp_pelvic` (`pelvic_id`, `pelvic_name`, `pelvic_cat`) VALUES
 -- Table structure for table `m_lib_fp_pelvic_cat`
 --
 
+DROP TABLE IF EXISTS `m_lib_fp_pelvic_cat`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_pelvic_cat` (
   `pelvic_cat_id` varchar(20) NOT NULL,
   `pelvic_cat_name` varchar(50) NOT NULL,
@@ -5210,6 +5292,7 @@ INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`, `pelvic_cat_name`) VALUES
 -- Table structure for table `m_lib_fp_pe_cat`
 --
 
+DROP TABLE IF EXISTS `m_lib_fp_pe_cat`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_pe_cat` (
   `pe_cat_id` varchar(20) NOT NULL,
   `pe_cat_name` varchar(50) NOT NULL,
@@ -5234,6 +5317,7 @@ INSERT INTO `m_lib_fp_pe_cat` (`pe_cat_id`, `pe_cat_name`) VALUES
 -- Table structure for table `m_lib_graph_bargraph`
 --
 
+DROP TABLE IF EXISTS `m_lib_graph_bargraph`;
 CREATE TABLE IF NOT EXISTS `m_lib_graph_bargraph` (
   `graph_id` int(11) NOT NULL auto_increment,
   `module_id` varchar(25) NOT NULL default '',
@@ -5263,6 +5347,7 @@ INSERT INTO `m_lib_graph_bargraph` (`graph_id`, `module_id`, `graph_sql`, `graph
 -- Table structure for table `m_lib_graph_linegraph`
 --
 
+DROP TABLE IF EXISTS `m_lib_graph_linegraph`;
 CREATE TABLE IF NOT EXISTS `m_lib_graph_linegraph` (
   `graph_id` int(11) NOT NULL auto_increment,
   `module_id` varchar(25) NOT NULL default '',
@@ -5293,6 +5378,7 @@ INSERT INTO `m_lib_graph_linegraph` (`graph_id`, `module_id`, `graph_sql`, `grap
 -- Table structure for table `m_lib_graph_piegraph`
 --
 
+DROP TABLE IF EXISTS `m_lib_graph_piegraph`;
 CREATE TABLE IF NOT EXISTS `m_lib_graph_piegraph` (
   `graph_id` int(11) NOT NULL auto_increment,
   `module_id` varchar(25) NOT NULL default '',
@@ -5319,6 +5405,7 @@ INSERT INTO `m_lib_graph_piegraph` (`graph_id`, `module_id`, `graph_sql`, `graph
 -- Table structure for table `m_lib_icd10_en`
 --
 
+DROP TABLE IF EXISTS `m_lib_icd10_en`;
 CREATE TABLE IF NOT EXISTS `m_lib_icd10_en` (
   `diagnosis_code` varchar(12) NOT NULL default '',
   `description` text NOT NULL,
@@ -6662,7 +6749,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('C83.9', 'Diffuse non-Hodgkin''s lymphoma, unspecified', '', '', '', '', '', '', 4, '', '', ''),
 ('C84.-', 'Peripheral and cutaneous T-cell lymphomas', '', '', '', '', '', '', 3, '', '', ''),
 ('C84.0', 'Mycosis fungoides', '', '', '', '', '', '', 4, '', '', ''),
-('C84.1', 'S‚zary''s disease', '', '', '', '', '', '', 4, '', '', ''),
+('C84.1', 'Sâ€šzary''s disease', '', '', '', '', '', '', 4, '', '', ''),
 ('C84.2', 'T-zone lymphoma', '', '', '', '', '', '', 4, '', '', ''),
 ('C84.3', 'Lymphoepithelioid lymphoma', '', '', '', '', '', '', 4, '', '', ''),
 ('C84.4', 'Peripheral T-cell lymphoma', '', '', '', '', '', '', 4, '', '', ''),
@@ -6673,7 +6760,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('C85.7', 'Other specified types of non-Hodgkin''s lymphoma', '', '', '', '', '', '', 4, '', '', ''),
 ('C85.9', 'Non-Hodgkin''s lymphoma, unspecified type', '', '', '', '', '', '', 4, '', '', ''),
 ('C88.-', 'Malignant immunoproliferative diseases', '', '', '', '', '', '', 3, '', '', ''),
-('C88.0', 'Waldenstr”m''s macroglobulinemia', '', '', '', '', '', '', 4, '', '', ''),
+('C88.0', 'Waldenstrâ€m''s macroglobulinemia', '', '', '', '', '', '', 4, '', '', ''),
 ('C88.1', 'Alpha heavy chain disease', '', '', '', '', '', '', 4, '', '', ''),
 ('C88.2', 'Gamma heavy chain disease', '', '', '', '', '', '', 4, '', '', ''),
 ('C88.3', 'Immunoproliferative small intestinal disease', '', '', '', '', '', '', 4, '', '', ''),
@@ -8172,7 +8259,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('G37.2', 'Central pontine myelinolysis', '', '', '', '', '', '', 4, '', '', ''),
 ('G37.3', 'Acute transverse myelitis in demyelinating disease of central nervous system', '', '', '', '', '', '', 4, '', '', ''),
 ('G37.4', 'Subacute necrotizing myelitis', '', '', '', '', '', '', 4, '', '', ''),
-('G37.5', 'Concentric sclerosis [Bal¢]', '', '', '', '', '', '', 4, '', '', ''),
+('G37.5', 'Concentric sclerosis [BalÂ¢]', '', '', '', '', '', '', 4, '', '', ''),
 ('G37.8', 'Other specified demyelinating diseases of central nervous system', '', '', '', '', '', '', 4, '', '', ''),
 ('G37.9', 'Demyelinating disease of central nervous system, unspecified', '', '', '', '', '', '', 4, '', '', ''),
 ('G40.-', 'Epilepsy', '', '', '', '', '', '', 3, '', '', ''),
@@ -8285,7 +8372,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('G60.8', 'Other hereditary and idiopathic neuropathies', '', '', '', '', '', '', 4, '', '', ''),
 ('G60.9', 'Hereditary and idiopathic neuropathy, unspecified', '', '', '', '', '', '', 4, '', '', ''),
 ('G61.-', 'Inflammatory polyneuropathy', '', '', '', '', '', '', 3, '', '', ''),
-('G61.0', 'Guillain-Barr‚ syndrome', '', '', '', '', '', '', 4, '', '', ''),
+('G61.0', 'Guillain-Barrâ€š syndrome', '', '', '', '', '', '', 4, '', '', ''),
 ('G61.1', 'Serum neuropathy', '', '', '', '', '', '', 4, '', '', ''),
 ('G61.8', 'Other inflammatory polyneuropathies', '', '', '', '', '', '', 4, '', '', ''),
 ('G61.9', 'Inflammatory polyneuropathy, unspecified', '', '', '', '', '', '', 4, '', '', ''),
@@ -8705,7 +8792,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('H80.8', 'Other otosclerosis', '', '', '', '', '', '', 4, '', '', ''),
 ('H80.9', 'Otosclerosis, unspecified', '', '', '', '', '', '', 4, '', '', ''),
 ('H81.-', 'Disorders of vestibular function', '', '', '', '', '', '', 3, '', '', ''),
-('H81.0', 'M‚niŠre''s disease', '', '', '', '', '', '', 4, '', '', ''),
+('H81.0', 'Mâ€šniÅ re''s disease', '', '', '', '', '', '', 4, '', '', ''),
 ('H81.1', 'Benign paroxysmal vertigo', '', '', '', '', '', '', 4, '', '', ''),
 ('H81.2', 'Vestibular neuronitis', '', '', '', '', '', '', 4, '', '', ''),
 ('H81.3', 'Other peripheral vertigo', '', '', '', '', '', '', 4, '', '', ''),
@@ -10061,7 +10148,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('L70.2', 'Acne varioliformis', '', '', '', '', '', '', 4, '', '', ''),
 ('L70.3', 'Acne tropica', '', '', '', '', '', '', 4, '', '', ''),
 ('L70.4', 'Infantile acne', '', '', '', '', '', '', 4, '', '', ''),
-('L70.5', 'Acn‚ excori‚e des jeunes filles', '', '', '', '', '', '', 4, '', '', ''),
+('L70.5', 'Acnâ€š excoriâ€še des jeunes filles', '', '', '', '', '', '', 4, '', '', ''),
 ('L70.8', 'Other acne', '', '', '', '', '', '', 4, '', '', ''),
 ('L70.9', 'Acne, unspecified', '', '', '', '', '', '', 4, '', '', ''),
 ('L71.-', 'Rosacea', '', '', '', '', '', '', 3, '', '', ''),
@@ -10101,7 +10188,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('L81.1', 'Chloasma', '', '', '', '', '', '', 4, '', '', '');
 INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `type`, `inclusive`, `exclusive`, `notes`, `std_code`, `sub_level`, `remarks`, `extra_codes`, `extra_subclass`) VALUES
 ('L81.2', 'Freckles', '', '', '', '', '', '', 4, '', '', ''),
-('L81.3', 'Caf‚ au lait spots', '', '', '', '', '', '', 4, '', '', ''),
+('L81.3', 'Cafâ€š au lait spots', '', '', '', '', '', '', 4, '', '', ''),
 ('L81.4', 'Other melanin hyperpigmentation', '', '', '', '', '', '', 4, '', '', ''),
 ('L81.5', 'Leukoderma, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
 ('L81.6', 'Other disorders of diminished melanin formation', '', '', '', '', '', '', 4, '', '', ''),
@@ -10371,9 +10458,9 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('M34.8', 'Other forms of systemic sclerosis', '', '', '', '', '', '', 4, '', '', ''),
 ('M34.9', 'Systemic sclerosis, unspecified', '', '', '', '', '', '', 4, '', '', ''),
 ('M35.-', 'Other systemic involvement of connective tissue', '', '', '', '', '', '', 3, '', '', ''),
-('M35.0', 'Sicca syndrome [Sj”gren]', '', '', '', '', '', '', 4, '', '', ''),
+('M35.0', 'Sicca syndrome [Sjâ€gren]', '', '', '', '', '', '', 4, '', '', ''),
 ('M35.1', 'Other overlap syndromes', '', '', '', '', '', '', 4, '', '', ''),
-('M35.2', 'Beh‡et''s disease', '', '', '', '', '', '', 4, '', '', ''),
+('M35.2', 'Behâ€¡et''s disease', '', '', '', '', '', '', 4, '', '', ''),
 ('M35.3', 'Polymyalgia rheumatica', '', '', '', '', '', '', 4, '', '', ''),
 ('M35.4', 'Diffuse (eosinophilic) fasciitis', '', '', '', '', '', '', 4, '', '', ''),
 ('M35.5', 'Multifocal fibrosclerosis', '', '', '', '', '', '', 4, '', '', ''),
@@ -10662,7 +10749,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('M89.9', 'Disorder of bone, unspecified', '', '', '', '', '', '', 4, '', '', ''),
 ('M91.-', 'Juvenile osteochondrosis of hip and pelvis', '', '', '', '', '', '', 3, '', '', ''),
 ('M91.0', 'Juvenile osteochondrosis of pelvis', '', '', '', '', '', '', 4, '', '', ''),
-('M91.1', 'Juvenile osteochondrosis of head of femur [Legg-Calv‚-Perthes]', '', '', '', '', '', '', 4, '', '', ''),
+('M91.1', 'Juvenile osteochondrosis of head of femur [Legg-Calvâ€š-Perthes]', '', '', '', '', '', '', 4, '', '', ''),
 ('M91.2', 'Coxa plana', '', '', '', '', '', '', 4, '', '', ''),
 ('M91.3', 'Pseudocoxalgia', '', '', '', '', '', '', 4, '', '', ''),
 ('M91.8', 'Other juvenile osteochondrosis of hip and pelvis', '', '', '', '', '', '', 4, '', '', ''),
@@ -10680,7 +10767,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('M92.9', 'Juvenile osteochondrosis, unspecified', '', '', '', '', '', '', 4, '', '', ''),
 ('M93.-', 'Other osteochondropathies', '', '', '', '', '', '', 3, '', '', ''),
 ('M93.0', 'Slipped upper femoral epiphysis (nontraumatic)', '', '', '', '', '', '', 4, '', '', ''),
-('M93.1', 'Kienb”ck''s disease of adults', '', '', '', '', '', '', 4, '', '', ''),
+('M93.1', 'Kienbâ€ck''s disease of adults', '', '', '', '', '', '', 4, '', '', ''),
 ('M93.2', 'Osteochondritis dissecans', '', '', '', '', '', '', 4, '', '', ''),
 ('M93.8', 'Other specified osteochondropathies', '', '', '', '', '', '', 4, '', '', ''),
 ('M93.9', 'Osteochondropathy, unspecified', '', '', '', '', '', '', 4, '', '', ''),
@@ -14318,9 +14405,9 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 ('Y51.1', 'Other parasympathomimetics [cholinergics]', '', '', '', '', '', '', 4, '', '', ''),
 ('Y51.2', 'Ganglionic blocking drugs, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
 ('Y51.3', 'Other parasympatholytics [anticholinergics and antimuscarinics] and spasmolytics, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
-('Y51.4', 'Predominantly à-adrenoreceptor agonists, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
+('Y51.4', 'Predominantly Ã -adrenoreceptor agonists, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
 ('Y51.5', 'Predominantly  -adrenoreceptor agonists, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
-('Y51.6', 'à-Adrenoreceptor antagonists, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
+('Y51.6', 'Ã -Adrenoreceptor antagonists, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
 ('Y51.7', '-Adrenoreceptor antagonists, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
 ('Y51.8', 'Centrally acting and adrenergic-neuron-blocking agents, not elsewhere classified', '', '', '', '', '', '', 4, '', '', ''),
 ('Y51.9', 'Other and unspecified drugs primarily affecting the autonomic nervous system', '', '', '', '', '', '', 4, '', '', ''),
@@ -14586,6 +14673,7 @@ INSERT INTO `m_lib_icd10_en` (`diagnosis_code`, `description`, `class_sub`, `typ
 -- Table structure for table `m_lib_imci_drug`
 --
 
+DROP TABLE IF EXISTS `m_lib_imci_drug`;
 CREATE TABLE IF NOT EXISTS `m_lib_imci_drug` (
   `drug_id` varchar(25) NOT NULL default '',
   `drug_class` varchar(15) NOT NULL default '',
@@ -14604,6 +14692,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_imci_drug` (
 -- Table structure for table `m_lib_imci_drugclass`
 --
 
+DROP TABLE IF EXISTS `m_lib_imci_drugclass`;
 CREATE TABLE IF NOT EXISTS `m_lib_imci_drugclass` (
   `class_id` varchar(15) NOT NULL default '',
   `class_name` varchar(50) NOT NULL default '',
@@ -14621,6 +14710,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_imci_drugclass` (
 -- Table structure for table `m_lib_imci_dxclass`
 --
 
+DROP TABLE IF EXISTS `m_lib_imci_dxclass`;
 CREATE TABLE IF NOT EXISTS `m_lib_imci_dxclass` (
   `class_id` int(11) NOT NULL default '0',
   `class_name` varchar(100) NOT NULL default '',
@@ -14638,6 +14728,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_imci_dxclass` (
 -- Table structure for table `m_lib_imci_dxclass_treatment`
 --
 
+DROP TABLE IF EXISTS `m_lib_imci_dxclass_treatment`;
 CREATE TABLE IF NOT EXISTS `m_lib_imci_dxclass_treatment` (
   `class_id` int(11) NOT NULL default '0',
   `treatment_id` int(11) NOT NULL default '0',
@@ -14657,6 +14748,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_imci_dxclass_treatment` (
 -- Table structure for table `m_lib_imci_sign`
 --
 
+DROP TABLE IF EXISTS `m_lib_imci_sign`;
 CREATE TABLE IF NOT EXISTS `m_lib_imci_sign` (
   `sign_id` int(11) NOT NULL default '0',
   `sign_name` varchar(10) NOT NULL default '',
@@ -14675,6 +14767,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_imci_sign` (
 -- Table structure for table `m_lib_imci_sign_dxclass`
 --
 
+DROP TABLE IF EXISTS `m_lib_imci_sign_dxclass`;
 CREATE TABLE IF NOT EXISTS `m_lib_imci_sign_dxclass` (
   `sign_id` int(11) NOT NULL default '0',
   `class_id` int(11) NOT NULL default '0',
@@ -14694,6 +14787,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_imci_sign_dxclass` (
 -- Table structure for table `m_lib_imci_treatment`
 --
 
+DROP TABLE IF EXISTS `m_lib_imci_treatment`;
 CREATE TABLE IF NOT EXISTS `m_lib_imci_treatment` (
   `treatment_id` int(11) NOT NULL default '0',
   `treatment_name` varchar(10) NOT NULL default '',
@@ -14712,6 +14806,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_imci_treatment` (
 -- Table structure for table `m_lib_injury`
 --
 
+DROP TABLE IF EXISTS `m_lib_injury`;
 CREATE TABLE IF NOT EXISTS `m_lib_injury` (
   `injury_id` varchar(10) NOT NULL default '',
   `injury_name` varchar(50) NOT NULL default '',
@@ -14732,6 +14827,7 @@ INSERT INTO `m_lib_injury` (`injury_id`, `injury_name`) VALUES
 -- Table structure for table `m_lib_injury_icd10`
 --
 
+DROP TABLE IF EXISTS `m_lib_injury_icd10`;
 CREATE TABLE IF NOT EXISTS `m_lib_injury_icd10` (
   `injury_id` varchar(10) NOT NULL default '',
   `diagnosis_code` varchar(12) NOT NULL default '',
@@ -14752,6 +14848,7 @@ INSERT INTO `m_lib_injury_icd10` (`injury_id`, `diagnosis_code`) VALUES
 -- Table structure for table `m_lib_injury_location`
 --
 
+DROP TABLE IF EXISTS `m_lib_injury_location`;
 CREATE TABLE IF NOT EXISTS `m_lib_injury_location` (
   `location_id` varchar(10) NOT NULL default '',
   `location_name` varchar(50) NOT NULL default '',
@@ -14769,6 +14866,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_injury_location` (
 -- Table structure for table `m_lib_injury_mechanism`
 --
 
+DROP TABLE IF EXISTS `m_lib_injury_mechanism`;
 CREATE TABLE IF NOT EXISTS `m_lib_injury_mechanism` (
   `mechanism_id` varchar(10) NOT NULL default '',
   `mechanism_name` varchar(50) NOT NULL default '',
@@ -14786,6 +14884,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_injury_mechanism` (
 -- Table structure for table `m_lib_laboratory`
 --
 
+DROP TABLE IF EXISTS `m_lib_laboratory`;
 CREATE TABLE IF NOT EXISTS `m_lib_laboratory` (
   `lab_id` varchar(10) NOT NULL default '',
   `lab_module` varchar(25) NOT NULL default '',
@@ -14813,6 +14912,7 @@ INSERT INTO `m_lib_laboratory` (`lab_id`, `lab_module`, `lab_name`) VALUES
 -- Table structure for table `m_lib_mc_birth_attendant`
 --
 
+DROP TABLE IF EXISTS `m_lib_mc_birth_attendant`;
 CREATE TABLE IF NOT EXISTS `m_lib_mc_birth_attendant` (
   `attendant_id` varchar(10) NOT NULL default '',
   `attendant_name` varchar(40) NOT NULL default '',
@@ -14837,6 +14937,7 @@ INSERT INTO `m_lib_mc_birth_attendant` (`attendant_id`, `attendant_name`) VALUES
 -- Table structure for table `m_lib_mc_outcome`
 --
 
+DROP TABLE IF EXISTS `m_lib_mc_outcome`;
 CREATE TABLE IF NOT EXISTS `m_lib_mc_outcome` (
   `outcome_id` varchar(10) NOT NULL default '',
   `outcome_name` varchar(40) NOT NULL default '',
@@ -14862,6 +14963,7 @@ INSERT INTO `m_lib_mc_outcome` (`outcome_id`, `outcome_name`) VALUES
 -- Table structure for table `m_lib_mc_risk_factors`
 --
 
+DROP TABLE IF EXISTS `m_lib_mc_risk_factors`;
 CREATE TABLE IF NOT EXISTS `m_lib_mc_risk_factors` (
   `risk_id` int(11) NOT NULL auto_increment,
   `risk_name` varchar(100) NOT NULL default '',
@@ -14919,6 +15021,7 @@ INSERT INTO `m_lib_mc_risk_factors` (`risk_id`, `risk_name`, `hospital_flag`, `m
 -- Table structure for table `m_lib_mc_services`
 --
 
+DROP TABLE IF EXISTS `m_lib_mc_services`;
 CREATE TABLE IF NOT EXISTS `m_lib_mc_services` (
   `service_id` varchar(10) NOT NULL default '',
   `service_name` varchar(50) NOT NULL default '',
@@ -14940,6 +15043,7 @@ INSERT INTO `m_lib_mc_services` (`service_id`, `service_name`) VALUES
 -- Table structure for table `m_lib_mc_vaccines`
 --
 
+DROP TABLE IF EXISTS `m_lib_mc_vaccines`;
 CREATE TABLE IF NOT EXISTS `m_lib_mc_vaccines` (
   `vaccine_id` varchar(25) NOT NULL default '',
   `vaccine_name` varchar(50) NOT NULL default '',
@@ -14963,6 +15067,7 @@ INSERT INTO `m_lib_mc_vaccines` (`vaccine_id`, `vaccine_name`) VALUES
 -- Table structure for table `m_lib_notes_dxclass`
 --
 
+DROP TABLE IF EXISTS `m_lib_notes_dxclass`;
 CREATE TABLE IF NOT EXISTS `m_lib_notes_dxclass` (
   `class_id` float NOT NULL auto_increment,
   `class_name` varchar(50) NOT NULL default '',
@@ -17180,6 +17285,7 @@ INSERT INTO `m_lib_notes_dxclass` (`class_id`, `class_name`) VALUES
 -- Table structure for table `m_lib_notes_template`
 --
 
+DROP TABLE IF EXISTS `m_lib_notes_template`;
 CREATE TABLE IF NOT EXISTS `m_lib_notes_template` (
   `template_id` float NOT NULL auto_increment,
   `template_cat` varchar(10) NOT NULL default '',
@@ -17244,6 +17350,7 @@ INSERT INTO `m_lib_notes_template` (`template_id`, `template_cat`, `template_nam
 -- Table structure for table `m_lib_ntp_appointment`
 --
 
+DROP TABLE IF EXISTS `m_lib_ntp_appointment`;
 CREATE TABLE IF NOT EXISTS `m_lib_ntp_appointment` (
   `appointment_id` varchar(10) NOT NULL default '',
   PRIMARY KEY  (`appointment_id`)
@@ -17264,6 +17371,7 @@ INSERT INTO `m_lib_ntp_appointment` (`appointment_id`) VALUES
 -- Table structure for table `m_lib_ntp_patient_type`
 --
 
+DROP TABLE IF EXISTS `m_lib_ntp_patient_type`;
 CREATE TABLE IF NOT EXISTS `m_lib_ntp_patient_type` (
   `type_id` varchar(10) NOT NULL default '',
   `type_name` varchar(40) NOT NULL default '',
@@ -17288,6 +17396,7 @@ INSERT INTO `m_lib_ntp_patient_type` (`type_id`, `type_name`) VALUES
 -- Table structure for table `m_lib_ntp_treatment_category`
 --
 
+DROP TABLE IF EXISTS `m_lib_ntp_treatment_category`;
 CREATE TABLE IF NOT EXISTS `m_lib_ntp_treatment_category` (
   `cat_id` char(3) NOT NULL default '',
   `cat_name` varchar(50) NOT NULL default '',
@@ -17310,6 +17419,7 @@ INSERT INTO `m_lib_ntp_treatment_category` (`cat_id`, `cat_name`, `cat_details`)
 -- Table structure for table `m_lib_ntp_treatment_outcome`
 --
 
+DROP TABLE IF EXISTS `m_lib_ntp_treatment_outcome`;
 CREATE TABLE IF NOT EXISTS `m_lib_ntp_treatment_outcome` (
   `outcome_id` varchar(10) NOT NULL default '',
   `outcome_name` varchar(40) NOT NULL default '',
@@ -17335,6 +17445,7 @@ INSERT INTO `m_lib_ntp_treatment_outcome` (`outcome_id`, `outcome_name`) VALUES
 -- Table structure for table `m_lib_ntp_treatment_partner`
 --
 
+DROP TABLE IF EXISTS `m_lib_ntp_treatment_partner`;
 CREATE TABLE IF NOT EXISTS `m_lib_ntp_treatment_partner` (
   `partner_id` varchar(10) NOT NULL default '',
   `partner_name` varchar(50) NOT NULL default '',
@@ -17360,6 +17471,7 @@ INSERT INTO `m_lib_ntp_treatment_partner` (`partner_id`, `partner_name`) VALUES
 -- Table structure for table `m_lib_occupation`
 --
 
+DROP TABLE IF EXISTS `m_lib_occupation`;
 CREATE TABLE IF NOT EXISTS `m_lib_occupation` (
   `occup_id` varchar(10) NOT NULL default '',
   `occup_cat` varchar(15) NOT NULL default '',
@@ -17478,6 +17590,7 @@ INSERT INTO `m_lib_occupation` (`occup_id`, `occup_cat`, `occup_name`) VALUES
 -- Table structure for table `m_lib_occupation_cat`
 --
 
+DROP TABLE IF EXISTS `m_lib_occupation_cat`;
 CREATE TABLE IF NOT EXISTS `m_lib_occupation_cat` (
   `cat_id` varchar(10) NOT NULL default '',
   `cat_name` varchar(50) NOT NULL default '',
@@ -17508,6 +17621,7 @@ INSERT INTO `m_lib_occupation_cat` (`cat_id`, `cat_name`) VALUES
 -- Table structure for table `m_lib_philhealth_labs`
 --
 
+DROP TABLE IF EXISTS `m_lib_philhealth_labs`;
 CREATE TABLE IF NOT EXISTS `m_lib_philhealth_labs` (
   `lab_id` varchar(10) NOT NULL default '',
   PRIMARY KEY  (`lab_id`)
@@ -17531,6 +17645,7 @@ INSERT INTO `m_lib_philhealth_labs` (`lab_id`) VALUES
 -- Table structure for table `m_lib_philhealth_services`
 --
 
+DROP TABLE IF EXISTS `m_lib_philhealth_services`;
 CREATE TABLE IF NOT EXISTS `m_lib_philhealth_services` (
   `service_id` varchar(10) NOT NULL default '',
   `service_name` varchar(50) NOT NULL default '',
@@ -17555,6 +17670,7 @@ INSERT INTO `m_lib_philhealth_services` (`service_id`, `service_name`) VALUES
 -- Table structure for table `m_lib_population`
 --
 
+DROP TABLE IF EXISTS `m_lib_population`;
 CREATE TABLE IF NOT EXISTS `m_lib_population` (
   `population_id` int(10) NOT NULL auto_increment,
   `barangay_id` int(5) NOT NULL default '0',
@@ -17574,6 +17690,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_population` (
 -- Table structure for table `m_lib_pregnancy_visit_risk`
 --
 
+DROP TABLE IF EXISTS `m_lib_pregnancy_visit_risk`;
 CREATE TABLE IF NOT EXISTS `m_lib_pregnancy_visit_risk` (
   `risk_id` varchar(10) NOT NULL default '',
   `risk_name` varchar(50) NOT NULL default '',
@@ -17601,6 +17718,7 @@ INSERT INTO `m_lib_pregnancy_visit_risk` (`risk_id`, `risk_name`) VALUES
 -- Table structure for table `m_lib_ptgroup`
 --
 
+DROP TABLE IF EXISTS `m_lib_ptgroup`;
 CREATE TABLE IF NOT EXISTS `m_lib_ptgroup` (
   `ptgroup_id` varchar(10) NOT NULL default '',
   `ptgroup_name` varchar(25) NOT NULL default '',
@@ -17628,6 +17746,7 @@ INSERT INTO `m_lib_ptgroup` (`ptgroup_id`, `ptgroup_name`, `ptgroup_module`, `pt
 -- Table structure for table `m_lib_rad_exams`
 --
 
+DROP TABLE IF EXISTS `m_lib_rad_exams`;
 CREATE TABLE IF NOT EXISTS `m_lib_rad_exams` (
   `lab_id` varchar(10) NOT NULL default '',
   PRIMARY KEY  (`lab_id`)
@@ -17644,6 +17763,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_rad_exams` (
 -- Table structure for table `m_lib_region`
 --
 
+DROP TABLE IF EXISTS `m_lib_region`;
 CREATE TABLE IF NOT EXISTS `m_lib_region` (
   `region_id` varchar(10) NOT NULL default '',
   `region_provinces` varchar(255) NOT NULL default '',
@@ -17672,7 +17792,7 @@ INSERT INTO `m_lib_region` (`region_id`, `region_provinces`, `region_name`) VALU
 ('9', 'Zamboanga Sibugay, Zamboanga del Sur, Zamboanga del Norte, Zamboanga City, Isabela City', 'Zamboanga Peninsula'),
 ('ARMM', 'Basilan, Sulu, Tawi-tawi, Lanao del Sur, Maguindanao', 'Autonomous Region of Muslim Mindanao'),
 ('CAR', 'Abra, Benguet, Ifugao, Kalinga, Apayao, Mountain Province', 'Cordillera Administrative Region'),
-('NCR', 'Caloocan, Las Piñas, Quezon City, Makati, Manila, Muntinlupa,    Parañaque, Pasig, Pasay, Malabon, Mandaluyong, Marikina and Valenzuela and the municipalities of Navotas, Pateros, San Juan and Taguig', 'National Capital Region');
+('NCR', 'Caloocan, Las PiÃ±as, Quezon City, Makati, Manila, Muntinlupa,    ParaÃ±aque, Pasig, Pasay, Malabon, Mandaluyong, Marikina and Valenzuela and the municipalities of Navotas, Pateros, San Juan and Taguig', 'National Capital Region');
 
 -- --------------------------------------------------------
 
@@ -17680,6 +17800,7 @@ INSERT INTO `m_lib_region` (`region_id`, `region_provinces`, `region_name`) VALU
 -- Table structure for table `m_lib_reminder_sms_template`
 --
 
+DROP TABLE IF EXISTS `m_lib_reminder_sms_template`;
 CREATE TABLE IF NOT EXISTS `m_lib_reminder_sms_template` (
   `appointment_id` varchar(10) NOT NULL default '',
   `template_text` varchar(120) NOT NULL default '',
@@ -17711,6 +17832,7 @@ INSERT INTO `m_lib_reminder_sms_template` (`appointment_id`, `template_text`) VA
 -- Table structure for table `m_lib_supply_source`
 --
 
+DROP TABLE IF EXISTS `m_lib_supply_source`;
 CREATE TABLE IF NOT EXISTS `m_lib_supply_source` (
   `source_id` int(5) NOT NULL auto_increment,
   `source_name` varchar(200) NOT NULL,
@@ -17736,6 +17858,7 @@ INSERT INTO `m_lib_supply_source` (`source_id`, `source_name`, `source_cat`) VAL
 -- Table structure for table `m_lib_tcl`
 --
 
+DROP TABLE IF EXISTS `m_lib_tcl`;
 CREATE TABLE IF NOT EXISTS `m_lib_tcl` (
   `tcl_id` int(11) NOT NULL auto_increment,
   `tcl_name` varchar(100) NOT NULL default '',
@@ -17759,6 +17882,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_tcl` (
 -- Table structure for table `m_lib_treatment`
 --
 
+DROP TABLE IF EXISTS `m_lib_treatment`;
 CREATE TABLE IF NOT EXISTS `m_lib_treatment` (
   `treatment_id` float NOT NULL auto_increment,
   `treatment_name` varchar(50) NOT NULL default '',
@@ -17777,6 +17901,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_treatment` (
 -- Table structure for table `m_lib_vaccine`
 --
 
+DROP TABLE IF EXISTS `m_lib_vaccine`;
 CREATE TABLE IF NOT EXISTS `m_lib_vaccine` (
   `vaccine_id` varchar(25) NOT NULL default '',
   `vaccine_name` varchar(50) NOT NULL default '',
@@ -17815,6 +17940,7 @@ INSERT INTO `m_lib_vaccine` (`vaccine_id`, `vaccine_name`, `vaccine_interval`, `
 -- Table structure for table `m_lib_wtforage`
 --
 
+DROP TABLE IF EXISTS `m_lib_wtforage`;
 CREATE TABLE IF NOT EXISTS `m_lib_wtforage` (
   `age_month` int(11) NOT NULL default '0',
   `weight_min` float NOT NULL default '0',
@@ -18419,6 +18545,7 @@ INSERT INTO `m_lib_wtforage` (`age_month`, `weight_min`, `weight_max`, `gender`,
 -- Table structure for table `m_news`
 --
 
+DROP TABLE IF EXISTS `m_news`;
 CREATE TABLE IF NOT EXISTS `m_news` (
   `news_id` float NOT NULL auto_increment,
   `news_timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -18441,6 +18568,7 @@ CREATE TABLE IF NOT EXISTS `m_news` (
 -- Table structure for table `m_patient`
 --
 
+DROP TABLE IF EXISTS `m_patient`;
 CREATE TABLE IF NOT EXISTS `m_patient` (
   `patient_id` float NOT NULL auto_increment,
   `healthcenter_id` int(11) NOT NULL default '0',
@@ -18478,6 +18606,7 @@ INSERT INTO `m_patient` (`patient_id`, `healthcenter_id`, `user_id`, `patient_la
 -- Table structure for table `m_patient_ccdev`
 --
 
+DROP TABLE IF EXISTS `m_patient_ccdev`;
 CREATE TABLE IF NOT EXISTS `m_patient_ccdev` (
   `ccdev_id` float NOT NULL auto_increment,
   `patient_id` float NOT NULL default '0',
@@ -18524,6 +18653,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_ccdev` (
 -- Table structure for table `m_patient_ccdev_sibling`
 --
 
+DROP TABLE IF EXISTS `m_patient_ccdev_sibling`;
 CREATE TABLE IF NOT EXISTS `m_patient_ccdev_sibling` (
   `ccdev_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -18545,6 +18675,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_ccdev_sibling` (
 -- Table structure for table `m_patient_consult_tcl`
 --
 
+DROP TABLE IF EXISTS `m_patient_consult_tcl`;
 CREATE TABLE IF NOT EXISTS `m_patient_consult_tcl` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -18572,6 +18703,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_consult_tcl` (
 -- Table structure for table `m_patient_epi_tcl`
 --
 
+DROP TABLE IF EXISTS `m_patient_epi_tcl`;
 CREATE TABLE IF NOT EXISTS `m_patient_epi_tcl` (
   `patient_id` float NOT NULL default '0',
   `patient_dob` date NOT NULL default '0000-00-00',
@@ -18608,6 +18740,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_epi_tcl` (
 -- Table structure for table `m_patient_fp`
 --
 
+DROP TABLE IF EXISTS `m_patient_fp`;
 CREATE TABLE IF NOT EXISTS `m_patient_fp` (
   `fp_id` float NOT NULL auto_increment,
   `patient_id` float NOT NULL default '0',
@@ -18645,6 +18778,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_fp` (
 -- Table structure for table `m_patient_injury_tcl`
 --
 
+DROP TABLE IF EXISTS `m_patient_injury_tcl`;
 CREATE TABLE IF NOT EXISTS `m_patient_injury_tcl` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -18672,6 +18806,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_injury_tcl` (
 -- Table structure for table `m_patient_mc`
 --
 
+DROP TABLE IF EXISTS `m_patient_mc`;
 CREATE TABLE IF NOT EXISTS `m_patient_mc` (
   `mc_id` float NOT NULL auto_increment,
   `patient_id` float NOT NULL default '0',
@@ -18719,6 +18854,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_mc` (
 -- Table structure for table `m_patient_mc_postpartum_tcl`
 --
 
+DROP TABLE IF EXISTS `m_patient_mc_postpartum_tcl`;
 CREATE TABLE IF NOT EXISTS `m_patient_mc_postpartum_tcl` (
   `mc_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -18749,6 +18885,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_mc_postpartum_tcl` (
 -- Table structure for table `m_patient_mc_prenatal_tcl`
 --
 
+DROP TABLE IF EXISTS `m_patient_mc_prenatal_tcl`;
 CREATE TABLE IF NOT EXISTS `m_patient_mc_prenatal_tcl` (
   `mc_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -18788,6 +18925,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_mc_prenatal_tcl` (
 -- Table structure for table `m_patient_modules`
 --
 
+DROP TABLE IF EXISTS `m_patient_modules`;
 CREATE TABLE IF NOT EXISTS `m_patient_modules` (
   `module_id` varchar(25) NOT NULL default '',
   PRIMARY KEY  (`module_id`)
@@ -18804,6 +18942,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_modules` (
 -- Table structure for table `m_patient_notifiable_tcl`
 --
 
+DROP TABLE IF EXISTS `m_patient_notifiable_tcl`;
 CREATE TABLE IF NOT EXISTS `m_patient_notifiable_tcl` (
   `consult_id` float NOT NULL default '0',
   `patient_id` float NOT NULL default '0',
@@ -18831,6 +18970,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_notifiable_tcl` (
 -- Table structure for table `m_patient_ntp`
 --
 
+DROP TABLE IF EXISTS `m_patient_ntp`;
 CREATE TABLE IF NOT EXISTS `m_patient_ntp` (
   `patient_id` float NOT NULL default '0',
   `ntp_id` float NOT NULL auto_increment,
@@ -18883,6 +19023,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_ntp` (
 -- Table structure for table `m_patient_ntp_report`
 --
 
+DROP TABLE IF EXISTS `m_patient_ntp_report`;
 CREATE TABLE IF NOT EXISTS `m_patient_ntp_report` (
   `report_id` float NOT NULL auto_increment,
   `ntp_id` float NOT NULL default '0',
@@ -18910,6 +19051,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_ntp_report` (
 -- Table structure for table `m_patient_ntp_tcl`
 --
 
+DROP TABLE IF EXISTS `m_patient_ntp_tcl`;
 CREATE TABLE IF NOT EXISTS `m_patient_ntp_tcl` (
   `ntp_id` float NOT NULL default '0',
   `ntp_timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -18951,6 +19093,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_ntp_tcl` (
 -- Table structure for table `m_patient_philhealth`
 --
 
+DROP TABLE IF EXISTS `m_patient_philhealth`;
 CREATE TABLE IF NOT EXISTS `m_patient_philhealth` (
   `philhealth_id` varchar(50) NOT NULL default '',
   `healthcenter_id` varchar(10) NOT NULL default '0',
@@ -18972,6 +19115,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_philhealth` (
 -- Table structure for table `m_patient_reminder_data`
 --
 
+DROP TABLE IF EXISTS `m_patient_reminder_data`;
 CREATE TABLE IF NOT EXISTS `m_patient_reminder_data` (
   `patient_id` float NOT NULL default '0',
   `cellular_phone` varchar(50) NOT NULL default '',
@@ -18996,6 +19140,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_reminder_data` (
 -- Table structure for table `m_ptgroup_patient`
 --
 
+DROP TABLE IF EXISTS `m_ptgroup_patient`;
 CREATE TABLE IF NOT EXISTS `m_ptgroup_patient` (
   `ptgroup_id` varchar(10) NOT NULL default '',
   `patient_id` float NOT NULL default '0',
@@ -19016,6 +19161,7 @@ CREATE TABLE IF NOT EXISTS `m_ptgroup_patient` (
 -- Table structure for table `m_template`
 --
 
+DROP TABLE IF EXISTS `m_template`;
 CREATE TABLE IF NOT EXISTS `m_template` (
   `template_key` varchar(30) NOT NULL default '',
   `template_name` varchar(50) NOT NULL default '',
@@ -19040,6 +19186,7 @@ INSERT INTO `m_template` (`template_key`, `template_name`, `template_text`) VALU
 -- Table structure for table `m_vaccine_record`
 --
 
+DROP TABLE IF EXISTS `m_vaccine_record`;
 CREATE TABLE IF NOT EXISTS `m_vaccine_record` (
   `patient_id` int(11) NOT NULL default '0',
   `healthcenter_id` int(11) NOT NULL default '0',
@@ -19062,6 +19209,7 @@ CREATE TABLE IF NOT EXISTS `m_vaccine_record` (
 -- Table structure for table `role`
 --
 
+DROP TABLE IF EXISTS `role`;
 CREATE TABLE IF NOT EXISTS `role` (
   `role_id` varchar(10) NOT NULL default '',
   `role_dataaccess` char(3) NOT NULL default '',
@@ -19088,6 +19236,7 @@ INSERT INTO `role` (`role_id`, `role_dataaccess`, `role_name`) VALUES
 -- Table structure for table `terms`
 --
 
+DROP TABLE IF EXISTS `terms`;
 CREATE TABLE IF NOT EXISTS `terms` (
   `termid` varchar(50) NOT NULL default '',
   `languageid` varchar(10) NOT NULL default '',
