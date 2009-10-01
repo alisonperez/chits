@@ -583,7 +583,8 @@ class family extends module{
             print "<tr><td>";
             print "<span class='tinylight'>".INSTR_FAMILY_INFO."</span><br/>";
             print "<b><font color='red'>SELECTED FAMILY</font> ";
-            print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&family_id=".$get_vars["family_id"]."&edit_family_id=".$get_vars["family_id"]."#family_form'>".module::pad_zero($get_vars["family_id"],5)."</a></b> ";
+            //print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&family_id=".$get_vars["family_id"]."&edit_family_id=".$get_vars["family_id"]."#family_form'>".module::pad_zero($get_vars["family_id"],5)."</a></b> ";
+            print module::pad_zero($get_vars["family_id"],5)."&nbsp;<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&family_id=".$get_vars["family_id"]."&edit_family_id=".$get_vars["family_id"]."#family_form'>".edit."</a></b> ";
             print "<br>";
             print "<font color='#999999'>";
             print "<b>ADDRESS:</b> ".$this->show_address($get_vars["family_id"])."<br/>";

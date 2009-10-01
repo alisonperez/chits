@@ -305,7 +305,7 @@ Class Module {
             $author = $arg_list[2];         // module author
             $module = $arg_list[3];         // module name
         }
-	
+
         $sql = "update modules set module_desc = '$description', ".
                "module_version = '".$version."', module_author = '".$author."' ".
                "where module_id = '$module';";

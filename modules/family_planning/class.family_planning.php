@@ -50,6 +50,8 @@ class family_planning extends module{
 		if(func_num_args()>0){
 			$arg_list = func_get_args();
 		}
+	        module::set_detail($this->description, $this->version, $this->author, $this->module);
+
 	}
 
 	function init_sql(){
