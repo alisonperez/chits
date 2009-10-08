@@ -16,9 +16,23 @@ Feature: Family Folders
     Given I am logged in as "user" with password "user"
     And I click "FAMILY FOLDERS"
     When I fill in "family_number" with "1"
-    Then I should see "SELECTED FAMILY";
+    And I press "Search"
+    Then I should see "SELECTED FAMILY"
 
-#   Scenario: Update Family Folder Details
+   Scenario: Update Family Folder Details
+    Given I am logged in as "user" with password "user"
+    And I click "FAMILY FOLDERS"
+    When I fill in "family_number" with "1"
+    And I press "Search"
+    And I should see "SELECTED FAMILY"
+    And I click "edit"
+    And I fill in "family_address" with "6789 XYZ Street"
+    And I select "Brgy 2" from "barangay"
+    And I press "Update Folder"
+    Then I should see "6789 XYZ Street"
+    And I should see "Brgy 2"
+
+
 
 #   Scenario: Delete Family Folder
 
