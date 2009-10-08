@@ -597,6 +597,10 @@ INSERT INTO `module_user_location` (`location_id`, `user_id`) VALUES
 ('CONS', 2),
 ('LAB', 2),
 ('TX', 2);
+('ADM', 3),
+('CONS', 3),
+('LAB', 3),
+('TX', 3);
 
 -- --------------------------------------------------------
 
