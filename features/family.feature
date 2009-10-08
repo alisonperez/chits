@@ -12,7 +12,11 @@ Feature: Family Folders
     And I press "Create Folder"
     Then I should see "No members"
        
-#  Scenario: Search A Family Folder
+  Scenario: Search A Family Folder
+    Given I am logged in as "user" with password "user"
+    And I click "FAMILY FOLDERS"
+    When I fill in "family_number" with "1"
+    Then I should see "SELECTED FAMILY";
 
 #   Scenario: Update Family Folder Details
 
