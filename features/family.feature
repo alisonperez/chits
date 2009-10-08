@@ -33,8 +33,12 @@ Feature: Family Folders
     And I should see "Brgy 2"
 
 
-
-#   Scenario: Delete Family Folder
-#    Given I am logged in as "admin" with password "admin"
-    
-
+   Scenario: Delete Family Folder
+    Given I am logged in as "user" with password "user"
+    And I click "PATIENTS"
+    And I click "Family Folders"
+    And I click "No members"
+    Then I should see "1"
+    And I click "delete"
+    And I click "Yes"
+    And I should not see "1"

@@ -18,6 +18,7 @@ class family extends module{
         // 0.6 added family address editing
         // 0.7 added head of family functionality
         // 0.8 debugged barangay_name()
+        // 0.9 explicitly indicated an edit link (2009-10-03) - darth-ali
     }
 
     // --------------- STANDARD MODULE FUNCTIONS ------------------
@@ -248,7 +249,7 @@ class family extends module{
                                     while (list($fid) = mysql_fetch_array($result_mem)) {
                                         $ret_val .= "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&family_id=$fid'>$fid</a> ";
                                         if ($_SESSION["priv_delete"]) {
-                                            $ret_val .= "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&members=".$get_vars["members"]."&delete_family_id=$fid'><img src='../images/delete.png' border='0'/></a><br/>";
+                                            $ret_val .= "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&members=".$get_vars["members"]."&delete_family_id=$fid' id='delete'><img src='../images/delete.png' border='0'id='delete' /></a><br/>";
                                         }
                                     }
                                     $ret_val .= "</td></tr></table>";
