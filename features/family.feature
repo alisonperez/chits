@@ -35,4 +35,6 @@ Feature: Family Folders
 
 
 #   Scenario: Delete Family Folder
+#    Given I am logged in as "admin" with password "admin"
+    
 
