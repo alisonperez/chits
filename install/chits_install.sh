@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/bin/sh
+
+# http://github.com/mikeymckay/chits/raw/master/install/mysql_replication.sh
+
 if [ -z "$SUDO_USER" ]; then
     echo "$0 must be called from sudo"
     exit 1
@@ -14,6 +17,10 @@ set_mysql_root_password () {
 if [ ! "$MYSQL_ROOT_PASSWORD" ]; then set_mysql_root_password; fi
 
 apt-get --assume-yes install apache2 mysql-server php5 php5-mysql openssh-server git-core wget ruby libxml2-dev libxslt1-dev ruby1.8-dev rdoc1.8 irb1.8 libopenssl-ruby1.8 build-essential php5-gd php5-xmlrpc php-xajax
+
+# Comment out the bind address so mysql accepts non-local connections
+sed -i 's/^bind-address.*127.0.0.1/#&/' /etc/mysql/my.cnf
+/etc/init.d/mysql restart
 
 chmod 777 /var/www
 wget -O /etc/php5/apache2/php.ini http://github.com/mikeymckay/chits/raw/master/install/php.ini.sample

@@ -4,9 +4,18 @@ if [ -z "$SUDO_USER" ]; then
     exit 1
 fi
 
+echo "Do you want to upgrade all packages? ([y]/n)"
+read UPGRADE_ALL
+
+echo "Do you want to remove un-needed packages like games, music players and email? ([y]/n)"
+read REMOVE
+
 # These are for all configurations
 PROGRAMS_TO_INSTALL='openssh-server wget'
-PROGRAMS_TO_REMOVE="gnome-games gnome-games-data openoffice.org-common f-spot ekiga evolution pidgin totem totem-common brasero rhythmbox synaptic gimp"
+
+if [ ! "${REMOVE}" = "n" ]; then
+  PROGRAMS_TO_REMOVE="gnome-games gnome-games-data openoffice.org-common f-spot ekiga evolution pidgin totem totem-common brasero rhythmbox synaptic gimp"
+fi
 
 # Call "install wget" to add wget to the list of programs to install
 install () {
@@ -29,7 +38,9 @@ client () {
   install "tuxtype"
   apt-get --assume-yes install $PROGRAMS_TO_INSTALL
   apt-get --assume-yes remove $PROGRAMS_TO_REMOVE
-  apt-get --assume-yes upgrade
+  if [ ! "${UPGRADE_ALL}" = "n" ]; then
+    apt-get --assume-yes upgrade
+  fi
 
 # Make firefox launch automatically and point it at http://chits_server
   AUTOSTART_DIR=$HOME/.config/autostart
@@ -56,7 +67,9 @@ server () {
   install "dnsmasq"
   apt-get --assume-yes install $PROGRAMS_TO_INSTALL
   apt-get --assume-yes remove $PROGRAMS_TO_REMOVE
-  apt-get --assume-yes upgrade
+  if [ ! "${UPGRADE_ALL}" = "n" ]; then
+    apt-get --assume-yes upgrade
+  fi
   wget --output-document=chits_install.sh http://github.com/mikeymckay/chits/raw/master/install/chits_install.sh
   chmod +x chits_install.sh
   ./chits_install.sh
@@ -98,16 +111,17 @@ dhcp-range=192.168.0.10,192.168.0.50,12h
 
 # Handle external DNS resolution - do we want clients to be able to resolve external domains?
 
-  /etc/init.d/mysql restart
+  echo "Restarting networking with new IP address (ssh connections may be dropped)"
   /etc/init.d/networking restart
+  echo "Starting DCHP Server and DNS Server (dnsmasq)"
   /etc/init.d/dnsmasq restart
 
 }
 
 client_and_server () {
   echo "Client & Server"
-  server
   client
+  server
 }
 
 access_point () {
