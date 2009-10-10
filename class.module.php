@@ -185,8 +185,8 @@ Class Module {
                 print "<font color='red' size='5'><b>You clicked on <u>$delete_button</u> button.</b></font><br />";
             }
             print "<font color='red' size='5'><b>Are you sure you want to do this?</b></font><br />";
-            print "<input type='submit' name='confirm_delete' value='Yes' class='textbox' style='font-weight: bold; font-size:14pt; background-color: #FFFF33; border: 2px solid black' /> ";
-            print "<input type='submit' name='confirm_delete' value='No' class='textbox' style='font-weight: bold; font-size:14pt; background-color: #FFCC33; border: 2px solid black' /> ";
+            print "<input type='submit' name='confirm_delete' value='Yes' class='textbox' style='font-weight: bold; font-size:14pt; background-color: #FFFF33; border: 2px solid black' id='Yes' /> ";
+            print "<input type='submit' name='confirm_delete' value='No' class='textbox' style='font-weight: bold; font-size:14pt; background-color: #FFCC33; border: 2px solid black' id='No' /> ";
             print "</td></tr>";
             print "</form>";
             print "</table>";

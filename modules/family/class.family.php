@@ -249,7 +249,7 @@ class family extends module{
                                     while (list($fid) = mysql_fetch_array($result_mem)) {
                                         $ret_val .= "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&family_id=$fid'>$fid</a> ";
                                         if ($_SESSION["priv_delete"]) {
-                                            $ret_val .= "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&members=".$get_vars["members"]."&delete_family_id=$fid' title='delete'><img src='../images/delete.png' border='0' alt='delete' /></a><br/>";
+                                                $ret_val .= "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&members=".$get_vars["members"]."&delete_family_id=$fid' id='delete'><img src='../images/delete.png' border='0' id='delete' /></a><br/>";
                                         }
                                     }
                                     $ret_val .= "</td></tr></table>";

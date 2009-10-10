@@ -34,11 +34,11 @@ Feature: Family Folders
 
 
    Scenario: Delete Family Folder
-    Given I am logged in as "user" with password "user"
+    Given I am logged in as "admin" with password "admin"
     And I click "PATIENTS"
     And I click "Family Folders"
     When I click "No members"
     And I should see "1"
     And I click "delete"
-    And I click "Yes"
+    And I press "Yes"
     Then I should not see "1"

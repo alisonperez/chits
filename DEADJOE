@@ -13,3 +13,16 @@ features/patient.feature
 features/patient.feature
 features/patient.feature
 features/patient.feature
+
+*** These modified files were found in JOE when it aborted on Sun Oct 11 00:35:49 2009
+*** JOE was aborted because the terminal closed
+
+*** These modified files were found in JOE when it aborted on Sun Oct 11 00:35:49 2009
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+png
+
+*** File '(Unnamed)'
+modules/family/class.family.php
+modules/family/class.family.php

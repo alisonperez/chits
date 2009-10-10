@@ -587,12 +587,18 @@ CREATE TABLE IF NOT EXISTS `module_user_location` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `module_user_location` (`location_id`, `user_id`) VALUES
+('ADM', 1),
+('CONS', 1),
 ('LAB', 1),
 ('TX', 1),
 ('ADM', 2),
 ('CONS', 2),
 ('LAB', 2),
-('TX', 2);
+('TX', 2),
+('ADM', 3),
+('CONS', 3),
+('LAB', 3),
+('TX', 3);
 
 -- --------------------------------------------------------
 
