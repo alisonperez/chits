@@ -569,7 +569,7 @@ INSERT INTO `module_permissions` (`module_id`, `user_id`) VALUES
 ('region', 1),
 ('reminder', 1),
 ('template', 1),
-('vaccine', 1),
+('vaccine', 1);
 
 -- --------------------------------------------------------
 
@@ -586,10 +586,6 @@ CREATE TABLE IF NOT EXISTS `module_user_location` (
   KEY `key_location` (`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `module_user_location`
---
-
 INSERT INTO `module_user_location` (`location_id`, `user_id`) VALUES
 ('LAB', 1),
 ('TX', 1),
@@ -597,10 +593,6 @@ INSERT INTO `module_user_location` (`location_id`, `user_id`) VALUES
 ('CONS', 2),
 ('LAB', 2),
 ('TX', 2);
-('ADM', 3),
-('CONS', 3),
-('LAB', 3),
-('TX', 3);
 
 -- --------------------------------------------------------
 
@@ -1609,11 +1601,6 @@ CREATE TABLE IF NOT EXISTS `m_consult_ptgroup` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `m_consult_ptgroup`
---
-
-INSERT INTO `m_consult_ptgroup` (`ptgroup_id`, `consult_id`, `ptgroup_timestamp`, `user_id`) VALUES
-('FP', 3, '2009-09-08 16:03:38', 1);
 
 -- --------------------------------------------------------
 
