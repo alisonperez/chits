@@ -1,7 +1,7 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2009-10-01 10:14:06
+// Generated 2009-10-13 16:28:46
 // Module: _module.php
 // Author: Herman Tolentino MD
 //
@@ -102,6 +102,17 @@ if (file_exists('../modules/database/class.database.php')) {
 		$database->init_deps();
 		$database->init_lang();
 		$database->init_help();
+	}
+}
+if (file_exists('../modules/dental/class.dental.php')) {
+	include '../modules/dental/class.dental.php';
+	$dental = new dental;
+	if (!$module->activated('dental') && $initmod) {
+		$dental->init_sql();
+		$dental->init_menu();
+		$dental->init_deps();
+		$dental->init_lang();
+		$dental->init_help();
 	}
 }
 if (file_exists('../modules/drug/class.drug.php')) {
