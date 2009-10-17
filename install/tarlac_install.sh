@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ -z "$SUDO_USER" ]; then
-    echo "$0 must be called from sudo"
+    echo "$0 must be called from sudo. Try: 'sudo ${0}'"
     exit 1
 fi
 
@@ -11,11 +11,26 @@ echo "Do you want to remove un-needed packages like games, music players and ema
 read REMOVE
 
 # These are for all configurations
-PROGRAMS_TO_INSTALL='openssh-server wget'
+PROGRAMS_TO_INSTALL='openssh-server wget vim'
 
 if [ ! "${REMOVE}" = "n" ]; then
   PROGRAMS_TO_REMOVE="gnome-games gnome-games-data openoffice.org-common f-spot ekiga evolution pidgin totem totem-common brasero rhythmbox synaptic gimp"
 fi
+
+echo "
+set bell-style none
+
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[5C": forward-word
+"\e[5D": backward-word
+"\e\e[C": forward-word
+"\e\e[D": backward-word
+$if Bash
+  Space: magic-space
+$endif" > /home/$SUDO_USER/.inputrc
+
+
 
 # Call "install wget" to add wget to the list of programs to install
 install () {
@@ -64,6 +79,7 @@ X-GNOME-Autostart-enabled=true" > $AUTOSTART_DIR/firefox.desktop
 
 server () {
   echo "Server"
+  set_mysql_root_password
   install "dnsmasq"
   apt-get --assume-yes install $PROGRAMS_TO_INSTALL
   apt-get --assume-yes remove $PROGRAMS_TO_REMOVE
@@ -71,7 +87,8 @@ server () {
     apt-get --assume-yes upgrade
   fi
   wget --output-document=chits_install.sh http://github.com/mikeymckay/chits/raw/master/install/chits_install.sh
-  chmod +x chits_install.sh
+  wget --output-document=mysql_replication.sh http://github.com/mikeymckay/chits/raw/master/install/mysql_replication.sh
+  chmod +x chits_install.sh mysql_replication.sh
   ./chits_install.sh
   echo "
 # ------------------------------
@@ -148,6 +165,16 @@ client_with_mysql_replication () {
   set_mysql_root_password
   install "mysql-server"
   client
+  echo "Replication needs to be completed by logging onto the master computer and running the mysql_replication.sh script"
+}
+
+
+#TODO!!
+server_with_mysql_replication () {
+  server
+  wget http://github.com/mikeymckay/chits/raw/master/install/mysql_replication.sh
+  chmod +x mysql_replication.sh
+  echo "Once your all clients are on the network and ready, run: 'sudo ./mysql_replication'"
 }
 
 while : # Loop forever
