@@ -17299,7 +17299,7 @@ INSERT INTO `terms` (`termid`, `languageid`, `langtext`, `remarks`, `translation
 ('THEAD_VACCINE_AGE', 'english', 'AGE IN WEEKS', NULL, NULL, '', '');
 
 
---- tables for report generation: childcare_indicators, crit_class, maternal_indicators, question, ques_cat
+-- tables for report generation: childcare_indicators, crit_class, maternal_indicators, question, ques_cat
 
 CREATE TABLE IF NOT EXISTS `childcare_indicators` (
   `ind_id` int(2) NOT NULL auto_increment,
