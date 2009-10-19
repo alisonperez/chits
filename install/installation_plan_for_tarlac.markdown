@@ -11,7 +11,6 @@ Everything that we do must be easy to replicate. Instead of writing out complica
 * Install Fullscreen extension for firefox (kiosk mode)
 * Set firefox homepage to CHITS
 * [client install script](http://github.com/mikeymckay/chits/blob/master/install/TODO)
-
 * Set optimum power settings when running on battery - lowest brightness, CPU scaling, etc.
 
 ##server
