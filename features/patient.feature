@@ -1,7 +1,7 @@
 Feature: Manage Patients
 	In order to maximize the time for health care delivery
 	As a chits user
-	I want to be able to manage paients by searching,creating,updating and deleting patient information
+	I want to be able to manage patients by searching,creating,updating and deleting patient information
 
 	Scenario: Search the patient
     Given I am logged in as "user" with password "user"
