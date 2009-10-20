@@ -274,7 +274,7 @@ small { font-family: verdana, sans serif}
 </table>
 <br/>
 <div align="center" class='copyright'>
-  &copy;2004-2008 Generic Architecture for Modular Enterprise (GAME) Engine Version <?=$module->get_version()?> Herman Tolentino MD / UPCM Medical Informatics Unit / License - GPL<br>
+  &copy;2004-2009 Generic Architecture for Modular Enterprise (GAME) Engine Version <?=$module->get_version()?> Herman Tolentino MD / UPCM Medical Informatics Unit / License - GPL<br>
 </div>
 </body>
 </html>
