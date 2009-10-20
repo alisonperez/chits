@@ -4,7 +4,7 @@ class family_planning extends module{
 
 	function family_planning(){ // class constructor
 		$this->author = "darth_ali";
-		$this->version = "0.1-".date("Y-m-d");
+		$this->version = "0.15-".date("Y-m-d");
 		$this->module = "family_planning";
 		$this->description = "CHITS Module - Family Planning";
 		
@@ -20,10 +20,7 @@ class family_planning extends module{
 		            b. different method before the drop out
 		               i. if patient is already a previous user - CURRENT USER, CHANGE METHOD (i.e. dmpa-drop out-pills-drop out-dmpa)
 		               ii. if patient chooses a new method - CURRENT USER, CHANGE METHOD, NEW ACCEPTOR (i.e. pills-drop out-dmpa)		
-		        
-		*/
-		
-		
+*/				
 	}
 
 	//standard module functions 
@@ -495,6 +492,7 @@ class family_planning extends module{
 		case "CHART":
 			$this->form_fp_chart();			
 			break;
+
 		case "OBS":
 			$this->form_fp_obs();
 			break;
@@ -502,7 +500,8 @@ class family_planning extends module{
 
 			break;
 		default:
-
+			print_r($_GET);
+		    $this->form_fp_visit1();  //redirect the visitor to form_fp_visit1();
 			break;
 		}
 		
@@ -513,13 +512,13 @@ class family_planning extends module{
 	function fp_menu(){   			 /* displays main menus for FP */
 
 		//this will redirect view to the VISIT1 interface
-		if(!isset($get_vars[fp])){ 
-			//header("location: $_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1");
-		}
+		//if(!isset($get_vars[fp])){ 		
+		//	header("Location: $_SERVER[PHP_SELF]?page=CONSULTS&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1#visit1");
+		//}
 
 		echo "<table>";
 		echo "<tr><td>";
-		
+				
 			echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'METHODS','METHODS')."</a>";
 
 			echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'CHART','FP CHART')."</a>";		
@@ -623,7 +622,15 @@ class family_planning extends module{
 	}
 	
 	function form_fp_visit1(){
-			
+		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
+		$q_fp = $this->check_fprec();
+		
+		if(mysql_num_rows($q_fp)==0):
+			echo "<font class='warning'>NOTE: Patient does not have a previous FP record. Please record FP Service Record first before enrolling the patient to any method.</font>";
+		else: 
+
+		endif;
+
 		echo "<form name='form_visit1' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1' method='POST'>";
 		
 		echo "<a name='visit1'></a>";
@@ -643,7 +650,6 @@ class family_planning extends module{
 		$this->get_methods("sel_method");
 		echo "</td></tr>";
 		*/
-			
 
 		echo "<tr><td>PLANNING FOR MORE CHILDREN?</td>";
 		echo "<td>";
@@ -1020,6 +1026,14 @@ class family_planning extends module{
 			
 			//$arr_current = mysql_fetch_array($q_fp_methods);
 			return $arr_current;
+	}
+
+	function check_fprec(){
+		//function shall check if there exists an FP Service Record
+
+		$q_fp = mysql_query("SELECT  fp_id, plan_more_children,  no_of_living_children_actual, no_of_living_children_desired, educ_id, occup_id, spouse_name, spouse_educ_id, spouse_occup_id, ave_monthly_income FROM m_patient_fp WHERE patient_id='$pxid'") or die("Cannot query in form_fp_visit1:  line 625");		
+		
+		return $q_fp;     //returns a resource identifier
 	}
 	
 }
