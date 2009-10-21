@@ -445,22 +445,24 @@ class family_planning extends module{
 		$fp = new family_planning;
 		$fp->fp_menu($_GET["menu_id"],$_POST,$_GET,$_SESSION["validuser"],$_SESSION["isadmin"]);
 		//$fp->form_fp($menu_id,$post_vars,$get_vars,$isadmin);
-		$fp->form_fp();
-		if($_POST["submit_fp"]):
-		
-			print_r($_POST);
 
-			switch($_POST["submit_fp"]){
-			
+		if($_POST["submit_fp"]):		
+			print_r($_POST);
+			switch($_POST["submit_fp"]){			
 				case "Save Family Planning Method":
-					$fp->submit_method_visit();
-					
+					$fp->submit_method_visit();					
 					break;
 
+				case "Save Family Planning First Visit":
+					$fp->submit_first_visit();
+					break;
+
+				
 				default:
 					break;
 			}			
 		endif;
+		$fp->form_fp();
 	}
 
 
@@ -500,7 +502,7 @@ class family_planning extends module{
 
 			break;
 		default:
-			print_r($_GET);
+			//print_r($_GET);
 		    $this->form_fp_visit1();  //redirect the visitor to form_fp_visit1();
 			break;
 		}
@@ -624,15 +626,15 @@ class family_planning extends module{
 	function form_fp_visit1(){
 		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
 		$q_fp = $this->check_fprec();
-		
-		if(mysql_num_rows($q_fp)==0):
-			echo "<font class='warning'>NOTE: Patient does not have a previous FP record. Please record FP Service Record first before enrolling the patient to any method.</font>";
-		else: 
 
+		if(mysql_num_rows($q_fp)==0):
+			echo "<font color='red'>NOTE: Patient does not have a previous FP record. Please fill out this form first before enrolling the patient to any method.</font>";
+		else: 
+			//list($fp_id,$more_child,$actual_child,$desired_child,$educ_id,$occup_id,$spouse_name,$spouse_educ_id,$spouse_occup_id,$ave_monthly_income) = mysql
 		endif;
 
 		echo "<form name='form_visit1' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1' method='POST'>";
-		
+		echo "<input type='hidden' name='pxid' value='$pxid'>";
 		echo "<a name='visit1'></a>";
 		
 		echo "<table>";
@@ -653,17 +655,23 @@ class family_planning extends module{
 
 		echo "<tr><td>PLANNING FOR MORE CHILDREN?</td>";
 		echo "<td>";
-		echo "<select name='form_visit1_children' size='1'>";
+		echo "<select name='sel_plan_children' size='1'>";
 		echo "<option value='Y' selected>Yes</option>";
 		echo "<option value='N'>No</option>";		
 		echo "</select>";
 		echo "</td></tr>";
 		
-		echo "<tr><td>NO. OF LIVING CHILDREN</td><td>";
-		echo "<input name='num_child' type='text' size='3' maxlength='2'></input>";
+		echo "<tr><td>NO. OF LIVING CHILDREN (ACTUAL)</td><td>";
+		echo "<input name='num_child_actual' type='text' size='3' maxlength='2'></input>";
 		echo "</td></tr>";
 
+		echo "<tr><td>NO. OF LIVING CHILDREN (DESIRED)</td><td>";
+		echo "<input name='num_child_desired' type='text' size='3' maxlength='2'></input>";
+		echo "</td></tr>";
 
+		echo "<tr><td>BIRTH INTERVAL DESIRED</td><td>";
+		echo "<input name='birth_interval' type='text' size='3' maxlength='2'></input>";
+		echo "</td></tr>";
 		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
 		$this->get_education("mother_educ");
 		echo "</td></tr>";
@@ -672,8 +680,8 @@ class family_planning extends module{
 		$this->get_occupation("mother_occupation");
 		echo "</td></tr>";
 
-		echo "<tr><td>NAME OF SPOUSE</td>";
-		echo "<td><input name='spouse_name' type='text' size='20' disabled></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search'></input>";
+		echo "<tr><td>PATIENT ID OF SPOUSE IN CHITS</td>";
+		echo "<td><input name='spouse_name' type='text' size='20'></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='verify_patient_id();'></input>";
 
 		echo "</td></tr>";
 		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
@@ -1028,8 +1036,35 @@ class family_planning extends module{
 			return $arr_current;
 	}
 
+	function submit_first_visit(){		
+			$spouse_name = trim($_POST[spouse_name]);
+			if(empty($spouse_name)):	
+					echo "<script languauge='Javascript'>";
+					echo "window.alert('Please indicate the name of the spouse. Patients enrolled in FP should have partners.')";
+					echo "</script>";
+
+			else:
+					//print_r($_SESSION);
+					$q_fp = $this->check_fprec();
+					if(mysql_num_rows($q_fp)==0):
+
+					$insert_fp = mysql_query("INSERT INTO m_patient_fp SET  user_id='$_SESSION[userid]',patient_id='$_POST[pxid]', date_enrolled=NOW(),date_encoded=NOW(),consult_id='$_GET[consult_id]',last_edited=NOW(),plan_more_children='$_POST[sel_plan_children]',no_of_living_children_actual='$_POST[num_child_actual]',no_of_living_children_desired='$_POST[num_child_desired]',birth_interval_desired='$_POST[birth_interval]',educ_id='$_POST[mother_educ]',occup_id='$_POST[mother_occupation]',spouse_name='$_POST[spouse_name]',spouse_educ_id='$_POST[spouse_educ]',spouse_occup_id='$_POST[spouse_occupation]',ave_monthly_income='$_POST[ave_income]'") or die(mysql_error()); 
+
+								if($insert_fp):
+										echo "<script language='Javascript'>";
+										echo "window.alert('FP Record was saved. Please fill out the FP History, Physical Exam, Pelvic Exam and Obstetrical Exam (for females)')";
+										echo "</script>";														
+								endif;
+
+					endif;
+
+			endif;
+	}
+
 	function check_fprec(){
 		//function shall check if there exists an FP Service Record
+		
+		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
 
 		$q_fp = mysql_query("SELECT  fp_id, plan_more_children,  no_of_living_children_actual, no_of_living_children_desired, educ_id, occup_id, spouse_name, spouse_educ_id, spouse_occup_id, ave_monthly_income FROM m_patient_fp WHERE patient_id='$pxid'") or die("Cannot query in form_fp_visit1:  line 625");		
 		

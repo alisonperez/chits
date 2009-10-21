@@ -68,3 +68,7 @@ function check_appt_info(){
 
 	}
 }
+
+function verify_patient_id(){		
+	window.open ("../site/verify_patient.php?id="+ form_visit1.spouse_name.value,"CHITS - Verify Patient ID","location=1,status=0,scrollbars=0,width=200,height=200,resizable=0,menubar=0,toolbars=0");
+}
