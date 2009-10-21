@@ -4,16 +4,28 @@ Everything that we do must be easy to replicate. Instead of writing out complica
 
 ##Types of installation
 
-##client
+All of our computers will be installed from the [tarlac install script](http://github.com/mikeymckay/chits/raw/master/install/tarlac_install.sh) to ensure that they behave in the exact same way. These are the currently available choices:
 
-* Install Netbook Remix (even for HP laptops)
+1. Client
+2. Server
+3. Client & Server
+4. Server & Access Point
+5. Client & Server & Access Point
+6. Client with mysql replication
+7. Server with mysql replication
+8. Exit
+
+
+See [script](http://github.com/mikeymckay/chits/raw/master/install/tarlac_install.sh) for more details
+
+##1. client
+
 * Uninstall all games, applications, mail clients and lots of other stuff (visual application installer). But leave Firefox
 * Install Fullscreen extension for firefox (kiosk mode)
 * Set firefox homepage to CHITS
-* [client install script](http://github.com/mikeymckay/chits/blob/master/install/TODO)
-* Set optimum power settings when running on battery - lowest brightness, CPU scaling, etc.
+* Set optimum power settings when running on battery - lowest brightness, CPU scaling, etc. TODO
 
-##server
+##2. server
 
 * install using github script
 * [server install script](http://github.com/mikeymckay/chits/blob/master/install/chits_install.sh)
@@ -25,20 +37,23 @@ Everything that we do must be easy to replicate. Instead of writing out complica
 * install mysql-server
 * setup slave mode replication on all non-masters
 * setup master mode replication on master
-* [mysql replication master script](http://github.com/mikeymckay/chits/blob/master/install/TODO)
-* [mysql replication slave script](http://github.com/mikeymckay/chits/blob/master/install/TODO)
+This is done using the [tarlac_install script](http://github.com/mikeymckay/chits/raw/master/install/tarlac_install.sh) to setup the server and clients, and then the [mysql replication script](http://github.com/mikeymckay/chits/raw/master/install/mysql_replication.sh) once all of the machines are connected and on the same network. Note the importance of using hostnames (which dnsmasq will resolve) and not IP addresses since DHCP is being used.
 
 ##Ubuntu installation
 
-Language: English
-Timezone: Manila
-Keyboard layout: USA
-Partitions: Use the entire disk
-Who are you: chits, chits, password, name 'pc1', 'Log in automatically'
+* Language: English
 
-Restart
-Eject CD/USB Disk
-Applications :: Accessories :: Terminal
+* Timezone: Manila
+
+* Keyboard layout: USA
+
+* Partitions: Use the entire disk
+
+* Who are you: chits, chits, password, name 'pc1', 'Log in automatically'
+
+* Restart
+* Eject CD/USB Disk
+* Applications :: Accessories :: Terminal
 
     sudo apt-get install wget
     wget http://ow.ly/sPAq

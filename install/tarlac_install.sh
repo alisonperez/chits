@@ -79,7 +79,17 @@ X-GNOME-Autostart-enabled=true" > $AUTOSTART_DIR/firefox.desktop
 
 server () {
   echo "Server"
-  set_mysql_root_password
+  if [ ! "$MYSQL_ROOT_PASSWORD" ]; then 
+    set_mysql_root_password; 
+  fi
+  if [ ! "$CHITS_LIVE_PASSWORD" ]; then 
+    echo "Enter password for database user chits_live:"
+    read CHITS_LIVE_PASSWORD
+  fi
+
+  export MYSQL_ROOT_PASSWORD 
+  export CHITS_LIVE_PASSWORD
+
   install "dnsmasq"
   apt-get --assume-yes install $PROGRAMS_TO_INSTALL
   apt-get --assume-yes remove $PROGRAMS_TO_REMOVE
@@ -162,7 +172,9 @@ client_and_server_and_access_point () {
 
 #TODO!!
 client_with_mysql_replication () {
-  set_mysql_root_password
+  if [ ! "$MYSQL_ROOT_PASSWORD" ]; then 
+    set_mysql_root_password; 
+  fi
   install "mysql-server"
   client
   echo "Replication needs to be completed by logging onto the master computer and running the mysql_replication.sh script"
