@@ -629,8 +629,9 @@ class family_planning extends module{
 
 		if(mysql_num_rows($q_fp)==0):
 			echo "<font color='red'>NOTE: Patient does not have a previous FP record. Please fill out this form first before enrolling the patient to any method.</font>";
+			$actual_child = $desired_child = $ave_monthly_income = $birth_interval = 0;
 		else: 
-			//list($fp_id,$more_child,$actual_child,$desired_child,$educ_id,$occup_id,$spouse_name,$spouse_educ_id,$spouse_occup_id,$ave_monthly_income) = mysql
+			list($fp_id,$more_child,$actual_child,$desired_child,$birth_interval,$educ_id,$occup_id,$spouse_name,$spouse_educ_id,$spouse_occup_id,$ave_monthly_income) = mysql_fetch_array($q_fp);
 		endif;
 
 		echo "<form name='form_visit1' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1' method='POST'>";
@@ -662,15 +663,15 @@ class family_planning extends module{
 		echo "</td></tr>";
 		
 		echo "<tr><td>NO. OF LIVING CHILDREN (ACTUAL)</td><td>";
-		echo "<input name='num_child_actual' type='text' size='3' maxlength='2'></input>";
+		echo "<input name='num_child_actual' type='text' size='3' maxlength='2' value='$actual_child'></input>";
 		echo "</td></tr>";
 
 		echo "<tr><td>NO. OF LIVING CHILDREN (DESIRED)</td><td>";
-		echo "<input name='num_child_desired' type='text' size='3' maxlength='2'></input>";
+		echo "<input name='num_child_desired' type='text' size='3' maxlength='2' value='$desired_child'></input>";
 		echo "</td></tr>";
 
 		echo "<tr><td>BIRTH INTERVAL DESIRED</td><td>";
-		echo "<input name='birth_interval' type='text' size='3' maxlength='2'></input>";
+		echo "<input name='birth_interval' type='text' size='3' maxlength='2' value='$birth_interval'></input>";
 		echo "</td></tr>";
 		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
 		$this->get_education("mother_educ");
@@ -681,7 +682,7 @@ class family_planning extends module{
 		echo "</td></tr>";
 
 		echo "<tr><td>PATIENT ID OF SPOUSE IN CHITS</td>";
-		echo "<td><input name='spouse_name' type='text' size='20'></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='verify_patient_id();'></input>";
+		echo "<td><input name='spouse_name' type='text' size='20'></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='verify_patient_id();' value='$spouse_name'></input>";
 
 		echo "</td></tr>";
 		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
@@ -694,7 +695,7 @@ class family_planning extends module{
 
 		echo "<tr><td>AVERAGE MONTHLY FAMILY INCOME</td>";
 		echo "<td>";
-		echo "<input name='ave_income' type='text' size='5'></input>";
+		echo "<input name='ave_income' type='text' size='5' value='$ave_monthly_income'></input>";
 		echo "</td></tr>";
 
 		echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning First Visit'></td></tr>";
