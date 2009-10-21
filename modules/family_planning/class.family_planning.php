@@ -628,7 +628,7 @@ class family_planning extends module{
 		$q_fp = $this->check_fprec();
 
 		if(mysql_num_rows($q_fp)==0):
-			echo "<font color='red'>NOTE: Patient does not have a previous FP record. Please fill out this form first before enrolling the patient to any method.</font>";
+			$this->no_fp_msg();
 			$actual_child = $desired_child = $ave_monthly_income = $birth_interval = 0;
 		else: 
 			list($fp_id,$more_child,$actual_child,$desired_child,$birth_interval,$educ_id,$occup_id,$spouse_name,$spouse_educ_id,$spouse_occup_id,$ave_monthly_income) = mysql_fetch_array($q_fp);
@@ -653,12 +653,19 @@ class family_planning extends module{
 		$this->get_methods("sel_method");
 		echo "</td></tr>";
 		*/
+		$ans = array('Y'=>'Yes','N'=>'No');
 
 		echo "<tr><td>PLANNING FOR MORE CHILDREN?</td>";
 		echo "<td>";
 		echo "<select name='sel_plan_children' size='1'>";
-		echo "<option value='Y' selected>Yes</option>";
-		echo "<option value='N'>No</option>";		
+	
+		foreach($ans as $key => $value){
+			if($key==$more_child):
+				echo "<option value='$key' selected>$value</option>";
+			else:
+				echo "<option value='$key'>$value</option>";			
+			endif;
+		}
 		echo "</select>";
 		echo "</td></tr>";
 		
@@ -674,11 +681,11 @@ class family_planning extends module{
 		echo "<input name='birth_interval' type='text' size='3' maxlength='2' value='$birth_interval'></input>";
 		echo "</td></tr>";
 		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
-		$this->get_education("mother_educ");
+		$this->get_education("mother_educ",$educ_id);
 		echo "</td></tr>";
 
 		echo "<tr><td>OCCUPATION</td><td>";
-		$this->get_occupation("mother_occupation");
+		$this->get_occupation("mother_occupation",$occup_id);
 		echo "</td></tr>";
 
 		echo "<tr><td>PATIENT ID OF SPOUSE IN CHITS</td>";
@@ -686,11 +693,11 @@ class family_planning extends module{
 
 		echo "</td></tr>";
 		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
-		$this->get_education("spouse_educ");
+		$this->get_education("spouse_educ",$spouse_educ_id);
 		echo "</td></tr>";
 
 		echo "<tr><td>OCCUPATION</td><td>";
-		$this->get_occupation("spouse_occupation");
+		$this->get_occupation("spouse_occupation",$spouse_occup_id);
 		echo "</td></tr>";
 
 		echo "<tr><td>AVERAGE MONTHLY FAMILY INCOME</td>";
@@ -698,8 +705,12 @@ class family_planning extends module{
 		echo "<input name='ave_income' type='text' size='5' value='$ave_monthly_income'></input>";
 		echo "</td></tr>";
 
-		echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning First Visit'></td></tr>";
-		
+		if(!isset($fp_id)):
+			echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning First Visit'></td></tr>";
+		else:
+			echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Update Family Planning First Visit'></td></tr>";	
+		endif;
+
 		echo "</table>";
 
 		echo "</form>";
@@ -707,6 +718,10 @@ class family_planning extends module{
 
 	
 	function form_fp_history(){
+		$q_fp = $this->check_fprec();
+		
+		if(mysql_num_rows($q_fp)!=0):
+
 		$q_hx_cat = mysql_query("SELECT cat_id, cat_name FROM m_lib_fp_history_cat") or die("Cannot query: 280");
 		
 		if(mysql_num_rows($q_hx_cat)!=0):
@@ -714,8 +729,8 @@ class family_planning extends module{
 			echo "<a name='hx'></a>";
 			echo "<table>";
 			echo "<thead><td>MEDICAL HISTORY</td></thead>";
+			
 			while($res_hx_cat = mysql_fetch_array($q_hx_cat)){
-
 				$q_hx = mysql_query("SELECT history_id,history_text FROM m_lib_fp_history WHERE history_cat='$res_hx_cat[cat_id]'") or die("Cannot query: 287");
 
 				echo "<tr><td>$res_hx_cat[cat_name]</td></tr>";
@@ -733,7 +748,11 @@ class family_planning extends module{
 			echo "</form>";
 		else:
 			echo "<font color='red'>FP History Library not found.</font>";
-		endif;		
+		endif;
+		
+		else:
+				$this->no_fp_msg();
+		endif;
 	}
 
 	function form_fp_pe(){
@@ -859,14 +878,19 @@ class family_planning extends module{
 
 	}
 
-	function get_education($form_name){
+	function get_education($form_name,$educ_id){
 
 		$q_educ = mysql_query("select * from m_lib_education order by educ_name") or die("cannot query 187");
 
 		if(mysql_num_rows($q_educ)!=0):
 			echo "<select name='$form_name' size='1'>";
 			while($r_educ = mysql_fetch_array($q_educ)){
-				echo "<option value='$r_educ[educ_id]'>$r_educ[educ_name]</option>";
+
+				if($educ_id == $r_educ[educ_id]):
+					echo "<option value='$r_educ[educ_id]' SELECTED>$r_educ[educ_name]</option>";
+				else:
+					echo "<option value='$r_educ[educ_id]'>$r_educ[educ_name]</option>";
+				endif;
 			}
 			echo "</select>";
 		else:
@@ -874,14 +898,18 @@ class family_planning extends module{
 		endif;
 	}
 
-	function get_occupation($form_name){
+	function get_occupation($form_name, $occup_id){
+
 		$q_job = mysql_query("SELECT occup_id, occup_name FROM m_lib_occupation ORDER by occup_name") or die("Cannot query: 187");
 		
 		if(mysql_num_rows($q_job)!=0):
 			echo "<select name='$form_name' size='1'>";
-
 			while($r_job = mysql_fetch_array($q_job)){
-				echo"<option value='$r_job[occup_id]'>$r_job[occup_name]</option>";
+				if($occup_id == $r_job[occup_id]):
+					echo"<option value='$r_job[occup_id]' selected>$r_job[occup_name]</option>";					
+				else:
+					echo"<option value='$r_job[occup_id]'>$r_job[occup_name]</option>";
+				endif;
 			}
 			echo "</select>";
 		else:
@@ -1067,10 +1095,13 @@ class family_planning extends module{
 		
 		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
 
-		$q_fp = mysql_query("SELECT  fp_id, plan_more_children,  no_of_living_children_actual, no_of_living_children_desired, educ_id, occup_id, spouse_name, spouse_educ_id, spouse_occup_id, ave_monthly_income FROM m_patient_fp WHERE patient_id='$pxid'") or die("Cannot query in form_fp_visit1:  line 625");		
+		$q_fp = mysql_query("SELECT  fp_id, plan_more_children,  no_of_living_children_actual, no_of_living_children_desired, birth_interval_desired,educ_id, occup_id, spouse_name, spouse_educ_id, spouse_occup_id, ave_monthly_income FROM m_patient_fp WHERE patient_id='$pxid'") or die("Cannot query in form_fp_visit1:  line 625");		
 		
 		return $q_fp;     //returns a resource identifier
 	}
 	
+	function no_fp_msg(){
+			echo "<font color='red'>NOTE: Patient does not have a previous FP record. Please fill out this FP Data (Visit 1) form first before enrolling the patient to any method.</font>";	
+	}
 }
 ?>
