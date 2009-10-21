@@ -130,7 +130,7 @@ class family_planning extends module{
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
 		//m_patient_fp_obgyn_details -- create
-		module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_obgyn_details` (
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_obgyn_details` (
   				`fp_id` float NOT NULL,
 				  `patient_id` float NOT NULL,
 				  `no_pregnancies` int(2) NOT NULL,
