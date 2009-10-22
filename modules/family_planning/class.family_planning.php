@@ -59,42 +59,43 @@ class family_planning extends module{
 		
 		//m_patient_fp -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp` (
-  `fp_id` float NOT NULL auto_increment,
-  `patient_id` float NOT NULL default '0',
-  `date_enrolled` date NOT NULL,
-  `date_encoded` date NOT NULL,
-  `consult_id` float NOT NULL,
-  `last_edited` date NOT NULL,
-  `plan_more_children` char(1) NOT NULL default '',
-  `no_of_living_children_desired` tinyint(2) NOT NULL default '0',
-  `no_of_living_children_actual` tinyint(2) NOT NULL,
-  `birth_interval_desired` tinyint(2) NOT NULL,
-  `educ_id` varchar(10) NOT NULL default '',
-  `occup_id` varchar(10) NOT NULL default '',
-  `spouse_name` varchar(100) NOT NULL default '',
-  `spouse_educ_id` varchar(10) NOT NULL default '',
-  `spouse_occup_id` varchar(10) NOT NULL default '',
-  `ave_monthly_income` float NOT NULL default '0',
-  `user_id` int(11) NOT NULL default '0',
-  `user_id_edited` int(11) NOT NULL,
-  PRIMARY KEY  (`fp_id`),
-  KEY `key_patient` (`patient_id`),
-  KEY `key_educ` (`educ_id`),
-  KEY `key_occup` (`occup_id`),
-  KEY `key_spouse_educ` (`spouse_educ_id`),
-  KEY `key_spouse_occup` (`spouse_occup_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;");
+			  `fp_id` float NOT NULL auto_increment,
+			  `patient_id` float NOT NULL default '0',
+			  `date_enrolled` date NOT NULL,
+			  `date_encoded` date NOT NULL,
+			  `consult_id` float NOT NULL,
+			  `last_edited` date NOT NULL,
+			  `plan_more_children` char(1) NOT NULL default '',
+			  `no_of_living_children_desired` tinyint(2) NOT NULL default '0',
+			  `no_of_living_children_actual` tinyint(2) NOT NULL,
+			  `birth_interval_desired` tinyint(2) NOT NULL,
+			  `educ_id` varchar(10) NOT NULL default '',
+			  `occup_id` varchar(10) NOT NULL default '',
+			  `spouse_name` varchar(100) NOT NULL default '',
+			  `spouse_educ_id` varchar(10) NOT NULL default '',
+			  `spouse_occup_id` varchar(10) NOT NULL default '',
+			  `ave_monthly_income` float NOT NULL default '0',
+			  `user_id` int(11) NOT NULL default '0',
+			  `user_id_edited` int(11) NOT NULL,
+			  PRIMARY KEY  (`fp_id`),
+			  KEY `key_patient` (`patient_id`),
+			  KEY `key_educ` (`educ_id`),
+			  KEY `key_occup` (`occup_id`),
+			  KEY `key_spouse_educ` (`spouse_educ_id`),
+			  KEY `key_spouse_occup` (`spouse_occup_id`)
+			) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;");
 
 		//m_patient_fp_hx -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_hx` (
-				  `fp_id` float NOT NULL,
-				  `patient_id` float NOT NULL,
-				  `history_id` varchar(100) NOT NULL,
-				  `date_encoded` date NOT NULL,
-				  `user_id` int(11) NOT NULL,
-				  `last_edited` date NOT NULL,
-				  `user_id_edited` int(11) NOT NULL
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1; ");
+			  `fp_id` float NOT NULL,
+			  `patient_id` float NOT NULL,
+			  `consult_id` float NOT NULL,
+			  `history_id` varchar(100) NOT NULL,
+			  `date_encoded` date NOT NULL,
+			  `user_id` int(11) NOT NULL,
+			  `last_edited` date NOT NULL,
+			  `user_id_edited` int(11) NOT NULL
+			) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 		
 
 		//m_patient_fp_pe -- create
