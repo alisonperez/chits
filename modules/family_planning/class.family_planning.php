@@ -756,7 +756,10 @@ class family_planning extends module{
 	}
 
 	function form_fp_pe(){
-		
+		$q_fp = $this->check_fprec();		
+
+		if(mysql_num_rows($q_fp)!=0):
+
 		$q_pe_cat = mysql_query("SELECT pe_cat_id, pe_cat_name FROM m_lib_fp_pe_cat") or die("Cannot query: 350");
 		echo "<a name='pe'></a>";
 		if(mysql_num_rows($q_pe_cat)!=0):
@@ -803,12 +806,17 @@ class family_planning extends module{
 			echo "<font color='red'>FP Physical Exam library is not found.</font>";
 		endif;
 
-		
+		else:
+			$this->no_fp_msg();
+		endif;
 	}
 
 
 	function form_fp_pelvicpe(){
-		
+		$q_fp = $this->check_fprec();
+
+		if(mysql_num_rows($q_fp)!=0):
+
 		//$q_pelvic_exam = mysql_query("SELECT a.pelvic_id, a.pelvic_name, b.pelvic_cat_name FROM m_lib_fp_pelvic a, m_lib_fp_pelvic_cat b WHERE a.pelvic_cat=b.pelvic_cat_id ORDER by a. pelvic_id") or die(mysql_error());
 		$q_pelvic_exam = mysql_query("SELECT pelvic_cat_id,pelvic_cat_name FROM m_lib_fp_pelvic_cat") or die(mysql_error());
 		
@@ -845,8 +853,12 @@ class family_planning extends module{
 			echo "</table>";
 			echo "</form>";
 		else:
-		
+				echo "<font color='red'>FP Pelvic Exam Library not found</font>";
 		endif;	
+		
+		else:
+				$this->no_fp_msg();
+		endif;
 
 	}
 
@@ -974,6 +986,10 @@ class family_planning extends module{
 	}
 	
 	function form_fp_obs(){
+		$q_fp = $this->check_fprec();
+		
+		if(mysql_num_rows($q_fp)!=0):
+
 		echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_fp_obs'>";
 		echo "<a name='obs'></a>";
 		echo "<table>";
@@ -1004,6 +1020,11 @@ class family_planning extends module{
 		
 		echo "</table>";
 		echo "</form>";
+
+
+		else:
+			$this->no_fp_msg();
+		endif;
 	}
 	
 	function show_method_list($form_name,$sel_dropdown){
