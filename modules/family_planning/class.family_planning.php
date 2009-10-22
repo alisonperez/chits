@@ -454,10 +454,14 @@ class family_planning extends module{
 					break;
 
 				case "Save Family Planning First Visit":
-					$fp->submit_first_visit();
+					$fp->submit_first_visit("add");
 					break;
 
-				
+				case "Update Family Planning First Visit":
+					$fp->submit_first_visit("update");
+					break;
+
+
 				default:
 					break;
 			}			
@@ -545,7 +549,10 @@ class family_planning extends module{
 			2. old patient w/ previous FP method but presently dropout and in FP method (METHOD (dropdown),PREVIOUS - label, show history)
 			3. patient with existing FP method also with previous FP methods (METHOD (label),PREVIOUS - label, show history)
 		*/
-		
+	    $q_fp = $this->check_fprec();
+
+		if(mysql_num_rows($q_fp)):
+				
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);		
 		
 		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,(unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24) as duration,b.date_dropout,b.dropout_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_enrolled DESC") or die("Cannot query: 534");
@@ -620,6 +627,10 @@ class family_planning extends module{
 		
 		echo "</table>";
 		echo "</form>";
+
+		else:
+				$this->no_fp_msg();
+		endif;
 	
 	}
 	
@@ -634,6 +645,8 @@ class family_planning extends module{
 			list($fp_id,$more_child,$actual_child,$desired_child,$birth_interval,$educ_id,$occup_id,$spouse_name,$spouse_educ_id,$spouse_occup_id,$ave_monthly_income) = mysql_fetch_array($q_fp);
 		endif;
 
+		
+		
 		echo "<form name='form_visit1' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1' method='POST'>";
 		echo "<input type='hidden' name='pxid' value='$pxid'>";
 		echo "<a name='visit1'></a>";
@@ -689,7 +702,7 @@ class family_planning extends module{
 		echo "</td></tr>";
 
 		echo "<tr><td>PATIENT ID OF SPOUSE IN CHITS</td>";
-		echo "<td><input name='spouse_name' type='text' size='20'></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='verify_patient_id();' value='$spouse_name'></input>";
+		echo "<td><input name='spouse_name' type='text' size='20' value='$spouse_name'></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='verify_patient_id();'></input>";
 
 		echo "</td></tr>";
 		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
@@ -1086,17 +1099,20 @@ class family_planning extends module{
 			return $arr_current;
 	}
 
-	function submit_first_visit(){		
+	function submit_first_visit($ops){		
+
 			$spouse_name = trim($_POST[spouse_name]);
 			if(empty($spouse_name)):	
-					echo "<script languauge='Javascript'>";
+
+					$this->no_spouse_msg();
+					/*echo "<script languauge='Javascript'>";
 					echo "window.alert('Please indicate the name of the spouse. Patients enrolled in FP should have partners.')";
-					echo "</script>";
+					echo "</script>";*/
 
 			else:
 					//print_r($_SESSION);
 					$q_fp = $this->check_fprec();
-					if(mysql_num_rows($q_fp)==0):
+					if(mysql_num_rows($q_fp)==0): //a new FP visit 1 record
 
 					$insert_fp = mysql_query("INSERT INTO m_patient_fp SET  user_id='$_SESSION[userid]',patient_id='$_POST[pxid]', date_enrolled=NOW(),date_encoded=NOW(),consult_id='$_GET[consult_id]',last_edited=NOW(),plan_more_children='$_POST[sel_plan_children]',no_of_living_children_actual='$_POST[num_child_actual]',no_of_living_children_desired='$_POST[num_child_desired]',birth_interval_desired='$_POST[birth_interval]',educ_id='$_POST[mother_educ]',occup_id='$_POST[mother_occupation]',spouse_name='$_POST[spouse_name]',spouse_educ_id='$_POST[spouse_educ]',spouse_occup_id='$_POST[spouse_occupation]',ave_monthly_income='$_POST[ave_income]'") or die(mysql_error()); 
 
@@ -1105,10 +1121,14 @@ class family_planning extends module{
 										echo "window.alert('FP Record was saved. Please fill out the FP History, Physical Exam, Pelvic Exam and Obstetrical Exam (for females)')";
 										echo "</script>";														
 								endif;
+					else: // this is an update of an existing FP visit 1 record
 
 					endif;
-
 			endif;
+	}
+
+	function update_first_visit(){
+			$spouse_name = trim($_POST[spouse_name]);	
 	}
 
 	function check_fprec(){
@@ -1124,5 +1144,12 @@ class family_planning extends module{
 	function no_fp_msg(){
 			echo "<font color='red'>NOTE: Patient does not have a previous FP record. Please fill out this FP Data (Visit 1) form first before enrolling the patient to any method.</font>";	
 	}
+
+	function no_spouse_msg(){
+				echo "<script languauge='Javascript'>";
+				echo "window.alert('Please indicate the name of the spouse. Patients enrolled in FP should have partners.')";
+				echo "</script>";	
+	}
+
 }
 ?>
