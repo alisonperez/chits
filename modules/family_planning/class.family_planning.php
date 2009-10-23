@@ -1018,44 +1018,51 @@ class family_planning extends module{
 	}
 	
 	function form_fp_obs(){
+		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
 		$q_fp = $this->check_fprec();
-		
-		if(mysql_num_rows($q_fp)!=0):
+		$px_gender = patient::get_gender($pxid);
 
-		echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_fp_obs'>";
-		echo "<a name='obs'></a>";
-		echo "<table>";
-		echo "<thead><td colspan='2'>OBSTETRICAL HISTORY</td></thead>";
-		
-		echo "<tr><td>Number of Pregnancies (FPAL)</td>";		
-		echo "<td><input type='text' name='txt_fp_fpal' size='3' maxlength='4'></td></tr>";
-		
-		echo "<tr><td>Date of Last Delivery</td><td><input type='text' name='txt_last_delivery' size='7' maxlength='11'>";
-		
-		echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_last_delivery', document.form_fp_obs.txt_last_delivery.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
-		echo "</input></td></tr>";
-		
-		echo "<tr><td>TYPE OF LAST DELIVERY</td><td><input type='text' name='txt_type_delivery' size='10'></td></tr>";
-		
-		echo "<tr><td>PAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_past_mens' size='7' maxlength='11'>";
-		echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_past_mens', document.form_fp_obs.txt_past_mens.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
-		echo "</input></td></tr>";
-		
-		echo "<tr><td>LAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_last_mens' size='7' maxlength='11'>";
-		echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_last_mens', document.form_fp_obs.txt_last_mens.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
-		echo "</input></td></tr>";
-		
+			if($px_gender=='F'):
 
-		echo "<tr><td>Duration and Character of Menstrual Bleeding</td><td><input type='text' name='txt_mens_bleed' size='3'></input> days</td></tr>";		
-		
-		echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Obstectrical History'></td></tr>";
-		
-		echo "</table>";
-		echo "</form>";
+						if(mysql_num_rows($q_fp)!=0):
 
+						echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_fp_obs'>";
+						echo "<a name='obs'></a>";
+						echo "<table>";
+						echo "<thead><td colspan='2'>OBSTETRICAL HISTORY</td></thead>";
+						
+						echo "<tr><td>Number of Pregnancies (FPAL)</td>";		
+						echo "<td><input type='text' name='txt_fp_fpal' size='3' maxlength='4'></td></tr>";
+						
+						echo "<tr><td>Date of Last Delivery</td><td><input type='text' name='txt_last_delivery' size='7' maxlength='11'>";
+						
+						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_last_delivery', document.form_fp_obs.txt_last_delivery.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
+						echo "</input></td></tr>";
+						
+						echo "<tr><td>TYPE OF LAST DELIVERY</td><td><input type='text' name='txt_type_delivery' size='10'></td></tr>";
+						
+						echo "<tr><td>PAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_past_mens' size='7' maxlength='11'>";
+						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_past_mens', document.form_fp_obs.txt_past_mens.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
+						echo "</input></td></tr>";
+						
+						echo "<tr><td>LAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_last_mens' size='7' maxlength='11'>";
+						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_last_mens', document.form_fp_obs.txt_last_mens.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
+						echo "</input></td></tr>";
+						
+
+						echo "<tr><td>Duration and Character of Menstrual Bleeding</td><td><input type='text' name='txt_mens_bleed' size='3'></input> days</td></tr>";		
+						
+						echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Obstectrical History'></td></tr>";
+						
+						echo "</table>";
+						echo "</form>";
+
+						else:
+							$this->no_fp_msg();
+						endif;
 
 		else:
-			$this->no_fp_msg();
+			echo "<br><br><font color='red'>Obstetrical history is only for female patients</font><br><br>";
 		endif;
 	}
 	
