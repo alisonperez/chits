@@ -735,7 +735,6 @@ class family_planning extends module{
 		echo "</form>";
 	}
 
-	
 	function form_fp_history(){
 		$q_fp = $this->check_fprec();
 		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
@@ -763,8 +762,17 @@ class family_planning extends module{
 				echo "<tr><td>";
 				
 				while($res_hx = mysql_fetch_array($q_hx)){
-					echo "<input type='checkbox' name='sel_hx[]' value='$res_hx[history_id]'>".$res_hx["history_text"]."</input><br>";
+					$q_hx_patient = mysql_query("SELECT history_id FROM m_patient_fp_hx WHERE consult_id='$_GET[consult_id]' AND patient_id='$pxid' AND history_id='$res_hx[history_id]'") or die("Cannot query: 765");
+					
+					list($hxid) = mysql_fetch_array($q_hx_patient);					
+
+					if($hxid == $res_hx[history_id]):
+						echo "<input type='checkbox' name='sel_hx[]' value='$res_hx[history_id]' checked><b><font color='red'>".$res_hx["history_text"]."</font></b></input><br>";
+					else:
+						echo "<input type='checkbox' name='sel_hx[]' value='$res_hx[history_id]'>".$res_hx["history_text"]."</input><br>";
+					endif;
 				}
+
 				echo "</td></tr>";
 			}
 			echo "<tr><td><input type='submit' name='submit_fp' value='Save FP History'></td></tr>";
