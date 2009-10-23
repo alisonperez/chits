@@ -803,6 +803,8 @@ class family_planning extends module{
 		
 		if(mysql_num_rows($q_pe_cat)!=0):
 		
+		$q_consult_vitals = mysql_query("SELECT vitals_systolic, vitals_diastolic, vitals_weight, vitals_pulse FROM m_consult_vitals WHERE consult_id='$_GET[consult_id]'") or die("Cannot query: 805");	
+
 		echo "<form method='post' name='form_fp_pe' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PE#pe'>";
 
 		echo "<input type='hidden' name='pxid' value='$pxid'></input>";
@@ -813,9 +815,16 @@ class family_planning extends module{
 		echo "<tr><td colspan='2'>";
 		
 		echo "<table border='1'>";
-		echo "<tr><td>Blood Pressure&nbsp;<input type='text' name='txt_fp_bp' size='4' maxlength='8'></td>";
-		echo "<td>Weight&nbsp;<input type='text' name='txt_fp_wt' size='4' maxlength='3'> kgs</td>";
-		echo "<td>Pulse Rate&nbsp;<input type='text' name='txt_fp_pr' size='4' maxlength='8'> per Minute</td></tr>";
+		if(mysql_num_rows($q_consult_vitals)==0):
+				echo "<font color='red'><b>Please fill out the Vital Signs section for this consult. Click <a href='$_SERVER[PHP_SELF]?page=CONSULTS&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=VITALS'>here</a></font></b>";
+
+		else:
+				list($systolic,$diastolic,$weight,$pulse) = mysql_fetch_array($q_consult_vitals);
+				echo "<tr><td>Blood Pressure: &nbsp;$systolic / $diastolic</td>";
+				echo "<td>Weight&nbsp; $weight kgs</td>";
+				echo "<td>Pulse Rate:&nbsp;$pulse per minute</td></tr>";
+		endif;
+
 		echo "</table>";
 		
 		echo "</td></tr>";
