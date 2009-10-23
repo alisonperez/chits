@@ -720,14 +720,14 @@ class healthcenter extends module{
                 }
             }
         }
-        $sql = "select user_id, vitals_weight, vitals_temp, vitals_systolic, vitals_diastolic, vitals_heartrate, vitals_resprate,vitals_height ".
+        $sql = "select user_id, vitals_weight, vitals_temp, vitals_systolic, vitals_diastolic, vitals_heartrate, vitals_resprate,vitals_height,vitals_pulse ".
                "from m_consult_vitals where consult_id = '".$get_vars["consult_id"]."' and vitals_timestamp = '".$get_vars["timestamp"]."'";
 
 		$edad  = healthcenter::get_patient_age($get_vars["consult_id"]);				
 
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
-                list($uid, $wt, $temp, $syst, $diast, $hrate, $rrate,$ht) = mysql_fetch_array($result);
+                list($uid, $wt, $temp, $syst, $diast, $hrate, $rrate,$ht,$pulse) = mysql_fetch_array($result);
                 print "<a name='detail'>";
                 print "<form method='post' action='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=VITALS&timestamp=".$get_vars["timestamp"]."' name='form_vitals_detail'>";
                 print "<table width='250' style='border: 1px dotted black'><tr><td colspan='2'>";
@@ -737,6 +737,7 @@ class healthcenter extends module{
                 print "BP: $syst/$diast<br/>";
                 print "HR: $hrate<br/>";
                 print "RR: $rrate<br/>";
+                print "Pulse Rate: $pulse<br/>";
                 print "</td><td>";
                 print "Weight (kg): $wt<br/>";
                 print "Temp deg C: $temp<br/>";
@@ -775,7 +776,10 @@ class healthcenter extends module{
 			if ($post_vars["bloodpressure"]) {
 				list($systolic, $diastolic) = explode("/", $post_vars["bloodpressure"]);
 			}
-			$sql = "insert into m_consult_vitals set consult_id='$get_vars[consult_id]',user_id='$_SESSION[userid]',vitals_weight='$post_vars[bodyweight]',vitals_temp='$post_vars[bodytemp]',vitals_systolic='$systolic',vitals_diastolic='$diastolic',vitals_heartrate='$post_vars[heartrate]',vitals_resprate='$post_vars[resprate]',vitals_height='$post_vars[pxheight]'";
+			
+			$pxid = healthcenter::get_patient_id($_GET[consult_id]);
+
+			$sql = "insert into m_consult_vitals set consult_id='$get_vars[consult_id]',patient_id='$pxid',user_id='$_SESSION[userid]',vitals_weight='$post_vars[bodyweight]',vitals_temp='$post_vars[bodytemp]',vitals_systolic='$systolic',vitals_diastolic='$diastolic',vitals_heartrate='$post_vars[heartrate]',vitals_resprate='$post_vars[resprate]',vitals_height='$post_vars[pxheight]',vitals_pulse='$post_vars[pxpulse]'";
 			//$sql = "insert into m_consult_vitals (consult_id, user_id, vitals_weight, vitals_temp, vitals_systolic, vitals_diastolic, vitals_heartrate, vitals_resprate,) "."values ('".$get_vars["consult_id"]."', '".$_SESSION["userid"]."', '".$post_vars["bodyweight"]."', '".$post_vars["bodytemp"]."', '$systolic', '$diastolic', '".$post_vars["heartrate"]."', '".$post_vars["resprate"]."')";
 
 			if ($result = mysql_query($sql) or die(mysql_error())) {
@@ -818,6 +822,11 @@ class healthcenter extends module{
         print "<tr valign='top'><td>";
         print "<span class='boxtitle'>".LBL_WEIGHT."</span><br> ";
         print "<input type='text' class='textbox' size='10' maxlength='7' name='bodyweight' value='".($anes_eval["eval_weight"]?$anes_eval["eval_weight"]:$post_vars["bodyweight"])."' style='border: 1px solid #000000'><br>";
+        print "</td></tr>";
+
+        print "<tr valign='top'><td>";
+        print "<span class='boxtitle'>PULSE RATE (beats per minute)</span><br> ";
+        print "<input type='text' class='textbox' size='10' maxlength='7' name='pxpulse' value='$post_vars[pulserate]' style='border: 1px solid #000000'><br>";
         print "</td></tr>";
 
         print "<tr valign='top'><td>";

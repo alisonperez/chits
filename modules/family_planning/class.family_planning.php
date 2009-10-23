@@ -468,7 +468,10 @@ class family_planning extends module{
 					$fp->submit_fp_history();
 					break;
 				
-				
+				case "Save Physical Examination":
+					$fp->submit_fp_pe();
+					break;
+
 				default:
 					break;
 			}			
@@ -651,8 +654,6 @@ class family_planning extends module{
 		else: 
 			list($fp_id,$more_child,$actual_child,$desired_child,$birth_interval,$educ_id,$occup_id,$spouse_name,$spouse_educ_id,$spouse_occup_id,$ave_monthly_income) = mysql_fetch_array($q_fp);
 		endif;
-
-		
 		
 		echo "<form name='form_visit1' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1' method='POST'>";
 		echo "<input type='hidden' name='pxid' value='$pxid'>";
@@ -790,14 +791,22 @@ class family_planning extends module{
 
 	function form_fp_pe(){
 		$q_fp = $this->check_fprec();		
+		
+		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
 
 		if(mysql_num_rows($q_fp)!=0):
-
+		
+		list($fpid) = mysql_fetch_array($q_fp);
+		
 		$q_pe_cat = mysql_query("SELECT pe_cat_id, pe_cat_name FROM m_lib_fp_pe_cat") or die("Cannot query: 350");
 		echo "<a name='pe'></a>";
-		if(mysql_num_rows($q_pe_cat)!=0):
-		echo "<form method='post' name='form_fp_pe'>";
 		
+		if(mysql_num_rows($q_pe_cat)!=0):
+		
+		echo "<form method='post' name='form_fp_pe' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PE#pe'>";
+
+		echo "<input type='hidden' name='pxid' value='$pxid'></input>";
+		echo "<input type='hidden' name='fpid' value='$fpid'></input>";
 		echo "<table border='1'>";
 		echo "<thead><td colspan='2' align='center'>PHYSICAL EXAMINATION</td></thead>";
 
@@ -818,8 +827,17 @@ class family_planning extends module{
 			//echo "<tr><td>".$r_pe_cat["pe_cat_name"]."</td></tr>";
 			echo "<tr><td valign='top'>".$r_pe_cat["pe_cat_name"]."</td>";
 			echo "<td>";
-			while($r_pe = mysql_fetch_array($q_pe)){				
-				echo "<input type='checkbox' name='sel_pe[]' value='$r_pe[pe_id]'>".$r_pe["pe_name"]."</input><br>";
+			while($r_pe = mysql_fetch_array($q_pe)){
+
+				$q_fp_pe = mysql_query("SELECT pe_id FROM m_patient_fp_pe WHERE patient_id='$pxid' AND consult_id='$_GET[consult_id]' AND pe_id='$r_pe[pe_id]'") or die("Cannot query : 831");
+
+				list($peid) = mysql_fetch_array($q_fp_pe);
+				
+				if($r_pe[pe_id]==$peid):
+					echo "<input type='checkbox' name='sel_pe[]' value='$r_pe[pe_id]' checked><font color='red'><b>".$r_pe["pe_name"]."</b></font></input><br>";
+				else:
+					echo "<input type='checkbox' name='sel_pe[]' value='$r_pe[pe_id]'>".$r_pe["pe_name"]."</input><br>";
+				endif;
 			}
 			echo "</td></tr>";
 		}
@@ -1126,7 +1144,7 @@ class family_planning extends module{
 			return $arr_current;
 	}
 
-	function submit_first_visit(){		
+	function submit_first_visit(){
 
 			$spouse_name = trim($_POST[spouse_name]);
 			if(empty($spouse_name)):	
@@ -1169,6 +1187,17 @@ class family_planning extends module{
 			echo "window.alert('FP History is successfully been updated.')";
 			echo "</script>";
 	}
+
+	function submit_fp_pe(){
+		$del_pe = mysql_query("DELETE FROM m_patient_fp_pe WHERE patient_id='$_POST[pxid]' AND consult_id='$_GET[consult_id]'") or die("Cannot query: 1182");
+		
+			$pe_arr = $_POST[sel_pe];
+
+			for($i=0;$i<sizeof($pe_arr);$i++){
+				$insert_pe = mysql_query("INSERT INTO m_patient_fp_pe SET fp_id='$_POST[fpid]',patient_id='$_POST[pxid]',pe_id='$pe_arr[$i]',consult_id='$_GET[consult_id]',date_encoded=NOW(),user_id='$_SESSION[userid]',last_edited=NOW(),user_id_edited='$_SESSION[userid]'") or die(mysql_error());
+			}
+	}
+
 
 	function check_fprec(){
 		//function shall check if there exists an FP Service Record
