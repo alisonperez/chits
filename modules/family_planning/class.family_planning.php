@@ -456,14 +456,18 @@ class family_planning extends module{
 					break;
 
 				case "Save Family Planning First Visit":
-					$fp->submit_first_visit("add");
+					$fp->submit_first_visit();
 					break;
 
 				case "Update Family Planning First Visit":
-					$fp->submit_first_visit("update");
+					$fp->submit_first_visit();
 					break;
-
-
+				
+				case "Save FP History":
+					$fp->submit_fp_history();
+					break;
+				
+				
 				default:
 					break;
 			}			
@@ -734,13 +738,19 @@ class family_planning extends module{
 	
 	function form_fp_history(){
 		$q_fp = $this->check_fprec();
+		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
 		
 		if(mysql_num_rows($q_fp)!=0):
 
 		$q_hx_cat = mysql_query("SELECT cat_id, cat_name FROM m_lib_fp_history_cat") or die("Cannot query: 280");
 		
 		if(mysql_num_rows($q_hx_cat)!=0):
-			echo "<form action='$_SERVER[PHP_SELF]' name='form_fp_hx' method='POST'>";
+			$fp_arr = mysql_fetch_array($q_fp);
+
+			echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=HX#hx' name='form_fp_hx' method='POST'>";
+			
+			echo "<input type='hidden' value='$pxid' name='pxid'></input>";
+			echo "<input type='hidden' value='$fp_arr[fp_id]' name='fpid'>";
 			echo "<a name='hx'></a>";
 			echo "<table>";
 			echo "<thead><td>MEDICAL HISTORY</td></thead>";
@@ -754,11 +764,10 @@ class family_planning extends module{
 				
 				while($res_hx = mysql_fetch_array($q_hx)){
 					echo "<input type='checkbox' name='sel_hx[]' value='$res_hx[history_id]'>".$res_hx["history_text"]."</input><br>";
-
 				}
 				echo "</td></tr>";
 			}
-			echo "<tr><td><input type='submit' name='submit_fp' value='Save History'></td></tr>";
+			echo "<tr><td><input type='submit' name='submit_fp' value='Save FP History'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		else:
@@ -1101,16 +1110,11 @@ class family_planning extends module{
 			return $arr_current;
 	}
 
-	function submit_first_visit($ops){		
+	function submit_first_visit(){		
 
 			$spouse_name = trim($_POST[spouse_name]);
 			if(empty($spouse_name)):	
-
-					$this->no_spouse_msg();
-					/*echo "<script languauge='Javascript'>";
-					echo "window.alert('Please indicate the name of the spouse. Patients enrolled in FP should have partners.')";
-					echo "</script>";*/
-
+					$this->no_spouse_msg();				
 			else:
 					//print_r($_SESSION);
 					$q_fp = $this->check_fprec();
@@ -1136,8 +1140,18 @@ class family_planning extends module{
 			endif;
 	}
 
-	function update_first_visit(){
-			$spouse_name = trim($_POST[spouse_name]);	
+	function submit_fp_history(){
+			$del_hx = mysql_query("DELETE FROM m_patient_fp_hx WHERE patient_id='$_POST[pxid]' AND consult_id='$_GET[consult_id]'") or die('Cannot query: 1144');			
+
+			$hx_arr = $_POST[sel_hx];
+
+			for($i=0;$i<sizeof($hx_arr);$i++){
+				$insert_hx = mysql_query("INSERT INTO m_patient_fp_hx SET fp_id='$_POST[fpid]',patient_id='$_POST[pxid]',consult_id='$_GET[consult_id]',history_id='$hx_arr[$i]',date_encoded=NOW(),user_id='$_SESSION[userid]',last_edited=NOW(),user_id_edited='$_SESSION[userid]'") or die("Cannot query: 1148");			
+			}
+			
+			echo "<script language='Javascript'>";
+			echo "window.alert('FP History is successfully been updated.')";
+			echo "</script>";
 	}
 
 	function check_fprec(){
