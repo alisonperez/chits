@@ -100,14 +100,15 @@ class family_planning extends module{
 
 		//m_patient_fp_pe -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_pe` (
-			  	`fp_id` float NOT NULL,
-				`patient_id` float NOT NULL,
-			  	`pe_id` int(5) NOT NULL,
-			  	`date_encoded` date NOT NULL,
-			  	`user_id` int(3) NOT NULL,
-			  	`last_edited` date NOT NULL,
-			  	`user_id_edited` int(3) NOT NULL
-				) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+			  `fp_id` float NOT NULL,
+			  `patient_id` float NOT NULL,
+			  `pe_id` int(5) NOT NULL,
+			  `consult_id` float NOT NULL,
+			  `date_encoded` date NOT NULL,
+			  `user_id` int(3) NOT NULL,
+			  `last_edited` date NOT NULL,
+			  `user_id_edited` int(3) NOT NULL
+			) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
 
 		//m_patient_fp_pelvic --create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_pelvic` (
