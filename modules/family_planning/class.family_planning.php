@@ -112,14 +112,15 @@ class family_planning extends module{
 
 		//m_patient_fp_pelvic --create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_pelvic` (
-			  	`fp_id` float NOT NULL,
-  				`patient_id` float NOT NULL,
-  				`pelvic_id` int(5) NOT NULL,
-  				`date_encoded` date NOT NULL,
-  				`user_id` int(3) NOT NULL,
-  				`last_edited` date NOT NULL,
-  				`user_id_edited` int(3) NOT NULL
-				) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+					  `fp_id` float NOT NULL,
+					  `patient_id` float NOT NULL,
+					  `consult_id` float NOT NULL,
+					  `pelvic_id` int(5) NOT NULL,
+					  `date_encoded` date NOT NULL,
+					  `user_id` int(3) NOT NULL,
+					  `last_edited` date NOT NULL,
+					  `user_id_edited` int(3) NOT NULL
+					) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
 		
 		//m_patient_fp_obgyn -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_obgyn` (
@@ -874,6 +875,10 @@ class family_planning extends module{
 
 	function form_fp_pelvicpe(){
 		$q_fp = $this->check_fprec();
+		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
+		$px_gender = patient::get_gender($pxid);
+
+		if($px_gender=='F'):
 
 		if(mysql_num_rows($q_fp)!=0):
 
@@ -881,7 +886,7 @@ class family_planning extends module{
 		$q_pelvic_exam = mysql_query("SELECT pelvic_cat_id,pelvic_cat_name FROM m_lib_fp_pelvic_cat") or die(mysql_error());
 		
 		if(mysql_num_rows($q_pelvic_exam)!=0):
-			echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_pelvic'>";
+			echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PELVIC#pelvic' method='POST' name='form_pelvic'>";
 			echo "<a name='pelvic'></a>";
 			echo "<table border='1'>";	
 			echo "<thead><td align='center' colspan='2'>PELVIC EXAMINATION</td></thead>";
@@ -920,6 +925,9 @@ class family_planning extends module{
 				$this->no_fp_msg();
 		endif;
 
+		else:
+			echo "<br><br><font color='red'>Pelvic Examination is only for female patients</font><br><br>";
+		endif;
 	}
 
 	function menu_highlight(){  //this function highlights the active fp submenu
