@@ -1,14 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 if [ -z "$SUDO_USER" ]; then
     echo "$0 must be called from sudo. Try: 'sudo ${0}'"
     exit 1
 fi
 
+echo "Press enter if unsure about the following questions"
 echo "Do you want to upgrade all packages? ([y]/n)"
 read UPGRADE_ALL
 
 echo "Do you want to remove un-needed packages like games, music players and email? ([y]/n)"
 read REMOVE
+
+echo "Do you want to update your apt sources list to remove updates (for a faster install)? ([y]/n)"
+read UPDATE_SOURCES
 
 # These are for all configurations
 PROGRAMS_TO_INSTALL='openssh-server wget vim'
@@ -17,19 +21,24 @@ if [ ! "${REMOVE}" = "n" ]; then
   PROGRAMS_TO_REMOVE="gnome-games gnome-games-data openoffice.org-common f-spot ekiga evolution pidgin totem totem-common brasero rhythmbox synaptic gimp"
 fi
 
+if [ ! "${UPDATE_SOURCES}" = "n" ]; then
+  sed -i 's/^\(.*updates.*\)$/#\1/' /etc/apt/sources.list
+  sed -i 's/^\(.*security.*\)$/#\1/' /etc/apt/sources.list
+  apt-get update
+fi
+
 echo "
 set bell-style none
 
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-"\e[5C": forward-word
-"\e[5D": backward-word
-"\e\e[C": forward-word
-"\e\e[D": backward-word
+\"\e[A\": history-search-backward
+\"\e[B\": history-search-forward
+\"\e[5C\": forward-word
+\"\e[5D\": backward-word
+\"\e\e[C\": forward-word
+\"\e\e[D\": backward-word
 $if Bash
   Space: magic-space
 $endif" > /home/$SUDO_USER/.inputrc
-
 
 
 # Call "install wget" to add wget to the list of programs to install
@@ -79,8 +88,18 @@ X-GNOME-Autostart-enabled=true" > $AUTOSTART_DIR/firefox.desktop
 
 server () {
   echo "Server"
-  set_mysql_root_password
-  install "dnsmasq"
+  if [ ! "$MYSQL_ROOT_PASSWORD" ]; then 
+    set_mysql_root_password; 
+  fi
+  if [ ! "$CHITS_LIVE_PASSWORD" ]; then 
+    echo "Enter password for database user chits_live:"
+    read CHITS_LIVE_PASSWORD
+  fi
+
+  export MYSQL_ROOT_PASSWORD 
+  export CHITS_LIVE_PASSWORD
+
+  install "dnsmasq autossh curl"
   apt-get --assume-yes install $PROGRAMS_TO_INSTALL
   apt-get --assume-yes remove $PROGRAMS_TO_REMOVE
   if [ ! "${UPGRADE_ALL}" = "n" ]; then
@@ -90,6 +109,28 @@ server () {
   wget --output-document=mysql_replication.sh http://github.com/mikeymckay/chits/raw/master/install/mysql_replication.sh
   chmod +x chits_install.sh mysql_replication.sh
   ./chits_install.sh
+  echo "Creating ssh keys so we can reverse ssh into the server"
+  ssh-keygen -N "" -f /home/$SUDO_USER/.ssh/id_rsa
+
+  echo "Setting up reverse autossh to run on boot"
+  # Generate a random port number to use in the 10000 - 20000 range
+  PORT_NUMBER=$[ ( $RANDOM % 10000 )  + 10000 ]
+  MONITORING_PORT_NUMBER=$[ ( $RANDOM % 10000 )  + 20000 ]
+  echo "
+# ------------------------------
+# Added by tarlac_install script
+# ------------------------------
+sleep 90 # Wait for networking to come up
+# See autossh and google for reverse ssh tunnels to see how this works
+/usr/bin/autossh -f -M ${MONITORING_PORT_NUMBER} -N -i /home/${SUDO_USER}/.ssh/identity  -R *:${PORT_NUMBER}:localhost:22 chitstunnel@lakota.vdomck.org
+exit 0
+" > /etc/rc.local
+
+  echo "Uploading public key to lakota.vdomck.org"
+  PUBLIC_KEY_FILENAME=/tmp/`hostname`.public_key
+  cp /home/$SUDO_USER/.ssh/id_rsa.pub $PUBLIC_KEY_FILENAME
+  curl -f "file=${PUBLIC_KEY_FILENAME}" lakota.vdomck.org:4567/upload
+
   echo "
 # ------------------------------
 # Added by tarlac_install script
@@ -105,7 +146,8 @@ auto eth0
 iface eth0 inet static
 address 192.168.0.1
 netmask 255.255.255.0
-gateway 192.168.0.1
+# Router will be set to 0.2
+gateway 192.168.0.2 
 " > /etc/network/interfaces
 
 # setup DHCP and DNS
@@ -162,7 +204,9 @@ client_and_server_and_access_point () {
 
 #TODO!!
 client_with_mysql_replication () {
-  set_mysql_root_password
+  if [ ! "$MYSQL_ROOT_PASSWORD" ]; then 
+    set_mysql_root_password; 
+  fi
   install "mysql-server"
   client
   echo "Replication needs to be completed by logging onto the master computer and running the mysql_replication.sh script"

@@ -1743,10 +1743,10 @@ CREATE TABLE IF NOT EXISTS `m_consult_vitals` (
   `vitals_heartrate` int(11) NOT NULL default '0',
   `vitals_resprate` int(11) NOT NULL default '0',
   `vitals_height` int(5) NOT NULL default '0',
+  `vitals_pulse` int(5) NOT NULL,
   PRIMARY KEY  (`consult_id`,`vitals_timestamp`),
   KEY `key_patient` (`patient_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 --
 -- Dumping data for table `m_consult_vitals`
 --
