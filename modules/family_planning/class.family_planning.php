@@ -59,9 +59,7 @@ class family_planning extends module{
 		
 		//m_patient_fp -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp` (
-				  `fp_id` float NOT NULL auto_increment,
-				  `uterine_mass_iud` int(3) NOT NULL,
-				  `pe_others` text NOT NULL,
+				  `fp_id` float NOT NULL auto_increment,				 
 				  `patient_id` float NOT NULL default '0',
 				  `date_enrolled` date NOT NULL,
 				  `date_encoded` date NOT NULL,
@@ -79,6 +77,8 @@ class family_planning extends module{
 				  `ave_monthly_income` float NOT NULL default '0',
 				  `user_id` int(11) NOT NULL default '0',
 				  `user_id_edited` int(11) NOT NULL,
+				  `uterine_mass_iud` int(3) NOT NULL,
+				  `pe_others` text NOT NULL,
 				  PRIMARY KEY  (`fp_id`),
 				  KEY `key_patient` (`patient_id`),
 				  KEY `key_educ` (`educ_id`),
@@ -888,11 +888,16 @@ class family_planning extends module{
 
 		if(mysql_num_rows($q_fp)!=0):
 
-		//$q_pelvic_exam = mysql_query("SELECT a.pelvic_id, a.pelvic_name, b.pelvic_cat_name FROM m_lib_fp_pelvic a, m_lib_fp_pelvic_cat b WHERE a.pelvic_cat=b.pelvic_cat_id ORDER by a. pelvic_id") or die(mysql_error());
+		list($fpid) = mysql_fetch_array($q_fp);
+
 		$q_pelvic_exam = mysql_query("SELECT pelvic_cat_id,pelvic_cat_name FROM m_lib_fp_pelvic_cat") or die(mysql_error());
 		
 		if(mysql_num_rows($q_pelvic_exam)!=0):
 			echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PELVIC#pelvic' method='POST' name='form_pelvic'>";
+			
+			echo "<input type='hidden' name='pxid' value='$pxid'></input>";
+			echo "<input type='hidden' name='fpid' value='$fpid'></input>";
+
 			echo "<a name='pelvic'></a>";
 			echo "<table border='1'>";	
 			echo "<thead><td align='center' colspan='2'>PELVIC EXAMINATION</td></thead>";
@@ -907,14 +912,22 @@ class family_planning extends module{
 				echo "<td>";
 				
 				if($r_pelvic_exam[pelvic_cat_id]=="UTERUSMASS"):
-					echo "<font size='1'><b>Uterine Depth (for Intended IUD Users) <input type='text' name='txt_uterine_depth' size='5' maxlength='4'></input> cms</b></font>";
+					$q_uterine = mysql_query("SELECT uterine_mass_iud FROM m_patient_fp WHERE fp_id='$fpid' AND patient_id='$pxid'") or die("Cannot query: 915");
+					list($uterine_mass) = mysql_fetch_array($q_uterine);
+
+					echo "<font size='1'><b>Uterine Depth (for Intended IUD Users) <input type='text' name='txt_uterine_depth' size='5' maxlength='4' value='$uterine_mass'></input> cms</b></font>";
 				else:									
 					while($r_pelvic_cat=mysql_fetch_array($q_pelvic_cat)){
-						echo "<input type='checkbox' name='sel_pecat[]' value='$r_pelvic_cat[pelvic_id]'>$r_pelvic_cat[pelvic_name]</input>";
+						$q_pelvic = mysql_query("SELECT pelvic_id FROM m_patient_fp_pelvic WHERE consult_id='$_GET[consult_id]' AND patient_id='$pxid' AND pelvic_id='$r_pelvic_cat[pelvic_id]'") or die("Cannot query: 921");
+						list($pelvic_id) = mysql_fetch_array($q_pelvic);
+
+						if($pelvic_id==$r_pelvic_cat[pelvic_id]):
+							echo "<input type='checkbox' name='sel_pecat[]' value='$r_pelvic_cat[pelvic_id]' checked><font color='red'><b>$r_pelvic_cat[pelvic_name]</b></font></input>";
+						else:
+							echo "<input type='checkbox' name='sel_pecat[]' value='$r_pelvic_cat[pelvic_id]'>$r_pelvic_cat[pelvic_name]</input>";
+						endif;
 					}					
-				endif;
-				
-		
+				endif;						
 				echo "</td>";				
 				echo "</tr>";			
 			}
@@ -1047,8 +1060,7 @@ class family_planning extends module{
 		endif;
 		
 		echo "</td>";
-		
-		
+				
 		echo "<tr><td>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'></textarea></td></tr>";
 		echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11'>";
 		echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";				
@@ -1222,8 +1234,20 @@ class family_planning extends module{
 	}
 
 	function submit_fp_pelvic(){
-//		$del_pelvic = mysql_query("DELETE FROM m_patient_pelvic")
-	
+
+		$del_pelvic = mysql_query("DELETE FROM m_patient_fp_pelvic WHERE patient_id='$_POST[pxid]' AND consult_id='$_GET[consult_id]'") or die("Cannot query: 1230");
+
+		$pelvic_arr = $_POST[sel_pecat];
+
+		for($i=0;$i<sizeof($pelvic_arr);$i++){
+			$insert_pelvic = mysql_query("INSERT INTO m_patient_fp_pelvic SET fp_id='$_POST[fpid]',patient_id='$_POST[pxid]',consult_id='$_GET[consult_id]',pelvic_id='$pelvic_arr[$i]',date_encoded=NOW(),user_id='$_SESSION[userid]',last_edited=NOW(),user_id_edited='$_SESSION[userid]'") or die("Cannot query 1235");
+		}
+
+		$update_uterine_mass = mysql_query("UPDATE m_patient_fp SET uterine_mass_iud='$_POST[txt_uterine_depth]' WHERE fp_id='$_POST[fpid]' AND patient_id='$_POST[pxid]'") or die("Cannot query: 1238");
+
+		echo "<script language='Javascript'>";
+		echo "window.alert('FP Pelvic Exam is successfully been updated.')";
+		echo "</script>";	
 	}
 
 
