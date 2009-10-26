@@ -846,9 +846,11 @@ class family_planning extends module{
 			while($r_pe = mysql_fetch_array($q_pe)){
 
 				$q_fp_pe = mysql_query("SELECT pe_id FROM m_patient_fp_pe WHERE patient_id='$pxid' AND consult_id='$_GET[consult_id]' AND pe_id='$r_pe[pe_id]'") or die("Cannot query : 831");
+				$q_pe_others = mysql_query("SELECT pe_others FROM m_patient_fp WHERE patient_id='$pxid' AND fp_id='$fpid'") or die("cannot query: 849");
 
 				list($peid) = mysql_fetch_array($q_fp_pe);
-				
+				list($pe_others) = mysql_fetch_array($q_pe_others);
+
 				if($r_pe[pe_id]==$peid):
 					echo "<input type='checkbox' name='sel_pe[]' value='$r_pe[pe_id]' checked><font color='red'><b>".$r_pe["pe_name"]."</b></font></input><br>";
 				else:
@@ -857,8 +859,8 @@ class family_planning extends module{
 			}
 			echo "</td></tr>";
 		}
-
-		echo "<tr><td>OTHERS&nbsp;<input type='text' name='txt_pe_others' length='10'></input></td></tr>";
+		
+		echo "<tr><td>OTHERS&nbsp;</td><td><textarea name='txt_pe_others' rows='5' cols='40'>$pe_others</textarea></td></tr>";
 
 		echo "</table></td>";			
 
@@ -1231,6 +1233,12 @@ class family_planning extends module{
 			for($i=0;$i<sizeof($pe_arr);$i++){
 				$insert_pe = mysql_query("INSERT INTO m_patient_fp_pe SET fp_id='$_POST[fpid]',patient_id='$_POST[pxid]',pe_id='$pe_arr[$i]',consult_id='$_GET[consult_id]',date_encoded=NOW(),user_id='$_SESSION[userid]',last_edited=NOW(),user_id_edited='$_SESSION[userid]'") or die(mysql_error());
 			}
+			
+			$update_pe_others = mysql_query("UPDATE m_patient_fp SET pe_others='$_POST[txt_pe_others]' WHERE fp_id='$_POST[fpid]' AND patient_id='$_POST[pxid]'") or die("Cannot query: 1235");
+
+			echo "<script language='Javascript'>";
+			echo "window.alert('FP Physical Exam was successfully been updated.')";
+			echo "</script>";	
 	}
 
 	function submit_fp_pelvic(){
@@ -1246,7 +1254,7 @@ class family_planning extends module{
 		$update_uterine_mass = mysql_query("UPDATE m_patient_fp SET uterine_mass_iud='$_POST[txt_uterine_depth]' WHERE fp_id='$_POST[fpid]' AND patient_id='$_POST[pxid]'") or die("Cannot query: 1238");
 
 		echo "<script language='Javascript'>";
-		echo "window.alert('FP Pelvic Exam is successfully been updated.')";
+		echo "window.alert('FP Pelvic Exam was successfully been updated.')";
 		echo "</script>";	
 	}
 
