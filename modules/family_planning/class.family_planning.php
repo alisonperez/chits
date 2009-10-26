@@ -59,31 +59,33 @@ class family_planning extends module{
 		
 		//m_patient_fp -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp` (
-			  `fp_id` float NOT NULL auto_increment,
-			  `patient_id` float NOT NULL default '0',
-			  `date_enrolled` date NOT NULL,
-			  `date_encoded` date NOT NULL,
-			  `consult_id` float NOT NULL,
-			  `last_edited` date NOT NULL,
-			  `plan_more_children` char(1) NOT NULL default '',
-			  `no_of_living_children_desired` tinyint(2) NOT NULL default '0',
-			  `no_of_living_children_actual` tinyint(2) NOT NULL,
-			  `birth_interval_desired` tinyint(2) NOT NULL,
-			  `educ_id` varchar(10) NOT NULL default '',
-			  `occup_id` varchar(10) NOT NULL default '',
-			  `spouse_name` varchar(100) NOT NULL default '',
-			  `spouse_educ_id` varchar(10) NOT NULL default '',
-			  `spouse_occup_id` varchar(10) NOT NULL default '',
-			  `ave_monthly_income` float NOT NULL default '0',
-			  `user_id` int(11) NOT NULL default '0',
-			  `user_id_edited` int(11) NOT NULL,
-			  PRIMARY KEY  (`fp_id`),
-			  KEY `key_patient` (`patient_id`),
-			  KEY `key_educ` (`educ_id`),
-			  KEY `key_occup` (`occup_id`),
-			  KEY `key_spouse_educ` (`spouse_educ_id`),
-			  KEY `key_spouse_occup` (`spouse_occup_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;");
+				  `fp_id` float NOT NULL auto_increment,
+				  `uterine_mass_iud` int(3) NOT NULL,
+				  `pe_others` text NOT NULL,
+				  `patient_id` float NOT NULL default '0',
+				  `date_enrolled` date NOT NULL,
+				  `date_encoded` date NOT NULL,
+				  `consult_id` float NOT NULL,
+				  `last_edited` date NOT NULL,
+				  `plan_more_children` char(1) NOT NULL default '',
+				  `no_of_living_children_desired` tinyint(2) NOT NULL default '0',
+				  `no_of_living_children_actual` tinyint(2) NOT NULL,
+				  `birth_interval_desired` tinyint(2) NOT NULL,
+				  `educ_id` varchar(10) NOT NULL default '',
+				  `occup_id` varchar(10) NOT NULL default '',
+				  `spouse_name` varchar(100) NOT NULL default '',
+				  `spouse_educ_id` varchar(10) NOT NULL default '',
+				  `spouse_occup_id` varchar(10) NOT NULL default '',
+				  `ave_monthly_income` float NOT NULL default '0',
+				  `user_id` int(11) NOT NULL default '0',
+				  `user_id_edited` int(11) NOT NULL,
+				  PRIMARY KEY  (`fp_id`),
+				  KEY `key_patient` (`patient_id`),
+				  KEY `key_educ` (`educ_id`),
+				  KEY `key_occup` (`occup_id`),
+				  KEY `key_spouse_educ` (`spouse_educ_id`),
+				  KEY `key_spouse_occup` (`spouse_occup_id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=latin1");
 
 		//m_patient_fp_hx -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_hx` (
@@ -471,6 +473,10 @@ class family_planning extends module{
 				
 				case "Save Physical Examination":
 					$fp->submit_fp_pe();
+					break;
+
+				case "Save Pelvic Examination":
+					$fp->submit_fp_pelvic();
 					break;
 
 				default:
@@ -1213,6 +1219,11 @@ class family_planning extends module{
 			for($i=0;$i<sizeof($pe_arr);$i++){
 				$insert_pe = mysql_query("INSERT INTO m_patient_fp_pe SET fp_id='$_POST[fpid]',patient_id='$_POST[pxid]',pe_id='$pe_arr[$i]',consult_id='$_GET[consult_id]',date_encoded=NOW(),user_id='$_SESSION[userid]',last_edited=NOW(),user_id_edited='$_SESSION[userid]'") or die(mysql_error());
 			}
+	}
+
+	function submit_fp_pelvic(){
+//		$del_pelvic = mysql_query("DELETE FROM m_patient_pelvic")
+	
 	}
 
 
