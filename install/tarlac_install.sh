@@ -114,8 +114,8 @@ server () {
 
   echo "Setting up reverse autossh to run on boot"
   # Generate a random port number to use in the 10000 - 20000 range
-  PORT_NUMBER=$[ ( $RANDOM % 10000 )  + 10000 ]
-  MONITORING_PORT_NUMBER=$[ ( $RANDOM % 10000 )  + 20000 ]
+  PORT_NUMBER=$[ { $RANDOM % 10000 }  + 10000 ]
+  MONITORING_PORT_NUMBER=$[ { $RANDOM % 10000 }  + 20000 ]
   echo "
 # ------------------------------
 # Added by tarlac_install script
