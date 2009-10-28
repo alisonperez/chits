@@ -176,6 +176,7 @@ class family_planning extends module{
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_method_service` (
 				  `fp_service_id` float NOT NULL auto_increment,
 				  `fp_id` float NOT NULL,
+				  `fp_px_id` float NOT NULL,
 				  `patient_id` float NOT NULL,
 				  `consult_id` float NOT NULL,
 				  `date_service` date NOT NULL,
@@ -568,7 +569,7 @@ class family_planning extends module{
 		*/
 	    $q_fp = $this->check_fprec();
 
-		if(mysql_num_rows($q_fp)):
+		if(mysql_num_rows($q_fp)!=0):
 				
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);		
 		
@@ -1038,6 +1039,9 @@ class family_planning extends module{
 	}
 	
 	function form_fp_chart(){
+		// check first if there is an active FP method the user is presently using
+		$q_fp = mysql_query("") or die("Cannot query: 1042"); 
+
 		$q_supplier = mysql_query("SELECT source_id,source_name,source_cat FROM m_lib_supply_source") or die("Cannot query: 790");
 		
 		echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_fp_chart'>";
