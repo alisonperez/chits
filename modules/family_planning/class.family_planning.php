@@ -1,5 +1,4 @@
 <?php
-
 class family_planning extends module{
 
 	function family_planning(){ // class constructor
@@ -275,8 +274,6 @@ class family_planning extends module{
     		module::execsql("INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('EXT', 'EXTREMITIES')");
     		module::execsql("INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('SKIN', 'SKIN')");
     		module::execsql("INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('ANY', 'HISTORY OF ANY OF THE FOLLOWING')");
-
-
 
 	//create table for fp medical history items
 		module::execsql("DROP TABLE IF EXISTS `m_lib_fp_history`");
@@ -1059,7 +1056,8 @@ class family_planning extends module{
 		if(mysql_num_rows($q_supplier)!=0):
 			echo "<select name='sel_supply' size='1'>";
 			while($r_supplier = mysql_fetch_array($q_supplier)){				
-				echo "<option value='$r_supplier[source_id]'>$r_supplier[source_name]</option>";			}
+				echo "<option value='$r_supplier[source_id]'>$r_supplier[source_name]</option>";			
+			}
 			echo "</select>";
 		else:
 			echo "<input type='hidden' name='sel_supply' value='5'></input>";
