@@ -17459,3 +17459,21 @@ INSERT INTO `ques_cat` (`cat_id`, `cat_label`) VALUES
 (6, 'Nutrition'),
 (7, 'Notifiable Diseases'),
 (8, 'Child Care');
+
+CREATE TABLE IF NOT EXISTS `m_lib_mc_delivery_location` (
+  `delivery_id` varchar(10) NOT NULL,
+  `delivery_name` text NOT NULL,
+  PRIMARY KEY  (`delivery_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `m_lib_mc_delivery_location`
+--
+
+INSERT INTO `m_lib_mc_delivery_location` (`delivery_id`, `delivery_name`) VALUES
+('HOME', 'Home'),
+('HOSP', 'Hospital'),
+('LYIN', 'Private Lying-In Clinic'),
+('HC', 'Health Center'),
+('BHS', 'Barangay Health Station'),
+('OTHERS', 'Others');
