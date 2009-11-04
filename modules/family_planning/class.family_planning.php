@@ -582,6 +582,17 @@ class family_planning extends module{
 				$this->show_method_list('form_methods','sel_methods');
 				$this->show_previous_method("None");
 				echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";
+
+				/*echo "<tr><td>PERMANENT METHOD?</td><td>";
+				echo "<select name='perm_method' size='1'>";
+				echo "<option value='Y'>Yes</option>";
+				echo "<option value='N' selected>No</option>";
+				echo "</select>";
+				echo "</td></tr>"; */
+
+				echo "<tr><td>REASON FOR PERMANENT METHOD</td>";
+				echo "<td><textarea name='txt_reason' cols='30' row='10'>";
+				echo "</textarea></td></tr>";
 				echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning Method'></input></td></tr>";
 
 			else: //scenario 2-3	
@@ -1036,43 +1047,45 @@ class family_planning extends module{
 	}
 	
 	function form_fp_chart(){
-		// check first if there is an active FP method the user is presently using
-		$q_fp = mysql_query("") or die("Cannot query: 1042"); 
+		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
 
+		// check first if there is an active FP method the user is presently using
+		$q_fp = mysql_query("SELECT fp_px_id FROM m_patient_fp_method WHERE patient_id=$pxid AND drop_out='N'") or die(mysql_error()); 
+	
 		$q_supplier = mysql_query("SELECT source_id,source_name,source_cat FROM m_lib_supply_source") or die("Cannot query: 790");
 		
-		echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_fp_chart'>";
-		
-		echo "<a name='chart'></a>";
-		
-		echo "<table>";
-		echo "<thead><td>FP CHART</td></thead>";
-		
-		echo "<tr><td>DATE SERVICE GIVEN</td><td><input type='text' name='txt_date_service' size='7' maxlength='11'>";
-		echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_date_service', document.form_fp_chart.txt_date_service.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";		
-		echo "</input></td></tr>";
-		
-		echo "<tr><td>SOURCE OF SUPPLY</td><td>";		
-		if(mysql_num_rows($q_supplier)!=0):
-			echo "<select name='sel_supply' size='1'>";
-			while($r_supplier = mysql_fetch_array($q_supplier)){				
-				echo "<option value='$r_supplier[source_id]'>$r_supplier[source_name]</option>";			
-			}
-			echo "</select>";
+		if(mysql_num_rows($q_fp)!=0):
+					echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_fp_chart'>";					
+					echo "<a name='chart'></a>";		
+					echo "<table>";
+					echo "<thead><td>FP CHART</td></thead>";					
+					echo "<tr><td>DATE SERVICE GIVEN</td><td><input type='text' name='txt_date_service' size='7' maxlength='11'>";
+					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_date_service', document.form_fp_chart.txt_date_service.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
+					echo "</input></td></tr>";
+					
+					echo "<tr><td>SOURCE OF SUPPLY</td><td>";
+					if(mysql_num_rows($q_supplier)!=0):
+						echo "<select name='sel_supply' size='1'>";
+						while($r_supplier = mysql_fetch_array($q_supplier)){
+							echo "<option value='$r_supplier[source_id]'>$r_supplier[source_name]</option>";
+						}
+						echo "</select>";
+					else:
+						echo "<input type='hidden' name='sel_supply' value='5'></input>";
+					endif;					
+					echo "</td>";							
+					echo "<tr><td>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'></textarea></td></tr>";
+					echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11'>";
+					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
+					echo "</input></td></tr>"; 					
+					echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save FP Chart'></td></tr>";
+					echo "</table>";
+					echo "</form>";
 		else:
-			echo "<input type='hidden' name='sel_supply' value='5'></input>";
+					echo "<br>";
+					echo "<font color='red'><b>No active family planning method for this patient.</b></font>";
+					echo "<br><br>";
 		endif;
-		
-		echo "</td>";
-				
-		echo "<tr><td>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'></textarea></td></tr>";
-		echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11'>";
-		echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";				
-		echo "</input></td></tr>"; 
-		
-		echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save FP Chart'></td></tr>";
-		echo "</table>";	
-		echo "</form>";
 	}
 	
 	function form_fp_obs(){
@@ -1149,26 +1162,29 @@ class family_planning extends module{
 
 		$reg_date = $year.'-'.$month.'-'.$date;
 
-		if(!empty($_POST[txt_date_reg])):
-
-		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);		
-		
-		$insert_fp_method = mysql_query("INSERT INTO m_patient_fp SET patient_id='$pxid',date_enrolled='$reg_date', date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'), consult_id='$_GET[consult_id]',user_id='$_SESSION[userid]'") or die("Cannot query: 941");
-		
-		$fpid = mysql_insert_id(); 			
-
-		$insert_fp_method_service = mysql_query("INSERT INTO m_patient_fp_method SET fp_id='$fpid',patient_id='$pxid',consult_id='$_GET[consult_id]',date_registered='$reg_date',date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'),method_id='$_POST[sel_methods]',treatment_partner='$_POST[txt_tx_partner]',user_id='$_SESSION[userid]',permanent_method='$permanent'") or die(mysql_error());
-
-			if($insert_fp_method && $insert_fp_method_service):
-				echo "<font color='red'>Patient was successfully been enrolled in $_POST[sel_methods]</font>";
-			else:
-				echo "<font color='red'>Patient was not enrolled in $_POST[sel_methods]</font>";
-			endif;  
-		
-		else:
+		if(empty($_POST[txt_date_reg])):
 			echo "<script language='javascript'''>";
 			echo "alert('Please supply date of registration')";
 			echo "</script>";
+		
+		elseif($permanent=='N' && !empty($_POST[txt_reason])):
+			echo "<script language='javascript'''>";
+			echo "alert('The method you have choosen is not permanent. Please delete reason for using permanent method')";
+			echo "</script>";			
+		else:
+					$pxid = healthcenter::get_patient_id($_GET["consult_id"]);		
+					
+					$insert_fp_method = mysql_query("INSERT INTO m_patient_fp SET patient_id='$pxid',date_enrolled='$reg_date', date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'), consult_id='$_GET[consult_id]',user_id='$_SESSION[userid]'") or die("Cannot query: 941");
+					
+					$fpid = mysql_insert_id(); 			
+
+					$insert_fp_method_service = mysql_query("INSERT INTO m_patient_fp_method SET fp_id='$fpid',patient_id='$pxid',consult_id='$_GET[consult_id]',date_registered='$reg_date',date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'),method_id='$_POST[sel_methods]',treatment_partner='$_POST[txt_tx_partner]',user_id='$_SESSION[userid]',permanent_method='$permanent'") or die(mysql_error());
+
+						if($insert_fp_method && $insert_fp_method_service):
+							echo "<font color='red'>Patient was successfully been enrolled in $_POST[sel_methods]</font>";
+						else:
+							echo "<font color='red'>Patient was not enrolled in $_POST[sel_methods]</font>";
+						endif;  				
 		endif;
 	}
 
