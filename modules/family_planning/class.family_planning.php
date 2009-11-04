@@ -476,6 +476,10 @@ class family_planning extends module{
 				case "Save Pelvic Examination":
 					$fp->submit_fp_pelvic();
 					break;
+				
+				case "Save FP Service Chart":
+					$fp->submit_fp_service();
+					break;
 
 				default:
 					break;
@@ -1050,13 +1054,20 @@ class family_planning extends module{
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
 
 		// check first if there is an active FP method the user is presently using
-		$q_fp = mysql_query("SELECT fp_px_id FROM m_patient_fp_method WHERE patient_id=$pxid AND drop_out='N'") or die(mysql_error()); 
+		$q_fp = mysql_query("SELECT fp_px_id, date_format(date_registered,'%m/%d/%Y') FROM m_patient_fp_method WHERE patient_id=$pxid AND drop_out='N'") or die(mysql_error()); 
 	
 		$q_supplier = mysql_query("SELECT source_id,source_name,source_cat FROM m_lib_supply_source") or die("Cannot query: 790");
 		
 		if(mysql_num_rows($q_fp)!=0):
-					echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_fp_chart'>";					
+					list($fp_px_id, $date_reg) = mysql_fetch_array($q_fp);		
+
+					echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' method='POST' name='form_fp_chart'>";
+					
+					echo "<input type='hidden' value='$fp_px_id' name='fp_px_id'></input>";
+					echo "<input type='hidden' value='$date_reg' name='date_reg'></input>";
+
 					echo "<a name='chart'></a>";		
+
 					echo "<table>";
 					echo "<thead><td>FP CHART</td></thead>";					
 					echo "<tr><td>DATE SERVICE GIVEN</td><td><input type='text' name='txt_date_service' size='7' maxlength='11'>";
@@ -1078,7 +1089,7 @@ class family_planning extends module{
 					echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11'>";
 					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 					echo "</input></td></tr>"; 					
-					echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save FP Chart'></td></tr>";
+					echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save FP Service Chart'></td></tr>";
 					echo "</table>";
 					echo "</form>";
 		else:
@@ -1274,6 +1285,31 @@ class family_planning extends module{
 		echo "<script language='Javascript'>";
 		echo "window.alert('FP Pelvic Exam was successfully been updated.')";
 		echo "</script>";	
+	}
+
+	function submit_fp_service(){
+			
+			$diff_service = empty($_POST[txt_date_service])?'':mc::get_day_diff($_POST[txt_date_service],$_POST[date_reg]);
+			$diff_next = empty($_POST[txt_next_service_date])?'':mc::get_day_diff($_POST[txt_next_service_date],$_POST[txt_date_service]);
+
+			if(empty($_POST[txt_date_service])):
+					echo "<script language='javascript'>";
+					echo "alert('Date that this service was given cannot be empty')";
+					echo "</script>";
+
+			elseif(!empty($_POST[txt_next_service_date]) && $diff_next <= 0):
+					echo "<script language='javascript'>";
+					echo "window.alert('Next service date should be after the date this service was given.')";
+					echo "</script>";
+
+			elseif($diff_next < 0):
+					echo "<script language='javascript'>";
+					echo "window.alert('Date that this service was given should be on or after the date of registration for this method.')";
+					echo "</script>";
+
+			else:					
+									
+			endif;
 	}
 
 
