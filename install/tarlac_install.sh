@@ -36,9 +36,9 @@ set bell-style none
 \"\e[5D\": backward-word
 \"\e\e[C\": forward-word
 \"\e\e[D\": backward-word
-$if Bash
+\$if Bash
   Space: magic-space
-$endif" > /home/$SUDO_USER/.inputrc
+\$endif" > /home/$SUDO_USER/.inputrc
 
 
 # Call "install wget" to add wget to the list of programs to install
@@ -51,10 +51,21 @@ remove () {
 }
 
 set_mysql_root_password () {
-  echo "Enter the root password to setup mysql with:"
-  read MYSQL_ROOT_PASSWORD
+  if [ ! "$MYSQL_ROOT_PASSWORD" ]; then 
+    echo "Enter the root password to setup mysql with:"
+    read MYSQL_ROOT_PASSWORD
+  fi
   echo "mysql-server mysql-server/root_password select ${MYSQL_ROOT_PASSWORD}" | debconf-set-selections
   echo "mysql-server mysql-server/root_password_again select ${MYSQL_ROOT_PASSWORD}" | debconf-set-selections
+  export MYSQL_ROOT_PASSWORD 
+}
+
+set_chits_live_password () {
+  if [ ! "$CHITS_LIVE_PASSWORD" ]; then 
+    echo "Enter password for database user chits_live:"
+    read CHITS_LIVE_PASSWORD
+  fi
+  export CHITS_LIVE_PASSWORD
 }
 
 client () {
@@ -88,16 +99,8 @@ X-GNOME-Autostart-enabled=true" > $AUTOSTART_DIR/firefox.desktop
 
 server () {
   echo "Server"
-  if [ ! "$MYSQL_ROOT_PASSWORD" ]; then 
-    set_mysql_root_password; 
-  fi
-  if [ ! "$CHITS_LIVE_PASSWORD" ]; then 
-    echo "Enter password for database user chits_live:"
-    read CHITS_LIVE_PASSWORD
-  fi
-
-  export MYSQL_ROOT_PASSWORD 
-  export CHITS_LIVE_PASSWORD
+  set_mysql_root_password; 
+  set_chits_live_password;
 
   install "dnsmasq autossh curl"
   apt-get --assume-yes install $PROGRAMS_TO_INSTALL
@@ -110,26 +113,48 @@ server () {
   chmod +x chits_install.sh mysql_replication.sh
   ./chits_install.sh
   echo "Creating ssh keys so we can reverse ssh into the server"
-  ssh-keygen -N "" -f /home/$SUDO_USER/.ssh/id_rsa
+  su $SUDO_USER -c "mkdir /home/$SUDO_USER/.ssh"
+  su $SUDO_USER -c "ssh-keygen -N \"\" -f /home/$SUDO_USER/.ssh/id_rsa"
 
-  echo "Setting up reverse autossh to run on boot"
+  echo "Setting up reverse autossh to run when network comes up"
   # Generate a random port number to use in the 10000 - 20000 range
-  PORT_NUMBER=$[ { $RANDOM % 10000 }  + 10000 ]
-  MONITORING_PORT_NUMBER=$[ { $RANDOM % 10000 }  + 20000 ]
-  echo "
+  PORT_NUMBER=$[ ( $RANDOM % 10000 )  + 10000 ]
+  MONITORING_PORT_NUMBER=$[ ( $RANDOM % 10000 )  + 20000 ]
+  echo "#!/bin/sh
 # ------------------------------
 # Added by tarlac_install script
 # ------------------------------
-sleep 90 # Wait for networking to come up
 # See autossh and google for reverse ssh tunnels to see how this works
-/usr/bin/autossh -f -M ${MONITORING_PORT_NUMBER} -N -i /home/${SUDO_USER}/.ssh/identity  -R *:${PORT_NUMBER}:localhost:22 chitstunnel@lakota.vdomck.org
-exit 0
-" > /etc/rc.local
+
+# When this script runs it will allow you to ssh into this machine even if it is behind a firewall or has a NAT'd IP address. 
+# From any ssh capable machine you just type ssh -p $PORT_MIDDLEMAN_WILL_LISTEN_ON localusername@middleman
+
+# This is the username on your local server who has public key authentication setup at the middleman
+USER_TO_SSH_IN_AS=chitstunnel
+
+# This is the username and hostname/IP address for the middleman (internet accessible server)
+MIDDLEMAN_SERVER_AND_USERNAME=chitstunnel@chits.ph
+
+# Port that the middleman will listen on (use this value as the -p argument when sshing)
+PORT_MIDDLEMAN_WILL_LISTEN_ON=${PORT_NUMBER}
+
+# Connection monitoring port, don't need to know this one
+AUTOSSH_PORT=${MONITORING_PORT_NUMBER}
+
+# Ensures that autossh keeps trying to connect
+AUTOSSH_GATETIME=0
+su -c "autossh -f -N -R *:${PORT_MIDDLEMAN_WILL_LISTEN_ON}:localhost:22 ${MIDDLEMAN_SERVER_AND_USERNAME} -oLogLevel=error  -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no" $USER_TO_SSH_IN_AS
+
+
+" > /etc/network/if-up.d/reverse_ssh_tunnel
+
+  chmod +x /etc/network/if-up.d/reverse_ssh_tunnel
 
   echo "Uploading public key to lakota.vdomck.org"
   PUBLIC_KEY_FILENAME=/tmp/`hostname`.public_key
   cp /home/$SUDO_USER/.ssh/id_rsa.pub $PUBLIC_KEY_FILENAME
-  curl -f "file=${PUBLIC_KEY_FILENAME}" lakota.vdomck.org:4567/upload
+  cat "\n#{PORT_NUMBER}" >> $PUBLIC_KEY_FILENAME
+  curl -F "file=@${PUBLIC_KEY_FILENAME}" lakota.vdomck.org:4567/upload
 
   echo "
 # ------------------------------
@@ -179,6 +204,8 @@ dhcp-range=192.168.0.10,192.168.0.50,12h
 
 client_and_server () {
   echo "Client & Server"
+  set_mysql_root_password; 
+  set_chits_live_password;
   client
   server
 }

@@ -1,0 +1,15 @@
+Host pc6
+  Hostname lakota.vdomck.org
+  Port 12659
+  User chits
+
+Host pc4
+  Hostname lakota.vdomck.org
+  Port 12358
+  User chits
+
+Host pc1
+  Hostname lakota.vdomck.org
+  Port 18176
+  User chits
+
