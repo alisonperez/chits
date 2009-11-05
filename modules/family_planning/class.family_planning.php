@@ -173,18 +173,19 @@ class family_planning extends module{
 
 		//m_patient_fp_method_service -- create		
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_method_service` (
-				  `fp_service_id` float NOT NULL auto_increment,
-				  `fp_id` float NOT NULL,
-				  `fp_px_id` float NOT NULL,
-				  `patient_id` float NOT NULL,
-				  `consult_id` float NOT NULL,
-				  `date_service` date NOT NULL,
-				  `remarks` text NOT NULL,
-				  `date_encoded` date NOT NULL,
-				  `user_id` float NOT NULL,
-				  `next_service_date` date NOT NULL,
-				  PRIMARY KEY  (`fp_service_id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+			  `fp_service_id` float NOT NULL auto_increment,
+			  `fp_id` float NOT NULL,
+			  `fp_px_id` float NOT NULL,
+			  `patient_id` float NOT NULL,
+			  `consult_id` float NOT NULL,
+			  `date_service` date NOT NULL,
+			  `source_id` int(5) NOT NULL,
+			  `remarks` text NOT NULL,
+			  `date_encoded` date NOT NULL,
+			  `user_id` float NOT NULL,
+			  `next_service_date` date NOT NULL,
+			  PRIMARY KEY  (`fp_service_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
 
 		//m_patient_fp_dropout -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_dropout` (
@@ -1054,23 +1055,35 @@ class family_planning extends module{
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
 
 		// check first if there is an active FP method the user is presently using
-		$q_fp = mysql_query("SELECT fp_px_id, date_format(date_registered,'%m/%d/%Y') FROM m_patient_fp_method WHERE patient_id=$pxid AND drop_out='N'") or die(mysql_error()); 
+		$q_fp = mysql_query("SELECT fp_px_id, date_format(date_registered,'%m/%d/%Y'),fp_id,method_id FROM m_patient_fp_method WHERE patient_id=$pxid AND drop_out='N'") or die(mysql_error()); 
 	
 		$q_supplier = mysql_query("SELECT source_id,source_name,source_cat FROM m_lib_supply_source") or die("Cannot query: 790");
 		
 		if(mysql_num_rows($q_fp)!=0):
-					list($fp_px_id, $date_reg) = mysql_fetch_array($q_fp);		
+					list($fp_px_id, $date_reg,$fp_id,$method_id) = mysql_fetch_array($q_fp);										
+					if(isset($_GET["service_id"])):
+							$q_service = mysql_query("SELECT date_service, source_id, remarks, next_service_date FROM m_patient_fp_method_service WHERE fp_service_id='$_GET[service_id]'") or die(mysql_error());
+							list($date_service,$source,$remarks,$next_service) = mysql_fetch_array($q_service);
+					endif;
+				
+					echo "<table>";
+					echo "<tr><td valign='top'>";
 
 					echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' method='POST' name='form_fp_chart'>";
-					
+														
 					echo "<input type='hidden' value='$fp_px_id' name='fp_px_id'></input>";
 					echo "<input type='hidden' value='$date_reg' name='date_reg'></input>";
+					echo "<input type='hidden' value='$fp_id' name='fp_id'></input>";
 
 					echo "<a name='chart'></a>";		
 
 					echo "<table>";
-					echo "<thead><td>FP CHART</td></thead>";					
-					echo "<tr><td>DATE SERVICE GIVEN</td><td><input type='text' name='txt_date_service' size='7' maxlength='11'>";
+					//echo "<thead><td>FP CHART</td></thead>";					
+					echo "<tr><td>ACTIVE FP METHOD</td>";
+					echo "<td><font color='blue'><b>$method_id</td></b></font></tr>";
+					
+
+					echo "<tr><td>DATE SERVICE GIVEN</td><td><input type='text' name='txt_date_service' size='7' maxlength='11' value='$date_service'>";
 					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_date_service', document.form_fp_chart.txt_date_service.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 					echo "</input></td></tr>";
 					
@@ -1078,20 +1091,45 @@ class family_planning extends module{
 					if(mysql_num_rows($q_supplier)!=0):
 						echo "<select name='sel_supply' size='1'>";
 						while($r_supplier = mysql_fetch_array($q_supplier)){
-							echo "<option value='$r_supplier[source_id]'>$r_supplier[source_name]</option>";
+							if($source == $r_supplier[source_id]):
+								echo "<option value='$r_supplier[source_id]' SELECTED>$r_supplier[source_name]</option>";
+							else:
+								echo "<option value='$r_supplier[source_id]'>$r_supplier[source_name]</option>";
+							endif;
 						}
 						echo "</select>";
 					else:
 						echo "<input type='hidden' name='sel_supply' value='5'></input>";
 					endif;					
 					echo "</td>";							
-					echo "<tr><td>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'></textarea></td></tr>";
-					echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11'>";
+					echo "<tr><td>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'>$remarks</textarea></td></tr>";
+					echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11' value='$next_service'>";
 					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 					echo "</input></td></tr>"; 					
 					echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save FP Service Chart'></td></tr>";
 					echo "</table>";
 					echo "</form>";
+
+					echo "</td><td valign='top'>";
+
+					$q_service = mysql_query("SELECT fp_service_id, date_service, a.source_id, source_name, next_service_date FROM m_patient_fp_method_service a, m_lib_supply_source b WHERE a.fp_id='$fp_id' AND a.fp_px_id='$fp_px_id' AND a.patient_id='$pxid' AND  a.source_id=b.source_id ORDER by date_service DESC") or die(mysql_error());
+
+					if(mysql_num_rows($q_service)!=0):
+						echo "<table>";
+						echo "<tr valign='top'><td>Date Service Given</td><td>Source</td><td>Next Service Date</td></tr>";
+
+							while($r_service = mysql_fetch_array($q_service)){
+								echo "<tr><td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&service_id=$r_service[fp_service_id]&fp=CHART#chart'>$r_service[date_service]</a></td>";
+								echo "<td>$r_service[source_name]</td>";
+								echo "<td>$r_service[next_service_date]</td>";
+								echo "</tr>";
+							}
+						
+						echo "</table>";
+
+					endif;
+
+					echo "</td></tr></table>";
 		else:
 					echo "<br>";
 					echo "<font color='red'><b>No active family planning method for this patient.</b></font>";
@@ -1184,10 +1222,11 @@ class family_planning extends module{
 			echo "</script>";			
 		else:
 					$pxid = healthcenter::get_patient_id($_GET["consult_id"]);		
-					
-					$insert_fp_method = mysql_query("INSERT INTO m_patient_fp SET patient_id='$pxid',date_enrolled='$reg_date', date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'), consult_id='$_GET[consult_id]',user_id='$_SESSION[userid]'") or die("Cannot query: 941");
-					
-					$fpid = mysql_insert_id(); 			
+					$get_fp = mysql_query("SELECT fp_id FROM m_patient_fp WHERE patient_id='$_SESSION[userid]'") or die("Cannot query: 1189");
+					list($fpid) = mysql_fetch_array($get_fp);
+
+					//$insert_fp_method = mysql_query("INSERT INTO m_patient_fp SET patient_id='$pxid',date_enrolled='$reg_date', date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'), consult_id='$_GET[consult_id]',user_id='$_SESSION[userid]'") or die("Cannot query: 941");					
+					//$fpid = mysql_insert_id(); 
 
 					$insert_fp_method_service = mysql_query("INSERT INTO m_patient_fp_method SET fp_id='$fpid',patient_id='$pxid',consult_id='$_GET[consult_id]',date_registered='$reg_date',date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'),method_id='$_POST[sel_methods]',treatment_partner='$_POST[txt_tx_partner]',user_id='$_SESSION[userid]',permanent_method='$permanent'") or die(mysql_error());
 
@@ -1291,6 +1330,7 @@ class family_planning extends module{
 			
 			$diff_service = empty($_POST[txt_date_service])?'':mc::get_day_diff($_POST[txt_date_service],$_POST[date_reg]);
 			$diff_next = empty($_POST[txt_next_service_date])?'':mc::get_day_diff($_POST[txt_next_service_date],$_POST[txt_date_service]);
+			$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
 
 			if(empty($_POST[txt_date_service])):
 					echo "<script language='javascript'>";
@@ -1302,15 +1342,28 @@ class family_planning extends module{
 					echo "window.alert('Next service date should be after the date this service was given.')";
 					echo "</script>";
 
-			elseif($diff_next < 0):
+			elseif($diff_service < 0):
 					echo "<script language='javascript'>";
 					echo "window.alert('Date that this service was given should be on or after the date of registration for this method.')";
 					echo "</script>";
 
-			else:					
-				// if no other error was found, start inserting entries to the m_patient_fp_method_service
-								
+			else:
+				list($month,$date,$year) = explode('/',$_POST["txt_date_service"]);
+				list($m2,$d2,$y2) = explode('/',$_POST["txt_next_service_date"]);
 
+				$date_service  =  $year.'-'.$month.'-'.$date;
+				$next_service_date = $y2.'-'.$m2.'-'.$d2;
+				
+				// if no other error was found, start inserting entries to the m_patient_fp_method_service
+				
+				$insert_service = mysql_query("INSERT into m_patient_fp_method_service SET fp_id='$_POST[fp_id]',fp_px_id='$_POST[fp_px_id]',patient_id='$pxid',consult_id='$_GET[consult_id]',date_service='$date_service',remarks='$_POST[txt_remarks]',date_encoded=NOW(),user_id='$_SESSION[userid]',next_service_date='$next_service_date',source_id='$_POST[sel_supply]'") or die(mysql_error());
+				
+				if($insert_service):
+					echo "<script language='javascript'>";
+					echo "alert('FP service was successfully been saved.')";
+					echo "</script>";
+				endif;
+				
 			endif;
 	}
 
