@@ -1309,8 +1309,8 @@ class family_planning extends module{
 
 			else:					
 				// if no other error was found, start inserting entries to the m_patient_fp_method_service
-			
-					xxx
+								
+
 			endif;
 	}
 
