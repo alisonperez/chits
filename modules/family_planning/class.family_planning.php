@@ -485,6 +485,10 @@ class family_planning extends module{
 				case "Update FP Service Chart":
 					$fp->submit_fp_service();
 					break;
+
+				case "Delete FP Service Record":
+						$fp->submit_fp_service();
+						break;
 				default:
 					break;
 			}			
@@ -1056,27 +1060,32 @@ class family_planning extends module{
 	
 	function form_fp_chart(){
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
-
+	
 		// check first if there is an active FP method the user is presently using
 		$q_fp = mysql_query("SELECT fp_px_id, date_format(date_registered,'%m/%d/%Y'),fp_id,method_id FROM m_patient_fp_method WHERE patient_id=$pxid AND drop_out='N'") or die(mysql_error()); 
 	
 		$q_supplier = mysql_query("SELECT source_id,source_name,source_cat FROM m_lib_supply_source") or die("Cannot query: 790");
 		
 		if(mysql_num_rows($q_fp)!=0):
-					list($fp_px_id, $date_reg,$fp_id,$method_id) = mysql_fetch_array($q_fp);										
+					list($fp_px_id, $date_reg,$fp_id,$method_id) = mysql_fetch_array($q_fp);
 					if(isset($_GET["service_id"])):
 							$q_service = mysql_query("SELECT date_format(date_service,'%m/%d/%Y'), source_id, remarks, date_format(next_service_date,'%m/%d/%Y') FROM m_patient_fp_method_service WHERE fp_service_id='$_GET[service_id]'") or die(mysql_error());
 							list($date_service,$source,$remarks,$next_service) = mysql_fetch_array($q_service);
+					endif;
+
+					if($_POST["confirm_del"]==1):
+							$this->delete_service_record();
 					endif;
 				
 					echo "<table>";
 					echo "<tr><td valign='top'>";
 
-					echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' method='POST' name='form_fp_chart'>";
-														
+					echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' method='POST' name='form_fp_chart'>";					
 					echo "<input type='hidden' value='$fp_px_id' name='fp_px_id'></input>";
 					echo "<input type='hidden' value='$date_reg' name='date_reg'></input>";
 					echo "<input type='hidden' value='$fp_id' name='fp_id'></input>";
+					echo "<input type='hidden' name='confirm_del'></input>";
+				
 
 					echo "<a name='chart'></a>";		
 
@@ -1121,7 +1130,7 @@ class family_planning extends module{
 					   endif;
 						
 						if($_SESSION["priv_delete"]==1):
-									echo "<input type='submit' name='submit_fp' value='Delete FP Service Record'></input>";
+									echo "<input type='button' name='submit_fp' value='Delete FP Service Record' onclick='delete_fp_service()'></input>";
 					   endif;
 
 					   echo "<input type='button' name='submit_fp' value='Cancel Transaction' onclick='javascript::window.alert('')'></input>";
@@ -1352,6 +1361,7 @@ class family_planning extends module{
 	}
 
 	function submit_fp_service(){			
+
 			$diff_service = empty($_POST[txt_date_service])?'':mc::get_day_diff($_POST[txt_date_service],$_POST[date_reg]);
 			$diff_next = empty($_POST[txt_next_service_date])?'':mc::get_day_diff($_POST[txt_next_service_date],$_POST[txt_date_service]);
 
@@ -1385,6 +1395,7 @@ class family_planning extends module{
 
 				if(isset($_POST["service_id"])): //this signifies an update has been done
 					$update_service = mysql_query("UPDATE m_patient_fp_method_service SET date_service='$date_service',source_id='$_POST[sel_supply]',remarks='$_POST[txt_remarks]',next_service_date='$next_service_date' WHERE fp_service_id='$_POST[service_id]'") or die(mysql_error());
+				
 				else:				
 					$insert_service = mysql_query("INSERT into m_patient_fp_method_service SET fp_id='$_POST[fp_id]',fp_px_id='$_POST[fp_px_id]',patient_id='$pxid',consult_id='$_GET[consult_id]',date_service='$date_service',remarks='$_POST[txt_remarks]',date_encoded=NOW(),user_id='$_SESSION[userid]',next_service_date='$next_service_date',source_id='$_POST[sel_supply]'") or die(mysql_error());
 				endif;
@@ -1400,6 +1411,16 @@ class family_planning extends module{
 				else:
 				endif;
 				
+			endif;
+	}
+
+	function delete_service_record(){
+			$delete_service = mysql_query("DELETE FROM m_patient_fp_method_service WHERE fp_service_id='$_POST[service_id]'") or die("Cannot query: 1418");
+
+			if($delete_service):
+					echo "<script language='javascript'>";
+					echo "alert('FP service was successfully been deleted.')";
+					echo "</script>";				
 			endif;
 	}
 

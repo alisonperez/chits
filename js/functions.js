@@ -4,6 +4,13 @@ function check_delete(){
 	}
 }
 
+function delete_fp_service(){
+	if(window.confirm('You are about to delete this record. Do you really wanted to delete this record?')){
+		form_fp_chart.confirm_del.value = 1;
+		form_fp_chart.submit();
+	}
+}
+
 
 function show_bfeed_date(){
 	if(form_mc_postpartum.breastfeeding_flag.checked){
