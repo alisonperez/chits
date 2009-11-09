@@ -482,6 +482,9 @@ class family_planning extends module{
 					$fp->submit_fp_service();
 					break;
 
+				case "Update FP Service Chart":
+					$fp->submit_fp_service();
+					break;
 				default:
 					break;
 			}			
@@ -1062,7 +1065,7 @@ class family_planning extends module{
 		if(mysql_num_rows($q_fp)!=0):
 					list($fp_px_id, $date_reg,$fp_id,$method_id) = mysql_fetch_array($q_fp);										
 					if(isset($_GET["service_id"])):
-							$q_service = mysql_query("SELECT date_service, source_id, remarks, next_service_date FROM m_patient_fp_method_service WHERE fp_service_id='$_GET[service_id]'") or die(mysql_error());
+							$q_service = mysql_query("SELECT date_format(date_service,'%m/%d/%Y'), source_id, remarks, date_format(next_service_date,'%m/%d/%Y') FROM m_patient_fp_method_service WHERE fp_service_id='$_GET[service_id]'") or die(mysql_error());
 							list($date_service,$source,$remarks,$next_service) = mysql_fetch_array($q_service);
 					endif;
 				
@@ -1106,7 +1109,29 @@ class family_planning extends module{
 					echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11' value='$next_service'>";
 					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 					echo "</input></td></tr>"; 					
-					echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save FP Service Chart'></td></tr>";
+
+					echo "<tr>";
+					if(isset($_GET["service_id"])):
+					
+						echo "<input type='hidden' name='service_id' value='$_GET[service_id]'></input>";
+
+						echo "<td colspan='2' align='center'>";					   
+					   if($_SESSION["priv_update"]==1):
+									echo "<input type='submit' name='submit_fp' value='Update FP Service Chart'></input>";
+					   endif;
+						
+						if($_SESSION["priv_delete"]==1):
+									echo "<input type='submit' name='submit_fp' value='Delete FP Service Record'></input>";
+					   endif;
+
+					   echo "<input type='button' name='submit_fp' value='Cancel Transaction' onclick='javascript::window.alert('')'></input>";
+
+					   echo "</td>";
+					else:
+						echo "<td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save FP Service Chart'></input></td>";
+					endif;
+
+					echo "</tr>";
 					echo "</table>";
 					echo "</form>";
 
@@ -1326,11 +1351,12 @@ class family_planning extends module{
 		echo "</script>";	
 	}
 
-	function submit_fp_service(){
-			
+	function submit_fp_service(){			
 			$diff_service = empty($_POST[txt_date_service])?'':mc::get_day_diff($_POST[txt_date_service],$_POST[date_reg]);
 			$diff_next = empty($_POST[txt_next_service_date])?'':mc::get_day_diff($_POST[txt_next_service_date],$_POST[txt_date_service]);
+
 			$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
+			
 
 			if(empty($_POST[txt_date_service])):
 					echo "<script language='javascript'>";
@@ -1343,6 +1369,7 @@ class family_planning extends module{
 					echo "</script>";
 
 			elseif($diff_service < 0):
+
 					echo "<script language='javascript'>";
 					echo "window.alert('Date that this service was given should be on or after the date of registration for this method.')";
 					echo "</script>";
@@ -1355,13 +1382,22 @@ class family_planning extends module{
 				$next_service_date = $y2.'-'.$m2.'-'.$d2;
 				
 				// if no other error was found, start inserting entries to the m_patient_fp_method_service
-				
-				$insert_service = mysql_query("INSERT into m_patient_fp_method_service SET fp_id='$_POST[fp_id]',fp_px_id='$_POST[fp_px_id]',patient_id='$pxid',consult_id='$_GET[consult_id]',date_service='$date_service',remarks='$_POST[txt_remarks]',date_encoded=NOW(),user_id='$_SESSION[userid]',next_service_date='$next_service_date',source_id='$_POST[sel_supply]'") or die(mysql_error());
+
+				if(isset($_POST["service_id"])): //this signifies an update has been done
+					$update_service = mysql_query("UPDATE m_patient_fp_method_service SET date_service='$date_service',source_id='$_POST[sel_supply]',remarks='$_POST[txt_remarks]',next_service_date='$next_service_date' WHERE fp_service_id='$_POST[service_id]'") or die(mysql_error());
+				else:				
+					$insert_service = mysql_query("INSERT into m_patient_fp_method_service SET fp_id='$_POST[fp_id]',fp_px_id='$_POST[fp_px_id]',patient_id='$pxid',consult_id='$_GET[consult_id]',date_service='$date_service',remarks='$_POST[txt_remarks]',date_encoded=NOW(),user_id='$_SESSION[userid]',next_service_date='$next_service_date',source_id='$_POST[sel_supply]'") or die(mysql_error());
+				endif;
 				
 				if($insert_service):
 					echo "<script language='javascript'>";
 					echo "alert('FP service was successfully been saved.')";
 					echo "</script>";
+				elseif($update_service):
+					echo "<script language='javascript'>";
+					echo "alert('FP service was successfully been updated.')";
+					echo "</script>";
+				else:
 				endif;
 				
 			endif;
