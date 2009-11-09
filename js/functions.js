@@ -16,8 +16,7 @@ function show_bfeed_date(){
 	if(form_mc_postpartum.breastfeeding_flag.checked){
 		var str  = form_mc_postpartum.date_breastfed.value;
 		if(window.confirm(str.length)){
-			form_mc_postpartum.submit();
-		
+			form_mc_postpartum.submit();		
 		}
 	}
 }

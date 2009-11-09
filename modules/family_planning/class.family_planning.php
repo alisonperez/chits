@@ -1120,10 +1120,8 @@ class family_planning extends module{
 					echo "</input></td></tr>"; 					
 
 					echo "<tr>";
-					if(isset($_GET["service_id"])):
-					
+					if(isset($_GET["service_id"])):  //this indicates that a service record was chosen/clicked from the table					
 						echo "<input type='hidden' name='service_id' value='$_GET[service_id]'></input>";
-
 						echo "<td colspan='2' align='center'>";					   
 					   if($_SESSION["priv_update"]==1):
 									echo "<input type='submit' name='submit_fp' value='Update FP Service Chart'></input>";
@@ -1133,7 +1131,7 @@ class family_planning extends module{
 									echo "<input type='button' name='submit_fp' value='Delete FP Service Record' onclick='delete_fp_service()'></input>";
 					   endif;
 
-					   echo "<input type='button' name='submit_fp' value='Cancel Transaction' onclick='javascript::window.alert('')'></input>";
+					   echo "<input type='button' name='submit_fp' value='Cancel Transaction' onclick='history.go(-1)'></input>";   //returns to the previous cleared form
 
 					   echo "</td>";
 					else:
