@@ -4218,6 +4218,16 @@ class mc extends module {
         print "</table><br>";
     }
 
+	function check_if_pregnant($date_consult){
+			$check_pregnant = mysql_query("SELECT mc_id FROM m_patient_mc WHERE '$date_consult' BETWEEN patient_lmp AND patient_edc AND end_pregnancy_flag='N'") or die("Cannot query: 4222"); 
+
+			if(mysql_num_rows($check_pregnant)!=0):
+				return 'Y';
+			else:
+				return 'N';
+			endif;
+	}
+
 // end of class
 }
 ?>
