@@ -458,6 +458,10 @@ class family_planning extends module{
 					$fp->submit_method_visit();					
 					break;
 
+				case "Update Family Planning Method":
+					$fp->update_method_visit();
+					break;
+
 				case "Save Family Planning First Visit":
 					$fp->submit_first_visit();
 					break;
@@ -609,7 +613,7 @@ class family_planning extends module{
 
 			else: //scenario 2-3	
 				$arr_current = $this->show_current_method($q_fp_methods); //return the most current FP method used
-				
+				$fp_px_id = $arr_current[0]["fp_px_id"];
 				//print_r($arr_current);
 
 				switch($arr_current[0]["drop_out"]){			
@@ -637,6 +641,8 @@ class family_planning extends module{
 
 					case "N":		//current users of FP method
 						echo "<form action='action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' method='post' name='form_methods'>";
+
+						echo "<input type='hidden' name='fp_px_id' value='$fp_px_id'></input>";
 
 						echo "<tr><td>CURRENT METHOD:</td><td>".$arr_current[0]["method_name"]."</td></tr>"; 
 
@@ -688,10 +694,11 @@ class family_planning extends module{
 						echo "<tr><td valign='top'>REMARKS / ACTION TAKEN</td>";
 						echo "<td><textarea name='dropout_remarks' cols='20' rows='4'></textarea></td></tr>";
 
-						echo "<tr><td  align='center' colspan='2'><input type='button' name='submit_fp' value='Update Family Planning Method'></input></td>";
+						echo "<tr><td  align='center' colspan='2'><input type='submit' name='submit_fp' value='Update Family Planning Method'></input></td>";
 						
 						echo "</form>";
 						break;
+						
 					default:
 
 						break;
@@ -1456,6 +1463,54 @@ class family_planning extends module{
 					echo "alert('FP service was successfully been deleted.')";
 					echo "</script>";				
 			endif;
+	}
+
+	function update_method_visit(){
+			if(empty($_POST["txt_date_reg"])):
+					echo "<script language='javascript'>";
+					echo "alert('Date of registration cannot be empty.')";
+					echo "</script>";
+
+			elseif($_POST["sel_dropout"]!=0 && empty($_POST["txt_date_dropout"])):  // make a check that when dropping a patient, there should be a date of drop out
+					echo "<script language='javascript'>";
+					echo "alert('Cannot drop patient from this method. Indicate a date of drop out.')";
+					echo "</script>";
+			else:
+			
+				$q_date = mysql_query("SELECT date_service FROM m_patient_fp_method_service WHERE fp_px_id='$_POST[fp_px_id]'") or die("Cannot query: 1469");
+				$greater = 0;
+				$greater_drop = 0;
+				while($r_date  = mysql_fetch_array($q_date)){
+					list($y,$m,$d) = explode('-',$r_date["date_service"]);
+					$date_r = $m.'/'.$d.'/'.$y;
+					
+					$diff = mc::get_day_diff($date_r,$_POST["txt_date_reg"]); 
+					$greater = ($diff < 0)?$greater+1:$greater;
+					
+					if(!empty($_POST["txt_date_dropout"])):
+							echo 'alison';
+							$diff_drop = mc::get_day_diff($_POST["txt_date_dropout"],$date_r); 
+							$greater_drop = ($diff_drop < 0)?$greater_drop+1:$greater_drop;
+					endif;
+				}
+				
+				if($greater !=0):
+					echo "<script language='javascript'>";
+					echo "alert('There is a conflict between the date of treatment and one of the date of services. Date of treatment should be on or before any date of service.')";
+					echo "</script>";
+
+				elseif($greater_drop!=0):
+					echo "<script language='javascript'>";
+					echo "alert('There is a conflict between the date of drop out and one of the date of services. Date of drop out should be on or after any date of service.')";
+					echo "</script>";
+
+				else:
+//						$diff_drop_reg = mc::get_day_diff($_POST["txt_date_dropout"],$_POST["txt_date_reg"]);
+						
+				endif;
+			endif;
+
+			
 	}
 
 
