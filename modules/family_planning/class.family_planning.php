@@ -614,6 +614,8 @@ class family_planning extends module{
 			else: //scenario 2-3	
 				$arr_current = $this->show_current_method($q_fp_methods); //return the most current FP method used
 				$fp_px_id = $arr_current[0]["fp_px_id"];
+				$method_id = $arr_current[0]["method_id"];
+
 				//print_r($arr_current);
 
 				switch($arr_current[0]["drop_out"]){			
@@ -642,8 +644,12 @@ class family_planning extends module{
 					case "N":		//current users of FP method
 
 						echo "<form action='action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' method='post' name='form_methods'>";
+						
+						echo $_POST["confirm_dropout"];
 
 						echo "<input type='hidden' name='fp_px_id' value='$fp_px_id'></input>";
+						echo "<input type='hidden' name='method_id' value='$method_id'></input>";
+						echo "<input type='hidden' name='confirm_dropout'></input>";
 
 						echo "<tr><td>CURRENT METHOD:</td><td>".$arr_current[0]["method_name"]."</td></tr>"; 
 						list($y,$m,$d) = explode('-',$arr_current[0]["date_registered"]);
@@ -1512,11 +1518,13 @@ class family_planning extends module{
 									echo "</script>";
 							else:
 									echo "<script language='javascript'>";
-									echo "if(window.confirm('You are about to drop this patient from this method. By doing so,  you will not be able to further update this record and the services that have been provided connected with this method. Are you sure you wanted to drop this patient?')){";					
-											echo "alert('hi!')";
+
+									echo "if(window.confirm('You are about to drop this patient from this method ($_POST[method_id]). By doing so,  you will not be able to further update this record and the services that have been provided connected with this method. Are you sure you wanted to drop this patient?')){";					
+
 									echo "}else{";	
-											echo "alert('hippe')";
+											
 									echo "}";
+									
 									echo "</script>";
 							endif;
 						
