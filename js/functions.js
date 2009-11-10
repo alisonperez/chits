@@ -11,6 +11,10 @@ function delete_fp_service(){
 	}
 }
 
+function confirm_dropout(){
+		window.alert('form_methods.sel_dropout.value');
+}
+
 
 function show_bfeed_date(){
 	if(form_mc_postpartum.breastfeeding_flag.checked){
