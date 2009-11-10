@@ -636,12 +636,22 @@ class family_planning extends module{
 						break;
 
 					case "N":		//current users of FP method
+						echo "<form action='action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' method='post' name='form_methods'>";
+
 						echo "<tr><td>CURRENT METHOD:</td><td>".$arr_current[0]["method_name"]."</td></tr>"; 
 
-						echo "<tr><td>DATE OF REGISTRATION:</td><td>".$arr_current[0]["date_registered"]."</td></tr>";
-
-						echo "<tr><td>TREATMENT PARTNER:</td><td>".$arr_current[0]["treatment_partner"]."</td></tr>";
-
+						//echo "<tr><td>DATE OF REGISTRATION:</td><td>".$arr_current[0]["date_registered"]."</td></tr>";
+						list($y,$m,$d) = explode('-',$arr_current[0]["date_registered"]);
+						$datereg = $m.'/'.$d.'/'.$y;
+						echo "<tr><td>DATE OF REGISTRATION:</td><td>";
+						echo "<input type='text' name='txt_date_reg' size='8' maxlength='10' value='$datereg'>&nbsp;";
+						echo "<a href=\"javascript:show_calendar4('document.form_methods.txt_date_reg', document.form_methods.txt_date_reg.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
+						echo "</td></tr>";
+						
+						echo "<tr><td>TREATMENT PARTNER:</td><td>";
+						$txpartner = $arr_current[0][treatment_partner];
+						echo "<input type='text' size='20' value='$txpartner' name='txt_treatment_partner'></input>";
+						echo "</td></tr>";
 						echo "<tr><td>PREVIOUS METHOD:</td><td>";
 						echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["method_name"]:'None';
 						echo "</td></tr>";
@@ -652,10 +662,36 @@ class family_planning extends module{
 
 						echo "<tr><td>REASON FOR DISCONTINUATION:</td><td>";
 						echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["dropout_reason"]:'NA';
-						echo "</td></tr>";						
+						echo "</td></tr>";
+
+						echo "<tr><td>REASON FOR DROP OUT</td>";
+						$q_dropout = mysql_query("SELECT reason_id, reason_label FROM m_lib_fp_dropoutreason ORDER by reason_label ASC") or die("Cannot query: 659");
+
+						if(mysql_num_rows($q_dropout)!=0):
+								echo "<td><select name='sel_dropout' size='1'>";
+								echo "<option value='0' DEFAULT>----- Patient not drop out -----</option>";
+								while($r_dropout = mysql_fetch_array($q_dropout)){
+									echo "<option value='$r_dropout[reason_id]'>$r_dropout[reason_label]</option>";
+								}
+								echo "</select></td>";
+						else:
+								echo "<font color='red'>FP Library dropout missing.</font>";
+						endif;
+						
+						echo "<tr><td>DATE OF DROP OUT</td><td>";
+						echo "<input type='text' name='txt_date_dropout' size='8' maxlength='10'>&nbsp;";
+						echo "<a href=\"javascript:show_calendar4('document.form_methods.txt_date_dropout', document.form_methods.txt_date_dropout.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
+						echo "</input>"; 
+						
+						echo "</td></tr>";
+
+						echo "<tr><td valign='top'>REMARKS / ACTION TAKEN</td>";
+						echo "<td><textarea name='dropout_remarks' cols='20' rows='4'></textarea></td></tr>";
+
+						echo "<tr><td  align='center' colspan='2'><input type='button' name='submit_fp' value='Update Family Planning Method'></input></td>";
+						
+						echo "</form>";
 						break;
-
-
 					default:
 
 						break;
