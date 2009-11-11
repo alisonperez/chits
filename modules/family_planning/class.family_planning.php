@@ -600,15 +600,15 @@ class family_planning extends module{
 			$drop_remarks = $_SESSION["dropout_info"]["dropout_remarks"];
 			$tx_partner = $_SESSION["dropout_info"]["txt_treatment_partner"];
 
-			$update_fp = mysql_query("UPDATE m_patient_fp_method SET date_registered='$reg',treatment_partner='$_SESSION[dropout_info][txt_treatment_partner]',drop_out='Y',dropout_reason='$drop_reason',date_dropout='$drop',dropout_remarks='$drop_remarks'") or die("Cannot query: 593");
+			$update_fp = mysql_query("UPDATE m_patient_fp_method SET date_registered='$reg',treatment_partner='$tx_partner',drop_out='Y',dropout_reason='$drop_reason',date_dropout='$drop',dropout_remarks='$drop_remarks'") or die("Cannot query: 593");
 
 			if($update_fp):
 					unset($_SESSION["dropout_info"]);
 					echo "<script language='javascript'>";
-					echo "alert('The patient was successfully been dropped from this method')";
-					echo "window.reload()";
+					echo "alert('The patient was successfully been dropped from this method');";
+					echo "window.location.reload();";
 					echo "</script>";
-
+					
 			endif;
 		endif;
 		
