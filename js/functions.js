@@ -12,7 +12,11 @@ function delete_fp_service(){
 }
 
 function confirm_dropout(){
-		window.alert('form_methods.sel_dropout.value');
+		var form = window.document.forms["form_methods"];
+		alert(form.elements.length);
+		for(var i=0;i<form.elements.length;i++){
+			window.alert(form.elements[i].value);
+		}
 }
 
 

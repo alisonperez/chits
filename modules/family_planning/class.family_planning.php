@@ -151,24 +151,25 @@ class family_planning extends module{
 		
 		//m_patient_fp_method -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_method` (
-							  `fp_px_id` float NOT NULL auto_increment,
-							  `fp_id` float NOT NULL,
-							  `patient_id` float NOT NULL,
-							  `consult_id` float NOT NULL,
-							  `date_registered` date NOT NULL,
-							  `date_encoded` date NOT NULL,
-							  `method_id` varchar(10) NOT NULL,
-							  `treatment_partner` varchar(200) NOT NULL,
-							  `permanent_method` set('Y','N') NOT NULL default 'N',
-							  `permanent_reason` varchar(200) NOT NULL,
-							  `drop_out` set('Y','N') NOT NULL default 'N',
-							  `date_dropout` date NOT NULL,
-							  `dropout_reason` text NOT NULL,
-							  `user_id` float NOT NULL,
-							  `last_edited` date NOT NULL,
-							  `user_id_edited` float NOT NULL,
-							  PRIMARY KEY  (`fp_px_id`)
-							) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+				  `fp_px_id` float NOT NULL auto_increment,
+				  `fp_id` float NOT NULL,
+				  `patient_id` float NOT NULL,
+				  `consult_id` float NOT NULL,
+				  `date_registered` date NOT NULL,
+				  `date_encoded` date NOT NULL,
+				  `method_id` varchar(10) NOT NULL,
+				  `treatment_partner` varchar(200) NOT NULL,
+				  `permanent_method` set('Y','N') NOT NULL default 'N',
+				  `permanent_reason` varchar(200) NOT NULL,
+				  `drop_out` set('Y','N') NOT NULL default 'N',
+				  `date_dropout` date NOT NULL,
+				  `dropout_reason` text NOT NULL,
+				  `dropout_remarks` text NOT NULL,
+				  `user_id` float NOT NULL,
+				  `last_edited` date NOT NULL,
+				  `user_id_edited` float NOT NULL,
+				  PRIMARY KEY  (`fp_px_id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
 
 
 		//m_patient_fp_method_service -- create		
@@ -586,10 +587,34 @@ class family_planning extends module{
 				
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);		
 		
-		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,(unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24) as duration,b.date_dropout,b.dropout_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_enrolled DESC") or die("Cannot query: 534");
-		
-		echo "<form name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' method='POST'>";
+		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_enrolled DESC") or die("Cannot query: 534");
 
+		if(isset($_SESSION["dropout_info"]) && $_GET["action"]=="drop"):   //indicates that the end-user pressed YES for dropping out patient
+			//print_r($_SESSION["dropout_info"]);
+			list($mreg,$dreg,$yreg) = explode('/',$_SESSION["dropout_info"]["txt_date_reg"]);
+			list($mdrop,$ddrop,$ydrop) = explode('/',$_SESSION["dropout_info"]["txt_date_dropout"]);
+			
+			$reg = $yreg.'-'.$mreg.'-'.$dreg;
+			$drop = $ydrop.'-'.$mdrop.'-'.$ddrop;
+			$drop_reason = $_SESSION["dropout_info"]["sel_dropout"];
+			$drop_remarks = $_SESSION["dropout_info"]["dropout_remarks"];
+			$tx_partner = $_SESSION["dropout_info"]["txt_treatment_partner"];
+
+			$update_fp = mysql_query("UPDATE m_patient_fp_method SET date_registered='$reg',treatment_partner='$_SESSION[dropout_info][txt_treatment_partner]',drop_out='Y',dropout_reason='$drop_reason',date_dropout='$drop',dropout_remarks='$drop_remarks'") or die("Cannot query: 593");
+
+			if($update_fp):
+					unset($_SESSION["dropout_info"]);
+					echo "<script language='javascript'>";
+					echo "alert('The patient was successfully been dropped from this method')";
+					echo "window.reload()";
+					echo "</script>";
+
+			endif;
+		endif;
+		
+		echo "<form name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS' method='POST'>";	
+				
+		
 		echo "<table>";
 		echo "<a name='methods'></a>";
 
@@ -643,7 +668,7 @@ class family_planning extends module{
 
 					case "N":		//current users of FP method
 
-						echo "<form  name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' method='post'>";						
+						//echo "<form  name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' method='post'>";						
 
 						echo "<input type='hidden' name='fp_px_id' value='$fp_px_id'></input>";
 						echo "<input type='hidden' name='method_id' value='$method_id'></input>";
@@ -698,7 +723,7 @@ class family_planning extends module{
 
 						echo "<tr><td  align='center' colspan='2'><input type='submit' name='submit_fp' value='Update Family Planning Method'></input></td>";
 						
-						echo "</form>";
+						//echo "</form>";
 						break;
 						
 					default:
@@ -1514,12 +1539,17 @@ class family_planning extends module{
 									echo "alert('Date of drop out should be after the date of registration!')";
 									echo "</script>";
 							else:
-									echo "<script language='javascript'>";	
-									echo "confirm_dropout(this.form);";
-									/*echo "if(window.confirm('You are about to drop this patient from this method ($_POST[method_id]). By doing so,  you will not be able to further update this record and the services that have been provided connected with this method. Are you sure you wanted to drop this patient?')){";															
+									$_SESSION["dropout_info"] = $_POST;
+			
+									echo "<font color='red'><b>Are you sure you wanted to drop this patient?</b></font>&nbsp;";
+									echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&action=drop&fp=METHODS#methods'>Yes</a>&nbsp;&nbsp;&nbsp;";
+									echo "<a href='' onclick='history.go(-1)'>No</a>";
+
+									/*echo "<script language='javascript'>";	
+									echo "if(window.confirm('You are about to drop this patient from this method ($_POST[method_id]). By doing so,  you will not be able to further update this record and the services that have been provided connected with this method. Are you sure you wanted to drop this patient?')){";	
 									echo "}else{";												
-									echo "}"; */
-									echo "</script>";
+									echo "}";
+									echo "</script>";*/							
 							endif;
 						
 						else: //   a simple edit of date of registration and treatment partner
