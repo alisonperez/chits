@@ -547,13 +547,7 @@ class family_planning extends module{
 		echo "</table>";
 	}
 
-	function fp_menu(){   			 /* displays main menus for FP */
-
-		//this will redirect view to the VISIT1 interface
-		//if(!isset($get_vars[fp])){ 		
-		//	header("Location: $_SERVER[PHP_SELF]?page=CONSULTS&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1#visit1");
-		//}
-
+	function fp_menu(){   			 /* displays main menus for FP */	
 		echo "<table>";
 		echo "<tr><td>";
 				
@@ -587,7 +581,7 @@ class family_planning extends module{
 				
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);		
 		
-		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_enrolled DESC") or die("Cannot query: 534");
+		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_registered DESC") or die("Cannot query: 534");
 
 		if(isset($_SESSION["dropout_info"]) && $_GET["action"]=="drop"):   //indicates that the end-user pressed YES for dropping out patient
 			//print_r($_SESSION["dropout_info"]);
@@ -638,9 +632,13 @@ class family_planning extends module{
 
 			else: //scenario 2-3	
 				$arr_current = $this->show_current_method($q_fp_methods); //return the most current FP method used
+				$reason_drop = $arr_current[0]["dropout_reason"];	
+				$q_dropreason = mysql_query("SELECT reason_label FROM m_lib_fp_dropoutreason WHERE reason_id='$reason_drop'") or die("Cannot query: 635"); 
+				list($dropout_reason) = mysql_fetch_array($q_dropreason);
+
 				$fp_px_id = $arr_current[0]["fp_px_id"];
 				$method_id = $arr_current[0]["method_id"];
-
+			
 				//print_r($arr_current);
 
 				switch($arr_current[0]["drop_out"]){			
@@ -659,20 +657,19 @@ class family_planning extends module{
 						echo (isset($arr_current[0]["method_name"]))?$arr_current[0]["date_dropout"]:'None';
 						echo "</td></tr>";
 	
-						echo "<tr><td>DURATION OF USE:</td><td>".$arr_current[0]["duration"]."</td></tr>";
-						echo "<tr><td>REASON FOR DROPOUT</td><td>".$arr_current[0]["dropout_reason"]."</td></tr>";
+						echo "<tr><td>DURATION OF USE:</td><td>".$arr_current[0]["duration"]." days </td></tr>";
+
+						echo "<tr><td>REASON FOR DROPOUT</td><td>".$dropout_reason."</td></tr>";
 
 						echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning Method'></input></td></tr>";
 						
 						break;
 
-					case "N":		//current users of FP method
-
-						//echo "<form  name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' method='post'>";						
+					case "N":		//current users of FP method		
 
 						echo "<input type='hidden' name='fp_px_id' value='$fp_px_id'></input>";
 						echo "<input type='hidden' name='method_id' value='$method_id'></input>";
-
+						
 						echo "<tr><td>CURRENT METHOD:</td><td>".$arr_current[0]["method_name"]."</td></tr>"; 
 						list($y,$m,$d) = explode('-',$arr_current[0]["date_registered"]);
 						$datereg = $m.'/'.$d.'/'.$y;
@@ -727,12 +724,12 @@ class family_planning extends module{
 						break;
 						
 					default:
-
 						break;
 				}
 
 			endif;
 		
+		$this->history_methods();
 		echo "</table>";
 		echo "</form>";
 
@@ -1341,8 +1338,7 @@ class family_planning extends module{
 	}
 
 	function show_current_method($q_fp_methods){
-			$arr_current = array();
-			
+			$arr_current = array();		
 			while($r_methods = mysql_fetch_array($q_fp_methods)){
 				array_push($arr_current,$r_methods);
 			}
@@ -1543,25 +1539,21 @@ class family_planning extends module{
 			
 									echo "<font color='red'><b>Are you sure you wanted to drop this patient?</b></font>&nbsp;";
 									echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&action=drop&fp=METHODS#methods'>Yes</a>&nbsp;&nbsp;&nbsp;";
-									echo "<a href='' onclick='history.go(-1)'>No</a>";
-
-									/*echo "<script language='javascript'>";	
-									echo "if(window.confirm('You are about to drop this patient from this method ($_POST[method_id]). By doing so,  you will not be able to further update this record and the services that have been provided connected with this method. Are you sure you wanted to drop this patient?')){";	
-									echo "}else{";												
-									echo "}";
-									echo "</script>";*/							
+									echo "<a href='' onclick='history.go(-1)'>No</a>";					
 							endif;
 						
 						else: //   a simple edit of date of registration and treatment partner
-
+							
 						endif;
 
 				endif;
-			endif;
-
-			
+			endif;			
 	}
 
+
+	function history_methods(){
+	
+	}
 
 	function check_fprec(){
 		//function shall check if there exists an FP Service Record
