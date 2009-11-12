@@ -1543,7 +1543,17 @@ class family_planning extends module{
 							endif;
 						
 						else: //   a simple edit of date of registration and treatment partner
-							
+								list($m,$d,$y) = explode('/',$_POST["txt_date_reg"]);
+								$date_reg = $y.'-'.$m.'-'.$d;
+
+								$update_fp_method = mysql_query("UPDATE m_patient_fp_method SET date_registered='$date_reg', treatment_partner='$_POST[txt_treatment_partner]' WHERE fp_px_id='$_POST[fp_px_id]'") or die("Cannot query: 1546");
+								
+								if($update_fp_method):
+									echo "<script language='javascript'>";
+									echo "alert('FP method was successfully been edited')";
+									echo "</script>";
+								endif;		
+	
 						endif;
 
 				endif;
