@@ -1182,7 +1182,7 @@ class family_planning extends module{
 					endif;					
 					echo "</td>";							
 					echo "<tr><td>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'>$remarks</textarea></td></tr>";
-					echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11' value='$next_service'>";
+					echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11' value='$next_service'>"; 
 					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 					echo "</input></td></tr>"; 					
 
@@ -1562,7 +1562,10 @@ class family_planning extends module{
 
 
 	function history_methods(){
-	
+			echo "<tr>";
+			echo "<td>";
+			
+			echo "</td></tr>";
 	}
 
 	function check_fprec(){
