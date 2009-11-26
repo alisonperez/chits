@@ -8,7 +8,7 @@ class lab extends module {
         //
         // do not forget to update version
         //
-        $this->author = 'Herman Tolentino MD';
+        $this->author = 'Herman Tolentino MD, darth_ali';
         $this->version = "0.3-".date("Y-m-d");
         $this->module = "lab";
         $this->description = "CHITS Module - Laboratory";

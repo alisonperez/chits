@@ -727,11 +727,11 @@ class family_planning extends module{
 						break;
 				}
 
-			endif;
-		
-		$this->history_methods();
+			endif;	
 		echo "</table>";
 		echo "</form>";
+
+		$this->history_methods();
 
 		else:
 				$this->no_fp_msg();
@@ -1562,10 +1562,37 @@ class family_planning extends module{
 
 
 	function history_methods(){
-			echo "<tr>";
-			echo "<td>";
-			
-			echo "</td></tr>";
+		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
+
+		$q_history = mysql_query("SELECT fp_px_id, fp_id,date_format(date_registered,'%m/%d/%Y') as date_reg,date_format(date_dropout,'%m/%d/%Y') as date_dropout , method_id, dropout_reason FROM m_patient_fp_method WHERE patient_id='$pxid' AND drop_out='Y' ORDER by date_reg ASC") or die("Cannot query: 1565");
+		
+	if(mysql_num_rows($q_history)!=0):
+		echo "<table><tr>";
+		echo "<td>Method</td>";
+		echo "<td>Date Registered</td>";
+		echo "<td>Date of Drop Out</td>";
+		echo "<td>Dropout Reason</td>";
+		echo "<td>Services</td></tr>";
+
+		while(list($fp_px_id, $fp_id, $date_reg, $date_drop, $method_id,$dropout_reason)=mysql_fetch_array($q_history)){
+					$q_method = mysql_query("SELECT method_name FROM m_lib_fp_methods WHERE method_id='$method_id'") or die("Cannot query: 1577");					
+					list($method_name) = mysql_fetch_array($q_method);
+
+					$q_dropout_reason = mysql_query("SELECT reason_label FROM m_lib_fp_dropoutreason WHERE reason_id='$dropout_reason'") or die("Cannot query: 1577");
+					list($reason_dropout) = mysql_fetch_array($q_dropout_reason);
+
+					echo "<tr>";
+					echo "<td>".$method_name."</td>";
+					echo "<td>".$date_reg."</td>"; 
+					echo "<td>".$date_drop."</td>"; 
+					echo "<td>".$reason_dropout."</td>"; 					
+					echo "<td><a href='../site/view_fp_services.php?id=$fp_px_id&method_id=$method_id&px=$pxid' target='new'>View</a></td>"; 
+					echo "</tr>";
+
+		}
+		echo "</table>";
+	endif;
+
 	}
 
 	function check_fprec(){

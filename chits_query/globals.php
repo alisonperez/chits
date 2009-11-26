@@ -1,9 +1,9 @@
 <?
   session_start();
 	
-  $dbname = 'chits';
-  //$dbname2 = 'chitsquery';
-  $_SESSION["query"] = $dbname;
+  $dbname = 'chitsmalibay';
+  $dbname2 = 'chitsquery';
+  $_SESSION["query"] = $dbname2;
   $dbuser = $_SESSION["dbuser"];
   $dbpwd = $_SESSION["dbpass"];
 
