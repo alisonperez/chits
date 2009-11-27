@@ -3,7 +3,7 @@
   
     function widgets(){
       $this->appName="CHITS Query Browser";
-      $this->appVersion="0.1";
+      $this->appVersion="0.17";
       $this->appAuthor="Alison Perez";
     }
   
@@ -232,9 +232,10 @@
                                 echo "<option value='$method_id'>$method_name ($fhsis_code)</option>";
                         }
                         echo "</select></td>";
-                        echo "</tr>";
-                        
+                        echo "</tr>";                        
                 endif;
+                
+        
          endif;        	
 	}
      

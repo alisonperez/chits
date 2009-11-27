@@ -8,7 +8,7 @@ class querydb{
       $this->author = "Alison Perez";    
     }
     
-    function querycrit($dbname,$dbname2,$sdate,$edate,$brgy){           
+    function querycrit($dbname,$dbname2,$sdate,$edate,$brgy,$misc){   
       $sdate_orig = trim($sdate);
       $edate_orig = trim($edate);
       
@@ -37,13 +37,13 @@ class querydb{
         $_SESSION[edate] = $edate.' 23:59:59';
         $_SESSION[brgy] = $brgy;		
         $_SESSION[edate2] = $edate;
-		$_SESSION[sdate2] = $sdate;
-		$_SESSION[sdate_orig] = $sdate_orig;
-		$_SESSION[edate_orig] = $edate_orig;
-
-//		$q = mysql_query($this->exec_sql($_SESSION[ques])) or die(mysql_error());
-
-		$this->stat_table($q,$_SESSION[ques]);
+	$_SESSION[sdate2] = $sdate;
+	$_SESSION[sdate_orig] = $sdate_orig;
+	$_SESSION[edate_orig] = $edate_orig;
+	
+	$_SESSION[fp_method] = (isset($misc))?$misc:0; //assign fp method to a session if it exists from the form, otherwise place 0
+	
+	$this->stat_table($q,$_SESSION[ques]);
       
       endif;
       
@@ -155,7 +155,7 @@ class querydb{
 
 		elseif($quesno==34): //prenatal TCL
 
-
+		
 		else:
 			//echo "No available query for this indicator.";
 		endif;		
@@ -259,7 +259,8 @@ class querydb{
 		
 		elseif($quesno==39):
 			$this->process_ccdev_summary();
-			
+		elseif($quesno==40):
+			$this->process_fp_tcl();					
 		else:
 				echo "No available query for this indicator.";
 		endif;
@@ -699,8 +700,35 @@ class querydb{
 	}	
 
 	function process_ccdev_summary(){
-		echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Summary Table</a>";
+		echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Summary Table</a>";	
+	}
 	
+	function process_fp_tcl(){
+		//check the existence of any FP patient record that passed the criteria for query
+		if($_SESSION[brgy]=='all'):
+			$q_fp = mysql_query("SELECT a.patient_id,b.fp_px_id FROM m_patient_fp a, m_patient_fp_method b WHERE a.patient_id=b.patient_id AND a.fp_id=b.fp_id AND b.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.drop_out='N' AND b.method_id='$_SESSION[fp_method]' ORDER by b.date_registered ASC") or die("Cannot query (704): mysql_error()");
+		else:
+			$q_fp = mysql_query("SELECT a.patient_id,b.fp_px_id FROM m_patient_fp a, m_patient_fp_method b,m_family_members c,m_family_address d WHERE a.patient_id=b.patient_id AND a.fp_id=b.fp_id AND b.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.drop_out='N' AND b.method_id='$_SESSION[fp_method]' AND a.patient_id=c.patient_id AND c.family_id=d.family_id AND d.barangay_id='$_SESSION[brgy]' ORDER by b.date_registered ASC") or die("Cannot query (710): mysql_error()");
+		endif;
+		
+		//if there is a query result, save the content in an array 
+		
+		if(mysql_num_rows($q_fp)!=0):
+			$r_fp_px = array(); //this should contain the patient id of FP px who qualified to the query
+			$r_fp_id = array(); //this should contain the fp method id for the FP patients
+			
+			while(list($pxid,$fpid)=mysql_fetch_array($q_fp)){
+				array_push($r_fp_px,$pxid);
+				array_push($r_fp_id,$fpid);
+			}
+			
+			$_SESSION[fp_px] = $r_fp_px;
+			$_SESSION[fp_method_id] = $r_fp_id;
+			
+			echo "Show Family Planning TCL:&nbsp;<a href='./pdf_reports/fp_tcl.php?page=1'>Page 1</a>&nbsp;&nbsp;<a href='./pdf_reports/fp_tcl.php?page=2'>Page 2</a>";			
+		else:
+			echo "<font color='red'>No result/s found.</font>";
+		endif;
 	}
 
 }

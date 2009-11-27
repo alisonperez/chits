@@ -77,9 +77,10 @@ if($_SESSION["userid"]!=""):
 
 	  echo "<br><br>";
 	  
-	  if($_POST[q_submit]):	  	  
+	  if($_POST[q_submit]):	  	  	                    
+	        
 		if($_SESSION[filter]==1):
-			$queryconn->querycrit($dbname,$dbname2,$_POST[sdate],$_POST[edate],$_POST[sel_brgy]);	  
+			$queryconn->querycrit($dbname,$dbname2,$_POST[sdate],$_POST[edate],$_POST[sel_brgy],$_POST[sel_fp_method]);
 		else:
 			$end = array(01=>'31',02=>'29',03=>'31',04=>'30',05=>'31',06=>'30',07=>'31',08=>'31',09=>'30',10=>'31',11=>'30',12=>'31');
 			
@@ -91,7 +92,7 @@ if($_SESSION["userid"]!=""):
 			$sdate = $_POST[smonth].'/'.str_pad('1',2,"0",STR_PAD_LEFT).'/'.$_POST[year];
 			$edate = $_POST[emonth].'/'.$end[$_POST[emonth]].'/'.$_POST[year];
 
-			$queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy]);
+			$queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy],0); //the fifth argument when set to zero, means that there is no form present in the query box
 
 		endif;
 	  endif;
