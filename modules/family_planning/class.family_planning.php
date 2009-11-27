@@ -551,9 +551,9 @@ class family_planning extends module{
 		echo "<table>";
 		echo "<tr><td>";
 				
-			echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'METHODS','METHODS')."</a>";
+		echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'METHODS','METHODS')."</a>";
 
-			echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'CHART','FP CHART')."</a>";		
+		echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'CHART','FP CHART')."</a>";		
 		
 	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1#visit1' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'VISIT1','VISIT1')."</a>";
 				
@@ -1606,13 +1606,13 @@ class family_planning extends module{
 	}
 	
 	function no_fp_msg(){
-			echo "<font color='red'>NOTE: Patient does not have a previous FP record. Please fill out this FP Data (Visit 1) form first before enrolling the patient to any method.</font>";	
+		echo "<font color='red'>NOTE: Patient does not have a previous FP record. Please fill out this FP Data (Visit 1) form first before enrolling the patient to any method.</font>";	
 	}
 
 	function no_spouse_msg(){
-				echo "<script languauge='Javascript'>";
-				echo "window.alert('Please indicate the name of the spouse. Patients enrolled in FP should have partners.')";
-				echo "</script>";	
+		echo "<script languauge='Javascript'>";
+		echo "window.alert('Please indicate the name of the spouse. Patients enrolled in FP should have partners.')";
+		echo "</script>";	
 	}
 
 }

@@ -15,7 +15,7 @@
 	  if(mysql_num_rows($query_cat)!=0):
 
 	  echo "<table border=\"1\">";
-      echo "<tr><td colspan=\"2\">Select Classification</td></tr>";
+          echo "<tr><td colspan=\"2\">Select Classification</td></tr>";
 	  echo "<tr>";
 	  echo "<td>Classification</td>";
 
@@ -123,17 +123,26 @@
 	            echo "<option value=\"$res_brgy[barangay_id]\">$res_brgy[barangay_name]</option>";
 			 endif;
           }
-                  
+          
           echo "</select></td>";
+
+          
+          
+        
+        
         else:
           echo "<td>No barangays found</td>";
         endif;
+        
         echo "</tr>";                        
 		
 		else:
 			$this->disp_filter_form2($query_brgy);
 		endif;
-		
+        
+        $this->additional_filter($_SESSION["ques"],"FP Methods");
+        
+        
         echo "<tr align=\"center\">";
         echo "<td colspan=\"2\"><input type=\"submit\" name=\"q_submit\" value=\"Submit\" target=\"new\"></input>&nbsp;&nbsp;&nbsp;";
         echo "<input type=\"reset\" name=\"q_reset\" value=\"Reset\"></input></td>";
@@ -144,15 +153,15 @@
 
     } 
 
-	function get_filter(){
+	function get_filter(){ //set filter determines what date and barangay form shall be displayed. summary tables usually uses checkbox for brgy while tcl's are using dropdown list
 	
-		if($_SESSION[ques]==36 || $_SESSION[ques]==39): //for other question codes, just add || here
+		if($_SESSION[ques]==36 || $_SESSION[ques]==39): //for other question codes, just add || here. this is for summary tables.
 			$_SESSION[filter] = 2;
 		else:
 			$_SESSION[filter] = 1;
 		endif;
-		return $_SESSION[filter];
-	
+		
+		        return $_SESSION[filter];	
 	}
 
 	function disp_filter_form2($q_brgy){
@@ -208,6 +217,25 @@
 		}
 		echo "</td></tr>";
 
+	}
+	
+	function additional_filter($ques_id,$label){
+        
+        
+        if($ques_id==40): //if the query is about FP TCL, display another list showing the FP methods
+                $q_fp_method = mysql_query("SELECT method_name, method_id, fhsis_code FROM m_lib_fp_methods ORDER by method_name ASC") or die("Cannot query: Check FP tables");
+	
+                if(mysql_num_rows($q_fp_method)!=0):
+                        echo "<tr><td>$label</td>";
+                        echo "<td><select name='sel_fp_method' size='1'>";
+                        while(list($method_name,$method_id,$fhsis_code) = mysql_fetch_array($q_fp_method)){
+                                echo "<option value='$method_id'>$method_name ($fhsis_code)</option>";
+                        }
+                        echo "</select></td>";
+                        echo "</tr>";
+                        
+                endif;
+         endif;        	
 	}
      
   }
