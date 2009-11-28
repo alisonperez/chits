@@ -2310,9 +2310,19 @@ CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (
   PRIMARY KEY  (`client_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+
+
 --
 -- Dumping data for table `m_lib_fp_client`
 --
+
+
+INSERT INTO `m_lib_fp_client` (`client_id`, `client_code`, `client_text`) VALUES
+(1, 'CU', 'Current User'),
+(2, 'NA', 'New Acceptor'),
+(3, 'CM', 'Changing Method'),
+(4, 'CC', 'Changing Clinic'),
+(5, 'RS', 'Restart');
 
 
 -- --------------------------------------------------------
