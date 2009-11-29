@@ -590,13 +590,14 @@ class family_planning extends module{
 			2. old patient w/ previous FP method but presently dropout and in FP method (METHOD (dropdown),PREVIOUS - label, show history)
 			3. patient with existing FP method also with previous FP methods (METHOD (label),PREVIOUS - label, show history)
 		*/
+		
 	    $q_fp = $this->check_fprec();
 
 		if(mysql_num_rows($q_fp)!=0):
 
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
 
-		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_registered DESC") or die("Cannot query: 534");
+		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason,b.client_code FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_registered DESC") or die("Cannot query: 534");
 
 		if(isset($_SESSION["dropout_info"]) && $_GET["action"]=="drop"):   //indicates that the end-user pressed YES for dropping out patient
 			//print_r($_SESSION["dropout_info"]);
@@ -612,12 +613,11 @@ class family_planning extends module{
 			$update_fp = mysql_query("UPDATE m_patient_fp_method SET date_registered='$reg',treatment_partner='$tx_partner',drop_out='Y',dropout_reason='$drop_reason',date_dropout='$drop',dropout_remarks='$drop_remarks'") or die("Cannot query: 593");
 
 			if($update_fp):
-					unset($_SESSION["dropout_info"]);
-					echo "<script language='javascript'>";
-					echo "alert('The patient was successfully been dropped from this method');";
-					echo "window.location.reload();";
-					echo "</script>";
-
+                            unset($_SESSION["dropout_info"]);
+                            echo "<script language='javascript'>";
+                            echo "alert('The patient was successfully been dropped from this method');";
+                            echo "window.location.reload();";
+                            echo "</script>";
 			endif;
 		endif;
 
@@ -667,8 +667,8 @@ class family_planning extends module{
 						echo "</td></tr>"; */
 
 						$this->show_method_list('form_methods','sel_methods');
-
-						echo "<tr><td>PREVIOUS METHOD:</td><td>";
+                                                
+			    			echo "<tr><td>PREVIOUS METHOD:</td><td>";
 						echo (isset($arr_current[0]["method_name"]))?$arr_current[0]["method_name"]:'None';
 						echo "</td></tr>";
 
@@ -692,6 +692,9 @@ class family_planning extends module{
 						echo "<tr><td>CURRENT METHOD:</td><td>".$arr_current[0]["method_name"]."</td></tr>";
 						list($y,$m,$d) = explode('-',$arr_current[0]["date_registered"]);
 						$datereg = $m.'/'.$d.'/'.$y;
+																		
+						$this->show_fp_clients($arr_current[0]["client_code"]);						
+												
 						echo "<tr><td>DATE OF REGISTRATION:</td><td>";
 						echo "<input type='text' name='txt_date_reg' size='8' maxlength='10' value='$datereg'>&nbsp;";
 						echo "<a href=\"javascript:show_calendar4('document.form_methods.txt_date_reg', document.form_methods.txt_date_reg.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
@@ -1343,13 +1346,11 @@ class family_planning extends module{
 					$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
 					$get_fp = mysql_query("SELECT fp_id FROM m_patient_fp WHERE patient_id='$_SESSION[userid]'") or die("Cannot query: 1189");
 					list($fpid) = mysql_fetch_array($get_fp);
-
-					//$insert_fp_method = mysql_query("INSERT INTO m_patient_fp SET patient_id='$pxid',date_enrolled='$reg_date', date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'), consult_id='$_GET[consult_id]',user_id='$_SESSION[userid]'") or die("Cannot query: 941");
-					//$fpid = mysql_insert_id();
+					
 
 					$insert_fp_method_service = mysql_query("INSERT INTO m_patient_fp_method SET fp_id='$fpid',patient_id='$pxid',consult_id='$_GET[consult_id]',date_registered='$reg_date',date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'),method_id='$_POST[sel_methods]',treatment_partner='$_POST[txt_tx_partner]',user_id='$_SESSION[userid]',permanent_method='$permanent',client_code='$_POST[sel_clients]'") or die(mysql_error());
 
-						if($insert_fp_method && $insert_fp_method_service):
+						if($insert_fp_method_service):
 							echo "<font color='red'>Patient was successfully been enrolled in $_POST[sel_methods]</font>";
 						else:
 							echo "<font color='red'>Patient was not enrolled in $_POST[sel_methods]</font>";
@@ -1509,15 +1510,16 @@ class family_planning extends module{
 	}
 
 	function update_method_visit(){
+	                
 			if(empty($_POST["txt_date_reg"])):
-					echo "<script language='javascript'>";
-					echo "alert('Date of registration cannot be empty.')";
-					echo "</script>";
+                                echo "<script language='javascript'>";
+                                echo "alert('Date of registration cannot be empty.')";
+                                echo "</script>";
 
 			elseif($_POST["sel_dropout"]!=0 && empty($_POST["txt_date_dropout"])):  // make a check that when dropping a patient, there should be a date of drop out
-					echo "<script language='javascript'>";
-					echo "alert('Cannot drop patient from this method. Indicate a date of drop out.')";
-					echo "</script>";
+                                echo "<script language='javascript'>";
+                                echo "alert('Cannot drop patient from this method. Indicate a date of drop out.')";
+                                echo "</script>";
 			else:
 
 				$q_date = mysql_query("SELECT date_service FROM m_patient_fp_method_service WHERE fp_px_id='$_POST[fp_px_id]'") or die("Cannot query: 1469");
@@ -1562,11 +1564,11 @@ class family_planning extends module{
 									echo "<a href='' onclick='history.go(-1)'>No</a>";
 							endif;
 
-						else: //   a simple edit of date of registration and treatment partner
+						else: //   a simple edit of date of registration, type of client and treatment partner
 								list($m,$d,$y) = explode('/',$_POST["txt_date_reg"]);
 								$date_reg = $y.'-'.$m.'-'.$d;
-
-								$update_fp_method = mysql_query("UPDATE m_patient_fp_method SET date_registered='$date_reg', treatment_partner='$_POST[txt_treatment_partner]' WHERE fp_px_id='$_POST[fp_px_id]'") or die("Cannot query: 1546");
+                                                                
+								$update_fp_method = mysql_query("UPDATE m_patient_fp_method SET date_registered='$date_reg', treatment_partner='$_POST[txt_treatment_partner]',client_code='$_POST[sel_clients]' WHERE fp_px_id='$_POST[fp_px_id]'") or die("Cannot query: 1546");
 
 								if($update_fp_method):
 									echo "<script language='javascript'>";
@@ -1636,15 +1638,21 @@ class family_planning extends module{
 	}
 
 	function show_fp_clients(){
+	
+	if(func_num_args()>0):
+	    $arr = func_get_args();
+	    $client_code_passed = $arr[0];	    
+	endif;
+	
         $q_clients = mysql_query("SELECT client_id, client_code, client_text FROM m_lib_fp_client ORDER by client_text ASC") or die("CAnnot query: 1637");
 
         if(mysql_num_rows($q_clients)!=0){
-            echo "<tr><td>SELECT TYPE OF CLIENT</td>";
+            echo "<tr><td>TYPE OF CLIENT</td>";
             echo "<td>";
             echo "<select name='sel_clients' size='1'>";
 
             while(list($client_id,$client_code,$client_text)=mysql_fetch_array($q_clients)){
-                if($client_code=='CU'):
+                if($client_code_passed==$client_code):
                     echo "<option value='$client_code' SELECTED>$client_text</option>";
                 else:
                     echo "<option value='$client_code'>$client_text</option>";
