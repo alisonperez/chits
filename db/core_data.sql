@@ -17443,6 +17443,12 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`) VALUES
 (37, 'Child Care Under 1 YO - Target Client List (TCL)', 8, ''),
 (38, 'Child Care - Sick Children - Target Client List (TCL)', 8, ''),
 (39, 'Child Care Summary Report', 8, '');
+(40, 'FP Target Client List', 9, ''),
+(41, 'FP Summary Table for BHS', 9, ''),
+(60, 'DHC Quarterly Report', 12, ''),
+(61, 'DHC-PHO Report', 12, ''),
+(62, 'DHC Summary Table', 12, '');
+
 
 -- --------------------------------------------------------
 
@@ -17468,7 +17474,12 @@ INSERT INTO `ques_cat` (`cat_id`, `cat_label`) VALUES
 (5, 'NTP'),
 (6, 'Nutrition'),
 (7, 'Notifiable Diseases'),
-(8, 'Child Care');
+(8, 'Child Care'),
+(9, 'Family  Planning'),
+(10, 'Demographics, Natality, Mortality'),
+(11, 'Environment and Sanitation'),
+(12, 'Dental Health Care');
+
 
 CREATE TABLE IF NOT EXISTS `m_lib_mc_delivery_location` (
   `delivery_id` varchar(10) NOT NULL,

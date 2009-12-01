@@ -98,43 +98,33 @@
 		if($set_filter == 1): // start date, end date and barangay dropdown list
 
 
-        echo "<tr><td>Start Date (yyyy-mm-dd)</td>";
-        echo "<td><input name=\"sdate\" type=\"text\" size=\"12\" maxlength=\"10\" value=\"$psdate\" readonly></input>";
-		
-		echo "<a href=\"javascript:show_calendar4('document.form_query.sdate', document.form_query.sdate.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a>";		
-		
+		echo "<tr><td>Start Date (yyyy-mm-dd)</td>";
+		echo "<td><input name=\"sdate\" type=\"text\" size=\"12\" maxlength=\"10\" value=\"$psdate\" readonly></input>";		
+		echo "<a href=\"javascript:show_calendar4('document.form_query.sdate', document.form_query.sdate.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a>";				
 		echo "</td></tr>";
-        echo "<tr><td>End Date (yyyy-mm-dd)</td>";
-        echo "<td><input name=\"edate\" type=\"text\" size=\"12\" maxlength=\"10\" value=\"$pedate\" readonly>";
-
+                echo "<tr><td>End Date (yyyy-mm-dd)</td>";
+                echo "<td><input name=\"edate\" type=\"text\" size=\"12\" maxlength=\"10\" value=\"$pedate\" readonly>";
 		echo "<a href=\"javascript:show_calendar4('document.form_query.edate', document.form_query.edate.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a>";		
-
 		echo "</td></tr>";
-
 		echo "<tr><td>Barangay</td>";
 
-        if(mysql_num_rows($query_brgy)!=0):        
-          echo "<td><select name=\"sel_brgy\" size=\"1\">";
-          echo "<option value=\"all\">All Barangay</option>";
-          while($res_brgy=mysql_fetch_array($query_brgy)){                  
-			 if($pbrgy==$res_brgy[barangay_id]):
-	            echo "<option value=\"$res_brgy[barangay_id]\" SELECTED>$res_brgy[barangay_name]</option>";
-			 else:
-	            echo "<option value=\"$res_brgy[barangay_id]\">$res_brgy[barangay_name]</option>";
-			 endif;
-          }
+		if(mysql_num_rows($query_brgy)!=0):        
+		        echo "<td><select name=\"sel_brgy\" size=\"1\">";
+                        echo "<option value=\"all\">All Barangay</option>";
+                                while($res_brgy=mysql_fetch_array($query_brgy)){                  
+                                        if($pbrgy==$res_brgy[barangay_id]):
+                                                echo "<option value=\"$res_brgy[barangay_id]\" SELECTED>$res_brgy[barangay_name]</option>";
+                                        else:
+                                                echo "<option value=\"$res_brgy[barangay_id]\">$res_brgy[barangay_name]</option>";
+                                        endif;
+                                }
           
-          echo "</select></td>";
-
-          
-          
+                        echo "</select></td>";                          
+                else:
+                        echo "<td>No barangays found</td>";
+                endif;
         
-        
-        else:
-          echo "<td>No barangays found</td>";
-        endif;
-        
-        echo "</tr>";                        
+                echo "</tr>";                        
 		
 		else:
 			$this->disp_filter_form2($query_brgy);
@@ -155,7 +145,7 @@
 
 	function get_filter(){ //set filter determines what date and barangay form shall be displayed. summary tables usually uses checkbox for brgy while tcl's are using dropdown list
 	
-		if($_SESSION[ques]==36 || $_SESSION[ques]==39): //for other question codes, just add || here. this is for summary tables.
+		if($_SESSION[ques]==36 || $_SESSION[ques]==39 || $_SESSION[ques]==41 || $_SESSION[ques]==62): //for other question codes, just add || here. this is for summary tables.
 			$_SESSION[filter] = 2;
 		else:
 			$_SESSION[filter] = 1;
