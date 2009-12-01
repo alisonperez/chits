@@ -171,8 +171,10 @@ function show_fp1(){ //this method shall extract the FP records on page 1 of the
         list($lname,$fname,$address,$brgy,$dob_days,$family_id) = mysql_fetch_array($q_px_info);                
         $edad = floor(($reg_days - $dob_days)/365);
     
-        $q_prev_method = mysql_query("SELECT a.method_id,b.method_name FROM m_patient_fp_method a, m_lib_fp_methods b WHERE a.patient_id='$r_px_id[$i]' AND a.method_id=b.method_id AND $_SESSION[sdate2] > a.date_registered ORDER by a.date_registered DESC LIMIT 1") or die("Cannot query(174): ".mysql_error());
+        $q_prev_method = mysql_query("SELECT a.method_id,b.method_name FROM m_patient_fp_method a, m_lib_fp_methods b WHERE a.patient_id='$r_px_id[$i]' AND a.method_id=b.method_id AND '$_SESSION[sdate2]' > a.date_registered ORDER by a.date_registered DESC LIMIT 1") or die("Cannot query(174): ".mysql_error());
+                                
         $arr_prev = array();
+        
         while(list($method_id,$method_name)=mysql_fetch_array($q_prev_method)){
             array_push($arr_prev,$method_id);
         }
