@@ -597,7 +597,7 @@ class family_planning extends module{
 
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
 
-		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason,b.client_code FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_registered DESC") or die("Cannot query: 534");
+		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason,b.client_code,b.permanent_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_registered DESC") or die("Cannot query: 534");
 		
 		if(isset($_SESSION["dropout_info"]) && $_GET["action"]=="drop"):   //indicates that the end-user pressed YES for dropping out patient
 			//print_r($_SESSION["dropout_info"]);
@@ -705,6 +705,12 @@ class family_planning extends module{
 						$txpartner = $arr_current[0][treatment_partner];
 						echo "<input type='text' size='20' value='$txpartner' name='txt_treatment_partner'></input>";
 						echo "</td></tr>";
+						                                            
+						
+						echo "<tr><td>REASON FOR PERMANENT METHOD</td>";
+                                                echo "<td><textarea name='txt_reason' cols='30' row='10'>".$arr_current[0][permanent_reason];
+                				echo "</textarea></td></tr>";
+				
 						echo "<tr><td>PREVIOUS METHOD:</td><td>";
 						echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["method_name"]:'None';
 						echo "</td></tr>";
@@ -1573,7 +1579,7 @@ class family_planning extends module{
 								list($m,$d,$y) = explode('/',$_POST["txt_date_reg"]);
 								$date_reg = $y.'-'.$m.'-'.$d;
                                                                 
-								$update_fp_method = mysql_query("UPDATE m_patient_fp_method SET date_registered='$date_reg', treatment_partner='$_POST[txt_treatment_partner]',client_code='$_POST[sel_clients]' WHERE fp_px_id='$_POST[fp_px_id]'") or die("Cannot query: 1546");
+								$update_fp_method = mysql_query("UPDATE m_patient_fp_method SET date_registered='$date_reg', treatment_partner='$_POST[txt_treatment_partner]',client_code='$_POST[sel_clients]',permanent_reason='$_POST[txt_reason]' WHERE fp_px_id='$_POST[fp_px_id]'") or die("Cannot query: 1546");
 
 								if($update_fp_method):
 									echo "<script language='javascript'>";
