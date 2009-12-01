@@ -597,10 +597,11 @@ class family_planning extends module{
 
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
 
-		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason,b.client_code,b.permanent_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_registered DESC") or die("Cannot query: 534");
+		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason,b.client_code,b.permanent_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by b.drop_out DESC,b.date_registered DESC") or die("Cannot query: 534");
 		
 		if(isset($_SESSION["dropout_info"]) && $_GET["action"]=="drop"):   //indicates that the end-user pressed YES for dropping out patient
-			//print_r($_SESSION["dropout_info"]);
+			print_r($_SESSION["dropout_info"]);
+			
 			list($mreg,$dreg,$yreg) = explode('/',$_SESSION["dropout_info"]["txt_date_reg"]);
 			list($mdrop,$ddrop,$ydrop) = explode('/',$_SESSION["dropout_info"]["txt_date_dropout"]);
 
@@ -609,8 +610,9 @@ class family_planning extends module{
 			$drop_reason = $_SESSION["dropout_info"]["sel_dropout"];
 			$drop_remarks = $_SESSION["dropout_info"]["dropout_remarks"];
 			$tx_partner = $_SESSION["dropout_info"]["txt_treatment_partner"];
-
-			$update_fp = mysql_query("UPDATE m_patient_fp_method SET date_registered='$reg',treatment_partner='$tx_partner',drop_out='Y',dropout_reason='$drop_reason',date_dropout='$drop',dropout_remarks='$drop_remarks'") or die("Cannot query: 593");
+			$fp_px_id = $_SESSION["dropout_info"]["fp_px_id"];
+			
+			$update_fp = mysql_query("UPDATE m_patient_fp_method SET date_registered='$reg',treatment_partner='$tx_partner',drop_out='Y',dropout_reason='$drop_reason',date_dropout='$drop',dropout_remarks='$drop_remarks' WHERE fp_px_id='$fp_px_id'") or die("Cannot query: 593");
 
 			if($update_fp):
                             unset($_SESSION["dropout_info"]);
@@ -643,8 +645,7 @@ class family_planning extends module{
 				echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning Method'></input></td></tr>";
 
 			else: //scenario 2-3
-				$arr_current = $this->show_current_method($q_fp_methods); //return the most current FP method used
-				
+				$arr_current = $this->show_current_method($q_fp_methods); //return the most current FP method used		                
 				$reason_drop = $arr_current[1]["dropout_reason"];
 				$q_dropreason = mysql_query("SELECT reason_label FROM m_lib_fp_dropoutreason WHERE reason_id='$reason_drop'") or die("Cannot query: 635");
 				list($dropout_reason) = mysql_fetch_array($q_dropreason);				
@@ -655,11 +656,12 @@ class family_planning extends module{
 				//print_r($arr_current);
 
 				switch($arr_current[0]["drop_out"]){
+				
 					case "Y":     //previous user of FP method, not present user
 						/*echo "<tr><td>SELECT METHOD:</td><td>";
 						echo $this->get_methods("sel_methods");
 						echo "</td></tr>"; */
-                                            
+                                                            
 						$this->show_method_list('form_methods','sel_methods');
 						echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";				
                                                 $this->show_fp_clients();
@@ -1569,10 +1571,11 @@ class family_planning extends module{
 									echo "</script>";
 							else:
 									$_SESSION["dropout_info"] = $_POST;
-
+                                                                        
 									echo "<font color='red'><b>Are you sure you wanted to drop this patient?</b></font>&nbsp;";
 									echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&action=drop&fp=METHODS#methods'>Yes</a>&nbsp;&nbsp;&nbsp;";
 									echo "<a href='' onclick='history.go(-1)'>No</a>";
+																		
 							endif;
 
 						else: //   a simple edit of date of registration, type of client and treatment partner
