@@ -704,13 +704,18 @@ class querydb{
 	}
 	
 	function process_fp_tcl(){
+			
 		//check the existence of any FP patient record that passed the criteria for query
 		if($_SESSION[brgy]=='all'):
-			$q_fp = mysql_query("SELECT a.patient_id,b.fp_px_id FROM m_patient_fp a, m_patient_fp_method b WHERE a.patient_id=b.patient_id AND a.fp_id=b.fp_id AND b.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.drop_out='N' AND b.method_id='$_SESSION[fp_method]' ORDER by b.date_registered ASC") or die("Cannot query (704): mysql_error()");
-		else:
-			$q_fp = mysql_query("SELECT a.patient_id,b.fp_px_id FROM m_patient_fp a, m_patient_fp_method b,m_family_members c,m_family_address d WHERE a.patient_id=b.patient_id AND a.fp_id=b.fp_id AND b.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.drop_out='N' AND b.method_id='$_SESSION[fp_method]' AND a.patient_id=c.patient_id AND c.family_id=d.family_id AND d.barangay_id='$_SESSION[brgy]' ORDER by b.date_registered ASC") or die("Cannot query (710): mysql_error()");
+			//commented $q_fp checks if the record is not yet a drop out, uncommented does not
+			//$q_fp = mysql_query("SELECT a.patient_id,b.fp_px_id FROM m_patient_fp a, m_patient_fp_method b WHERE a.patient_id=b.patient_id AND a.fp_id=b.fp_id AND b.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.drop_out='N' AND b.method_id='$_SESSION[fp_method]' ORDER by b.date_registered DESC") or die("Cannot query (704): mysql_error()");
+			
+			$q_fp = mysql_query("SELECT a.patient_id,b.fp_px_id FROM m_patient_fp a, m_patient_fp_method b WHERE a.patient_id=b.patient_id AND a.fp_id=b.fp_id AND b.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.method_id='$_SESSION[fp_method]' ORDER by b.date_registered DESC") or die("Cannot query (704): mysql_error()");			
+		else:			
+			//$q_fp = mysql_query("SELECT a.patient_id,b.fp_px_id FROM m_patient_fp a, m_patient_fp_method b,m_family_members c,m_family_address d WHERE a.patient_id=b.patient_id AND a.fp_id=b.fp_id AND b.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.drop_out='N' AND b.method_id='$_SESSION[fp_method]' AND a.patient_id=c.patient_id AND c.family_id=d.family_id AND d.barangay_id='$_SESSION[brgy]' ORDER by b.date_registered DESC") or die("Cannot query (710): mysql_error()");
+			$q_fp = mysql_query("SELECT a.patient_id,b.fp_px_id FROM m_patient_fp a, m_patient_fp_method b,m_family_members c,m_family_address d WHERE a.patient_id=b.patient_id AND a.fp_id=b.fp_id AND b.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.method_id='$_SESSION[fp_method]' AND a.patient_id=c.patient_id AND c.family_id=d.family_id AND d.barangay_id='$_SESSION[brgy]' ORDER by b.date_registered DESC") or die("Cannot query (710): mysql_error()");			
 		endif;
-		
+	
 		//if there is a query result, save the content in an array 
 		
 		if(mysql_num_rows($q_fp)!=0):
