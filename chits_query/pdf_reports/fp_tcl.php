@@ -194,7 +194,7 @@ function show_fp2(){
     for($i=0;$i<count($r_fp_id);$i++){                
         $arr_disp = array();        
         $arr_service = $this->followup_visit($r_fp_id[$i],$r_px_id[$i]);
-        
+       
         $q_drop = mysql_query("SELECT a.date_dropout,b.fhsis_code,a.dropout_remarks FROM m_patient_fp_method a,m_lib_fp_dropoutreason b WHERE a.fp_px_id='$r_fp_id[$i]' AND a.patient_id='$r_px_id[$i]' AND a.dropout_reason=b.reason_id") or die("Cannot query (198): ".mysql_error());
         
         list($date_dropout,$fhsis_code,$remarks) = mysql_fetch_array($q_drop);
