@@ -170,7 +170,7 @@ class family_planning extends module{
                   `last_edited` date NOT NULL,
                   `user_id_edited` float NOT NULL,
                   PRIMARY KEY (`fp_px_id`)
-				) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+                ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
 
 
 		//m_patient_fp_method_service -- create
@@ -598,7 +598,7 @@ class family_planning extends module{
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
 
 		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason,b.client_code FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by date_registered DESC") or die("Cannot query: 534");
-
+		
 		if(isset($_SESSION["dropout_info"]) && $_GET["action"]=="drop"):   //indicates that the end-user pressed YES for dropping out patient
 			//print_r($_SESSION["dropout_info"]);
 			list($mreg,$dreg,$yreg) = explode('/',$_SESSION["dropout_info"]["txt_date_reg"]);
@@ -628,7 +628,7 @@ class family_planning extends module{
 		echo "<a name='methods'></a>";
 
 			if(mysql_num_rows($q_fp_methods)==0): //scenario 1
-
+			    
 				$this->show_method_list('form_methods','sel_methods');
 				$this->show_previous_method("None");
 
@@ -644,6 +644,7 @@ class family_planning extends module{
 
 			else: //scenario 2-3
 				$arr_current = $this->show_current_method($q_fp_methods); //return the most current FP method used
+				
 				$reason_drop = $arr_current[1]["dropout_reason"];
 				$q_dropreason = mysql_query("SELECT reason_label FROM m_lib_fp_dropoutreason WHERE reason_id='$reason_drop'") or die("Cannot query: 635");
 				list($dropout_reason) = mysql_fetch_array($q_dropreason);				
@@ -658,7 +659,7 @@ class family_planning extends module{
 						/*echo "<tr><td>SELECT METHOD:</td><td>";
 						echo $this->get_methods("sel_methods");
 						echo "</td></tr>"; */
-
+                                            
 						$this->show_method_list('form_methods','sel_methods');
 						echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";				
                                                 $this->show_fp_clients();
@@ -685,7 +686,7 @@ class family_planning extends module{
 						break;
 
 					case "N":		//current users of FP method
-
+					        
 						echo "<input type='hidden' name='fp_px_id' value='$fp_px_id'></input>";
 						echo "<input type='hidden' name='method_id' value='$method_id'></input>";
 
@@ -1205,7 +1206,9 @@ class family_planning extends module{
 					else:
 						echo "<input type='hidden' name='sel_supply' value='5'></input>";
 					endif;
+					
 					echo "</td>";
+					
 					echo "<tr><td>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'>$remarks</textarea></td></tr>";
 					echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11' value='$next_service'>";
 					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
@@ -1347,7 +1350,7 @@ class family_planning extends module{
 			echo "</script>";
 		else:
 					$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
-					$get_fp = mysql_query("SELECT fp_id FROM m_patient_fp WHERE patient_id='$_SESSION[userid]'") or die("Cannot query: 1189");
+					$get_fp = mysql_query("SELECT fp_id FROM m_patient_fp WHERE patient_id='$pxid'") or die("Cannot query: 1189");
 					list($fpid) = mysql_fetch_array($get_fp);
 					
 					$insert_fp_method_service = mysql_query("INSERT INTO m_patient_fp_method SET fp_id='$fpid',patient_id='$pxid',consult_id='$_GET[consult_id]',date_registered='$reg_date',date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'),method_id='$_POST[sel_methods]',treatment_partner='$_POST[txt_tx_partner]',user_id='$_SESSION[userid]',permanent_method='$permanent',client_code='$_POST[sel_clients]',permanent_reason='$_POST[txt_reason]'") or die("Cannot query ".mysql_error());
