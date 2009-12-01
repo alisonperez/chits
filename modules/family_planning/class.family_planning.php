@@ -1350,8 +1350,7 @@ class family_planning extends module{
 					$get_fp = mysql_query("SELECT fp_id FROM m_patient_fp WHERE patient_id='$_SESSION[userid]'") or die("Cannot query: 1189");
 					list($fpid) = mysql_fetch_array($get_fp);
 					
-
-					$insert_fp_method_service = mysql_query("INSERT INTO m_patient_fp_method SET fp_id='$fpid',patient_id='$pxid',consult_id='$_GET[consult_id]',date_registered='$reg_date',date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'),method_id='$_POST[sel_methods]',treatment_partner='$_POST[txt_tx_partner]',user_id='$_SESSION[userid]',permanent_method='$permanent',client_code='$_POST[sel_clients]'") or die(mysql_error());
+					$insert_fp_method_service = mysql_query("INSERT INTO m_patient_fp_method SET fp_id='$fpid',patient_id='$pxid',consult_id='$_GET[consult_id]',date_registered='$reg_date',date_encoded=DATE_FORMAT(NOW(),'%y-%m-%d'),method_id='$_POST[sel_methods]',treatment_partner='$_POST[txt_tx_partner]',user_id='$_SESSION[userid]',permanent_method='$permanent',client_code='$_POST[sel_clients]',permanent_reason='$_POST[txt_reason]'") or die("Cannot query ".mysql_error());
 
 						if($insert_fp_method_service):
 							echo "<font color='red'>Patient was successfully been enrolled in $_POST[sel_methods]</font>";
