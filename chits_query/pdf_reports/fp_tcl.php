@@ -159,9 +159,9 @@ function show_fp1(){ //this method shall extract the FP records on page 1 of the
     $r_fp_id = $_SESSION[fp_method_id];
     
     for($i=0;$i<count($r_fp_id);$i++){
-        $q_date_reg = mysql_query("SELECT date_format(date_registered,'%m/%d/%Y') as date_reg, TO_DAYS(date_registered) as reg_days FROM m_patient_fp_method WHERE fp_px_id='$r_fp_id[$i]'") or die("Cannot query (162): mysql_error()");
-        list($dreg,$reg_days) = mysql_fetch_array($q_date_reg);
-        
+        $q_date_reg = mysql_query("SELECT date_format(date_registered,'%m/%d/%Y') as date_reg, TO_DAYS(date_registered) as reg_days,client_code FROM m_patient_fp_method WHERE fp_px_id='$r_fp_id[$i]'") or die("Cannot query (162): mysql_error()");
+        list($dreg,$reg_days,$client_code) = mysql_fetch_array($q_date_reg);        
+                
         if($_SESSION[brgy]=='all'):
             $q_px_info = mysql_query("SELECT a.patient_lastname,a.patient_firstname,b.address,c.barangay_name,TO_DAYS(patient_dob) as dob_days,b.family_id FROM m_patient a,m_family_address b,m_lib_barangay c,m_family_members d WHERE a.patient_id='$r_px_id[$i]' AND a.patient_id=d.patient_id AND d.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query(166): mysql_error()");        
         else:
@@ -170,8 +170,14 @@ function show_fp1(){ //this method shall extract the FP records on page 1 of the
         
         list($lname,$fname,$address,$brgy,$dob_days,$family_id) = mysql_fetch_array($q_px_info);                
         $edad = floor(($reg_days - $dob_days)/365);
+    
+        $q_prev_method = mysql_query("SELECT a.method_id,b.method_name FROM m_patient_fp_method a, m_lib_fp_methods b WHERE a.patient_id='$r_px_id[$i]' AND a.method_id=b.method_id ORDER by a.date_registered DESC") or die("Cannot query(174): ".mysql_error());
+        $arr_prev = array();
+        while(list($method_id,$method_name)=mysql_fetch_array($q_prev_method)){
+            array_push($arr_prev,$method_id);
+        }
         
-        $this->Row(array($dreg,$family_id,$lname.', '.$fname,$address.', '.$brgy,$edad,'CONDOM','CONDOM'));  //TODO
+        $this->Row(array($dreg,$family_id,$lname.', '.$fname,$address.', '.$brgy,$edad,$client_code,$arr_prev[1]));  //TODO
     }
 
 }

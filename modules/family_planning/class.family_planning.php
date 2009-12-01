@@ -632,14 +632,7 @@ class family_planning extends module{
 				$this->show_method_list('form_methods','sel_methods');
 				$this->show_previous_method("None");
 
-				echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";
-
-				/*echo "<tr><td>PERMANENT METHOD?</td><td>";
-				echo "<select name='perm_method' size='1'>";
-				echo "<option value='Y'>Yes</option>";
-				echo "<option value='N' selected>No</option>";
-				echo "</select>";
-				echo "</td></tr>"; */
+				echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";				
 
 				echo "<tr><td>REASON FOR PERMANENT METHOD</td>";
 				echo "<td><textarea name='txt_reason' cols='30' row='10'>";
@@ -651,10 +644,10 @@ class family_planning extends module{
 
 			else: //scenario 2-3
 				$arr_current = $this->show_current_method($q_fp_methods); //return the most current FP method used
-				$reason_drop = $arr_current[0]["dropout_reason"];
+				$reason_drop = $arr_current[1]["dropout_reason"];
 				$q_dropreason = mysql_query("SELECT reason_label FROM m_lib_fp_dropoutreason WHERE reason_id='$reason_drop'") or die("Cannot query: 635");
-				list($dropout_reason) = mysql_fetch_array($q_dropreason);
-
+				list($dropout_reason) = mysql_fetch_array($q_dropreason);				
+                            
 				$fp_px_id = $arr_current[0]["fp_px_id"];
 				$method_id = $arr_current[0]["method_id"];
 
@@ -667,6 +660,13 @@ class family_planning extends module{
 						echo "</td></tr>"; */
 
 						$this->show_method_list('form_methods','sel_methods');
+						echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";				
+                                                $this->show_fp_clients();
+                                                
+                                                echo "<tr><td>REASON FOR PERMANENT METHOD</td>";
+                                                echo "<td><textarea name='txt_reason' cols='30' row='10'>";
+                                                echo "</textarea></td></tr>";
+                                                
                                                 
 			    			echo "<tr><td>PREVIOUS METHOD:</td><td>";
 						echo (isset($arr_current[0]["method_name"]))?$arr_current[0]["method_name"]:'None';
@@ -709,11 +709,14 @@ class family_planning extends module{
 						echo "</td></tr>";
 
 						echo "<tr><td>DURATION OF USE:</td><td>";
-						echo (isset($arr_current[1]["method_name"]))?'to do':'NA';
-						echo "</td></tr>";
+						echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["duration"]:'NA';
+						echo " days</td></tr>";
 
 						echo "<tr><td>REASON FOR DISCONTINUATION:</td><td>";
-						echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["dropout_reason"]:'NA';
+						
+						//echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["dropout_reason"]:'NA';
+						
+						echo (isset($arr_current[1]["method_name"]))?$dropout_reason:'NA';
 						echo "</td></tr>";
 
 						echo "<tr><td>REASON FOR DROP OUT</td>";
@@ -1329,7 +1332,7 @@ class family_planning extends module{
 	function submit_method_visit(){
 
 		list($month,$date,$year) = explode('/',$_POST["txt_date_reg"]);
-		$permanent = ($_POST["method_id"]=='FSTRBTL' || $_POST["method_id"]=='MSV')?'Y':'N';
+		$permanent = ($_POST["sel_methods"]=='FSTRBTL' || $_POST["sel_methods"]=='MSV')?'Y':'N';
 
 		$reg_date = $year.'-'.$month.'-'.$date;
 
