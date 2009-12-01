@@ -136,14 +136,14 @@ function Header()
 	
 	elseif($_SESSION[pahina]==2):
 	$this->SetFont('Arial','',10);
-	$main_width = array(240,20,60,20);
-	$main_content = array('Date Immunization Received','Date Fully Immunized','Child Was Exclusively Breastfed','Remarks');
+	$main_width = array(252,41,47);
+	$main_content = array('FOLLOW UP VISITS (Upper Space: Next Service Date / Lower Space: Date Accomplished)','DROP-OUTS','REMARKS / ACTION TAKEN');
 	
 	$this->SetWidths($main_width);
 	$this->Row($main_content);
 
-	$w = array(20,20,20,20,20,20,20,20,20,20,20,20,20,8,8,8,8,8,20,20);
-	$header = array('BCG','DPT1','DPT2','DPT3','POLIO1','POLIO2','POLIO3','HEPA B1(<24hrs)','HEPA B1(>24hrs)','HEPA B2','HEPA B3','ANTI MEASLES','','1st MO','2nd MO','3rd MO','4th MO','5th MO','Date 6th MO','');
+	$w = array(21,21,21,21,21,21,21,21,21,21,21,21,20,21,47);
+	$header = array('1ST','2ND','3RD','4TH','5TH','6TH','7TH','8TH','9TH','10TH','11TH','12TH','REASON','DATE','');
 
 	else:
 		
@@ -179,15 +179,151 @@ function show_fp1(){ //this method shall extract the FP records on page 1 of the
             array_push($arr_prev,$method_id);
         }
         
-        $this->Row(array($dreg,$family_id,$lname.', '.$fname,$address.', '.$brgy,$edad,$client_code,$arr_prev[0]));  //TODO
+        $this->Row(array($dreg."\n".' ',$family_id,$lname.', '.$fname,$address.', '.$brgy,$edad,$client_code,$arr_prev[0]));
     }
 
 }
 
 function show_fp2(){
-
+    $r_px_id = $_SESSION[fp_px];
+    $r_fp_id = $_SESSION[fp_method_id];
+    
+    //print_r($r_fp_id);
+    $w = array(252,50,47);
+    
+    for($i=0;$i<count($r_fp_id);$i++){                
+        $arr_disp = array();        
+        $arr_service = $this->followup_visit($r_fp_id[$i],$r_px_id[$i]);
+        
+        $q_drop = mysql_query("SELECT a.date_dropout,b.fhsis_code,a.dropout_remarks FROM m_patient_fp_method a,m_lib_fp_dropoutreason b WHERE a.fp_px_id='$r_fp_id[$i]' AND a.patient_id='$r_px_id[$i]' AND a.dropout_reason=b.reason_id") or die("Cannot query (198): ".mysql_error());
+        
+        list($date_dropout,$fhsis_code,$remarks) = mysql_fetch_array($q_drop);
+        
+        for($j=0;$j<12;$j++){
+            if(!empty($arr_service)):
+                array_push($arr_disp,$arr_service[$j][next]."\n".$arr_service[$j][serv]);
+            else:
+                array_push($arr_disp,' '."\n".' ');
+            endif;
+        }
+        
+        array_push($arr_disp,$fhsis_code);
+        array_push($arr_disp,$date_dropout);
+        array_push($arr_disp,$remarks);
+                    
+    
+        $this->Row($arr_disp);    
+    }
+    
 }
 
+function followup_visit($fp_id,$px_id){ //returns an associative array with 12 elements representing month 1 to 12
+    
+    $arr_followup = array();
+
+    //$q_service = mysql_query("SELECT a.date_service,a.next_service_date,b.date_registered,TO_DAYS(date_service) as days_service,TO_DAYS(next_service_date) as days_next,TO_DAYS(date_registered) as days_reg FROM m_patient_fp_method_service a,m_patient_fp_method b WHERE a.fp_px_id='$fp_id' AND a.fp_px_id=b.fp_px_id AND a.patient_id='$px_id' ORDER by next_service_date DESC") or die("Cannot query(202): ".mysql_error());
+    
+    $q_service = mysql_query("SELECT a.fp_service_id,a.date_service,a.next_service_date,b.date_registered FROM m_patient_fp_method_service a,m_patient_fp_method b WHERE a.fp_px_id='$fp_id' AND a.fp_px_id=b.fp_px_id AND a.patient_id='$px_id' ORDER by date_service ASC") or die("Cannot query(202): ".mysql_error()); 
+    
+    while(list($service_id,$date_service,$next_service_date,$reg_date) = mysql_fetch_array($q_service)){
+                    
+        list($serv_yr,$serv_month,$serv_date) = explode('-',$date_service);
+        list($next_yr,$next_month,$next_date) = explode('-',$next_service_date);
+        list($reg_yr,$reg_month,$reg_date) = explode('-',$reg_date);
+        
+        $arr_service = array('year'=>$serv_yr,'month'=>$serv_month,'day'=>$serv_date);
+        $arr_next = array('year'=>$next_yr,'month'=>$next_month,'day'=>$next_date);
+        $arr_reg = array('year'=>$reg_yr,'month'=>$reg_month,'day'=>$reg_date);        
+
+        $arr_diff_service = $this->date_difference($arr_reg,$arr_service);        
+        $arr_diff_next = $this->date_difference($arr_reg,$arr_next);
+        
+        $arr_followup[$arr_diff_service[months]][serv] = $date_service;
+        $arr_followup[$arr_diff_next[months]][next] = $next_service_date;        
+    }
+    
+    return $arr_followup;
+}
+
+
+
+
+function smoothdate ($year, $month, $day){
+    return sprintf ('%04d', $year) . sprintf ('%02d', $month) . sprintf ('%02d', $day);    
+}
+
+function date_difference ($first, $second)
+{
+
+    $month_lengths = array (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+
+    $retval = FALSE;
+
+    if (    checkdate($first['month'], $first['day'], $first['year']) &&
+            checkdate($second['month'], $second['day'], $second['year'])
+        )
+    {
+        $start = $this->smoothdate ($first['year'], $first['month'], $first['day']);
+        $target = $this->smoothdate ($second['year'], $second['month'], $second['day']);
+                            
+        if ($start <= $target)
+        {
+            $add_year = 0;
+            while ($this->smoothdate ($first['year']+ 1, $first['month'], $first['day']) <= $target)
+            {
+                $add_year++;
+                $first['year']++;
+            }
+                                                                                                            
+            $add_month = 0;
+            while ($this->smoothdate ($first['year'], $first['month'] + 1, $first['day']) <= $target)
+            {
+                $add_month++;
+                $first['month']++;
+                
+                if ($first['month'] > 12)
+                {
+                    $first['year']++;
+                    $first['month'] = 1;
+                }
+            }
+                                                                                                                                                                            
+            $add_day = 0;
+            while ($this->smoothdate ($first['year'], $first['month'], $first['day'] + 1) <= $target)
+            {
+                if (($first['year'] % 100 == 0) && ($first['year'] % 400 == 0))
+                {
+                    $month_lengths[1] = 29;
+                }
+                else
+                {
+                    if ($first['year'] % 4 == 0)
+                    {
+                        $month_lengths[1] = 29;
+                    }
+                }
+                
+                $add_day++;
+                $first['day']++;
+                if ($first['day'] > $month_lengths[$first['month'] - 1])
+                {
+                    $first['month']++;
+                    $first['day'] = 1;
+                    
+                    if ($first['month'] > 12)
+                    {
+                        $first['month'] = 1;
+                    }
+                }
+                
+            }
+                                                                                                                                                                                                                                                        
+            $retval = array ('years' => $add_year, 'months' => $add_month, 'days' => $add_day);
+        }
+    }
+                                                                                                                                                          
+    return $retval;
+}
 
 function Footer(){
     //Position at 1.5 cm from bottom
