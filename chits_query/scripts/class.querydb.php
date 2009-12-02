@@ -259,8 +259,10 @@ class querydb{
 		
 		elseif($quesno==39):
 			$this->process_ccdev_summary();
-		elseif($quesno==40):
-			$this->process_fp_tcl();					
+		elseif($quesno==40): //FP TCL
+			$this->process_fp_tcl();
+		elseif($quesno==41): //FP summary table
+			$this->process_fp_summary();
 		else:
 				echo "No available query for this indicator.";
 		endif;
@@ -700,7 +702,7 @@ class querydb{
 	}	
 
 	function process_ccdev_summary(){
-		echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Summary Table</a>";	
+		echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Summary Table</a>";
 	}
 	
 	function process_fp_tcl(){
@@ -734,6 +736,10 @@ class querydb{
 		else:
 			echo "<font color='red'>No result/s found.</font>";
 		endif;
+	}
+	
+	function process_fp_summary(){
+		echo "<a href='./pdf_reports/fp_summary.php'>Show Family Planning Summary Table</a>";
 	}
 
 }
