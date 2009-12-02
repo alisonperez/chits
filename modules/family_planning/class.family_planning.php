@@ -238,17 +238,23 @@ class family_planning extends module{
 		//m_lib_fp_methods -- create
 		module::execsql("DROP TABLE IF EXISTS `m_lib_fp_methods`");
 
-		module::execsql("CREATE TABLE `m_lib_fp_methods` (".
-			      "`method_id` varchar(10) NOT NULL default '',".
-      			      "`method_name` varchar(100) NOT NULL default '',".
-			      "`method_gender` SET('M','F') NOT NULL default '',".
-			      "`fhsis_code` varchar(20) NOT NULL default '',".
-			      "PRIMARY KEY (`method_id`)".
-			      ") TYPE=MyISAM; ");
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_methods` (
+			  	`method_id` varchar(10) NOT NULL DEFAULT '',
+  				`method_name` varchar(100) NOT NULL DEFAULT '',
+				`method_gender` set('M','F') NOT NULL DEFAULT '',
+  				`fhsis_code` varchar(20) NOT NULL DEFAULT '',
+  				`report_order` int(11) NOT NULL,
+  				PRIMARY KEY (`method_id`)
+				) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
 
 		//m_lib_fp_methods -- populate contents
+		
+		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`, `fhsis_code`, `report_order`) VALUES
+			('PILLS', 'Pills', 'F', 'PILLS', 3),('CONDOM', 'Condom', 'M', 'CON', 11),('IUD', 'IUD', 'F', 'IUD', 4),('NFPLAM', 'NFP	Lactational amenorrhea', 'F', 'NFP-LAM', 8),('DMPA', 'Depo-Lactational Amenorrhea ', 'F', 'DMPA', 5),('NFPBBT', 'NFP Basal Body Temperature', 'F', 'NFP-BBT', 7),('NFPCM', 'NFP Cervical Mucus Method', 'F', 'NFP-CM', 6),('NFPSTM', 'NFP Sympothermal Method', 'F', 'NFP-STM', 10),
+('NFPSDM', 'NFP Standard Days Method', 'F', 'NFP-SDM', 9),('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F', 'FSTR/BTL', 1),
+('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2),('LAM', 'LAM', 'F', 'LAM', 12)");
 
-		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('PILLS', 'Pills','F','PILLS')");
+		/*module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('PILLS', 'Pills','F','PILLS')");
 		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('CONDOM', 'Condom','M','CON')");
 	        module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('IUD', 'IUD','F','IUD')");
 		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('NFPLAM', 'NFP Lactational amenorrhea','F','NFP-LAM')");
@@ -258,7 +264,8 @@ class family_planning extends module{
 		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('NFPSTM', 'NFP Sympothermal Method','F','NFP-STM')");
 		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('NFPSDM', 'NFP Standard Days Method','F','NFP-SDM')");
 		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation','F','FSTR/BTL')");
-		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('MSV', 'Male Sterilization /Vasectomy','M','MSTR/Vasec')");
+		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('MSV', 'Male Sterilization /Vasectomy','M','MSTR/Vasec')"); */
+
 
 		//create library for medical history category of family planning
 		module::execsql("DROP TABLE IF EXISTS `m_lib_fp_history_cat`");
