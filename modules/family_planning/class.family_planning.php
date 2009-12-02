@@ -158,7 +158,7 @@ class family_planning extends module{
                   `date_registered` date NOT NULL,
                   `date_encoded` date NOT NULL,
                   `method_id` varchar(10) NOT NULL,
-                  `client_code` varchar(2) NOT NULL,
+                  `client_code` varchar(6) NOT NULL,
                   `treatment_partner` varchar(200) NOT NULL,
                   `permanent_method` set('Y','N') NOT NULL DEFAULT 'N',
                   `permanent_reason` varchar(200) NOT NULL,
@@ -289,15 +289,28 @@ class family_planning extends module{
 
         module::execsql("DROP TABLE IF EXISTS `m_lib_fp_client`");
 
-        module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (
-            `client_id` int(7) NOT NULL AUTO_INCREMENT,
-            `client_code` varchar(2) NOT NULL,
-            `client_text` text NOT NULL,
-            PRIMARY KEY (`client_id`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;");
+        module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_methods` (
+		  `method_id` varchar(10) NOT NULL DEFAULT '',
+		  `method_name` varchar(100) NOT NULL DEFAULT '',
+		  `method_gender` set('M','F') NOT NULL DEFAULT '',
+		  `fhsis_code` varchar(20) NOT NULL DEFAULT '',
+		  `report_order` int(11) NOT NULL,
+		  PRIMARY KEY (`method_id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
 
-        module::execsql("INSERT INTO `m_lib_fp_client` (`client_id`, `client_code`, `client_text`) VALUES
-                (1, 'CU', 'Current User'),(2, 'NA', 'New Acceptor'),(3, 'CM', 'Changing Method'),(4, 'CC', 'Changing Clinic'),(5, 'RS', 'Restart');");
+        module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`, `fhsis_code`, `report_order`) VALUES
+		('PILLS', 'Pills', 'F', 'PILLS', 3),
+		('CONDOM', 'Condom', 'M', 'CON', 11),
+		('IUD', 'IUD', 'F', 'IUD', 4),
+		('NFPLAM', 'NFP Lactational amenorrhea', 'F', 'NFP-LAM', 8),
+		('DMPA', 'Depo-Lactational Amenorrhea ', 'F', 'DMPA', 5),
+		('NFPBBT', 'NFP Basal Body Temperature', 'F', 'NFP-BBT', 7),
+		('NFPCM', 'NFP Cervical Mucus Method', 'F', 'NFP-CM', 6),
+		('NFPSTM', 'NFP Sympothermal Method', 'F', 'NFP-STM', 10),
+		('NFPSDM', 'NFP Standard Days Method', 'F', 'NFP-SDM', 9),
+		('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F', 'FSTR/BTL', 1),
+		('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2),
+		('LAM', 'LAM', 'F', 'LAM', 12);");
 
 	//create table for fp medical history items
 		module::execsql("DROP TABLE IF EXISTS `m_lib_fp_history`");
