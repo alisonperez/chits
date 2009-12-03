@@ -252,7 +252,7 @@ class family_planning extends module{
 		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`, `fhsis_code`, `report_order`) VALUES
 			('PILLS', 'Pills', 'F', 'PILLS', 3),('CONDOM', 'Condom', 'M', 'CON', 11),('IUD', 'IUD', 'F', 'IUD', 4),('NFPLAM', 'NFP	Lactational amenorrhea', 'F', 'NFP-LAM', 8),('DMPA', 'Depo-Lactational Amenorrhea ', 'F', 'DMPA', 5),('NFPBBT', 'NFP Basal Body Temperature', 'F', 'NFP-BBT', 7),('NFPCM', 'NFP Cervical Mucus Method', 'F', 'NFP-CM', 6),('NFPSTM', 'NFP Sympothermal Method', 'F', 'NFP-STM', 10),
 ('NFPSDM', 'NFP Standard Days Method', 'F', 'NFP-SDM', 9),('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F', 'FSTR/BTL', 1),
-('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2),('LAM', 'LAM', 'F', 'LAM', 12)");
+('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2)");
 
 		/*module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('PILLS', 'Pills','F','PILLS')");
 		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('CONDOM', 'Condom','M','CON')");
