@@ -296,7 +296,23 @@ class Site {
             $_SESSION["priv_delete"]=true;
         }
         $_SESSION["user_lang"] = $user["user_lang"];
+        
+        $this->log_user();        
     }
+    
+    function log_user(){
+      $create_log = mysql_query("CREATE TABLE IF NOT EXISTS `user_logs` (
+             `log_id` bigint(20) NOT NULL,
+             `userid` int(5) NOT NULL,
+             `login` datetime NOT NULL,
+             `logout` date NOT NULL,
+             `pc_ip` text NOT NULL
+           ) ENGINE=MyISAM DEFAULT CHARSET=latin1; ") or ("Cannot query: 304".mysql_error());
+      
+      $q_user = mysql_query("INSERT INTO user_logs SET userid='$_SESSION[userid]',login=NOW(),pc_ip='$_SERVER[REMOTE_ADDR]'") or die("Cannot query (305): ".mysql_error());
+      $log_id = mysql_insert_id();
+      $_SESSION[log_id] = $log_id;
+    }                  
 
     function check_dbfile() {
     //

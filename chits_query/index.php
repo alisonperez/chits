@@ -102,7 +102,6 @@ else:
   echo "<a href=\"$_SERVER[PHP_SELF]\">Try Again</a>";
 endif;
 
-
 ?>
 </body>
 </html>

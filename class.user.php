@@ -743,6 +743,7 @@ class User {
                 $user_array = mysql_fetch_array($result);
             }
         }
+        
         return $user_array;
     }
 
@@ -771,6 +772,9 @@ class User {
     }
 
     function process_signoff () {
+        
+        $q_logout = mysql_query("UPDATE user_logs SET logout=NOW() WHERE log_id='$_SESSION[log_id]'") or die("Cannot query (775): ".mysql_error());
+        
         session_destroy();
     }
 

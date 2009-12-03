@@ -17506,9 +17506,10 @@ INSERT INTO `m_lib_mc_delivery_location` (`delivery_id`, `delivery_name`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `user_logs` (
-  `log_id` bigint(20) NOT NULL,
+  `log_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `userid` int(5) NOT NULL,
   `login` datetime NOT NULL,
-  `logout` date NOT NULL,
-  `pc_ip` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `logout` datetime NOT NULL,
+  `pc_ip` text NOT NULL,
+  PRIMARY KEY (`log_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

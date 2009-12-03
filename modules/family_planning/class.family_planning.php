@@ -1117,9 +1117,8 @@ class family_planning extends module{
 			$validuser = $arg_list[3];
 			$isadmin = $arg_list[4];
 		}
-
-
 	}
+	
 
 	function get_education($form_name,$educ_id){
 
