@@ -152,7 +152,7 @@ class ptgroup extends module {
             $age = $arg_list[0];
             $gender = $arg_list[1];
         }
-        if ($age>=15 && $age<=49) {
+        if ($age>=9 && $age<=50) {
             if ($gender=="F") {
                 return true;
             }
