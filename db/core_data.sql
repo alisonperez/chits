@@ -17498,3 +17498,12 @@ INSERT INTO `m_lib_mc_delivery_location` (`delivery_id`, `delivery_name`) VALUES
 ('HC', 'Health Center'),
 ('BHS', 'Barangay Health Station'),
 ('OTHERS', 'Others');
+
+-- create table for user_logs
+
+CREATE TABLE `chits`.`user_logs` (
+`userid` INT( 5 ) NOT NULL ,
+`login` DATETIME NOT NULL ,
+`logout` DATETIME NOT NULL ,
+`pc_ip` TEXT NOT NULL
+) ENGINE = MYISAM ;
