@@ -17501,9 +17501,14 @@ INSERT INTO `m_lib_mc_delivery_location` (`delivery_id`, `delivery_name`) VALUES
 
 -- create table for user_logs
 
-CREATE TABLE `chits`.`user_logs` (
-`userid` INT( 5 ) NOT NULL ,
-`login` DATETIME NOT NULL ,
-`logout` DATETIME NOT NULL ,
-`pc_ip` TEXT NOT NULL
-) ENGINE = MYISAM ;
+--
+-- Table structure for table `user_logs`
+--
+
+CREATE TABLE IF NOT EXISTS `user_logs` (
+  `log_id` bigint(20) NOT NULL,
+  `userid` int(5) NOT NULL,
+  `login` datetime NOT NULL,
+  `logout` date NOT NULL,
+  `pc_ip` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
