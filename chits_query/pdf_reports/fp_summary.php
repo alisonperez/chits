@@ -155,7 +155,9 @@ function Header()
 	$this->SetFont('Arial','',10);
 	
 	$this->Cell(0,5,$brgy_label,0,1,'C');		
-	$w = array(30,18,18,18,18,15,18,18,18,15,18,18,18,15,18,18,18,15,18); //340
+	$this->Ln(10);
+	//$w = array(30,18,18,18,18,15,18,18,18,15,18,18,18,15,18,18,18,15,18); //340
+	$w = array(66,18,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15); //340
 	$header = array('INDICATORS','Target','JAN','FEB','MAR','1st Q','APR','MAY','JUNE','2nd Q','JULY','AUG','SEPT','3rd Q','OCT','NOV','DEC','4th Q','TOTAL');	
 		
 	$this->SetWidths($w);
@@ -168,19 +170,21 @@ function show_fp_summary(){
 
 	
 	$brgy_pop = $this->get_brgy_pop();    //compute for the brgy population: ALL or specific brgys only
-        $target_pop = $this->get_target($brgy_pop); //compute for the target of FP
+        $target_pop = $this->get_target($brgy_pop); //compute for the target of FP        
         $str_brgy = $this->get_brgy(); //return list of barangays in CSV format
-        
+        $i = 0;
         
 	
 	$q_methods = mysql_query("SELECT method_id,method_name FROM m_lib_fp_methods ORDER by report_order ASC") or die("Cannot query: 174".mysql_error());        
         
 	while(list($method_id,$method_name)=mysql_fetch_array($q_methods)){  //push the method_id as index and method_name as the array contents
-		//$arr_methods[$method_id] = $method_name;		
-		$arr_methods[$method_id] = $method_id;		
+		$arr_methods[$method_id] = $method_name;		
+		//$arr_methods[$method_id] = $method_id;		
 	}	
 	
 	$arr_indicators = array('NA'=>array('Total New Acceptors',$arr_methods),'OTHER'=>array('Other Acceptors',$arr_methods),'DROPOUT'=>array('Total Drop Out',$arr_methods),'CU'=>array('Total Current Users',$arr_methods));
+	
+	
 	
 	foreach($arr_indicators as $client_type=>$methods){				
 	        
@@ -201,12 +205,17 @@ function show_fp_summary(){
                         //print_r($arr_method_label);
                         $this->Row(array_merge($arr_method_label,$arr_total_quarter));
                     }
-	        else: //this is the first index, just a text/header but will contain the total of all methods	                
-	            array_push($arr_label,$value);	        
+                    $this->Row($this->return_blank(19));   //this will print a row with 19 blank cells
+                    
+	        else: //this is the first index, just a text/header but will contain the total of all methods
+	            $this->Row($this->return_blank(19));
+	            $i += 1;
+	            array_push($arr_label,$i.'. '.$value);
                     $arr_row = $this->compute_indicator($client_type,'all');
                     array_push($arr_label,$target_pop);
                     $arr_total_quarter = $this->create_qt_gt($arr_row);
                     $this->Row(array_merge($arr_label,$arr_total_quarter));
+                    $this->Row($this->return_blank(19));
 	        endif;	        
 	        
 		//array_push($arr_rows,$arr_indicators[$client_type][0]);
