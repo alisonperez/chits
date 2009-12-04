@@ -419,8 +419,6 @@ $pdf->AddPage();
 
 //$pdf->AddPage();
 $pdf->show_fp_summary();
-$pdf->Output();
-
-
+$alison = $pdf->Output();
 
 ?>
