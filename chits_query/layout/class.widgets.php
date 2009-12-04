@@ -37,7 +37,7 @@
 	
 	  if(isset($classification)):
 	  
-	  $query_ques = mysql_query("SELECT ques_id, ques_label FROM question WHERE cat_id='$classification' ORDER by ques_label ASC") or die("Cannot query: 40");
+	  $query_ques = mysql_query("SELECT ques_id, ques_label, report_type FROM question WHERE cat_id='$classification' AND visible='Y' ORDER by ques_label ASC") or die("Cannot query: 40");
 
 			  if(mysql_num_rows($query_ques)!=0):
 			  
