@@ -176,7 +176,8 @@ function show_fp_summary(){
 	$q_methods = mysql_query("SELECT method_id,method_name FROM m_lib_fp_methods ORDER by report_order ASC") or die("Cannot query: 174".mysql_error());        
         
 	while(list($method_id,$method_name)=mysql_fetch_array($q_methods)){  //push the method_id as index and method_name as the array contents
-		$arr_methods[$method_id] = $method_name;		
+		//$arr_methods[$method_id] = $method_name;		
+		$arr_methods[$method_id] = $method_id;		
 	}	
 	
 	$arr_indicators = array('NA'=>array('Total New Acceptors',$arr_methods),'OTHER'=>array('Other Acceptors',$arr_methods),'DROPOUT'=>array('Total Drop Out',$arr_methods),'CU'=>array('Total Current Users',$arr_methods));
@@ -188,18 +189,25 @@ function show_fp_summary(){
                 $arr_row = array();
                 $arr_label = array();
                 
-                array_push($arr_label,$value);
-                
+                                
 	        if(is_array($value)):  //this is the second index of the main array. this is the array of methods
-                
+	            foreach($value as $method_key=>$method_value){
+	                //echo $methods.'/'.$value.'/'.$method_key.'/'.$method_value.'<br>';
+	                $arr_method_label = array(); //clean up the label array for each iteration in the method
+	                array_push($arr_method_label,$method_value,''); //push the label for method and a '' for blank target	                
+                        $arr_row = $this->compute_indicator($client_type,$method_key);
+                        $arr_total_quarter = $this->create_qt_gt($arr_row);
+                        
+                        //print_r($arr_method_label);
+                        $this->Row(array_merge($arr_method_label,$arr_total_quarter));
+                    }
 	        else: //this is the first index, just a text/header but will contain the total of all methods	                
+	            array_push($arr_label,$value);	        
                     $arr_row = $this->compute_indicator($client_type,'all');
                     array_push($arr_label,$target_pop);
-	        endif;
-	        	        
-	        $arr_total_quarter = $this->create_qt_gt($arr_row);
-	        
-	        $this->Row(array_merge($arr_label,$arr_total_quarter));
+                    $arr_total_quarter = $this->create_qt_gt($arr_row);
+                    $this->Row(array_merge($arr_label,$arr_total_quarter));
+	        endif;	        
 	        
 		//array_push($arr_rows,$arr_indicators[$client_type][0]);
 					
