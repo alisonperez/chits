@@ -88,8 +88,8 @@
 	  echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"POST\" name=\"form_query\">";
 	  echo "<input type=\"hidden\" name=\"ques_name\" value=\"$res_ques[ques_label]\"></input>";
 
-      echo "<table border=\"1\">";
-        echo "<tr><td colspan=\"2\">SET FILTERS ($res_ques[ques_label])</td></tr>";		
+	  echo "<table border=\"1\">";
+	  echo "<tr><td colspan=\"2\">SET FILTERS ($res_ques[ques_label])</td></tr>";		
         
 		$query_brgy = mysql_query("SELECT barangay_id,barangay_name FROM m_lib_barangay ORDER by barangay_name ASC") or die(mysql_error());
 
@@ -126,6 +126,8 @@
         
                 echo "</tr>";                        
 		
+		elseif($set_filter=='3'):
+		        $this->disp_filter_quarterly($query_brgy);
 		else:
 			$this->disp_filter_form2($query_brgy);
 		endif;
@@ -144,14 +146,19 @@
     } 
 
 	function get_filter(){ //set filter determines what date and barangay form shall be displayed. summary tables usually uses checkbox for brgy while tcl's are using dropdown list
-	
-		if($_SESSION[ques]==36 || $_SESSION[ques]==39 || $_SESSION[ques]==41 || $_SESSION[ques]==62): //for other question codes, just add || here. this is for summary tables.
+                
+                $q_type = mysql_query("SELECT report_type FROM question WHERE ques_id='$_SESSION[ques]'") or die("Cannot query (147)".mysql_error());
+                list($report_type) = mysql_fetch_array($q_type);
+                
+ 		if($report_type=='S'): //for other question codes, just add || here. this is for summary tables.
 			$_SESSION[filter] = 2;
+                elseif($report_type=='Q'):
+                        $_SESSION[filter] = 3;
 		else:
 			$_SESSION[filter] = 1;
 		endif;
 		
-		        return $_SESSION[filter];	
+                return $_SESSION[filter];	
 	}
 
 	function disp_filter_form2($q_brgy){
@@ -227,6 +234,10 @@
                 
         
          endif;        	
+	}
+	
+	function disp_filter_quarterly(){
+	
 	}
      
   }

@@ -17396,10 +17396,10 @@ CREATE TABLE IF NOT EXISTS `question` (
   `ques_label` varchar(200) NOT NULL,
   `cat_id` int(11) NOT NULL,
   `sql_code` text NOT NULL,
-  `report_type` set('G','W','M','Q','A') NOT NULL,
+  `report_type` set('G','W','M','Q','A','S') NOT NULL DEFAULT 'G',
   `visible` set('Y','N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`ques_id`)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63 ;
 
 --
 -- Dumping data for table `question`
@@ -17441,15 +17441,15 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (33, 'List of Patients Not in Family Folder', 1, '', 'G', 'Y'),
 (34, 'Prenatal Form - Target Client List (TCL)', 4, '', 'G', 'Y'),
 (35, 'Postpartum Form - Target Client List (TCL)', 4, '', 'G', 'Y'),
-(36, 'Maternal Care Summary Table', 4, '', 'G', 'Y'),
+(36, 'Maternal Care Summary Table', 4, '', 'S', 'Y'),
 (37, 'Child Care Under 1 YO - Target Client List (TCL)', 8, '', 'G', 'Y'),
 (38, 'Child Care - Sick Children - Target Client List (TCL)', 8, '', 'G', 'Y'),
-(39, 'Child Care Summary Report', 8, '', 'G', 'Y'),
+(39, 'Child Care Summary Report', 8, '', 'S', 'Y'),
 (40, 'FP Target Client List', 9, '', 'G', 'Y'),
-(41, 'FP Summary Table for BHS', 9, '', 'G', 'Y'),
+(41, 'FP Summary Table for BHS', 9, '', 'S', 'Y'),
 (60, 'DHC Quarterly Report', 12, '', 'G', 'Y'),
 (61, 'DHC-PHO Report', 12, '', 'G', 'Y'),
-(62, 'DHC Summary Table', 12, '', 'G', 'Y'),
+(62, 'DHC Summary Table', 12, '', 'S', 'Y'),
 (42, 'FP Quarterly Report', 9, '', 'Q', 'Y');
 
 
