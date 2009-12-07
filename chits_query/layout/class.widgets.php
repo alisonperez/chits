@@ -229,15 +229,59 @@
                                 echo "<option value='$method_id'>$method_name ($fhsis_code)</option>";
                         }
                         echo "</select></td>";
-                        echo "</tr>";                        
+                        echo "</tr>";
+                        
+                        echo "<tr><td>Year</td>";
+                        echo "<td><select name='year' size='1'>";
+
+                                for($i = (date('Y')-5);$i< (date('Y')+5);$i++){					
+                                        if($i==date('Y')):
+                                                echo "<option value='$i' selected>$i</option>";
+                                        else:
+                                                echo "<option value='$i'>$i</option>";
+                                endif;
+                        echo "</tr>";
+		}
+		echo "</select></td></tr>";                                                
                 endif;
                 
         
          endif;        	
 	}
 	
-	function disp_filter_quarterly(){
-	
+	function disp_filter_quarterly($q_brgy){
+	        
+	                echo "<tr><td>Quarter</td>";
+	                echo "<td><select name='sel_quarter' size='1'>";
+	                        for($i=1;$i<5;$i++){	                
+                                        echo "<option value='$i'>$i</option>";                                        
+	                        }
+	                                
+	                echo "</select></td></tr>";
+
+	                echo "<tr><td>Year</td>";
+                        echo "<td><select name='year' size='1'>";
+                                for($i = (date('Y')-5);$i< (date('Y')+5);$i++){					
+                                        if($i==date('Y')):
+                                                echo "<option value='$i' selected>$i</option>";
+                                        else:
+                                                echo "<option value='$i'>$i</option>";
+                                        endif; 
+                                }
+                        echo "</tr>";
+                        
+                        echo "<tr><td>Barangay</td><td>";
+                        echo "<input type='checkbox' name='brgy[]' value='all' checked>All</input>&nbsp;";
+                        $counter = 1;
+                        while(list($brgyid,$brgyname)=mysql_fetch_array($q_brgy)){
+			        echo "<input type='checkbox' name='brgy[]' value='$brgyid'>$brgyname</input>&nbsp;";
+			        $counter++;
+			        if(($counter%4)==0):
+				        echo "<br>";
+                                endif;
+                        }                        
+                                                
+                        echo "</td></tr>";
 	}
      
   }
