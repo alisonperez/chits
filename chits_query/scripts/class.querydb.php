@@ -9,8 +9,9 @@ class querydb{
     }
     
     function querycrit($dbname,$dbname2,$sdate,$edate,$brgy,$misc){   
-      $sdate_orig = trim($sdate);
-      $edate_orig = trim($edate);
+	  
+	  $sdate_orig = trim($sdate);
+	  $edate_orig = trim($edate);
       
 	  list($smonth,$sday,$syr) = explode('/',$sdate);
 	  list($emonth,$eday,$eyr) = explode('/',$edate);
@@ -263,8 +264,10 @@ class querydb{
 			$this->process_fp_tcl();
 		elseif($quesno==41): //FP summary table
 			$this->process_fp_summary();
+		elseif($quesno==42):
+			$this->process_fp_quarterly();	
 		else:
-				echo "No available query for this indicator.";
+			echo "No available query for this indicator.";
 		endif;
 		
 		if(!empty($x) && !empty($y)):
@@ -740,6 +743,10 @@ class querydb{
 	
 	function process_fp_summary(){
 		echo "<a href='./pdf_reports/fp_summary.php'>Show Family Planning Summary Table</a>";
+	}
+	
+	function process_fp_quarterly(){
+		echo "<a href='./pdf_reports/fp_summary.php'>Show Family Planning Quarterly</a>";
 	}
 
 }
