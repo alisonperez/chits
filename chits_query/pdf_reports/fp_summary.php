@@ -271,8 +271,15 @@ function compute_indicator(){   //accepts two parameters. 1st is (NA, OTHERS, DR
             
             break;
             
-        case 'CU': //use formula (CU (prev period) + (NA + CS + CM + RS)) - DROP OUT = CU (current period)
+        case 'CU': //use formula (CU (prev period) + (NA + CS + CM + RS)) - DROP OUT = CU (current period)            
+            
+            if($method=='all'):
+                //$q_methods = mysql_query("SELECT a.fp_px.id,a.date_dropout,a.patient_id FROM m_patient_fp_method WHERE dropout") or die("Cannot query: 277");
                 
+            else:
+                
+            endif;
+            
             break;
             
         default:
@@ -385,6 +392,11 @@ function get_px_brgy(){
 	else:
 		return ;
 	endif;
+
+}
+
+function get_current_users($date){
+    $q_months = mysql_query("SELECT fp_px_id FROM m_patient_fp_method WHERE ") or die("Cannot query: 399");
 
 }
 

@@ -239,9 +239,10 @@
                                                 echo "<option value='$i' selected>$i</option>";
                                         else:
                                                 echo "<option value='$i'>$i</option>";
-                                endif;
+                                        endif;
+                                }
                         echo "</tr>";
-		}
+		
 		echo "</select></td></tr>";                                                
                 endif;
                 
@@ -258,7 +259,7 @@
 	                        }
 	                                
 	                echo "</select></td></tr>";
-
+	                
 	                echo "<tr><td>Year</td>";
                         echo "<td><select name='year' size='1'>";
                                 for($i = (date('Y')-5);$i< (date('Y')+5);$i++){					
