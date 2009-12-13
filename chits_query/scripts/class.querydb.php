@@ -13,16 +13,24 @@ class querydb{
 	  $sdate_orig = trim($sdate);
 	  $edate_orig = trim($edate);
 
+
 	  list($smonth,$sday,$syr) = explode('/',$sdate);
 	  list($emonth,$eday,$eyr) = explode('/',$edate);
 
+
+	  $smonth = (strlen($smonth)==1)?(str_pad($smonth,2,'0',STR_PAD_LEFT)):$smonth;
+	  $emonth = (strlen($emonth)==1)?(str_pad($emonth,2,'0',STR_PAD_LEFT)):$emonth;
+	  
 	  $sdate = $syr.'-'.$smonth.'-'.$sday;
-	  $edate = $eyr.'-'.$emonth.'-'.$eday;
-
-
+	  $edate = $eyr.'-'.$emonth.'-'.$eday;	  
+	  
+	  
+	  
 	  $start_date=gregoriantojd($smonth, $sday, $syr);   
 	  $end_date=gregoriantojd($emonth, $eday, $eyr);
 	  $diff = $end_date - $start_date; 
+
+
 
       if(empty($sdate) || empty($edate)):
         echo "Please supply a date.";
