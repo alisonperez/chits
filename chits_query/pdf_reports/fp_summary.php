@@ -266,7 +266,7 @@ function compute_indicator(){   //accepts two parameters. 1st is (NA, OTHERS, DR
             if($method=='all'):
                 $q_methods = mysql_query("SELECT a.fp_px_id,a.date_dropout, a.patient_id FROM m_patient_fp_method a WHERE a.drop_out='Y' AND a.date_dropout BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' ORDER by a.date_dropout ASC") or die("Cannot query 250: ". mysql_error());
             else:
-                $q_methods = mysql_query("SELECT a.fp_px_id,a.date_dropout, a.patient_id FROM m_patient_fp_method a WHERE a.drop_out='Y' AND a.date_dropout BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.method_id='$method_id' ORDER by a.date_dropout ASC") or die("Cannot query 252: ". mysql_error());
+                $q_methods = mysql_query("SELECT a.fp_px_id,a.date_dropout, a.patient_id FROM m_patient_fp_method a WHERE a.drop_out='Y' AND a.date_dropout BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.method_id='$method' ORDER by a.date_dropout ASC") or die("Cannot query 252: ". mysql_error());
             endif;
             
             break;
@@ -274,10 +274,11 @@ function compute_indicator(){   //accepts two parameters. 1st is (NA, OTHERS, DR
         case 'CU': //use formula (CU (prev period) + (NA + CS + CM + RS)) - DROP OUT = CU (current period)            
             
             if($method=='all'):
+                $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],'all',$str_brgy);
                 //$q_methods = mysql_query("SELECT a.fp_px.id,a.date_dropout,a.patient_id FROM m_patient_fp_method WHERE dropout") or die("Cannot query: 277");
                 
             else:
-                
+                $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method,$str_brgy);
             endif;
             
             break;
@@ -293,9 +294,9 @@ function compute_indicator(){   //accepts two parameters. 1st is (NA, OTHERS, DR
         
         while(list($fp_px_id,$date,$px_id)=mysql_fetch_array($q_methods)){
             //echo $cat.'/ '.$date.'<br>';
-            if($this->get_px_brgy($px_id,$str_brgy)){
+  //          if($this->get_px_brgy($px_id,$str_brgy)){
                 $month_stat[$this->get_max_month($date)] += 1;
-            }        
+  //          }        
         }
         
     endif;
@@ -384,20 +385,119 @@ function get_px_brgy(){
 		$pxid = $arg_list[0];
 		$str = $arg_list[1];
 	endif;
+	
+	
+	
+	$q_px = mysql_query("SELECT a.barangay_id FROM m_family_address a, m_family_members b WHERE b.patient_id='$pxid' AND b.family_id=a.family_id AND a.barangay_id IN ($str)") or die("cannot query 389: ".mysql_error());
 		
-	$q_px = mysql_query("SELECT a.barangay_id FROM m_family_address a, m_family_members b WHERE b.patient_id='$pxid' AND b.family_id=a.family_id AND a.barangay_id IN ($str)") or die("cannot query 333: ".mysql_error());
-		
-	if(mysql_num_rows($q_px)!=0):
+	if(mysql_num_rows($q_px)!=0):		
+	        
 		return 1;
-	else:
+	else:	
 		return ;
 	endif;
 
 }
 
-function get_current_users($date){
-    $q_months = mysql_query("SELECT fp_px_id FROM m_patient_fp_method WHERE ") or die("Cannot query: 399");
+function get_current_users(){
+    if(func_num_args()>0):
+        $args = func_get_args();
+        $start = $args[0];
+        $end = $args[1];
+        $method = $args[2];
+        $brgy = $args[3];
+    endif;
+       
+//        echo $brgy;
+        
+        list($syr,$smonth,$sdate) = explode('-',$start);
+        list($eyr,$emonth,$edate) = explode('-',$end);
+    
+    //echo $start.'/'.$end.'/'.$method."<br>";
+    
+    for($i=$smonth;$i<=$emonth;$i++){
 
+        $arr_prev_cu = array();
+        $arr_prev_dropout = array();
+        $arr_pres_cu = array();
+        $arr_pres_dropout = array();
+        
+        $firstday_month = strftime("%Y-%m-%d",(mktime(0,0,0,$i,1,$syr)));
+        $lastday_month = strftime("%Y-%m-%d",(mktime(0,0,0,$i+1,0,$syr)));
+                
+//        echo $firstday_month.'/'.$lastday_month."<br>";
+
+        /* $q_prev_cu - get the previous FP Current Users. This will return CU for the previous period (before month)
+           $q_pres_cu - get the present FP users (NA + RS + CM + CC)
+           $q_pres_dropout - get the dropout from firstday_month to lastday_month */
+        
+        
+           
+        $str_prev_cu = "SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_registered < '$firstday_month'";
+        $str_prev_dropout = "SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_dropout < '$firstday_month' AND drop_out='Y'";
+        $str_pres_cu = "SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_registered BETWEEN '$firstday_month' AND '$lastday_month'";
+        $str_pres_dropout = "SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_dropout BETWEEN '$firstday_month' AND '$lastday_month' AND drop_out='Y'";
+        $str_method = " AND method_id='$method'";
+        
+        $str_prev1 = ($method=='all')?$str_prev_cu:$str_prev_cu.$str_method;
+        $str_prev2 = ($method=='all')?$str_prev_dropout:$str_prev_dropout.$str_method;
+        $str_pres3 = ($method=='all')?$str_pres_cu:$str_pres_cu.$str_method;
+        $str_pres4 = ($method=='all')?$str_pres_dropout:$str_pres_cu.$str_method;
+        
+        $q_prev_cu = mysql_query($str_prev1);
+        $q_prev_dropout = mysql_query($str_prev2);
+        $q_pres_cu = mysql_query($str_pres3);
+        $q_pres_dropout = mysql_query($str_pres4);
+                     
+          /*DO AN ARRAY DIFFERENCE BETWEEN $q_prev_cu and $q_pres_dropout to return distinct $fp_px_id's. 
+            The remaining $fp_px_id's are to be pushed to array result of $q_pres_cu.           
+          */
+
+//          echo $str_brgy;        
+
+          if(mysql_num_rows($q_prev_cu)!=0):
+               while($r_prev = mysql_fetch_array($q_prev_cu)){
+                   if($this->get_px_brgy($r_prev[patient_id],$brgy)):                   
+                     array_push($arr_prev_cu,$r_prev);
+                   endif;
+               }
+          endif;
+          
+          if(mysql_num_rows($q_prev_dropout)!=0):
+              while($r_prev_drop = mysql_fetch_array($q_prev_dropout)){
+                  if($this->get_px_brgy($r_prev[patient_id],$brgy)):
+                    array_push($arr_prev_dropout,$r_prev_drop);
+                  endif;
+              }
+          endif;
+          
+          if(mysql_num_rows($q_pres_cu)!=0):
+               while($r_pres = mysql_fetch_array($q_pres_cu)){
+                 if($this->get_px_brgy($r_prev[patient_id],$brgy)):
+                   array_push($arr_pres_cu,$r_pres);
+                endif;
+               }
+          endif;
+           
+          if(mysql_num_rows($q_pres_dropout)!=0): 
+              while($r_dropout = mysql_fetch_array($q_pres_dropout)){
+                if($this->get_px_brgy($r_prev[patient_id],$brgy)):                  
+                   array_push($arr_pres_dropout,$r_dropout);                      
+                endif;
+              } 
+          endif;
+          
+//          echo 'Arr count of Prev CU: '.count($arr_prev_cu)."<br>";
+//          echo 'Arr count of Pres CU: '.count($arr_pres_cu)."<br>";
+          
+          $cu_pres = ((count($arr_prev_cu) - count($arr_prev_dropout)) + count($q_pres_cu)) - count($q_pres_dropout);
+          
+          //$cu_pres= ((mysql_num_rows($q_prev_cu)-mysql_num_rows($q_prev_dropout)) + mysql_num_rows($q_pres_cu)) - mysql_num_rows($q_pres_dropout);
+          //echo $method.'/'.$firstday_month.'/'.$lastday_month.'/ PREV -'.mysql_num_rows($q_prev_cu).'/PREV DROPOUT - '.mysql_num_rows($q_prev_dropout).'/ PRES -'.mysql_num_rows($q_pres_cu).'/ DROPOUT -'.mysql_num_rows($q_pres_dropout).'/ CU -'.$cu_pres;
+          echo $method.'/'.$firstday_month.'/'.$lastday_month.'/ PREV -'.count($arr_prev_cu).'/PREV DROPOUT - '.count($arr_prev_dropout).'/ PRES -'.count($q_pres_cu).'/ DROPOUT -'.count($q_pres_dropout).'/ CU -'.$cu_pres;
+          echo "<br>";
+    }
+    
 }
 
 
@@ -407,6 +507,8 @@ function get_max_month($date){
 
         return $max_date;
 }    
+
+
 
 function Footer(){
     $this->SetY(-15);

@@ -162,7 +162,7 @@
 	}
 
 	function disp_filter_form2($q_brgy){
-		$buwan = array(01=>'January',02=>'February',03=>'March',04=>'April',05=>'May',06=>'June',07=>'July',08=>'August',09=>'September',10=>'October',11=>'November',12=>'December');
+		$buwan = array('01'=>'January','02'=>'February','03'=>'March','04'=>'April','05'=>'May','06'=>'June',07=>'July','08'=>'August','09'=>'September','10'=>'October','11'=>'November','12'=>'December');
 		$_SESSION[months] = $buwan;
 
 		echo "<tr><td>Start Month</td>";
@@ -179,7 +179,7 @@
 		echo "<tr><td>End Month</td>";
 		echo "<td>";
 		echo "<select name='emonth' size='1'>";
-		foreach($buwan as $key=>$value){
+		foreach($buwan as $key=>$value){                        		
 			echo "<option value='$key'>$value</option>";	
 		}
 		echo "</select>";

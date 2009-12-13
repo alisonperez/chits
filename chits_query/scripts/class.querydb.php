@@ -12,22 +12,23 @@ class querydb{
 	  
 	  $sdate_orig = trim($sdate);
 	  $edate_orig = trim($edate);
-      
+
 	  list($smonth,$sday,$syr) = explode('/',$sdate);
 	  list($emonth,$eday,$eyr) = explode('/',$edate);
 
 	  $sdate = $syr.'-'.$smonth.'-'.$sday;
 	  $edate = $eyr.'-'.$emonth.'-'.$eday;
 
+
 	  $start_date=gregoriantojd($smonth, $sday, $syr);   
 	  $end_date=gregoriantojd($emonth, $eday, $eyr);
 	  $diff = $end_date - $start_date; 
-	
+
       if(empty($sdate) || empty($edate)):
         echo "Please supply a date.";
       elseif($frage>$toage):
         echo "Start age should be lower than end age.";	  
-	  elseif($diff < 0):
+      elseif($diff < 0):
 		echo 'End month should be on or after the start month';
 	  elseif(empty($brgy)):
 		echo 'Please select one or more barangays.';
