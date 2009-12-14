@@ -154,7 +154,7 @@ function Header()
 			
 		}
 	endif;
-
+	
 	$this->SetFont('Arial','',10);
 	
 	$this->Cell(0,5,$brgy_label,0,1,'C');		
@@ -505,10 +505,7 @@ function get_current_users(){
                    array_push($arr_pres_dropout,$r_dropout);                      
                 endif;
               } 
-          endif;
-          
-//          echo 'Arr count of Prev CU: '.count($arr_prev_cu)."<br>";
-//          echo 'Arr count of Pres CU: '.count($arr_pres_cu)."<br>";
+          endif;          
           
           $cu_pres = ((count($arr_prev_cu) - count($arr_prev_dropout)) + count($arr_pres_cu)) - count($arr_pres_dropout);                    
           //echo $method.'/'.$firstday_month.'/'.$lastday_month.'/ PREV -'.count($arr_prev_cu).'/PREV DROPOUT - '.count($arr_prev_dropout).'/ PRES -'.count($arr_pres_cu).'/ DROPOUT -'.count($arr_pres_dropout).'/ CU -'.$cu_pres;          
@@ -554,6 +551,6 @@ $pdf->AddPage();
 
 //$pdf->AddPage();
 $pdf->show_fp_summary();
-$alison = $pdf->Output();
+$pdf->Output();
 
 ?>

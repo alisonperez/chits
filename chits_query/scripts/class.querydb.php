@@ -24,8 +24,7 @@ class querydb{
 	  $sdate = $syr.'-'.$smonth.'-'.$sday;
 	  $edate = $eyr.'-'.$emonth.'-'.$eday;	  
 	  
-	  
-	  
+	  	  
 	  $start_date=gregoriantojd($smonth, $sday, $syr);   
 	  $end_date=gregoriantojd($emonth, $eday, $eyr);
 	  $diff = $end_date - $start_date; 
@@ -755,7 +754,8 @@ class querydb{
 	}
 	
 	function process_fp_quarterly(){
-		echo "<a href='./pdf_reports/fp_summary.php'>Show Family Planning Quarterly</a>";
+		echo "<a href='./pdf_reports/fp_quarterly.php'>Show Family Planning Quarterly</a>";
+		//print_r($_SESSION);
 	}
 
 }

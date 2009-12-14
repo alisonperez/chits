@@ -232,7 +232,7 @@
                         echo "</select></td>";
                         echo "</tr>";
                         
-                        echo "<tr><td>Year</td>";
+                        /*echo "<tr><td>Year</td>";
                         echo "<td><select name='year' size='1'>";
 
                                 for($i = (date('Y')-5);$i< (date('Y')+5);$i++){					
@@ -243,7 +243,7 @@
                                         endif;
                                 }
                         echo "</tr>";
-		
+                        */
 		echo "</select></td></tr>";                                                
                 endif;
                 
