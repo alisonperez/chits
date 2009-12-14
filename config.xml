@@ -5,20 +5,17 @@
         <code>030810000</code>
         <telephone>2444284</telephone>
         <level>self</level>
-        <province>Tarlac<province>
     </node>
     <node>
         <name>PHO</name>
         <code>030810000</code>
         <telephone>2444284</telephone>
-        <level>parent</level>
-        <province>Tarlac<province>
+        <level>parent</level>        
     </node>
     <node>
         <name>RHU NAME</name>
         <code>030810000</code>
         <telephone>2444284</telephone>
-        <level>child</level>
-        <province>Tarlac<province>
+        <level>child</level>        
     </node>
 </config>

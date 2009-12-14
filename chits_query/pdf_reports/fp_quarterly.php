@@ -120,14 +120,23 @@ function NbLines($w,$txt)
 
 function Header()
 {
-    $this->SetFont('Arial','B','12');
-    $this->Cell(0,5,'FHSIS REPORT FOR THE QUARTER:'.$_SESSION[quarter]."\t\tYEAR: ".$_SESSION[year],0,1,C);
-    $this->Cell(0,5, 'MUNICAPLITY/CITY NAME: '.$_SESSION[datanode][name]);
-    $this->Cell(0,5,)
+    $q_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$_SESSION[year]'") or die("Cannot query: 123". mysql_error());
+    list($population)= mysql_fetch_array($q_pop);
+    
+    $this->q_report_header($population);
+    
+    
 
 
 }
 
+function q_report_header($population){
+    $this->SetFont('Arial','B','12');
+    $this->Cell(0,5,'FHSIS REPORT FOR THE QUARTER: '.$_SESSION[quarter]."          YEAR: ".$_SESSION[year],0,1,L);
+    $this->Cell(0,5, 'MUNICAPLITY/CITY NAME: '.$_SESSION[datanode][name],0,1,L);
+    $this->Cell(0,5,'PROVINCE: '.$_SESSION[province]."          PROJECTED POPULATION OF THE YEAR: ".$population,0,1,L);
+
+}
 
 function Footer(){
     $this->SetY(-15);
@@ -135,14 +144,13 @@ function Footer(){
     $this->SetFont('Arial','I',8);
     //Page number
     $this->Cell(0,10,$this->PageNo().'/{nb}',0,0,'C');
-}
+} 
 
 
 
 }
 
 $pdf = new PDF('L','mm','Legal');
-$util = new util();
 
 $pdf->AliasNbPages();
 $pdf->SetFont('Arial','',10);

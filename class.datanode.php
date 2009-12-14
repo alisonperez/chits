@@ -44,11 +44,12 @@ class DataNode {
 $datanode = new DataNode;
 $db = $datanode->readConfig("../config.xml");
 $_SESSION["datanode"] = array("self"=>"","code"=>"", "telephone"=>"", "name"=>"");
+
 foreach ($db as $key=>$value) {
     if ($db["$key"]["level"]=="self") {
         $_SESSION["datanode"]["code"] = $db[$key]["code"];
         $_SESSION["datanode"]["telephone"] = $db[$key]["telephone"];
-        $_SESSION["datanode"]["name"] = $db[$key]["name"];
+        $_SESSION["datanode"]["name"] = $db[$key]["name"];    
     }
 }
 ?>
