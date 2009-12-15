@@ -91,7 +91,7 @@ if($_SESSION["userid"]!=""):
 			$queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy],0); //the fifth argument when set to zero, means that there is no form present in the query box
 			
                 elseif($_SESSION[filter]==3):
-                        $arr_start_end = array('1'=>array('01/1','03/31'),'2'=>array('04/30','06/30'),'3'=>array('07/31','09/30'),'4'=>array('10/01','12/31'));                        
+                        $arr_start_end = array('1'=>array('01/01','03/31'),'2'=>array('04/30','06/30'),'3'=>array('07/31','09/30'),'4'=>array('10/01','12/31'));                        
                         $sdate = $arr_start_end[$_POST[sel_quarter]][0].'/'.$_POST[year];
                         $edate = $arr_start_end[$_POST[sel_quarter]][1].'/'.$_POST[year];
                         

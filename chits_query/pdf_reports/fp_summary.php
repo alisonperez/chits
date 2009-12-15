@@ -294,7 +294,7 @@ function compute_indicator(){   //accepts two parameters. 1st is (NA, OTHERS, DR
     
     if(isset($q_methods)):
         //echo $cat.'/'.$method.'/'.mysql_num_rows($q_methods).'<br>';
-        $tag = 'x';
+        
         while(list($fp_px_id,$date,$px_id)=mysql_fetch_array($q_methods)){
             //echo $cat.'/ '.$date.'<br>';
             if($this->get_px_brgy($px_id,$str_brgy)){
@@ -304,7 +304,7 @@ function compute_indicator(){   //accepts two parameters. 1st is (NA, OTHERS, DR
         
     elseif(isset($arr_cu)): // computes for the FP CU's of all and per-method    
       $month_stat = $arr_cu;
-      $tag = 'y';    
+      
     else:
         
     endif;
@@ -328,8 +328,7 @@ function get_brgy_pop(){
                 $q_brgy_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$taon'") or die("Cannot query: 206");
         else:
                 $str = implode(',',$_SESSION[brgy]);
-                $q_brgy_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$taon' AND barangay_id IN ($str)") or die("Cannot query: 209");
-        
+                $q_brgy_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$taon' AND barangay_id IN ($str)") or die("Cannot query: 209");        
         endif;  
 
         if(mysql_num_rows($q_brgy_pop)!=0):
@@ -394,9 +393,7 @@ function get_px_brgy(){
 		$pxid = $arg_list[0];
 		$str = $arg_list[1];
 	endif;
-	
-	
-	
+		
 	$q_px = mysql_query("SELECT a.barangay_id FROM m_family_address a, m_family_members b WHERE b.patient_id='$pxid' AND b.family_id=a.family_id AND a.barangay_id IN ($str)") or die("cannot query 389: ".mysql_error());
 		
 	if(mysql_num_rows($q_px)!=0):		

@@ -124,10 +124,16 @@ function Header()
     list($population)= mysql_fetch_array($q_pop);
     
     $this->q_report_header($population);
+    $this->Ln(10);
     
+    $this->SetFont('Arial','BI','20');
+    $this->Cell(340,10,'F A M I L Y   P L A N N I N G',1,1,C);
     
-
-
+    $this->SetFont('Arial','B','12');
+    $w = array(73,28,28,28,28,28,28,47,52);
+    $this->SetWidths($w);
+    $label = array('Indicators','Current User (Begin Qtr)','New Acceptors','Others','Dropout','Current User (End Qtr)','CPR','Interpretation','Recommendation/Action Taken');
+    $this->Row($label);
 }
 
 function q_report_header($population){
@@ -135,8 +141,126 @@ function q_report_header($population){
     $this->Cell(0,5,'FHSIS REPORT FOR THE QUARTER: '.$_SESSION[quarter]."          YEAR: ".$_SESSION[year],0,1,L);
     $this->Cell(0,5, 'MUNICAPLITY/CITY NAME: '.$_SESSION[datanode][name],0,1,L);
     $this->Cell(0,5,'PROVINCE: '.$_SESSION[province]."          PROJECTED POPULATION OF THE YEAR: ".$population,0,1,L);
-
 }
+
+
+function show_fp_quarterly(){
+    $arr_method = array('a'=>'FSTRBTL','b'=>'MSV','c'=>'PILLS','d'=>'IUD','e'=>'DMPA','f'=>'NFPCM','g'=>'NFPBBT','h'=>'NFPLAM','i'=>'NFPSDM','j'=>'NFPSTM','k'=>'CONDOM');
+    $w = array(73,28,28,28,28,28,28,47,52);
+    $str_brgy = $this->get_brgy();    
+    
+    //echo $_SESSION[sdate2].'/'.$_SESSION[edate2];
+    
+    foreach($arr_method as $col_code=>$method_code){
+        $q_fp = mysql_query("SELECT method_name FROM m_lib_fp_methods WHERE method_id='$method_code'") or die("Cannot query: 151".mysql_error());    
+        list($method_name) = mysql_fetch_array($q_fp);
+        
+        $cu_prev = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,2);
+        
+        $fp_contents = array($col_code.'. '.$method_name,$cu_prev,0,0,0,0,0,0,0);
+        $this->Row($fp_contents);
+        
+    }
+}
+
+function get_brgy(){  //returns the barangay is CSV format. to be used in WHERE clause for determining barangay residence of patient
+    $arr_brgy = array();
+     
+    if(in_array('all',$_SESSION[brgy])):
+        $q_brgy = mysql_query("SELECT barangay_id FROM m_lib_barangay ORDER by barangay_id ASC") or die("Cannot query 252". mysql_error());
+        while(list($brgy_id) = mysql_fetch_array($q_brgy)){            
+            array_push($arr_brgy,$brgy_id);
+        }
+    else:
+        $arr_brgy = $_SESSION[brgy];
+    endif;
+    
+    $str_brgy = implode(',',$arr_brgy);
+    
+    return $str_brgy;
+        
+}       
+
+function get_current_users(){
+    if(func_num_args()>0):
+        $args = func_get_args();
+        $start = $args[0];
+        $end = $args[1];
+        $method = $args[2];
+        $brgy = $args[3];
+        $col_code = $args[4];
+    endif;
+    
+    switch($col_code){
+        
+        
+        case '2': //this will compute the Current User beginning the Quarter ((NA+Others)-Dropout)prev
+            $q_active_prev = mysql_query("SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_registered < '$start' AND method_id='$method'") or die("Cannot query 198: ".mysql_error());
+            $q_dropout_prev = mysql_query("SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_dropout < '$start' AND drop_out='Y' AND method_id='$method'") or die("Cannot query: 199". mysql_error());
+            
+            //echo mysql_num_rows($q_active_prev);
+            
+            $arr_active_prev = $this->sanitize_brgy($q_active_prev,$brgy);
+            $arr_dropout_prev = $this->sanitize_brgy($q_dropout_prev,$brgy);
+              
+            $cu_prev = count($arr_active_prev)-count($arr_dropout_prev);
+            
+            //echo $method.'/'.count($arr_active_prev).' less '.count($arr_dropout_prev).'='.$diff."<br>";
+            return $cu_prev;            
+            break;
+
+    
+        default:
+        break;
+    
+    }
+    
+        
+    
+}
+
+function sanitize_brgy(){
+    if(func_num_args()>0):
+        $args = func_get_args();
+        $query = $args[0];
+        $brgy = $args[1];        
+        
+    endif;
+        
+    $arr_count = array();
+        
+    
+    if(mysql_num_rows($query)!=0): 
+        while($r_query = mysql_fetch_array($query)){
+            if($this->get_px_brgy($r_query[patient_id],$brgy)):
+                array_push($arr_count,$r_query);
+            endif;
+        }
+    endif;
+    
+    return $arr_count;
+}
+
+
+function get_px_brgy(){
+
+        if(func_num_args()>0):
+                $arg_list = func_get_args();
+                $pxid = $arg_list[0];
+                $str = $arg_list[1];
+        endif;
+
+	$q_px = mysql_query("SELECT a.barangay_id FROM m_family_address a, m_family_members b WHERE b.patient_id='$pxid' AND b.family_id=a.family_id AND a.barangay_id IN ($str)") or die("cannot query 389: ".mysql_error());
+                
+        if(mysql_num_rows($q_px)!=0):
+                
+                return 1;
+        else:   
+                return ;
+        endif; 
+}
+
+
 
 function Footer(){
     $this->SetY(-15);
@@ -157,6 +281,7 @@ $pdf->SetFont('Arial','',10);
 
 $pdf->AddPage();
 
+$pdf->show_fp_quarterly();
 
 //$pdf->AddPage();
 //$pdf->show_fp_summary();
