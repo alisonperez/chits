@@ -384,7 +384,11 @@ class patient extends module{
 					//$sql = 'insert into m_patient (patient_lastname,patient_firstname, patient_middle, patient_dob, patient_gender, registration_date, user_id, healthcenter_id, patient_mother,patient_cellphone) values('.ucwords($post_vars["patient_lastname"]).','.ucwords($post_vars["patient_firstname"]).','.ucwords($post_vars["patient_middle"]).','.$dob.','.$post_vars["patient_gender"].','.'sysdate()'.','.$_SESSION["userid"].','.$_SESSION["datanode"]["code"].','.ucwords($post_vars["patient_mother"]).','.$post_vars["patient_cellphone"].')';
 					
 
-					$sql = "insert into m_patient set patient_lastname='".ucwords($post_vars[patient_lastname])."', patient_firstname='".ucwords($post_vars[patient_firstname])."',patient_middle='".ucwords($post_vars[patient_middle])."',patient_dob='$dob',patient_gender='$post_vars[patient_gender]',registration_date=sysdate(),user_id='$_SESSION[userid]',healthcenter_id='$_SESSION[datanode][code]',patient_mother='".ucwords($post_vars[patient_mother])."',patient_cellphone='$post_vars[patient_cellphone]'";
+                    $get_last = mysql_query("SELECT patient_id FROM m_patient ORDER by patient_id DESC LIMIT 1") or die("Cannot query: 387".mysql_error());
+                    list($pxid) = mysql_fetch_array($get_last);
+                    $next_id = $pxid + 1;
+                    
+    		    $sql = "insert into m_patient set patient_id='$next_id',patient_lastname='".ucwords($post_vars[patient_lastname])."', patient_firstname='".ucwords($post_vars[patient_firstname])."',patient_middle='".ucwords($post_vars[patient_middle])."',patient_dob='$dob',patient_gender='$post_vars[patient_gender]',registration_date=sysdate(),user_id='$_SESSION[userid]',healthcenter_id='$_SESSION[datanode][code]',patient_mother='".ucwords($post_vars[patient_mother])."',patient_cellphone='$post_vars[patient_cellphone]'";
 							
 					//print_r($post_vars);
                     $result = mysql_query($sql) or die(mysql_error());

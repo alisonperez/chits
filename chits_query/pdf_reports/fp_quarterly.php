@@ -156,8 +156,16 @@ function show_fp_quarterly(){
         list($method_name) = mysql_fetch_array($q_fp);
         
         $cu_prev = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,2);
+        $na_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,3);
+        $dropout_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,4);
+                
+        $fp_contents = array($col_code.'. '.$method_name,$cu_prev,$na_pres,0,0,0,0,0,0);
         
-        $fp_contents = array($col_code.'. '.$method_name,$cu_prev,0,0,0,0,0,0,0);
+        foreach($fp_contents as $key=>$value){
+            $this->
+        }
+        
+
         $this->Row($fp_contents);
         
     }
@@ -202,7 +210,7 @@ function get_current_users(){
             
             $arr_active_prev = $this->sanitize_brgy($q_active_prev,$brgy);
             $arr_dropout_prev = $this->sanitize_brgy($q_dropout_prev,$brgy);
-              
+                              
             $cu_prev = count($arr_active_prev)-count($arr_dropout_prev);
             
             //echo $method.'/'.count($arr_active_prev).' less '.count($arr_dropout_prev).'='.$diff."<br>";
@@ -210,6 +218,29 @@ function get_current_users(){
             break;
 
     
+        case '3':
+            $q_na = mysql_query("SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_registered BETWEEN '$start' AND '$end' AND client_code='NA'") or die("Cannot query 215 ".mysql_error());
+
+            
+            $arr_na_pres = $this->sanitize_brgy($q_na,$brgy);
+            
+            $cu_na = count($arr_na_pres);
+            
+            return $cu_na;
+            
+            break;
+            
+        case '4':
+        
+            $q_dropout = mysql("SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_dropout BETWEEN '$start' AND '$end' AND drop_out='Y'") or die("Cannot query 235 ".mysql_error());        
+            $arr_dropout_pres = $this->sanitize_brgy($q_dropout,$brgy);            
+            $dropout_count = count($arr_dropout_pres);
+            
+            return $dropout_count;
+            
+            break;
+            
+            
         default:
         break;
     
@@ -249,7 +280,8 @@ function get_px_brgy(){
                 $pxid = $arg_list[0];
                 $str = $arg_list[1];
         endif;
-
+        
+        
 	$q_px = mysql_query("SELECT a.barangay_id FROM m_family_address a, m_family_members b WHERE b.patient_id='$pxid' AND b.family_id=a.family_id AND a.barangay_id IN ($str)") or die("cannot query 389: ".mysql_error());
                 
         if(mysql_num_rows($q_px)!=0):
