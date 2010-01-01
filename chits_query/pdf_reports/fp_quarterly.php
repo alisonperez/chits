@@ -130,9 +130,9 @@ function Header()
     $this->Cell(340,10,'F A M I L Y   P L A N N I N G',1,1,C);
     
     $this->SetFont('Arial','B','12');
-    $w = array(73,28,28,28,28,28,28,47,52);
+    $w = array(75,28,28,26,28,28,28,47,52);
     $this->SetWidths($w);
-    $label = array('Indicators','Current User (Begin Qtr)','New Acceptors','Others','Dropout','Current User (End Qtr)','CPR','Interpretation','Recommendation/Action Taken');
+    $label = array('Indicators','Current User (Begin Qtr)','New Acceptors','Others','Dropout','Current User (End Qtr)','CPR'."\n".'(CU/TP) x 14.5% x 85%','Interpretation','Recommendation/Action Taken');
     $this->Row($label);
 }
 
@@ -146,7 +146,7 @@ function q_report_header($population){
 
 function show_fp_quarterly(){
     $arr_method = array('a'=>'FSTRBTL','b'=>'MSV','c'=>'PILLS','d'=>'IUD','e'=>'DMPA','f'=>'NFPCM','g'=>'NFPBBT','h'=>'NFPLAM','i'=>'NFPSDM','j'=>'NFPSTM','k'=>'CONDOM');
-    $w = array(73,28,28,28,28,28,28,47,52);
+    $w = array(75,28,28,28,26,28,28,47,52);
     $str_brgy = $this->get_brgy();    
     
     //echo $_SESSION[sdate2].'/'.$_SESSION[edate2];
@@ -157,16 +157,20 @@ function show_fp_quarterly(){
         
         $cu_prev = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,2);
         $na_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,3);
-        $dropout_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,4);
+        $other_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,4);
+        $dropout_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,5 );
+        $cu_pres = ($cu_prev + $na_pres + $other_pres) - $dropout_pres;
+        $cpr = $this->get_cpr($cu_pres);
                 
-        $fp_contents = array($col_code.'. '.$method_name,$cu_prev,$na_pres,0,0,0,0,0,0);
+        $fp_contents = array($col_code.'. '.$method_name,$cu_prev,$na_pres,$other_pres,$dropout_pres,$cu_pres,$cpr,'','');
         
-        foreach($fp_contents as $key=>$value){
-            $this->
+        
+        for($x=0;$x<count($fp_contents);$x++){
+            $this->Cell($w[$x],6,$fp_contents[$x],'1',0,'L');
         }
-        
+        $this->Ln();                
 
-        $this->Row($fp_contents);
+//        $this->Row($fp_contents);
         
     }
 }
@@ -218,9 +222,8 @@ function get_current_users(){
             break;
 
     
-        case '3':
-            $q_na = mysql_query("SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_registered BETWEEN '$start' AND '$end' AND client_code='NA'") or die("Cannot query 215 ".mysql_error());
-
+        case '3':        
+            $q_na = mysql_query("SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_registered BETWEEN '$start' AND '$end' AND client_code='NA' AND method_id='$method'") or die("Cannot query 215 ".mysql_error());
             
             $arr_na_pres = $this->sanitize_brgy($q_na,$brgy);
             
@@ -229,17 +232,26 @@ function get_current_users(){
             return $cu_na;
             
             break;
-            
-        case '4':
         
-            $q_dropout = mysql("SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_dropout BETWEEN '$start' AND '$end' AND drop_out='Y'") or die("Cannot query 235 ".mysql_error());        
+        case '4': //cu for others
+            $q_others = mysql_query("SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_registered BETWEEN '$start' AND '$end' AND client_code!='NA' AND method_id='$method'") or die("Cannot query 235 ".mysql_error());
+            $arr_others = $this->sanitize_brgy($q_others,$brgy);
+            $cu_others = count($arr_others);
+            return $cu_others;
+            
+            break;
+            
+        case '5': //dropouts for a given quarter
+        
+            $q_dropout = mysql_query("SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_dropout BETWEEN '$start' AND '$end' AND drop_out='Y' AND method_id='$method'") or die("Cannot query 240 ".mysql_error());
             $arr_dropout_pres = $this->sanitize_brgy($q_dropout,$brgy);            
             $dropout_count = count($arr_dropout_pres);
             
             return $dropout_count;
             
             break;
-            
+        
+        
             
         default:
         break;
@@ -249,6 +261,29 @@ function get_current_users(){
         
     
 }
+
+function get_cpr(){
+    if(func_num_args()>0){
+        $args = func_get_args();
+        $cu = $args[0];
+    }
+    $target_pop = 0.85;
+    $elig_pop = 0.145; 
+ 
+    if(in_array('all',$_SESSION[brgy])):
+        $q_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$_SESSION[year]'") or die("Cannot query 272 ".mysql_error());
+    else:
+       $str_brgy = implode(',',$_SESSION[brgy]);
+       $q_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$_SESSION[year]' AND barangay_id IN ($str_brgy)") or die("Cannot query 275 ".mysql_error());
+    endif;
+    
+    list($tp) = mysql_fetch_array($q_pop);
+    
+    $cpr = ($cu/$tp) * $target_pop * $elig_pop * 100;
+    
+    return round($cpr,3);
+}
+
 
 function sanitize_brgy(){
     if(func_num_args()>0):
