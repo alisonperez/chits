@@ -17450,7 +17450,8 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (60, 'DHC Quarterly Report', 12, '', 'G', 'Y'),
 (61, 'DHC-PHO Report', 12, '', 'G', 'Y'),
 (62, 'DHC Summary Table', 12, '', 'S', 'Y'),
-(42, 'FP Quarterly Report', 9, '', 'Q', 'Y');
+(42, 'FP Quarterly Report', 9, '', 'Q', 'Y'),
+(43, 'FP Monthly Report', 9, '', 'M', 'Y');
 
 
 -- --------------------------------------------------------
