@@ -120,6 +120,8 @@ function NbLines($w,$txt)
 
 function Header()
 {
+    
+
     $q_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$_SESSION[year]'") or die("Cannot query: 123". mysql_error());
     list($population)= mysql_fetch_array($q_pop);
     
@@ -132,14 +134,14 @@ function Header()
     $this->SetFont('Arial','B','12');
     $w = array(90,50,50,50,50,50);
     $this->SetWidths($w);
-    $label = array('Indicators','Current User (Begin Mo)','New Acceptors','Others','Dropout','Current User (End Mo)');
+    $label = array('Indicators','Current User '."\n".'(Begin Mo)','New Acceptors','Others','Dropout','Current User'."\n".'(End Mo)');
     $this->Row($label);
 }
 
 function q_report_header($population){
     $this->SetFont('Arial','B','12');
-    $this->Cell(0,5,'FHSIS REPORT FOR THE MONTH: '.$_SESSION[quarter]."          YEAR: ".$_SESSION[year],0,1,L);
-    $this->Cell(0,5, 'NAME OF BHS '.$_SESSION[datanode][name],0,1,L);    
+    $this->Cell(0,5,'FHSIS REPORT FOR THE MONTH: '.date('F',mktime(0,0,0,$_SESSION[smonth],1,0))."          YEAR: ".$_SESSION[year],0,1,L);
+    $this->Cell(0,5, 'NAME OF BHS: Brgy - '.$this->get_brgy(),0,1,L);    
     $this->Cell(0,5, 'MUNICAPLITY/CITY NAME: '.$_SESSION[datanode][name],0,1,L);
     $this->Cell(0,5,'PROVINCE: '.$_SESSION[province],0,1,L);
     $this->Cell(0,5, 'PROJECTED POPULATION OF THE YEAR: '.$population,0,1,L);
@@ -148,7 +150,7 @@ function q_report_header($population){
 
 function show_fp_quarterly(){
     $arr_method = array('a'=>'FSTRBTL','b'=>'MSV','c'=>'PILLS','d'=>'IUD','e'=>'DMPA','f'=>'NFPCM','g'=>'NFPBBT','h'=>'NFPLAM','i'=>'NFPSDM','j'=>'NFPSTM','k'=>'CONDOM');
-    $w = array(75,28,28,28,26,28,28,47,52);
+    $w = array(90,50,50,50,50,50);
     $str_brgy = $this->get_brgy();    
     
     //echo $_SESSION[sdate2].'/'.$_SESSION[edate2];
@@ -162,9 +164,9 @@ function show_fp_quarterly(){
         $other_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,4);
         $dropout_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,5 );
         $cu_pres = ($cu_prev + $na_pres + $other_pres) - $dropout_pres;
-        $cpr = $this->get_cpr($cu_pres);
+        
                 
-        $fp_contents = array($col_code.'. '.$method_name,$cu_prev,$na_pres,$other_pres,$dropout_pres,$cu_pres,$cpr,'','');
+        $fp_contents = array($col_code.'. '.$method_name,$cu_prev,$na_pres,$other_pres,$dropout_pres,$cu_pres);
         
         
         for($x=0;$x<count($fp_contents);$x++){
