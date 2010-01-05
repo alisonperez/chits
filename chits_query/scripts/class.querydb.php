@@ -273,7 +273,9 @@ class querydb{
 		elseif($quesno==41): //FP summary table
 			$this->process_fp_summary();
 		elseif($quesno==42):
-			$this->process_fp_quarterly();	
+			$this->process_fp_quarterly();
+		elseif($quesno==43):
+			$this->process_fp_monthly();
 		else:
 			echo "No available query for this indicator.";
 		endif;
@@ -754,8 +756,11 @@ class querydb{
 	}
 	
 	function process_fp_quarterly(){
-		echo "<a href='./pdf_reports/fp_quarterly.php'>Show Family Planning Quarterly</a>";
-		//print_r($_SESSION);
+		echo "<a href='./pdf_reports/fp_quarterly.php'>Show Family Planning Quarterly</a>";		
+	}
+	
+	function process_fp_monthly(){
+		echo "<a href='./pdf_reports/fp_monthly.php'>Show Family Planning Monthly</a>";
 	}
 
 }

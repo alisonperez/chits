@@ -128,6 +128,8 @@
 		
 		elseif($set_filter=='3'):
 		        $this->disp_filter_quarterly($query_brgy);
+                elseif($set_filter=='4'):
+                        $this->disp_filter_monthly($query_brgy);
 		else:
 			$this->disp_filter_form2($query_brgy);
 		endif;
@@ -154,6 +156,8 @@
 			$_SESSION[filter] = 2;
                 elseif($report_type=='Q'):
                         $_SESSION[filter] = 3;
+                elseif($report_type=='M'):
+                        $_SESSION[filter] = 4;
 		else:
 			$_SESSION[filter] = 1;
 		endif;
@@ -285,6 +289,52 @@
                                                 
                         echo "</td></tr>";
 	}
-     
+	
+	function disp_filter_monthly($q_brgy){
+	        
+	        $buwan_label = array('01'=>'January','02'=>'February','03'=>'March','04'=>'April','05'=>'May','06'=>'June',07=>'July','08'=>'August','09'=>'September','10'=>'October','11'=>'November','12'=>'December');
+                $buwan = array('1'=>'January','2'=>'February','3'=>'March','4'=>'April','5'=>'May','6'=>'June','7'=>'July','8'=>'August','9'=>'September','10'=>'October','11'=>'November','12'=>'December');
+		$_SESSION[months] = $buwan_label;
+
+		echo "<tr><td>Month</td>";
+
+		echo "<td>";
+		echo "<select name='smonth' size='1'>";
+		foreach($buwan as $key=>$value){
+			echo "<option value='$key'>$value</option>";	
+		}
+		echo "</select>";
+		echo "</td></tr>";
+
+		
+
+		echo "<tr><td>Year</td>";
+		
+		echo "<td><select name='year' size='1'>";
+
+		for($i = (date('Y')-5);$i< (date('Y')+5);$i++){					
+			if($i==date('Y')):
+				echo "<option value='$i' selected>$i</option>";
+			else:
+				echo "<option value='$i'>$i</option>";
+			endif;
+		}
+		echo "</select></td></tr>";
+
+		
+		
+		echo "<tr><td valign='top'>Barangay</td><td>";
+		
+		echo "<input type='checkbox' name='brgy[]' value='all' checked>All</input>&nbsp;";
+		$counter = 1;
+		while(list($brgyid,$brgyname)=mysql_fetch_array($q_brgy)){
+			echo "<input type='checkbox' name='brgy[]' value='$brgyid'>$brgyname</input>&nbsp;";
+			$counter++;
+			if(($counter%4)==0):
+				echo "<br>";
+			endif;
+		}
+		echo "</td></tr>";	
+	}     
   }
 ?>
