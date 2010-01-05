@@ -276,11 +276,11 @@ function get_cpr(){
        $str_brgy = implode(',',$_SESSION[brgy]);
        $q_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$_SESSION[year]' AND barangay_id IN ($str_brgy)") or die("Cannot query 275 ".mysql_error());
     endif;
-    
+
+
     list($tp) = mysql_fetch_array($q_pop);
-    
-    $cpr = ($cu/$tp) * $target_pop * $elig_pop * 100;
-    
+    $cpr = ($tp!=0)?(($cu/$tp) * $target_pop * $elig_pop * 100):0;         
+             
     return round($cpr,3);
 }
 

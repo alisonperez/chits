@@ -130,7 +130,7 @@ function Header()
     $this->Cell(340,10,'F A M I L Y   P L A N N I N G',1,1,C);
     
     $this->SetFont('Arial','B','12');
-    $w = array(75,28,28,26,28,28,28,47,52);
+    $w = array(90,50,50,50,50,50);
     $this->SetWidths($w);
     $label = array('Indicators','Current User (Begin Mo)','New Acceptors','Others','Dropout','Current User (End Mo)');
     $this->Row($label);
@@ -170,10 +170,7 @@ function show_fp_quarterly(){
         for($x=0;$x<count($fp_contents);$x++){
             $this->Cell($w[$x],6,$fp_contents[$x],'1',0,'L');
         }
-        $this->Ln();                
-
-//        $this->Row($fp_contents);
-        
+        $this->Ln();                        
     }
 }
 
@@ -279,10 +276,12 @@ function get_cpr(){
        $q_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$_SESSION[year]' AND barangay_id IN ($str_brgy)") or die("Cannot query 275 ".mysql_error());
     endif;
     
-    list($tp) = mysql_fetch_array($q_pop);
     
-    $cpr = ($cu/$tp) * $target_pop * $elig_pop * 100;
     
+        list($tp) = mysql_fetch_array($q_pop);
+        $cpr = ($tp!=0)?(($cu/$tp) * $target_pop * $elig_pop * 100):0;
+        
+                
     return round($cpr,3);
 }
 

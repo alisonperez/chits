@@ -756,11 +756,11 @@ class querydb{
 	}
 	
 	function process_fp_quarterly(){
-		echo "<a href='./pdf_reports/fp_quarterly.php'>Show Family Planning Quarterly</a>";		
+		echo "<a href='./pdf_reports/fp_quarterly.php'>Show Family Planning Quarterly Report</a>";		
 	}
 	
 	function process_fp_monthly(){
-		echo "<a href='./pdf_reports/fp_monthly.php'>Show Family Planning Monthly</a>";
+		echo "<a href='./pdf_reports/fp_monthly.php'>Show Family Planning Monthly Report</a>";
 	}
 
 }

@@ -97,9 +97,9 @@ if($_SESSION["userid"]!=""):
                         
                         $_SESSION[quarter] = $_POST[sel_quarter];
                         $_SESSION[year] = $_POST[year];
-                        print_r($_POST);
+                        //print_r($_POST);
                         
-                        echo $sdate.'/'.$edate;
+                        //echo $sdate.'/'.$edate;
                         
                         $queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy],0);
                         
