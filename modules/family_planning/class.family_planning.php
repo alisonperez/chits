@@ -617,7 +617,11 @@ class family_planning extends module{
 		*/
 		
 	    $q_fp = $this->check_fprec();
-
+	    
+	    if($_POST["confirm_del"]==1): //this signifies that an unenrollment of FP method is about to be made
+	        $this->unenroll_fp_px();            
+	    endif;
+	    
 		if(mysql_num_rows($q_fp)!=0):
 
 		$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
@@ -649,7 +653,7 @@ class family_planning extends module{
 		endif;
 
 		echo "<form name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS' method='POST'>";
-
+                echo "<input type='hidden' name='confirm_del' value=0></input>";
 
 		echo "<table>";
 		echo "<a name='methods'></a>";
@@ -777,8 +781,14 @@ class family_planning extends module{
 						echo "<tr><td valign='top'>REMARKS / ACTION TAKEN</td>";
 						echo "<td><textarea name='dropout_remarks' cols='20' rows='4'></textarea></td></tr>";
 
-						echo "<tr><td  align='center' colspan='2'><input type='submit' name='submit_fp' value='Update Family Planning Method'></input></td>";
-
+						echo "<tr><td  align='center' colspan='2'><input type='submit' name='submit_fp' value='Update Family Planning Method'></input>";
+					        
+					        if($_SESSION[priv_delete]=='1'):
+					            echo "&nbsp;&nbsp;<input type='button' name='delete_fpmethod' value='Unenroll Patient' onclick='confirm_delete_fp()'></input>";
+					        endif;
+					        
+					        echo "</td>";
+					        
 						//echo "</form>";
 						break;
 
@@ -1199,7 +1209,7 @@ class family_planning extends module{
 					endif;
 
 					if($_POST["confirm_del"]==1):
-							$this->delete_service_record();
+                                                $this->delete_service_record();
 					endif;
 
 					echo "<table>";
@@ -1763,6 +1773,21 @@ class family_planning extends module{
             else:
                 echo "<font color='red'>FP Obstectrical history was not updated.</font>";            
             endif;
+	}
+	
+	function unenroll_fp_px(){
+	    $pxid = healthcenter::get_patient_id($_GET[consult_id]);
+	    
+	    $delete_fp_method = mysql_query("DELETE FROM m_patient_fp_method WHERE fp_px_id='$_POST[fp_px_id]' AND patient_id='$pxid'") or die("Cannot query 1781 ".mysql_error());
+            $delete_fp_method_services = mysql_query("DELETE FROM m_patient_fp_method_service WHERE fp_px_id='$_POST[fp_px_id]' and patient_id='$pxid'") or die("Cannot query 1782 ".mysql_error());
+            
+            if($delete_fp_method && $delete_fp_method_services):
+                echo "<script language='Javascript'>";
+                echo "window.alert('Patient was unenrolled from this FP method.')";
+                echo "</script>";            
+            endif;
+            
+	    //m_patient_fp") print_r($_POST);
 	}
 
 }

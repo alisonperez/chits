@@ -87,4 +87,10 @@ function verify_patient_id(){
 	window.open ("../site/verify_patient.php?id="+ form_visit1.spouse_name.value,"CHITS - Verify Patient ID","location=1,status=0,scrollbars=0,width=200,height=200,resizable=0,menubar=0,toolbars=0");
 }
 
+function confirm_delete_fp(){
+	if(window.confirm('Do you really want to unenroll this patient from this FP method?')){
+		form_methods.confirm_del.value = 1;
+	}
+	form_methods.submit();
+}
 
