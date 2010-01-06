@@ -488,7 +488,7 @@ class family_planning extends module{
 		//$fp->form_fp($menu_id,$post_vars,$get_vars,$isadmin);
 
 		if($_POST["submit_fp"]):
-			print_r($_POST);
+			//print_r($_POST);
 			switch($_POST["submit_fp"]){
 				case "Save Family Planning Method":
 					$fp->submit_method_visit();
@@ -620,7 +620,7 @@ class family_planning extends module{
 		$q_fp_methods = mysql_query("SELECT a.fp_id,b.fp_px_id,b.method_id,c.method_name,b.drop_out,b.date_registered,b.treatment_partner,b.dropout_reason,FLOOR((unix_timestamp(b.date_dropout)-unix_timestamp(b.date_registered))/(3600*24)) as duration,b.date_dropout,b.dropout_reason,b.client_code,b.permanent_reason FROM m_patient_fp a, m_patient_fp_method b, m_lib_fp_methods c WHERE a.patient_id='$pxid' AND a.fp_id=b.fp_id AND b.method_id=c.method_id ORDER by b.drop_out DESC,b.date_registered DESC") or die("Cannot query: 534");
 		
 		if(isset($_SESSION["dropout_info"]) && $_GET["action"]=="drop"):   //indicates that the end-user pressed YES for dropping out patient
-			print_r($_SESSION["dropout_info"]);
+			//print_r($_SESSION["dropout_info"]);
 			
 			list($mreg,$dreg,$yreg) = explode('/',$_SESSION["dropout_info"]["txt_date_reg"]);
 			list($mdrop,$ddrop,$ydrop) = explode('/',$_SESSION["dropout_info"]["txt_date_dropout"]);
@@ -1295,10 +1295,41 @@ class family_planning extends module{
 		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
 		$q_fp = $this->check_fprec();
 		$px_gender = patient::get_gender($pxid);
-
+		
 			if($px_gender=='F'):
 
 						if(mysql_num_rows($q_fp)!=0):
+						
+						//check if the patient has a maternal record in CHITS
+                                                echo "<p align='justify'><font size='3'>Note: This form is connected to the Maternal Care record of the patient. Default values here are based on most recent MC record entered for this patient.</font><br>";
+						$q_mc = mysql_query("SELECT obscore_fpal, date_format(delivery_date,'%m/%d/%Y'), outcome_id, date_format(patient_lmp,'%m/%d/%Y') FROM m_patient_mc a WHERE a.patient_id='$pxid' ORDER by patient_lmp DESC LIMIT 1") or die("Cannot query 1303: ".mysql_error());
+                                                
+						if(mysql_num_rows($q_mc)!=0):
+						    list($fpal,$delivery_date,$outcome_id, $patient_lmp) = mysql_fetch_array($q_mc);						    						    
+						
+						
+						    if($delivery_date=='0000-00-00'):
+						        $delivery_date = '';
+						        echo "<br><font size='2' color='red'><b>This patient has an existing record in CHITS. Patient is presently pregnant based on records.</b></font>";
+                                                    else:
+                                                        echo "<br><font size='2' color='red'><b>This patient has an existing record in CHITS. Patient's pregnancy and delivery was previously been recorded.</b></font>"; 
+                                                    endif;
+						
+                                                    $q_outcome = mysql_query("SELECT outcome_name FROM m_lib_mc_outcome WHERE outcome_id='$outcome_id'") or die("Cannot query 1315".mysql_error());
+                                                    if(mysql_num_rows($q_outcome)!=0):
+						        list($outcome_name) = mysql_fetch_array($q_outcome);
+                                                    else:
+						        $outcome_name = '';
+                                                    endif;
+                                                
+						endif;
+						
+						$q_outcome = mysql_query("SELECT outcome_name FROM m_lib_mc_outcome WHERE outcome_id='$outcome_id'") or die("Cannot query 1315".mysql_error());
+						if(mysql_num_rows($q_outcome)!=0):
+						    list($outcome_name) = mysql_fetch_array($q_outcome);
+						else:
+						    $outcome_name = '';
+						endif;
 
 						echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_fp_obs'>";
 						echo "<a name='obs'></a>";
@@ -1306,20 +1337,20 @@ class family_planning extends module{
 						echo "<thead><td colspan='2'>OBSTETRICAL HISTORY</td></thead>";
 
 						echo "<tr><td>Number of Pregnancies (FPAL)</td>";
-						echo "<td><input type='text' name='txt_fp_fpal' size='3' maxlength='4'></td></tr>";
+						echo "<td><input type='text' name='txt_fp_fpal' size='3' maxlength='4' value='$fpal'></td></tr>";
 
-						echo "<tr><td>Date of Last Delivery</td><td><input type='text' name='txt_last_delivery' size='7' maxlength='11'>";
+						echo "<tr><td>Date of Last Delivery</td><td><input type='text' name='txt_last_delivery' size='7' maxlength='11' value='$delivery_date'>";
 
 						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_last_delivery', document.form_fp_obs.txt_last_delivery.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 						echo "</input></td></tr>";
 
-						echo "<tr><td>TYPE OF LAST DELIVERY</td><td><input type='text' name='txt_type_delivery' size='10'></td></tr>";
+						echo "<tr><td>TYPE OF LAST DELIVERY</td><td><input type='text' name='txt_type_delivery' size='20' value='$outcome_name'></td></tr>";
 
 						echo "<tr><td>PAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_past_mens' size='7' maxlength='11'>";
 						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_past_mens', document.form_fp_obs.txt_past_mens.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 						echo "</input></td></tr>";
 
-						echo "<tr><td>LAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_last_mens' size='7' maxlength='11'>";
+						echo "<tr><td>LAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_last_mens' size='7' maxlength='11' value='$patient_lmp'>";
 						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_last_mens', document.form_fp_obs.txt_last_mens.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 						echo "</input></td></tr>";
 
