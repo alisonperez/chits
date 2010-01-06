@@ -1641,7 +1641,7 @@ class family_planning extends module{
 					echo "<td>".$date_reg."</td>";
 					echo "<td>".$date_drop."</td>";
 					echo "<td>".$reason_dropout."</td>";
-					echo "<td><a href='../site/view_fp_services.php?id=$fp_px_id&method_id=$method_id&px=$pxid' target='new'>View</a></td>";
+					echo "<td><a href='../site/view_fp_services.php?id=$fp_px_id&method_id=$method_id&px=$pxid' target='new'>View</a></td>";					
 					echo "</tr>";
 
 		}

@@ -276,6 +276,12 @@ class querydb{
 			$this->process_fp_quarterly();
 		elseif($quesno==43):
 			$this->process_fp_monthly();
+		elseif($quesno==60):
+			$this->process_dhc_quarterly();
+		elseif($quesno==61):
+			$this->process_dhc_pho();
+		elseif($quesno==62):
+			$this->process_dhc_summary();
 		else:
 			echo "No available query for this indicator.";
 		endif;
@@ -761,6 +767,18 @@ class querydb{
 	
 	function process_fp_monthly(){
 		echo "<a href='./pdf_reports/fp_monthly.php'>Show Family Planning Monthly Report</a>";
+	}
+	
+	function process_dhc_pho(){
+		echo "<a href='../pdf_reports/dental_pho.php'></a>";
+	}
+	
+	function process_dhc_quarterly(){
+		echo "<a href='../pdf_reports/dental_quarterly.php'></a>";
+	}
+	
+	function process_dhc_summary(){
+		echo "<a href='../pdf_reports/dental_summary.php'>Show Dental Summary Table</a>";
 	}
 
 }
