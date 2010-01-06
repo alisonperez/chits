@@ -19,7 +19,7 @@ class family_planning extends module{
 		            b. different method before the drop out
 		               i. if patient is already a previous user - CURRENT USER, CHANGE METHOD (i.e. dmpa-drop out-pills-drop out-dmpa)
 		               ii. if patient chooses a new method - CURRENT USER, CHANGE METHOD, NEW ACCEPTOR (i.e. pills-drop out-dmpa)
-*/
+                */
 	}
 
 	//standard module functions
@@ -136,7 +136,7 @@ class family_planning extends module{
 
 		//m_patient_fp_obgyn_details -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_obgyn_details` (
-  				`fp_id` float NOT NULL,
+				  `fp_id` float NOT NULL,
 				  `patient_id` float NOT NULL,
 				  `no_pregnancies` int(2) NOT NULL,
 				  `fpal` varchar(10) NOT NULL,
@@ -145,6 +145,7 @@ class family_planning extends module{
 				  `type_last_delivery` varchar(50) NOT NULL,
 				  `age_menarch` int(11) NOT NULL,
 				  `past_menstrual_date` date NOT NULL,
+				  `duration_bleeding` int(4) NOT NULL,
 				  `date_encoded` date NOT NULL,
 				  `user_id` int(11) NOT NULL
 				) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
@@ -525,11 +526,15 @@ class family_planning extends module{
 				case "Update FP Service Chart":
 					$fp->submit_fp_service();
 					break;
-
+                                case "Save Obstectrical History":
+                                        
+                                        $fp->submit_fp_obs();
+                                        break;
+                                        
 				case "Delete FP Service Record":
-						$fp->submit_fp_service();
-						break;
-				default:
+                                        $fp->submit_fp_service();
+                                        break;
+				default:				        
 					break;
 			}
 		endif;
@@ -1295,14 +1300,18 @@ class family_planning extends module{
 		$pxid = healthcenter::get_patient_id($_GET[consult_id]);
 		$q_fp = $this->check_fprec();
 		$px_gender = patient::get_gender($pxid);
-		
-			if($px_gender=='F'):
+                list($fp_id) = mysql_fetch_array($q_fp);
+                		
+		if($px_gender=='F'):
 
 						if(mysql_num_rows($q_fp)!=0):
 						
 						//check if the patient has a maternal record in CHITS
                                                 echo "<p align='justify'><font size='3'>Note: This form is connected to the Maternal Care record of the patient. Default values here are based on most recent MC record entered for this patient.</font><br>";
 						$q_mc = mysql_query("SELECT obscore_fpal, date_format(delivery_date,'%m/%d/%Y'), outcome_id, date_format(patient_lmp,'%m/%d/%Y') FROM m_patient_mc a WHERE a.patient_id='$pxid' ORDER by patient_lmp DESC LIMIT 1") or die("Cannot query 1303: ".mysql_error());
+                                                $q_fp_obs = mysql_query("SELECT duration_bleeding,date_format(past_menstrual_date,'%m/%d/%Y') FROM m_patient_fp_obgyn_details WHERE fp_id='$fp_id'") or die("Cannot query 1312: ".mysql_error());
+                                                
+                                                list($duration_bleeding,$past_mens) = mysql_fetch_array($q_fp_obs);
                                                 
 						if(mysql_num_rows($q_mc)!=0):
 						    list($fpal,$delivery_date,$outcome_id, $patient_lmp) = mysql_fetch_array($q_mc);						    						    
@@ -1331,7 +1340,8 @@ class family_planning extends module{
 						    $outcome_name = '';
 						endif;
 
-						echo "<form action='$_SERVER[PHP_SELF]' method='POST' name='form_fp_obs'>";
+						echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=OBS#obs' method='POST' name='form_fp_obs'>";
+						echo "<input type='hidden' name='fp_id' value='$fp_id'></input>";
 						echo "<a name='obs'></a>";
 						echo "<table>";
 						echo "<thead><td colspan='2'>OBSTETRICAL HISTORY</td></thead>";
@@ -1346,7 +1356,7 @@ class family_planning extends module{
 
 						echo "<tr><td>TYPE OF LAST DELIVERY</td><td><input type='text' name='txt_type_delivery' size='20' value='$outcome_name'></td></tr>";
 
-						echo "<tr><td>PAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_past_mens' size='7' maxlength='11'>";
+						echo "<tr><td>PAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_past_mens' size='7' maxlength='11' value='$past_mens'>";
 						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_past_mens', document.form_fp_obs.txt_past_mens.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 						echo "</input></td></tr>";
 
@@ -1355,7 +1365,7 @@ class family_planning extends module{
 						echo "</input></td></tr>";
 
 
-						echo "<tr><td>Duration and Character of Menstrual Bleeding</td><td><input type='text' name='txt_mens_bleed' size='3'></input> days</td></tr>";
+						echo "<tr><td>Duration and Character of Menstrual Bleeding</td><td><input type='text' name='txt_mens_bleed' size='3' value='$duration_bleeding'></input> days</td></tr>";
 
 						echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Obstectrical History'></td></tr>";
 
@@ -1725,6 +1735,34 @@ class family_planning extends module{
 
             echo "</select></td></tr>";
         }
+	}
+	
+	function submit_fp_obs(){
+	    
+	    //print_r($_POST);
+	    $pxid = healthcenter::get_patient_id($_GET[consult_id]);
+	    list($del_m,$del_d,$del_y) = explode('/',$_POST[txt_last_delivery]);
+	    list($past_m,$past_d,$past_y) = explode('/',$_POST[txt_past_mens]);
+	    
+	    $delivery_date = $del_y.'-'.$del_m.'-'.$del_d;
+	    $past_date = $past_y.'-'.$past_m.'-'.$past_d;
+	    
+	    $q_fp_id = mysql_query("SELECT fp_id FROM m_patient_fp_obgyn_details WHERE fp_id='$_POST[fp_id]'") or die("Cannot query 1737: ".mysql_error());
+	    
+	    if(mysql_num_rows($q_fp_id)!=0):
+                $update_obs = mysql_query("UPDATE m_patient_fp_obgyn_details SET fpal='$_POST[txt_fp_fpal]',date_last_delivery='$delivery_date',type_last_delivery='$_POST[txt_type_delivery]',past_menstrual_date='$past_date',date_encoded=NOW(),user_id='$_SESSION[userid]',duration_bleeding='$_POST[txt_mens_bleed]' WHERE fp_id='$_POST[fp_id]'") or die("Cannot query 1743 ".mysql_error());
+            else:
+                $update_obs = mysql_query("INSERT INTO m_patient_fp_obgyn_details SET fp_id='$_POST[fp_id]',patient_id='$pxid',fpal='$_POST[txt_fp_fpal]',date_last_delivery='$delivery_date',type_last_delivery='$_POST[txt_type_delivery]',past_menstrual_date='$past_date',date_encoded=NOW(),user_id='$_SESSION[userid]',duration_bleeding='$_POST[txt_mens_bleed]'") or die("Cannot query 1745 ".mysql_error());
+            endif;
+            
+            if($update_obs):
+                //echo "<font color='red'>FP Obstectrical history was successfully been updated.</font>";
+                echo "<script language='Javascript'>";
+                echo "window.alert('FP Obtectrical History was successfully been updated')";
+                echo "</script>";
+            else:
+                echo "<font color='red'>FP Obstectrical history was not updated.</font>";            
+            endif;
 	}
 
 }
