@@ -821,6 +821,17 @@ class family_planning extends module{
 
 		echo "<form name='form_visit1' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1' method='POST'>";
 		echo "<input type='hidden' name='pxid' value='$pxid'>";
+		
+		if(isset($spouse_name)):
+		    echo "<input type='hidden' name='spouse_id' value='$spouse_name'></input>";
+		    $q_name = mysql_query("SELECT patient_firstname,patient_lastname FROM m_patient WHERE patient_id='$spouse_name'") or die("Cannot query: 827 ".mysql_error());
+                    list($first,$last) = mysql_fetch_array($q_name);
+                    $name_spouse = $first.' '.$last;
+                else:
+                    echo "<input type='hidden' name='spouse_id' value=''></input>";
+                    $name_spouse = '';
+                endif;    
+		
 		echo "<a name='visit1'></a>";
 
 		echo "<table>";
@@ -873,8 +884,8 @@ class family_planning extends module{
 		$this->get_occupation("mother_occupation",$occup_id);
 		echo "</td></tr>";
 
-		echo "<tr><td>PATIENT ID OF SPOUSE IN CHITS</td>";
-		echo "<td><input name='spouse_name' type='text' size='20' value='$spouse_name'></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='verify_patient_id();'></input>";
+		echo "<tr><td>NAME OF SPOUSE IN CHITS</td>";
+		echo "<td><input name='spouse_name' type='text' size='20' value='$name_spouse' disabled></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='search_patient();'></input>";
 
 		echo "</td></tr>";
 		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
@@ -1452,16 +1463,16 @@ class family_planning extends module{
 	}
 
 	function submit_first_visit(){
-
+	                
 			$spouse_name = trim($_POST[spouse_name]);
-			if(empty($spouse_name)):
+			if(empty($_POST[spouse_id])):
 					$this->no_spouse_msg();
 			else:
 					//print_r($_SESSION);
 					$q_fp = $this->check_fprec();
 					if(mysql_num_rows($q_fp)==0): //a new FP visit 1 record
 
-					$insert_fp = mysql_query("INSERT INTO m_patient_fp SET  user_id='$_SESSION[userid]',patient_id='$_POST[pxid]', date_enrolled=NOW(),date_encoded=NOW(),consult_id='$_GET[consult_id]',last_edited=NOW(),plan_more_children='$_POST[sel_plan_children]',no_of_living_children_actual='$_POST[num_child_actual]',no_of_living_children_desired='$_POST[num_child_desired]',birth_interval_desired='$_POST[birth_interval]',educ_id='$_POST[mother_educ]',occup_id='$_POST[mother_occupation]',spouse_name='$_POST[spouse_name]',spouse_educ_id='$_POST[spouse_educ]',spouse_occup_id='$_POST[spouse_occupation]',ave_monthly_income='$_POST[ave_income]',user_id_edited='$_SESSION[userid]'") or die(mysql_error());
+					$insert_fp = mysql_query("INSERT INTO m_patient_fp SET  user_id='$_SESSION[userid]',patient_id='$_POST[pxid]', date_enrolled=NOW(),date_encoded=NOW(),consult_id='$_GET[consult_id]',last_edited=NOW(),plan_more_children='$_POST[sel_plan_children]',no_of_living_children_actual='$_POST[num_child_actual]',no_of_living_children_desired='$_POST[num_child_desired]',birth_interval_desired='$_POST[birth_interval]',educ_id='$_POST[mother_educ]',occup_id='$_POST[mother_occupation]',spouse_name='$_POST[spouse_id]',spouse_educ_id='$_POST[spouse_educ]',spouse_occup_id='$_POST[spouse_occupation]',ave_monthly_income='$_POST[ave_income]',user_id_edited='$_SESSION[userid]'") or die(mysql_error());
 
 								if($insert_fp):
 										echo "<script language='Javascript'>";
@@ -1470,7 +1481,7 @@ class family_planning extends module{
 								endif;
 					else: // this is an update of an existing FP visit 1 record
 
-							$update_fp = mysql_query("UPDATE m_patient_fp SET user_id_edited='$_SESSION[userid]',last_edited='NOW()',plan_more_children='$_POST[sel_plan_children]',no_of_living_children_actual='$_POST[num_child_actual]',no_of_living_children_desired='$_POST[num_child_desired]',birth_interval_desired='$_POST[birth_interval]',educ_id='$_POST[mother_educ]',occup_id='$_POST[mother_occupation]',spouse_name='$_POST[spouse_name]',spouse_educ_id='$_POST[spouse_educ]',spouse_occup_id='$_POST[spouse_occupation]',ave_monthly_income='$_POST[ave_income]' WHERE patient_id='$_POST[pxid]'") or die("Cannot query: 1125");
+							$update_fp = mysql_query("UPDATE m_patient_fp SET user_id_edited='$_SESSION[userid]',last_edited='NOW()',plan_more_children='$_POST[sel_plan_children]',no_of_living_children_actual='$_POST[num_child_actual]',no_of_living_children_desired='$_POST[num_child_desired]',birth_interval_desired='$_POST[birth_interval]',educ_id='$_POST[mother_educ]',occup_id='$_POST[mother_occupation]',spouse_name='$_POST[spouse_id]',spouse_educ_id='$_POST[spouse_educ]',spouse_occup_id='$_POST[spouse_occupation]',ave_monthly_income='$_POST[ave_income]' WHERE patient_id='$_POST[pxid]'") or die("Cannot query: 1125");
 
 							if($update_fp):
 										echo "<script language='Javascript'>";
@@ -1785,9 +1796,7 @@ class family_planning extends module{
                 echo "<script language='Javascript'>";
                 echo "window.alert('Patient was unenrolled from this FP method.')";
                 echo "</script>";            
-            endif;
-            
-	    //m_patient_fp") print_r($_POST);
+            endif;            	    
 	}
 
 }

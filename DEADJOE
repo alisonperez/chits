@@ -32,3 +32,31 @@ modules/family/class.family.php
 
 *** File '(Unnamed)'
 /var/www/chits-ph/.git/COMMIT_EDITMSG
+
+*** These modified files were found in JOE when it aborted on Wed Jan  6 21:15:42 2010
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+add patient
+threshold
+population
+monthly
+question
+q_submit
+delivery_type
+date_format
+calendar
+calendar
+
+*** File '(Unnamed)'
+view_fp_services.php
+view_fp_services.php
+view_fp_services.php
+view_fp_services.php
+view_fp_services.php
+view_fp_services.php
+class.maternalcare.php
+class.family_planning.php
+info/index.php
+popups.js
+ts_picker4.js
