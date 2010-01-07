@@ -886,7 +886,7 @@ class family_planning extends module{
 		echo "</td></tr>";
 
 		echo "<tr><td class='boxtitle'>NAME OF SPOUSE IN CHITS</td>";
-		echo "<td><input name='spouse_name' type='text' size='20' value='$name_spouse' disabled></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='search_patient();'></input>";
+		echo "<td><input name='spouse_name' type='text' size='20' value='$name_spouse' disabled></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='search_patient();' style='1px solid #000000'></input>";
 
 		echo "</td></tr>";
 		echo "<tr><td class='boxtitle'>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
@@ -903,9 +903,9 @@ class family_planning extends module{
 		echo "</td></tr>";
 
 		if(!isset($fp_id)):
-			echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning First Visit'></td></tr>";
+			echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning First Visit' style='border: 1px solid #000000'></td></tr>";
 		else:
-			echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Update Family Planning First Visit'></td></tr>";
+			echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Update Family Planning First Visit' style='border: 1px solid #000000'></td></tr>";
 		endif;
 
 		echo "</table>";
@@ -954,7 +954,7 @@ class family_planning extends module{
 				echo "</td></tr>";
 				echo "<tr><td>&nbsp;</td></tr>";
 			}
-			echo "<tr><td><input type='submit' name='submit_fp' value='Save FP History'></td></tr>";
+			echo "<tr><td><input type='submit' name='submit_fp' value='Save FP History' style='border: 1px solid #000000'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		else:
@@ -1037,7 +1037,7 @@ class family_planning extends module{
 
 		echo "</tr>";
 
-		echo "<tr align='center'><td colspan='2'><input type='submit' name='submit_fp' value='Save Physical Examination'></input></td></tr>";
+		echo "<tr align='center'><td colspan='2'><input type='submit' name='submit_fp' value='Save Physical Examination' style='border: 1px solid #000000'></input></td></tr>";
 
 		echo "</table>";
 		echo "</form>";
@@ -1106,7 +1106,7 @@ class family_planning extends module{
 				//echo "<tr><td>&nbsp;</td></tr>";
 			}
 
-			echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Pelvic Examination'></input></td></tr>";
+			echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Pelvic Examination' style='border: 1px solid #000000'></input></td></tr>";
 
 			echo "</table>";
 			echo "</form>";
@@ -1276,18 +1276,18 @@ class family_planning extends module{
 						echo "<input type='hidden' name='service_id' value='$_GET[service_id]'></input>";
 						echo "<td colspan='2' align='center'>";
 					   if($_SESSION["priv_update"]==1):
-									echo "<input type='submit' name='submit_fp' value='Update FP Service Chart'></input>";
+                                                    echo "<input type='submit' name='submit_fp' value='Update FP Service Chart' style='border: 1px solid #000000'></input>";
 					   endif;
 
 						if($_SESSION["priv_delete"]==1):
-									echo "<input type='button' name='submit_fp' value='Delete FP Service Record' onclick='delete_fp_service()'></input>";
-					   endif;
+                                                    echo "<input type='button' name='submit_fp' value='Delete FP Service Record' style='border: 1px solid #000000' onclick='delete_fp_service()'></input>";
+                                                endif;
 
-					   echo "<input type='button' name='submit_fp' value='Cancel Transaction' onclick='history.go(-1)'></input>";   //returns to the previous cleared form
+					   echo "<input type='button' name='submit_fp' value='Cancel Transaction' style='border: 1px solid #000000' onclick='history.go(-1)'></input>";   //returns to the previous cleared form
 
 					   echo "</td>";
 					else:
-						echo "<td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save FP Service Chart'></input></td>";
+						echo "<td colspan='2' align='center'><input type='submit' name='submit_fp' style='border: 1px solid #000000' value='Save FP Service Chart'></input></td>";
 					endif;
 
 					echo "</tr>";
@@ -1299,13 +1299,13 @@ class family_planning extends module{
 					$q_service = mysql_query("SELECT fp_service_id, date_service, a.source_id, source_name, next_service_date FROM m_patient_fp_method_service a, m_lib_supply_source b WHERE a.fp_id='$fp_id' AND a.fp_px_id='$fp_px_id' AND a.patient_id='$pxid' AND  a.source_id=b.source_id ORDER by date_service DESC") or die(mysql_error());
 
 					if(mysql_num_rows($q_service)!=0):
-						echo "<table>";
-						echo "<tr valign='top'><td>Date Service Given</td><td>Source</td><td>Next Service Date</td></tr>";
+						echo "<table bgcolor='#66FF66'>";
+						echo "<tr valign='top' align='center' bgcolor='#339966'><td class='boxtitle'>Date Service Given</td><td class='boxtitle'>Source</td><td class='boxtitle'>Next Service Date</td></tr>";
 
 							while($r_service = mysql_fetch_array($q_service)){
-								echo "<tr><td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&service_id=$r_service[fp_service_id]&fp=CHART#chart'>$r_service[date_service]</a></td>";
-								echo "<td>$r_service[source_name]</td>";
-								echo "<td>$r_service[next_service_date]</td>";
+								echo "<tr><td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&service_id=$r_service[fp_service_id]&fp=CHART#chart' style='font-size: 13px;'>$r_service[date_service]</a></td>";
+								echo "<td class='boxtitle'>$r_service[source_name]</td>";
+								echo "<td class='boxtitle'>$r_service[next_service_date]</td>";
 								echo "</tr>";
 							}
 
@@ -1392,7 +1392,7 @@ class family_planning extends module{
 
 						echo "<tr><td class='boxtitle'>Duration and Character of Menstrual Bleeding</td><td><input type='text' name='txt_mens_bleed' size='3' value='$duration_bleeding'></input> days</td></tr>";
 
-						echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Obstectrical History'></td></tr>";
+						echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Obstectrical History' style='border: 1px solid #000000'></td></tr>";
 
 						echo "</table>";
 						echo "</form>";
