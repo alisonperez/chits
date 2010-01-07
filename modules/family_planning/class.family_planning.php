@@ -588,20 +588,20 @@ class family_planning extends module{
 	}
 
 	function fp_menu(){   			 /* displays main menus for FP */
-		echo "<table>";
+		echo "<table cellpadding='1' cellspacing='1' bgcolor='#33CC33' style='border: 1px solid black'>";
 		echo "<tr><td>";
 
-		echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'METHODS','METHODS')."</a>";
+		echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS#methods' class='fpmenu'>".$this->menu_highlight($_GET["fp"],'METHODS','METHODS')."</a>";
 
-		echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'CHART','FP CHART')."</a>";
+		echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' class='fpmenu'>".$this->menu_highlight($_GET["fp"],'CHART','FP CHART')."</a>";
 
-	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1#visit1' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'VISIT1','VISIT1')."</a>";
+	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=VISIT1#visit1' class='fpmenu'>".$this->menu_highlight($_GET["fp"],'VISIT1','VISIT1')."</a>";
 
-	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=HX#hx' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'HX','FP HX')."</a>";
+	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=HX#hx' class='fpmenu'>".$this->menu_highlight($_GET["fp"],'HX','FP HX')."</a>";
 
-	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=OBS#obs' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'OBS','OSTETRICAL HX')."</a>";
+	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=OBS#obs' class='fpmenu'>".$this->menu_highlight($_GET["fp"],'OBS','OSTETRICAL HX')."</a>";
 
-	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PE#pe' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'PE','FP PE')."</a>";
+	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PE#pe' class='fpmenu'>".$this->menu_highlight($_GET["fp"],'PE','FP PE')."</a>";
 
 	        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=PELVIC#pelvic' class='groupmenu'>".$this->menu_highlight($_GET["fp"],'PELVIC','PELVIC EXAM')."</a>";
 
@@ -655,23 +655,24 @@ class family_planning extends module{
 		echo "<form name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS' method='POST'>";
                 echo "<input type='hidden' name='confirm_del' value=0></input>";
 
-		echo "<table>";
+		echo "<table>";		
 		echo "<a name='methods'></a>";
+		echo "<tr><td colspan='2' align='center'><b>FP METHOD ENROLLMENT FORM</b></td></tr>";
 
 			if(mysql_num_rows($q_fp_methods)==0): //scenario 1
 			    
 				$this->show_method_list('form_methods','sel_methods');
 				$this->show_previous_method("None");
 
-				echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";				
+				echo "<tr><td class='boxtitle'>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";				
 
-				echo "<tr><td>REASON FOR PERMANENT METHOD</td>";
-				echo "<td><textarea name='txt_reason' cols='30' row='10'>";
+				echo "<tr><td class='boxtitle'>REASON FOR PERMANENT METHOD</td>";
+				echo "<td class='boxtitle'><textarea name='txt_reason' cols='30' row='10'>";
 				echo "</textarea></td></tr>";
 
 				$this->show_fp_clients();
 
-				echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning Method'></input></td></tr>";
+				echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning Method' style='border: 1px solid #000000'></input></td></tr>";
 
 			else: //scenario 2-3
 				$arr_current = $this->show_current_method($q_fp_methods); //return the most current FP method used		                
@@ -692,27 +693,27 @@ class family_planning extends module{
 						echo "</td></tr>"; */
                                                             
 						$this->show_method_list('form_methods','sel_methods');
-						echo "<tr><td>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";				
+						echo "<tr><td class='boxtitle'>TREATMENT PARTNER</td><td><input type='text' name='txt_tx_partner' size='20'></input></td></tr>";				
                                                 $this->show_fp_clients();
                                                 
-                                                echo "<tr><td>REASON FOR PERMANENT METHOD</td>";
+                                                echo "<tr><td class='boxtitle'>REASON FOR PERMANENT METHOD</td>";
                                                 echo "<td><textarea name='txt_reason' cols='30' row='10'>";
                                                 echo "</textarea></td></tr>";
                                                 
                                                 
-			    			echo "<tr><td>PREVIOUS METHOD:</td><td>";
+			    			echo "<tr><td class='boxtitle'>PREVIOUS METHOD:</td><td>";
 						echo (isset($arr_current[0]["method_name"]))?$arr_current[0]["method_name"]:'None';
 						echo "</td></tr>";
 
-						echo "<tr><td>DATE OF DROPOUT:</td><td>";
+						echo "<tr><td class='boxtitle'>DATE OF DROPOUT:</td><td>";
 						echo (isset($arr_current[0]["method_name"]))?$arr_current[0]["date_dropout"]:'None';
 						echo "</td></tr>";
 
-						echo "<tr><td>DURATION OF USE:</td><td>".$arr_current[0]["duration"]." days </td></tr>";
+						echo "<tr><td class='boxtitle'>DURATION OF USE:</td><td>".$arr_current[0]["duration"]." days </td></tr>";
 
-						echo "<tr><td>REASON FOR DROPOUT</td><td>".$dropout_reason."</td></tr>";
+						echo "<tr><td class='boxtitle'>REASON FOR DROPOUT</td><td>".$dropout_reason."</td></tr>";
 
-						echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning Method'></input></td></tr>";
+						echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Family Planning Method' style='border: 1px solid #000000'></input></td></tr>";
 
 						break;
 
@@ -721,43 +722,43 @@ class family_planning extends module{
 						echo "<input type='hidden' name='fp_px_id' value='$fp_px_id'></input>";
 						echo "<input type='hidden' name='method_id' value='$method_id'></input>";
 
-						echo "<tr><td>CURRENT METHOD:</td><td>".$arr_current[0]["method_name"]."</td></tr>";
+						echo "<tr><td class='boxtitle'>CURRENT METHOD:</td><td>".$arr_current[0]["method_name"]."</td></tr>";
 						list($y,$m,$d) = explode('-',$arr_current[0]["date_registered"]);
 						$datereg = $m.'/'.$d.'/'.$y;
 																		
 						$this->show_fp_clients($arr_current[0]["client_code"]);						
 												
-						echo "<tr><td>DATE OF REGISTRATION:</td><td>";
+						echo "<tr><td class='boxtitle'>DATE OF REGISTRATION:</td><td>";
 						echo "<input type='text' name='txt_date_reg' size='8' maxlength='10' value='$datereg'>&nbsp;";
 						echo "<a href=\"javascript:show_calendar4('document.form_methods.txt_date_reg', document.form_methods.txt_date_reg.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 						echo "</td></tr>";
 
-						echo "<tr><td>TREATMENT PARTNER:</td><td>";
+						echo "<tr><td class='boxtitle'>TREATMENT PARTNER:</td><td>";
 						$txpartner = $arr_current[0][treatment_partner];
 						echo "<input type='text' size='20' value='$txpartner' name='txt_treatment_partner'></input>";
 						echo "</td></tr>";
 						                                            
 						
-						echo "<tr><td>REASON FOR PERMANENT METHOD</td>";
+						echo "<tr><td class='boxtitle'>REASON FOR PERMANENT METHOD</td>";
                                                 echo "<td><textarea name='txt_reason' cols='30' row='10'>".$arr_current[0][permanent_reason];
                 				echo "</textarea></td></tr>";
 				
-						echo "<tr><td>PREVIOUS METHOD:</td><td>";
+						echo "<tr><td class='boxtitle'>PREVIOUS METHOD:</td><td>";
 						echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["method_name"]:'None';
 						echo "</td></tr>";
 
-						echo "<tr><td>DURATION OF USE:</td><td>";
+						echo "<tr><td class='boxtitle'>DURATION OF USE:</td><td>";
 						echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["duration"]:'NA';
 						echo " days</td></tr>";
 
-						echo "<tr><td>REASON FOR DISCONTINUATION:</td><td>";
+						echo "<tr><td class='boxtitle'>REASON FOR DISCONTINUATION:</td><td>";
 						
 						//echo (isset($arr_current[1]["method_name"]))?$arr_current[1]["dropout_reason"]:'NA';
 						
 						echo (isset($arr_current[1]["method_name"]))?$dropout_reason:'NA';
 						echo "</td></tr>";
 
-						echo "<tr><td>REASON FOR DROP OUT</td>";
+						echo "<tr><td class='boxtitle'>REASON FOR DROP OUT</td>";
 						$q_dropout = mysql_query("SELECT reason_id, reason_label FROM m_lib_fp_dropoutreason ORDER by reason_label ASC") or die("Cannot query: 659");
 
 						if(mysql_num_rows($q_dropout)!=0):
@@ -771,20 +772,20 @@ class family_planning extends module{
 								echo "<font color='red'>FP Library dropout missing.</font>";
 						endif;
 
-						echo "<tr><td>DATE OF DROP OUT</td><td>";
+						echo "<tr><td class='boxtitle'>DATE OF DROP OUT</td><td>";
 						echo "<input type='text' name='txt_date_dropout' size='8' maxlength='10'>&nbsp;";
 						echo "<a href=\"javascript:show_calendar4('document.form_methods.txt_date_dropout', document.form_methods.txt_date_dropout.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 						echo "</input>";
 
 						echo "</td></tr>";
 
-						echo "<tr><td valign='top'>REMARKS / ACTION TAKEN</td>";
+						echo "<tr><td valign='top' class='boxtitle'>REMARKS / ACTION TAKEN</td>";
 						echo "<td><textarea name='dropout_remarks' cols='20' rows='4'></textarea></td></tr>";
 
-						echo "<tr><td  align='center' colspan='2'><input type='submit' name='submit_fp' value='Update Family Planning Method'></input>";
+						echo "<tr><td  align='center' colspan='2'><input type='submit' name='submit_fp' value='Update Family Planning Method' style='border: 1px solid #000000'></input>";
 					        
 					        if($_SESSION[priv_delete]=='1'):
-					            echo "&nbsp;&nbsp;<input type='button' name='delete_fpmethod' value='Unenroll Patient' onclick='confirm_delete_fp()'></input>";
+					            echo "&nbsp;&nbsp;<input type='button' name='delete_fpmethod' value='Unenroll Patient' style='border: 1px solid #000000' onclick='confirm_delete_fp()'></input>";
 					        endif;
 					        
 					        echo "</td>";
@@ -851,7 +852,7 @@ class family_planning extends module{
 		*/
 		$ans = array('Y'=>'Yes','N'=>'No');
 
-		echo "<tr><td>PLANNING FOR MORE CHILDREN?</td>";
+		echo "<tr><td><span class='boxtitle'>PLANNING FOR MORE CHILDREN?</span></td>";
 		echo "<td>";
 		echo "<select name='sel_plan_children' size='1'>";
 
@@ -865,38 +866,38 @@ class family_planning extends module{
 		echo "</select>";
 		echo "</td></tr>";
 
-		echo "<tr><td>NO. OF LIVING CHILDREN (ACTUAL)</td><td>";
+		echo "<tr><td><span class='boxtitle'>NO. OF LIVING CHILDREN (ACTUAL)</span></td><td>";
 		echo "<input name='num_child_actual' type='text' size='3' maxlength='2' value='$actual_child'></input>";
 		echo "</td></tr>";
 
-		echo "<tr><td>NO. OF LIVING CHILDREN (DESIRED)</td><td>";
+		echo "<tr><td><span class='boxtitle'>NO. OF LIVING CHILDREN (DESIRED)</span></td><td>";
 		echo "<input name='num_child_desired' type='text' size='3' maxlength='2' value='$desired_child'></input>";
 		echo "</td></tr>";
 
-		echo "<tr><td>BIRTH INTERVAL DESIRED</td><td>";
+		echo "<tr><td><span class='boxtitle'>BIRTH INTERVAL DESIRED</span></td><td>";
 		echo "<input name='birth_interval' type='text' size='3' maxlength='2' value='$birth_interval'></input>";
 		echo "</td></tr>";
-		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
+		echo "<tr><td class='boxtitle'>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
 		$this->get_education("mother_educ",$educ_id);
 		echo "</td></tr>";
 
-		echo "<tr><td>OCCUPATION</td><td>";
+		echo "<tr><td><span class='boxtitle'>OCCUPATION</span></td><td>";
 		$this->get_occupation("mother_occupation",$occup_id);
 		echo "</td></tr>";
 
-		echo "<tr><td>NAME OF SPOUSE IN CHITS</td>";
+		echo "<tr><td class='boxtitle'>NAME OF SPOUSE IN CHITS</td>";
 		echo "<td><input name='spouse_name' type='text' size='20' value='$name_spouse' disabled></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='search_patient();'></input>";
 
 		echo "</td></tr>";
-		echo "<tr><td>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
+		echo "<tr><td class='boxtitle'>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
 		$this->get_education("spouse_educ",$spouse_educ_id);
 		echo "</td></tr>";
 
-		echo "<tr><td>OCCUPATION</td><td>";
+		echo "<tr><td class='boxtitle'>OCCUPATION</td><td>";
 		$this->get_occupation("spouse_occupation",$spouse_occup_id);
 		echo "</td></tr>";
 
-		echo "<tr><td>AVERAGE MONTHLY FAMILY INCOME</td>";
+		echo "<tr><td class='boxtitle'>AVERAGE MONTHLY FAMILY INCOME</td>";
 		echo "<td>";
 		echo "<input name='ave_income' type='text' size='5' value='$ave_monthly_income'></input>";
 		echo "</td></tr>";
@@ -929,14 +930,14 @@ class family_planning extends module{
 			echo "<input type='hidden' value='$fp_arr[fp_id]' name='fpid'>";
 			echo "<a name='hx'></a>";
 			echo "<table>";
-			echo "<thead><td>MEDICAL HISTORY</td></thead>";
+			echo "<thead><td><b>MEDICAL HISTORY</b></td></thead>";
 
 			while($res_hx_cat = mysql_fetch_array($q_hx_cat)){
 				$q_hx = mysql_query("SELECT history_id,history_text FROM m_lib_fp_history WHERE history_cat='$res_hx_cat[cat_id]'") or die("Cannot query: 287");
 
-				echo "<tr><td>$res_hx_cat[cat_name]</td></tr>";
+				echo "<tr><td class='boxtitle'><b>$res_hx_cat[cat_name]</b></td></tr>";
 
-				echo "<tr><td>";
+				echo "<tr><td class='boxtitle'>";
 
 				while($res_hx = mysql_fetch_array($q_hx)){
 					$q_hx_patient = mysql_query("SELECT history_id FROM m_patient_fp_hx WHERE consult_id='$_GET[consult_id]' AND patient_id='$pxid' AND history_id='$res_hx[history_id]'") or die("Cannot query: 765");
@@ -951,6 +952,7 @@ class family_planning extends module{
 				}
 
 				echo "</td></tr>";
+				echo "<tr><td>&nbsp;</td></tr>";
 			}
 			echo "<tr><td><input type='submit' name='submit_fp' value='Save FP History'></td></tr>";
 			echo "</table>";
@@ -984,20 +986,20 @@ class family_planning extends module{
 
 		echo "<input type='hidden' name='pxid' value='$pxid'></input>";
 		echo "<input type='hidden' name='fpid' value='$fpid'></input>";
-		echo "<table border='1'>";
-		echo "<thead><td colspan='2' align='center'>PHYSICAL EXAMINATION</td></thead>";
+		echo "<table>";
+		echo "<thead><td colspan='2' align='center'><b>PHYSICAL EXAMINATION</b></td></thead>";
 
 		echo "<tr><td colspan='2'>";
 
 		echo "<table border='1'>";
 		if(mysql_num_rows($q_consult_vitals)==0):
-				echo "<font color='red'><b>Please fill out the Vital Signs section for this consult. Click <a href='$_SERVER[PHP_SELF]?page=CONSULTS&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=VITALS'>here</a></font></b>";
+				echo "<font color='red' class='boxtitle'><b>Please fill out the Vital Signs section for this consult. Click <a href='$_SERVER[PHP_SELF]?page=CONSULTS&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=VITALS'>here</a></font></b>";
 
 		else:
 				list($systolic,$diastolic,$weight,$pulse) = mysql_fetch_array($q_consult_vitals);
-				echo "<tr><td>Blood Pressure: &nbsp;$systolic / $diastolic</td>";
-				echo "<td>Weight&nbsp; $weight kgs</td>";
-				echo "<td>Pulse Rate:&nbsp;$pulse per minute</td></tr>";
+				echo "<tr><td class='boxtitle'>Blood Pressure: &nbsp;$systolic / $diastolic</td>";
+				echo "<td class='boxtitle'>Weight&nbsp; $weight kgs</td>";
+				echo "<td class='boxtitle'>Pulse Rate:&nbsp;$pulse per minute</td></tr>";
 		endif;
 
 		echo "</table>";
@@ -1009,8 +1011,8 @@ class family_planning extends module{
 		while($r_pe_cat = mysql_fetch_array($q_pe_cat)){
 			$q_pe = mysql_query("SELECT pe_id, pe_name FROM m_lib_fp_pe WHERE pe_cat='$r_pe_cat[pe_cat_id]'") or die("Cannot query: 356");
 			//echo "<tr><td>".$r_pe_cat["pe_cat_name"]."</td></tr>";
-			echo "<tr><td valign='top'>".$r_pe_cat["pe_cat_name"]."</td>";
-			echo "<td>";
+			echo "<tr><td valign='top' class='boxtitle'>".$r_pe_cat["pe_cat_name"]."</td>";
+			echo "<td class='boxtitle'>";
 			while($r_pe = mysql_fetch_array($q_pe)){
 
 				$q_fp_pe = mysql_query("SELECT pe_id FROM m_patient_fp_pe WHERE patient_id='$pxid' AND consult_id='$_GET[consult_id]' AND pe_id='$r_pe[pe_id]'") or die("Cannot query : 831");
@@ -1026,9 +1028,10 @@ class family_planning extends module{
 				endif;
 			}
 			echo "</td></tr>";
+			echo "<tr><td>&nbsp;</td></tr>";
 		}
 
-		echo "<tr><td>OTHERS&nbsp;</td><td><textarea name='txt_pe_others' rows='5' cols='40'>$pe_others</textarea></td></tr>";
+		echo "<tr><td valign='top' class='boxtitle'>OTHERS&nbsp;</td><td><textarea name='txt_pe_others' rows='5' cols='40'>$pe_others</textarea></td></tr>";
 
 		echo "</table></td>";
 
@@ -1069,17 +1072,17 @@ class family_planning extends module{
 			echo "<input type='hidden' name='fpid' value='$fpid'></input>";
 
 			echo "<a name='pelvic'></a>";
-			echo "<table border='1'>";
-			echo "<thead><td align='center' colspan='2'>PELVIC EXAMINATION</td></thead>";
+			echo "<table>";
+			echo "<thead><td align='center' colspan='2'><b>PELVIC EXAMINATION</b></td></thead>";
 
 			while($r_pelvic_exam = mysql_fetch_array($q_pelvic_exam)){
 				$cat = $r_pelvic_exam[pelvic_cat_id];
 
-				echo "<tr><td>$r_pelvic_exam[pelvic_cat_name]</td>";
+				echo "<tr><td class='boxtitle'>$r_pelvic_exam[pelvic_cat_name]</td>";
 
 				$q_pelvic_cat = mysql_query("SELECT pelvic_id,pelvic_name,pelvic_cat FROM m_lib_fp_pelvic WHERE pelvic_cat='$r_pelvic_exam[pelvic_cat_id]'") or die("Cannot query: 464");
 
-				echo "<td>";
+				echo "<td class='boxtitle'>";
 
 				if($r_pelvic_exam[pelvic_cat_id]=="UTERUSMASS"):
 					$q_uterine = mysql_query("SELECT uterine_mass_iud FROM m_patient_fp WHERE fp_id='$fpid' AND patient_id='$pxid'") or die("Cannot query: 915");
@@ -1100,6 +1103,7 @@ class family_planning extends module{
 				endif;
 				echo "</td>";
 				echo "</tr>";
+				//echo "<tr><td>&nbsp;</td></tr>";
 			}
 
 			echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Pelvic Examination'></input></td></tr>";
@@ -1237,15 +1241,15 @@ class family_planning extends module{
 
 					echo "<table>";
 					//echo "<thead><td>FP CHART</td></thead>";
-					echo "<tr><td>ACTIVE FP METHOD</td>";
+					echo "<tr><td class='boxtitle'>ACTIVE FP METHOD</td>";
 					echo "<td><font color='blue'><b>$method_id</td></b></font></tr>";
 
 
-					echo "<tr><td>DATE SERVICE GIVEN</td><td><input type='text' name='txt_date_service' size='7' maxlength='11' value='$date_service'>";
+					echo "<tr><td class='boxtitle'>DATE SERVICE GIVEN</td><td><input type='text' name='txt_date_service' size='7' maxlength='11' value='$date_service'>";
 					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_date_service', document.form_fp_chart.txt_date_service.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 					echo "</input></td></tr>";
 
-					echo "<tr><td>SOURCE OF SUPPLY</td><td>";
+					echo "<tr><td class='boxtitle'>SOURCE OF SUPPLY</td><td>";
 					if(mysql_num_rows($q_supplier)!=0):
 						echo "<select name='sel_supply' size='1'>";
 						while($r_supplier = mysql_fetch_array($q_supplier)){
@@ -1262,8 +1266,8 @@ class family_planning extends module{
 					
 					echo "</td>";
 					
-					echo "<tr><td>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'>$remarks</textarea></td></tr>";
-					echo "<tr><td>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11' value='$next_service'>";
+					echo "<tr><td class='boxtitle'>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'>$remarks</textarea></td></tr>";
+					echo "<tr><td class='boxtitle'>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11' value='$next_service'>";
 					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_next_service_date', document.form_fp_chart.txt_next_service_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 					echo "</input></td></tr>";
 
@@ -1328,7 +1332,7 @@ class family_planning extends module{
 						if(mysql_num_rows($q_fp)!=0):
 						
 						//check if the patient has a maternal record in CHITS
-                                                echo "<p align='justify'><font size='3'>Note: This form is connected to the Maternal Care record of the patient. Default values here are based on most recent MC record entered for this patient.</font><br>";
+                                                echo "<p align='justify'><font size='3' class='boxtitle'>Note: This form is connected to the Maternal Care record of the patient. Default values here are based on most recent MC record entered for this patient.</font>";
 						$q_mc = mysql_query("SELECT obscore_fpal, date_format(delivery_date,'%m/%d/%Y'), outcome_id, date_format(patient_lmp,'%m/%d/%Y') FROM m_patient_mc a WHERE a.patient_id='$pxid' ORDER by patient_lmp DESC LIMIT 1") or die("Cannot query 1303: ".mysql_error());
                                                 $q_fp_obs = mysql_query("SELECT duration_bleeding,date_format(past_menstrual_date,'%m/%d/%Y') FROM m_patient_fp_obgyn_details WHERE fp_id='$fp_id'") or die("Cannot query 1312: ".mysql_error());
                                                 
@@ -1340,9 +1344,9 @@ class family_planning extends module{
 						
 						    if($delivery_date=='0000-00-00'):
 						        $delivery_date = '';
-						        echo "<br><font size='2' color='red'><b>This patient has an existing record in CHITS. Patient is presently pregnant based on records.</b></font>";
+						        echo "<br><font size='2' color='red' class='boxtitle'><b>This patient has an existing record in CHITS. Patient is presently pregnant based on records.</b></font>";
                                                     else:
-                                                        echo "<br><font size='2' color='red'><b>This patient has an existing record in CHITS. Patient's pregnancy and delivery was previously been recorded.</b></font>"; 
+                                                        echo "<br><font size='2' color='red' class='boxtitle'><b>This patient has an existing record in CHITS. Patient's pregnancy and delivery was previously been recorded.</b></font>"; 
                                                     endif;
 						
                                                     $q_outcome = mysql_query("SELECT outcome_name FROM m_lib_mc_outcome WHERE outcome_id='$outcome_id'") or die("Cannot query 1315".mysql_error());
@@ -1365,28 +1369,28 @@ class family_planning extends module{
 						echo "<input type='hidden' name='fp_id' value='$fp_id'></input>";
 						echo "<a name='obs'></a>";
 						echo "<table>";
-						echo "<thead><td colspan='2'>OBSTETRICAL HISTORY</td></thead>";
+						echo "<thead><td colspan='2' align='center'><b>OBSTETRICAL HISTORY</b></td></thead>";
 
-						echo "<tr><td>Number of Pregnancies (FPAL)</td>";
-						echo "<td><input type='text' name='txt_fp_fpal' size='3' maxlength='4' value='$fpal'></td></tr>";
+						echo "<tr><td class='boxtitle'>Number of Pregnancies (FPAL)</td>";
+						echo "<td class='boxtitle'><input type='text' name='txt_fp_fpal' size='3' maxlength='4' value='$fpal'></td></tr>";
 
-						echo "<tr><td>Date of Last Delivery</td><td><input type='text' name='txt_last_delivery' size='7' maxlength='11' value='$delivery_date'>";
+						echo "<tr><td class='boxtitle'>Date of Last Delivery</td><td><input type='text' name='txt_last_delivery' size='7' maxlength='11' value='$delivery_date'>";
 
 						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_last_delivery', document.form_fp_obs.txt_last_delivery.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 						echo "</input></td></tr>";
 
-						echo "<tr><td>TYPE OF LAST DELIVERY</td><td><input type='text' name='txt_type_delivery' size='20' value='$outcome_name'></td></tr>";
+						echo "<tr><td class='boxtitle'>TYPE OF LAST DELIVERY</td><td><input type='text' name='txt_type_delivery' size='20' value='$outcome_name'></td></tr>";
 
-						echo "<tr><td>PAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_past_mens' size='7' maxlength='11' value='$past_mens'>";
+						echo "<tr><td class='boxtitle'>PAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_past_mens' size='7' maxlength='11' value='$past_mens'>";
 						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_past_mens', document.form_fp_obs.txt_past_mens.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 						echo "</input></td></tr>";
 
-						echo "<tr><td>LAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_last_mens' size='7' maxlength='11' value='$patient_lmp'>";
+						echo "<tr><td class='boxtitle'>LAST MENSTRUAL PERIOD</td><td><input type='text' name='txt_last_mens' size='7' maxlength='11' value='$patient_lmp'>";
 						echo "<a href=\"javascript:show_calendar4('document.form_fp_obs.txt_last_mens', document.form_fp_obs.txt_last_mens.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 						echo "</input></td></tr>";
 
 
-						echo "<tr><td>Duration and Character of Menstrual Bleeding</td><td><input type='text' name='txt_mens_bleed' size='3' value='$duration_bleeding'></input> days</td></tr>";
+						echo "<tr><td class='boxtitle'>Duration and Character of Menstrual Bleeding</td><td><input type='text' name='txt_mens_bleed' size='3' value='$duration_bleeding'></input> days</td></tr>";
 
 						echo "<tr><td colspan='2' align='center'><input type='submit' name='submit_fp' value='Save Obstectrical History'></td></tr>";
 
@@ -1404,19 +1408,19 @@ class family_planning extends module{
 
 	function show_method_list($form_name,$sel_dropdown){
 
-		echo "<tr><td>DATE OF REGISTRATION</td><td><input type='text' name='txt_date_reg' size='8' maxlength='10'>";
+		echo "<tr><td class='boxtitle'>DATE OF REGISTRATION</td><td><input type='text' name='txt_date_reg' size='8' maxlength='10'>";
 
 		print "<a href=\"javascript:show_calendar4('document.$form_name.txt_date_reg', document.$form_name.txt_date_reg.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 
 		echo "</td></tr>";
 
-		echo "<tr><td>TYPE OF METHOD</td><td>";
+		echo "<tr><td class='boxtitle'>TYPE OF METHOD</td><td>";
 		$this->get_methods($sel_dropdown);
 		echo "</td></tr>";
 	}
 
 	function show_previous_method($prev_method){
-		echo "<tr><td>Previous Method Used</td>";
+		echo "<tr><td class='boxtitle'>Previous Method Used</td>";
 		echo "<td>".$prev_method."</td>";
 		echo "</tr>";
 	}
@@ -1742,7 +1746,7 @@ class family_planning extends module{
         $q_clients = mysql_query("SELECT client_id, client_code, client_text FROM m_lib_fp_client ORDER by client_text ASC") or die("CAnnot query: 1637");
 
         if(mysql_num_rows($q_clients)!=0){
-            echo "<tr><td>TYPE OF CLIENT</td>";
+            echo "<tr><td class='boxtitle'>TYPE OF CLIENT</td>";
             echo "<td>";
             echo "<select name='sel_clients' size='1'>";
 
