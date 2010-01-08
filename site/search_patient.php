@@ -29,10 +29,11 @@
         }
       else:
         echo "<font color='red'><b>No result/s found</b></font>";
-      endif;
-            
+      endif;                        
     endif;
     
+      echo "<br><b>If having a partner is not applicable, click <a href=\"javascript:pick(0,'Others / ','NA')\">OTHERS / NA</a>";
+      
     echo "</form>";
   else:
     echo "<font color='red'>Unauthorized access.</font>";  

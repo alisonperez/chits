@@ -885,8 +885,8 @@ class family_planning extends module{
 		$this->get_occupation("mother_occupation",$occup_id);
 		echo "</td></tr>";
 
-		echo "<tr><td class='boxtitle'>NAME OF SPOUSE IN CHITS</td>";
-		echo "<td><input name='spouse_name' type='text' size='20' value='$name_spouse' disabled></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='search_patient();' style='border: 1px solid #000000'></input>";
+		echo "<tr><td class='boxtitle'>NAME OF PARTNER IN CHITS</td>";
+		echo "<td><input name='spouse_name' type='text' size='20' value='$name_spouse'></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='search_patient();' style='border: 1px solid #000000'></input>";
 
 		echo "</td></tr>";
 		echo "<tr><td class='boxtitle'>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
@@ -1467,6 +1467,8 @@ class family_planning extends module{
 	}
 
 	function submit_first_visit(){
+	                
+	                print_r($_POST);
 	                
 			$spouse_name = trim($_POST[spouse_name]);
 			if(empty($_POST[spouse_id])):
