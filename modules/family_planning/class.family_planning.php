@@ -824,10 +824,18 @@ class family_planning extends module{
 		echo "<input type='hidden' name='pxid' value='$pxid'>";
 		
 		if(isset($spouse_name)):
-		    echo "<input type='hidden' name='spouse_id' value='$spouse_name'></input>";
-		    $q_name = mysql_query("SELECT patient_firstname,patient_lastname FROM m_patient WHERE patient_id='$spouse_name'") or die("Cannot query: 827 ".mysql_error());
-                    list($first,$last) = mysql_fetch_array($q_name);
-                    $name_spouse = $first.' '.$last;
+		                    		    
+		    if($spouse_name!=0):
+		        echo "<input type='hidden' name='spouse_id' value='$spouse_name'></input>";		    		    		        
+		        $q_name = mysql_query("SELECT patient_firstname,patient_lastname FROM m_patient WHERE patient_id='$spouse_name'") or die("Cannot query: 827 ".mysql_error());
+                        list($first,$last) = mysql_fetch_array($q_name);
+                        $name_spouse = $first.' '.$last;
+                    
+                    else:                        
+                        echo "<input type='hidden' name='spouse_id' value='0'></input>"; 
+                        $name_spouse = 'Others / NA';
+                    endif;
+                
                 else:
                     echo "<input type='hidden' name='spouse_id' value=''></input>";
                     $name_spouse = '';
@@ -1468,10 +1476,11 @@ class family_planning extends module{
 
 	function submit_first_visit(){
 	                
-	                print_r($_POST);
+	                //print_r($_POST);
 	                
 			$spouse_name = trim($_POST[spouse_name]);
-			if(empty($_POST[spouse_id])):
+			
+			if(!isset($_POST[spouse_id])):
 					$this->no_spouse_msg();
 			else:
 					//print_r($_SESSION);

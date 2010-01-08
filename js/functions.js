@@ -102,7 +102,6 @@ function pick(pxid,pxfirst,pxlast){
   if (window.opener && !window.opener.closed){
       window.opener.document.form_visit1.spouse_name.value = pxfirst+' '+pxlast;
       window.opener.document.form_visit1.spouse_id.value = pxid;
-  }
-  
+  }  
   window.close();        
 }
