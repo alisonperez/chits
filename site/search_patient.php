@@ -21,18 +21,18 @@
     
     if($_POST["search_submit"]):
       //print_r($_POST);
-      $q_px = mysql_query("SELECT patient_id,patient_firstname,patient_lastname FROM m_patient WHERE patient_lastname LIKE '%$_POST[txt_last]%'") or die("Cannot query: 3");
+      $q_px = mysql_query("SELECT patient_id,patient_firstname,patient_lastname FROM m_patient WHERE patient_lastname LIKE '%$_POST[txt_last]%' ORDER by patient_firstname ASC, patient_id ASC") or die("Cannot query: 3");
 
       if(mysql_num_rows($q_px)!=0):
         while(list($pxid,$first,$last)=mysql_fetch_array($q_px)){
-          echo "<a href=\"javascript:pick('$pxid','$first','$last')\">".$pxid.' '.$first.' '.$last."</a>";
+          echo "<a href=\"javascript:pick('$pxid','$first','$last')\">".$pxid.' '.$first.' '.$last."</a><br>";
         }
       else:
         echo "<font color='red'><b>No result/s found</b></font>";
       endif;                        
     endif;
     
-      echo "<br><b>If having a partner is not applicable, click <a href=\"javascript:pick(0,'Others / ','NA')\">OTHERS / NA</a>";
+      echo "<br><b><br><br>If having a partner is not applicable, click <a href=\"javascript:pick(0,'Others / ','NA')\">OTHERS / NA</a>";
       
     echo "</form>";
   else:
