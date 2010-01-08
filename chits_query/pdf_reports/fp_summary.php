@@ -5,7 +5,7 @@ session_start();
 ob_start();
 
 require('./fpdf/fpdf.php');
-include('./util.php');
+
 
 $db_conn = mysql_connect("localhost","$_SESSION[dbuser]","$_SESSION[dbpass]");
 mysql_select_db($_SESSION[dbname]);
@@ -538,7 +538,7 @@ function Footer(){
 }
 
 $pdf = new PDF('L','mm','Legal');
-$util = new util();
+
 
 $pdf->AliasNbPages();
 $pdf->SetFont('Arial','',10);

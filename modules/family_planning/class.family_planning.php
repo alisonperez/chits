@@ -544,7 +544,7 @@ class family_planning extends module{
 
 	function form_fp(){
 		echo "<table>";
-		echo "<tr><td>".THEAD_FP_HEADER."</td></tr>";
+		echo "<tr><td bgcolor='yellow' style='border: 1px solid #000000'><b>".THEAD_FP_HEADER."</b></td></tr>";
 		echo "<tr><td>";
 
 		switch($_GET["fp"]){
@@ -655,9 +655,9 @@ class family_planning extends module{
 		echo "<form name='form_methods' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=METHODS' method='POST'>";
                 echo "<input type='hidden' name='confirm_del' value=0></input>";
 
-		echo "<table>";		
+		echo "<table bgcolor='#66FF66'>";		
 		echo "<a name='methods'></a>";
-		echo "<tr><td colspan='2' align='center'><b>FP METHOD ENROLLMENT FORM</b></td></tr>";
+		echo "<tr><td colspan='2' align='center' bgcolor='#339966'><b>BIRTH SPACING METHOD ENROLLMENT FORM</b></td></tr>";
 
 			if(mysql_num_rows($q_fp_methods)==0): //scenario 1
 			    
@@ -835,9 +835,9 @@ class family_planning extends module{
 		
 		echo "<a name='visit1'></a>";
 
-		echo "<table>";
+		echo "<table bgcolor='#66FF66'>";
 
-		echo "<tr><td colspan='2'>FAMILY PLANNING DATA</td></tr>";
+		echo "<tr><td colspan='2' align='center' bgcolor='#339966'><b>FAMILY INFORMATION</b></td></tr>";
 
 		/*
 		echo "<tr><td>DATE OF REGISTRATION</td><td><input type='text' name='txt_date_reg' size='8' maxlength='10'>";
@@ -886,7 +886,7 @@ class family_planning extends module{
 		echo "</td></tr>";
 
 		echo "<tr><td class='boxtitle'>NAME OF SPOUSE IN CHITS</td>";
-		echo "<td><input name='spouse_name' type='text' size='20' value='$name_spouse' disabled></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='search_patient();' style='1px solid #000000'></input>";
+		echo "<td><input name='spouse_name' type='text' size='20' value='$name_spouse' disabled></input>&nbsp;<input type='button' name='btn_search_spouse' value='Search' onclick='search_patient();' style='border: 1px solid #000000'></input>";
 
 		echo "</td></tr>";
 		echo "<tr><td class='boxtitle'>HIGHEST EDUCATIONAL ATTAINMENT</td><td>";
@@ -929,8 +929,8 @@ class family_planning extends module{
 			echo "<input type='hidden' value='$pxid' name='pxid'></input>";
 			echo "<input type='hidden' value='$fp_arr[fp_id]' name='fpid'>";
 			echo "<a name='hx'></a>";
-			echo "<table>";
-			echo "<thead><td><b>MEDICAL HISTORY</b></td></thead>";
+			echo "<table bgcolor='#66FF66'>";
+			echo "<thead><td bgcolor='#339966' align='center'><b>MEDICAL HISTORY</b></td></thead>";
 
 			while($res_hx_cat = mysql_fetch_array($q_hx_cat)){
 				$q_hx = mysql_query("SELECT history_id,history_text FROM m_lib_fp_history WHERE history_cat='$res_hx_cat[cat_id]'") or die("Cannot query: 287");
@@ -986,8 +986,8 @@ class family_planning extends module{
 
 		echo "<input type='hidden' name='pxid' value='$pxid'></input>";
 		echo "<input type='hidden' name='fpid' value='$fpid'></input>";
-		echo "<table>";
-		echo "<thead><td colspan='2' align='center'><b>PHYSICAL EXAMINATION</b></td></thead>";
+		echo "<table bgcolor='#66FF66'>";
+		echo "<thead><td colspan='2' align='center' bgcolor='#339966'><b>PHYSICAL EXAMINATION</b></td></thead>";
 
 		echo "<tr><td colspan='2'>";
 
@@ -1072,8 +1072,8 @@ class family_planning extends module{
 			echo "<input type='hidden' name='fpid' value='$fpid'></input>";
 
 			echo "<a name='pelvic'></a>";
-			echo "<table>";
-			echo "<thead><td align='center' colspan='2'><b>PELVIC EXAMINATION</b></td></thead>";
+			echo "<table bgcolor='#66FF66'>";
+			echo "<thead><td align='center' colspan='2' bgcolor='#339966'><b>PELVIC EXAMINATION</b></td></thead>";
 
 			while($r_pelvic_exam = mysql_fetch_array($q_pelvic_exam)){
 				$cat = $r_pelvic_exam[pelvic_cat_id];
@@ -1227,7 +1227,7 @@ class family_planning extends module{
                                                 $this->delete_service_record();
 					endif;
 
-					echo "<table>";
+					echo "<table bgcolor='#66FF66'>";
 					echo "<tr><td valign='top'>";
 
 					echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=CHART#chart' method='POST' name='form_fp_chart'>";
@@ -1368,8 +1368,8 @@ class family_planning extends module{
 						echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&fp=OBS#obs' method='POST' name='form_fp_obs'>";
 						echo "<input type='hidden' name='fp_id' value='$fp_id'></input>";
 						echo "<a name='obs'></a>";
-						echo "<table>";
-						echo "<thead><td colspan='2' align='center'><b>OBSTETRICAL HISTORY</b></td></thead>";
+						echo "<table bgcolor='#66FF66'>";
+						echo "<thead><td colspan='2' align='center' bgcolor='#339966'><b>OBSTETRICAL HISTORY</b></td></thead>";
 
 						echo "<tr><td class='boxtitle'>Number of Pregnancies (FPAL)</td>";
 						echo "<td class='boxtitle'><input type='text' name='txt_fp_fpal' size='3' maxlength='4' value='$fpal'></td></tr>";
@@ -1688,12 +1688,12 @@ class family_planning extends module{
 		$q_history = mysql_query("SELECT fp_px_id, fp_id,date_format(date_registered,'%m/%d/%Y') as date_reg,date_format(date_dropout,'%m/%d/%Y') as date_dropout , method_id, dropout_reason FROM m_patient_fp_method WHERE patient_id='$pxid' AND drop_out='Y' ORDER by date_reg ASC") or die("Cannot query: 1565");
 
 	if(mysql_num_rows($q_history)!=0):
-		echo "<table><tr>";
-		echo "<td>Method</td>";
-		echo "<td>Date Registered</td>";
-		echo "<td>Date of Drop Out</td>";
-		echo "<td>Dropout Reason</td>";
-		echo "<td>Services</td></tr>";
+		echo "<table bgcolor='#66FF66'><tr bgcolor='#339966' align='center'>";
+		echo "<td class='boxtitle'>Method</td>";
+		echo "<td class='boxtitle'>Date Registered</td>";
+		echo "<td class='boxtitle'>Date of Drop Out</td>";
+		echo "<td class='boxtitle'>Dropout Reason</td>";
+		echo "<td class='boxtitle'>Services</td></tr>";
 
 		while(list($fp_px_id, $fp_id, $date_reg, $date_drop, $method_id,$dropout_reason)=mysql_fetch_array($q_history)){
 					$q_method = mysql_query("SELECT method_name FROM m_lib_fp_methods WHERE method_id='$method_id'") or die("Cannot query: 1577");
@@ -1703,11 +1703,11 @@ class family_planning extends module{
 					list($reason_dropout) = mysql_fetch_array($q_dropout_reason);
 
 					echo "<tr>";
-					echo "<td>".$method_name."</td>";
-					echo "<td>".$date_reg."</td>";
-					echo "<td>".$date_drop."</td>";
-					echo "<td>".$reason_dropout."</td>";
-					echo "<td><a href='../site/view_fp_services.php?id=$fp_px_id&method_id=$method_id&px=$pxid' target='new'>View</a></td>";					
+					echo "<td class='boxtitle'>".$method_name."</td>";
+					echo "<td class='boxtitle'>".$date_reg."</td>";
+					echo "<td class='boxtitle'>".$date_drop."</td>";
+					echo "<td class='boxtitle'>".$reason_dropout."</td>";
+					echo "<td><a href='../site/view_fp_services.php?id=$fp_px_id&method_id=$method_id&px=$pxid' target='new' style='font-size: 13px'>View</a></td>";
 					echo "</tr>";
 
 		}
