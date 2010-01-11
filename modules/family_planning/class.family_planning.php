@@ -176,19 +176,20 @@ class family_planning extends module{
 
 		//m_patient_fp_method_service -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_method_service` (
-			  `fp_service_id` float NOT NULL auto_increment,
+			  `fp_service_id` float NOT NULL AUTO_INCREMENT,
 			  `fp_id` float NOT NULL,
 			  `fp_px_id` float NOT NULL,
 			  `patient_id` float NOT NULL,
 			  `consult_id` float NOT NULL,
 			  `date_service` date NOT NULL,
 			  `source_id` int(5) NOT NULL,
+			  `quantity` int(11) NOT NULL DEFAULT '0',
 			  `remarks` text NOT NULL,
 			  `date_encoded` date NOT NULL,
 			  `user_id` float NOT NULL,
 			  `next_service_date` date NOT NULL,
-			  PRIMARY KEY  (`fp_service_id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;");
+			  PRIMARY KEY (`fp_service_id`)
+			) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;");
 
 		//m_patient_fp_dropout -- create
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_patient_fp_dropout` (
@@ -1228,8 +1229,8 @@ class family_planning extends module{
 					list($unit) = mysql_fetch_array($q_unit);
 					
 					if(isset($_GET["service_id"])):
-							$q_service = mysql_query("SELECT date_format(date_service,'%m/%d/%Y'), source_id, remarks, date_format(next_service_date,'%m/%d/%Y') FROM m_patient_fp_method_service WHERE fp_service_id='$_GET[service_id]'") or die(mysql_error());
-							list($date_service,$source,$remarks,$next_service) = mysql_fetch_array($q_service);
+							$q_service = mysql_query("SELECT date_format(date_service,'%m/%d/%Y'), source_id, remarks, date_format(next_service_date,'%m/%d/%Y'),quantity FROM m_patient_fp_method_service WHERE fp_service_id='$_GET[service_id]'") or die(mysql_error());
+							list($date_service,$source,$remarks,$next_service,$quantity) = mysql_fetch_array($q_service);                                                        
 					endif;
 
 					if($_POST["confirm_del"]==1):
@@ -1278,7 +1279,7 @@ class family_planning extends module{
 					echo "</td>";
 					
 					echo "<tr><td>Quantity (if applicable)</td>";
-					echo "<td><input type='text' name='txt_qty' size='3'></input>&nbsp;".$unit."</td>";
+					echo "<td><input type='text' name='txt_qty' size='3' value='$quantity'></input>&nbsp;".$unit."</td>";
 					echo "</tr>";
 					
 					echo "<tr><td class='boxtitle'>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'>$remarks</textarea></td></tr>";
@@ -1595,10 +1596,10 @@ class family_planning extends module{
 				// if no other error was found, start inserting entries to the m_patient_fp_method_service
 
 				if(isset($_POST["service_id"])): //this signifies an update has been done
-					$update_service = mysql_query("UPDATE m_patient_fp_method_service SET date_service='$date_service',source_id='$_POST[sel_supply]',remarks='$_POST[txt_remarks]',next_service_date='$next_service_date' WHERE fp_service_id='$_POST[service_id]'") or die(mysql_error());
+					$update_service = mysql_query("UPDATE m_patient_fp_method_service SET date_service='$date_service',source_id='$_POST[sel_supply]',remarks='$_POST[txt_remarks]',next_service_date='$next_service_date',quantity='$_POST[txt_qty]' WHERE fp_service_id='$_POST[service_id]'") or die(mysql_error());
 
 				else:
-					$insert_service = mysql_query("INSERT into m_patient_fp_method_service SET fp_id='$_POST[fp_id]',fp_px_id='$_POST[fp_px_id]',patient_id='$pxid',consult_id='$_GET[consult_id]',date_service='$date_service',remarks='$_POST[txt_remarks]',date_encoded=NOW(),user_id='$_SESSION[userid]',next_service_date='$next_service_date',source_id='$_POST[sel_supply]'") or die(mysql_error());
+					$insert_service = mysql_query("INSERT into m_patient_fp_method_service SET fp_id='$_POST[fp_id]',fp_px_id='$_POST[fp_px_id]',patient_id='$pxid',consult_id='$_GET[consult_id]',date_service='$date_service',remarks='$_POST[txt_remarks]',date_encoded=NOW(),user_id='$_SESSION[userid]',next_service_date='$next_service_date',source_id='$_POST[sel_supply]',quantity='$_POST[txt_qty]'") or die(mysql_error());
 				endif;
 
 				if($insert_service):
