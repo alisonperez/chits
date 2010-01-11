@@ -251,7 +251,8 @@ class family_planning extends module{
 
 		//m_lib_fp_methods -- populate contents
 		
-		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`, `fhsis_code`, `report_order`, `unit`)VALUES ('PILLS', 'Pills', 'F', 'PILLS', 3, ''),('CONDOM', 'Condom', 'M', 'CON', 11, ''),('IUD', 'IUD', 'F', 'IUD', 4, ''),('NFPLAM', 'NFP Lactational amenorrhea', 'F', 'NFP-LAM', 8, ''),('DMPA', 'Depo-Lactational Amenorrhea ', 'F', 'DMPA', 5, ''),('NFPBBT', 'NFP Basal Body Temperature', 'F', 'NFP-BBT', 7, ''),('NFPCM', 'NFP Cervical Mucus Method', 'F', 'NFP-CM', 6, ''),('NFPSTM', 'NFP Sympothermal Method', 'F', 'NFP-STM', 10, ''),('NFPSDM', 'NFP Standard Days Method', 'F', 'NFP-SDM', 9, ''),('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F', 'FSTR/BTL', 1, ''),('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2, '');");
+		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`, `fhsis_code`, `report_order`, `unit`) VALUES ('PILLS', 'Pills', 'F', 'PILLS', 3, 'set'),('CONDOM', 'Condom', 'M', 'CON', 11, 'pack'),('IUD', 'IUD', 'F', 'IUD', 4, 'set'),('NFPLAM', 'NFP Lactational amenorrhea', 'F', 'NFP-LAM', 8, ''),('DMPA', 'Depo-Lactational Amenorrhea ', 'F', 'DMPA', 5, 'vial'),('NFPBBT', 'NFP Basal Body Temperature', 'F', 'NFP-BBT', 7, ''),('NFPCM', 'NFP Cervical Mucus Method', 'F', 'NFP-CM', 6, ''),('NFPSTM', 'NFP Sympothermal Method', 'F', 'NFP-STM', 10, ''),('NFPSDM', 'NFP Standard Days Method', 'F', 'NFP-SDM', 9, ''),('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F', 'FSTR/BTL', 1, ''),('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2, '');");
+
 
 		/*module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('PILLS', 'Pills','F','PILLS')");
 		module::execsql("INSERT INTO `m_lib_fp_methods` (`method_id`,`method_name`,`method_gender`,`fhsis_code`) VALUES ('CONDOM', 'Condom','M','CON')");
@@ -1223,6 +1224,9 @@ class family_planning extends module{
 
 		if(mysql_num_rows($q_fp)!=0):
 					list($fp_px_id, $date_reg,$fp_id,$method_id) = mysql_fetch_array($q_fp);
+					$q_unit = mysql_query("SELECT unit FROM m_lib_fp_methods WHERE method_id='$method_id'") or die("Cannot query: 1226 ".mysql_error());
+					list($unit) = mysql_fetch_array($q_unit);
+					
 					if(isset($_GET["service_id"])):
 							$q_service = mysql_query("SELECT date_format(date_service,'%m/%d/%Y'), source_id, remarks, date_format(next_service_date,'%m/%d/%Y') FROM m_patient_fp_method_service WHERE fp_service_id='$_GET[service_id]'") or die(mysql_error());
 							list($date_service,$source,$remarks,$next_service) = mysql_fetch_array($q_service);
@@ -1248,11 +1252,13 @@ class family_planning extends module{
 					//echo "<thead><td>FP CHART</td></thead>";
 					echo "<tr><td class='boxtitle'>ACTIVE FP METHOD</td>";
 					echo "<td><font color='blue'><b>$method_id</td></b></font></tr>";
-
+					
 
 					echo "<tr><td class='boxtitle'>DATE SERVICE GIVEN</td><td><input type='text' name='txt_date_service' size='7' maxlength='11' value='$date_service'>";
 					echo "<a href=\"javascript:show_calendar4('document.form_fp_chart.txt_date_service', document.form_fp_chart.txt_date_service.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click here to pick up date'></a>";
 					echo "</input></td></tr>";
+					
+					
 
 					echo "<tr><td class='boxtitle'>SOURCE OF SUPPLY</td><td>";
 					if(mysql_num_rows($q_supplier)!=0):
@@ -1270,6 +1276,10 @@ class family_planning extends module{
 					endif;
 					
 					echo "</td>";
+					
+					echo "<tr><td>Quantity (if applicable)</td>";
+					echo "<td><input type='text' name='txt_qty' size='3'></input>&nbsp;".$unit."</td>";
+					echo "</tr>";
 					
 					echo "<tr><td class='boxtitle'>REMARKS</td><td><textarea cols='27' rows='5' name='txt_remarks'>$remarks</textarea></td></tr>";
 					echo "<tr><td class='boxtitle'>NEXT SERVICE DATE</td><td><input type='text' name='txt_next_service_date' size='7' maxlength='11' value='$next_service'>";
