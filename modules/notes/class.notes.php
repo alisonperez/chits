@@ -777,6 +777,7 @@ class notes extends module {
                 print "<b>NOTES ID:</b> <font color='red'>".module::pad_zero($notes["notes_id"],7)."</font><br/>";
                 print "<b>DATE/TIME:</b> ".$notes["ts"]."<br/>";					
                 print "<b>TAKEN BY:</b> ".user::get_username($notes["user_id"])."<br/>";
+                print "<b>VITAL SIGNS:</b>".$this->get_vitals($_GET["consult_id"])."<br/>";
                 print "<hr size='1'/>";
                 print "<b>COMPLAINTS:</b><br/>";
                 notes::show_complaints($menu_id, $post_vars, $get_vars);
@@ -1684,6 +1685,27 @@ class notes extends module {
         }
         print "</table><br>";
     }
+    
+    
+    function get_vitals(){
+        if(func_num_args()>0):
+            $arg_list = func_get_args();
+            $consult_id = $arg_list[0];
+        endif;
+        
+        $q_vitals = mysql_query("SELECT vitals_weight,vitals_temp,vitals_systolic,vitals_diastolic,vitals_heartrate,vitals_resprate,vitals_height,vitals_pulse FROM m_consult_vitals WHERE consult_id='$consult_id'") or die("Cannot query: 1696 ".mysql_error());
+        
+        if(mysql_num_rows($q_vitals)!=0):
+            list($wt,$temp,$systolic,$diastolic,$heart,$resprate,$ht,$pulse) = mysql_fetch_array($q_vitals);
+            $str_vitals = " <b>WT:</b> ".$wt." kg, <b>TEMP:</b> ".$temp.", <b>BP:</b> ".$systolic."/".$diastolic.", <b>HR:</b> ".$heart.", <b>RR:</b> ".$resprate.", <b>PR:</b> ".$pulse.", <b>HT:</b> ".$ht." cm";
+            
+        else:
+            $str_vitals = "<font color='red'>No vitals signs recorded.</font>";
+        endif;
+        
+        return $str_vitals;
+    }
+    
 
     function process_dxclass() {
         if (func_num_args()>0) {

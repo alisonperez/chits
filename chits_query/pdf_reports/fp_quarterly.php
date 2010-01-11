@@ -146,7 +146,8 @@ function q_report_header($population){
 
 function show_fp_quarterly(){
     $arr_method = array('a'=>'FSTRBTL','b'=>'MSV','c'=>'PILLS','d'=>'IUD','e'=>'DMPA','f'=>'NFPCM','g'=>'NFPBBT','h'=>'NFPLAM','i'=>'NFPSDM','j'=>'NFPSTM','k'=>'CONDOM');
-    $w = array(75,28,28,28,26,28,28,47,52);
+    $w = array(75,28,28,26,28,28,28,47,52);    
+    //$w = array(75,28,28,26,26,28,28,47,52);
     $str_brgy = $this->get_brgy();    
     
     //echo $_SESSION[sdate2].'/'.$_SESSION[edate2];
