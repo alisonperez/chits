@@ -1315,25 +1315,26 @@ CREATE TABLE IF NOT EXISTS `m_consult_mc_visit_risk` (
 
 DROP TABLE IF EXISTS `m_consult_notes`;
 CREATE TABLE IF NOT EXISTS `m_consult_notes` (
-  `notes_id` float NOT NULL auto_increment,
-  `consult_id` float NOT NULL default '0',
-  `patient_id` float NOT NULL default '0',
+  `notes_id` float NOT NULL AUTO_INCREMENT,
+  `consult_id` float NOT NULL DEFAULT '0',
+  `patient_id` float NOT NULL DEFAULT '0',
+  `notes_complaint` text NOT NULL,
   `notes_history` text NOT NULL,
   `notes_physicalexam` text NOT NULL,
   `notes_plan` text NOT NULL,
-  `user_id` float NOT NULL default '0',
-  `notes_timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `vita_date` date NOT NULL default '0000-00-00',
-  `anemia_start_date` date NOT NULL default '0000-00-00',
-  `anemia_completed_date` date NOT NULL default '0000-00-00',
-  `diarrhea_ort` date NOT NULL default '0000-00-00',
-  `diarrhea_ors` date NOT NULL default '0000-00-00',
-  `diarrhea_orswz` date NOT NULL default '0000-00-00',
-  `pneumonia_date_given` date NOT NULL default '0000-00-00',
-  PRIMARY KEY  (`notes_id`),
+  `user_id` float NOT NULL DEFAULT '0',
+  `notes_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `vita_date` date NOT NULL DEFAULT '0000-00-00',
+  `anemia_start_date` date NOT NULL DEFAULT '0000-00-00',
+  `anemia_completed_date` date NOT NULL DEFAULT '0000-00-00',
+  `diarrhea_ort` date NOT NULL DEFAULT '0000-00-00',
+  `diarrhea_ors` date NOT NULL DEFAULT '0000-00-00',
+  `diarrhea_orswz` date NOT NULL DEFAULT '0000-00-00',
+  `pneumonia_date_given` date NOT NULL DEFAULT '0000-00-00',
+  PRIMARY KEY (`notes_id`),
   KEY `key_consult` (`consult_id`),
   KEY `key_patient` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `m_consult_notes`
