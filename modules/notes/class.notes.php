@@ -297,10 +297,12 @@ class notes extends module {
                     $sql = "insert into m_consult_notes_complaint (notes_id, consult_id, patient_id, complaint_id, complaint_date, user_id, complaint_timestamp) ".
                            "values ('".$get_vars["notes_id"]."', '".$get_vars["consult_id"]."', '$patient_id', '$value', '$consult_date', '".$_SESSION["userid"]."', sysdate())";
                     $result = mysql_query($sql);
-                }
-                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=CC&notes_id=".$get_vars["notes_id"]);
+                }                                                
             }
+                $update_complaint_note = mysql_query("UPDATE m_consult_notes SET notes_complaint='$post_vars[complaint_notes]' WHERE consult_id='$get_vars[consult_id]'") or die("Cannot query: 302 ".mysql_error());                                        
+                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=CC&notes_id=".$get_vars["notes_id"]);                
             break;
+            
         case "Save History":
             if ($post_vars["history_text"]) {
                 $sql = "update m_consult_notes set ".
@@ -414,9 +416,12 @@ class notes extends module {
         
         print "<tr><td class='boxtitle'>COMPLAINT NOTES<br>";
         
-        echo "<textarea name='complaint_notes' rows='4' cols='32'></textarea></tr>";
+        echo "<textarea name='complaint_notes' rows='4' cols='32'>";
+        echo $this->get_consult_note($get_vars["consult_id"]);           
+        echo "</textarea></td></tr>";    
+                        
         
-        print "<tr><td>";
+        print "<tr><td>";        
         print "<span class='boxtitle'>".LBL_COMPLAINT."</span><br/>";
         print complaint::checkbox_complaintcat();
         print "<br/></td></tr>";
@@ -792,6 +797,9 @@ class notes extends module {
                 print "<hr size='1'/>";
                 print "<b>COMPLAINTS:</b><br/>";
                 notes::show_complaints($menu_id, $post_vars, $get_vars);
+                print "<hr size='1'/>";
+                print "<b>COMPLAINT NOTES:</b><br/>";
+                print $this->get_consult_note($get_vars["consult_id"]);
                 print "<hr size='1'/>";
                 print "<b>HISTORY:</b><br/>";
                 if (strlen($notes["notes_history"])>0) {
@@ -1715,6 +1723,17 @@ class notes extends module {
         endif;
         
         return $str_vitals;
+    }
+    
+    function get_consult_note(){
+        if(func_num_args()>0):
+            $arg_list = func_get_args();
+            $consult_id = $arg_list[0];
+        endif;
+        
+        $q_consult_notes = mysql_query("SELECT notes_complaint FROM m_consult_notes WHERE consult_id='$consult_id'") or die("Cannot query 1732 ".mysql_error());
+        list($notes_complaint) = mysql_fetch_array($q_consult_notes);
+        return $notes_complaint;        
     }
     
 
