@@ -118,21 +118,27 @@ class notes extends module {
             ") TYPE=InnoDB; ");
 
         // stores free text entries for notes
-        module::execsql("CREATE TABLE `m_consult_notes` (".
-            "`notes_id` float NOT NULL auto_increment,".
-            "`consult_id` float NOT NULL default '0',".
-            "`patient_id` float NOT NULL default '0',".
-            "`notes_history` text NOT NULL,".
-            "`notes_physicalexam` text NOT NULL,".
-            "`notes_plan` text NOT NULL,".
-            "`user_id` float NOT NULL default '0',".
-            "`notes_timestamp` timestamp(14) NOT NULL,".
-            "PRIMARY KEY  (`notes_id`),".
-            "KEY `key_consult` (`consult_id`), ".
-            "KEY `key_patient` (`patient_id`), ".
-            "FOREIGN KEY (`consult_id`) REFERENCES `m_consult`(`consult_id`) ON DELETE CASCADE,".
-            "FOREIGN KEY (`patient_id`) REFERENCES `m_patient`(`patient_id`) ON DELETE CASCADE".
-            ") TYPE=InnoDB; ");
+        module::execsql("CREATE TABLE IF NOT EXISTS `m_consult_notes` (
+	  `notes_id` float NOT NULL AUTO_INCREMENT,
+	  `consult_id` float NOT NULL DEFAULT '0',
+	  `patient_id` float NOT NULL DEFAULT '0',
+	  `notes_complaint` text NOT NULL,
+	  `notes_history` text NOT NULL,
+	  `notes_physicalexam` text NOT NULL,
+	  `notes_plan` text NOT NULL,
+	  `user_id` float NOT NULL DEFAULT '0',
+	  `notes_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	  `vita_date` date NOT NULL DEFAULT '0000-00-00',
+	  `anemia_start_date` date NOT NULL DEFAULT '0000-00-00',
+	  `anemia_completed_date` date NOT NULL DEFAULT '0000-00-00',
+	  `diarrhea_ort` date NOT NULL DEFAULT '0000-00-00',
+	  `diarrhea_ors` date NOT NULL DEFAULT '0000-00-00',
+	  `diarrhea_orswz` date NOT NULL DEFAULT '0000-00-00',
+	  `pneumonia_date_given` date NOT NULL DEFAULT '0000-00-00',
+	  PRIMARY KEY (`notes_id`),
+	  KEY `key_consult` (`consult_id`),
+	  KEY `key_patient` (`patient_id`)
+	) ENGINE=InnoDB  DEFAULT CHARSET=latin1;");
 
         // stores diagnosis class in notes
         module::execsql("CREATE TABLE `m_consult_notes_dxclass` (".
@@ -405,6 +411,11 @@ class notes extends module {
         print "<span class='boxtitle'>".LBL_NOTES_ID."</span><br/>";
         print "<font color='red'>".module::pad_zero($get_vars["notes_id"],7)."</font><br/>";
         print "<br/></td></tr>";
+        
+        print "<tr><td class='boxtitle'>COMPLAINT NOTES<br>";
+        
+        echo "<textarea name='complaint_notes' rows='4' cols='32'></textarea></tr>";
+        
         print "<tr><td>";
         print "<span class='boxtitle'>".LBL_COMPLAINT."</span><br/>";
         print complaint::checkbox_complaintcat();
