@@ -290,6 +290,24 @@ class family_planning extends module{
 
         module::execsql("DROP TABLE IF EXISTS `m_lib_fp_client`");
 
+	module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (
+		  `client_id` int(7) NOT NULL AUTO_INCREMENT,
+		  `client_code` varchar(2) NOT NULL,
+		  `client_text` text NOT NULL,
+		  `client_class` set('CU','NA') NOT NULL,
+		  PRIMARY KEY (`client_id`)
+		) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;")
+
+	module::execsql("INSERT INTO `m_lib_fp_client` (`client_id`, `client_code`, `client_text`, `client_class`) VALUES
+			(1, 'CU', 'Current User - New to Other Method', 'CU'),
+			(2, 'NA', 'New Acceptor', 'NA'),
+			(3, 'CM', 'Changing Method', 'CU'),
+			(4, 'CC', 'Changing Clinic', 'CU'),
+			(5, 'RS', 'Restart', 'CU');");
+
+
+        module::execsql("DROP TABLE IF EXISTS `m_lib_fp_methods`");
+
         module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_methods` (
 		  `method_id` varchar(10) NOT NULL DEFAULT '',
 		  `method_name` varchar(100) NOT NULL DEFAULT '',

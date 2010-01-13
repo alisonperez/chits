@@ -60,7 +60,7 @@ if($_SESSION["userid"]!=""):
       echo "<table><tr valign=\"top\"><td rowspan=\"2\">";
       //container of questions
 
-      $widconn->query_class($dbname2,$_SESSION[cat],$_SESSION[ques]);       
+      $widconn->query_class($dbname2,$_SESSION[cat],$_SESSION[ques]);
       echo "</td>";
       
       
@@ -69,7 +69,7 @@ if($_SESSION["userid"]!=""):
 	      $widconn->query_cat($dbname,$dbname2,$_POST[sdate],$_POST[edate],$_POST[sel_brgy]);
 	   endif;
 
-      echo "</tr>";      
+      echo "</tr>";
             
       echo "</table>";        
 
