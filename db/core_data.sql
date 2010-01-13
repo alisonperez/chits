@@ -150,11 +150,12 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 ('complaint', 'Y', '0.2-2004-05-02', 'CHITS Library - Chief Complaint', 'Herman Tolentino MD', 'complaint'),
 ('consult_report', 'Y', '0.2-2004-08-27', 'CHITS Module - Consult Report', 'Herman Tolentino MD', 'consult_report'),
 ('database', 'Y', '0.3-2004-06-07', 'CHITS Module - Database Support', 'Herman Tolentino MD', 'database'),
+('dental', 'Y', '0.1-2010-01-13', 'CHITS Module - Dental Health Care Program', 'Jeffrey V. Tolentino', 'dental'),
 ('drug', 'Y', '0.2-2004-05-31', 'CHITS Module - Drug Inventory', 'Herman Tolentino MD', 'drug'),
 ('education', 'Y', '0.2-2004-05-03', 'CHITS Module - Education', 'Herman Tolentino MD', 'education'),
 ('epi_report', 'Y', '0.2-2005-01-07', 'CHITS Module - EPI Weekly Report', 'Herman Tolentino MD', 'epi_report'),
 ('family', 'Y', '0.8-2004-06-14', 'CHITS Module - Family', 'Herman Tolentino MD', 'family'),
-('family_planning', 'Y', '', '', '', 'family_planning'),
+('family_planning', 'Y', '0.15-2009-11-26', 'CHITS Module - Family Planning', 'darth_ali', 'family_planning'),
 ('graph', 'Y', '0.4-2004-05-18', 'CHITS Module - Graph Abstraction', 'Herman Tolentino MD', 'graph'),
 ('healthcenter', 'Y', '0.95-2004-06-04', 'CHITS Module - Health Center', 'Herman Tolentino MD', 'healthcenter'),
 ('icd10', 'Y', '0.5-2004-06-14', 'CHITS Module - ICD10 Codes', 'Herman Tolentino MD', 'icd10'),
@@ -242,6 +243,9 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('consult_report', 'notes'),
 ('consult_report', 'patient'),
 ('database', 'module'),
+('dental', 'healthcenter'),
+('dental', 'module'),
+('dental', 'patient'),
 ('drug', 'module'),
 ('education', 'module'),
 ('epi_report', 'family'),
@@ -356,6 +360,7 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('wtforage', 'healthcenter'),
 ('wtforage', 'module'),
 ('wtforage', 'patient');
+
 
 -- --------------------------------------------------------
 
