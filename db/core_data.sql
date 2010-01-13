@@ -14784,7 +14784,7 @@ INSERT INTO `m_lib_notes_template` (`template_id`, `template_cat`, `template_nam
 (8, 'HX', 'Adult P/S Hx', 'PERSONAL/SOCIAL HISTORY\r\nOccupation-\r\nSmoking -\r\nAlcohol intake- \r\nDrug abuse-\r\nLiving condition-'),
 (9, 'HX', 'Adult Family Hx', 'FAMILY HISTORY\r\nDM-\r\nThyroid-\r\nIHD-\r\nKidney -\r\nUTI -\r\nCVD-\r\nCancer-\r\nHPN-\r\nAsthma-\r\nPTB-\r\nPneumonia\r\nCOPD-\r\nArthritis-\r\nAllergies-\r\n\r\n'),
 (10, 'HX', 'Adult Present Illness Hx', '___ days PTC'),
-(11, 'PE', 'Ophtha Exam', 'Eyebrow- (-) scaling, (-) flakes\r\nEyelash- (-) matting\r\nEyelid- (-) ptosis, (-) swelling, (-) abscess\r\nConjunctiva- pink\r\nSclera- anicteric, \r\nCornea- clear\r\nAnterior chamber- deep\r\nIris- brown\r\nPupils- 2 mm EBRTL\r\nLens- clear\r\nEOM\\''s- full\r\nTonometry- firm\r\nFundoscopy: (+) ROR,CM, DDB, CDR 0.3, AV 2:3, (-) Hge, (-) Exudate\r\nVA: 6/6\r\n                  '),
+(11, 'PE', 'Ophtha Exam', 'Eyebrow- (-) scaling, (-) flakes\r\nEyelash- (-) matting\r\nEyelid- (-) ptosis, (-) swelling, (-) abscess\r\nConjunctiva- pink\r\nSclera- anicteric, \r\nCornea- clear\r\nAnterior chamber- deep\r\nIris- brown\r\nPupils- 2 mm EBRTL\r\nLens- clear\r\nEOM\\''s- full\r\nTonometry- firm\r\nFundoscopy: (+) ROR,CM, DDB, CDR 0.3, AV 2:3, (-) Hge, (-) Exudate\r\nVA: 6/6\r\n '),
 (12, 'PE', 'ENT exam', 'Ear- (-) auricular pain, intact tympanic membrane\r\nNose and Sinuses- (-) swollen turbinates, (-) discharge, (-) tenderness on palpation\r\nMouth/Pharynx- (-)sores, (-) TPC, (-)dental caries, (-) cyanosis, midline uvula\r\nNeck- (-) anterior neck mass, (-) tenderness, (-) CLAD, midline trachea '),
 (13, 'PE', 'Psychiatric Exam', 'MSE: oriented to all 3 spheres\r\nGA: young looking, well groomed, cooperative, good eye contact\r\nMOOD & AFFECT: euthymic mood, appropriate affect\r\nSPEECH: audible, spontaneous, (-) stutter\r\nPERCEPT. DIST.: (-) hallucination, (-) illusion, (-) flight of ideas\r\nTHOUGHT PROCESS: (-) circumstantiality,(-) tangentiality\r\nTHOUGHT CONTENT: (-) delusion, (-) suicidal ideation\r\nMEMORY: intact remote,recent, recent past and immediate\r\nCONCENTRATION: good\r\nATTENTION SPAN: good\r\nIMPULSE CONTROL: good\r\nINSIGHT: aware of his condition'),
 (14, 'PE', 'Adult General Exam', 'GA: awake, ambulatory, NICRD\r\nVS: BP:           HR:          RR:            T:        BMI:\r\nENT: anicteric sclera, pink conj.,(-) TPC, (-) CLAD, (-) NVE, (-) ant neck mass, (-) discharge\r\nC/L: ECE,CBS, (-) rales, wheezes\r\nCVS: DHS, NRRR, (-) Murmurs, PMI 5th ICS LMCL     \r\nABD: Flabby, NABS, nontender, (-) hepatosplenomegaly\r\nExt: pink nailbeds, (-) edema, (-) cyanosis\r\nDRE: good sphincter tone, intact rectal vault, nontender, (-) blood, (+) brown feces on examining finger '),
@@ -14808,7 +14808,7 @@ INSERT INTO `m_lib_notes_template` (`template_id`, `template_cat`, `template_nam
 (39, 'TX', 'Measles with eye or mouth complications', 'Vitamin A _________ IU X 1 dose\r\nTetracycline ointment TID until redness is gone\r\nGentian violet BID\r\nFollow up in 2 days\r\n'),
 (40, 'TX', 'Measles', 'Vitamin A _________ IU X 1 dose '),
 (41, 'TX', 'Severe Dengue Hemorrhagic Fever', 'Start on IV fluid: ___ml pLRS X ___ hr\r\nMay give ORS ____ ml once patient can drink\r\nMay breastfeed or sugar water_____ ml\r\nFor referral to hospital of choice '),
-(42, 'TX', 'Fever: Dengue Hemorrhagic fever unlikely', 'Paracetamol    mg/  ml  ml every 4-6 hours\r\nTepid Sponge Bath\r\nWOF: black vomitus, abdominal pain, skin petechiae                                                                                                                                                                                                                           \r\nFollow up in 2 days if fever persists or child show signs of bleeding'),
+(42, 'TX', 'Fever: Dengue Hemorrhagic fever unlikely', 'Paracetamol    mg/  ml  ml every 4-6 hours\r\nTepid Sponge Bath\r\nWOF: black vomitus, abdominal pain, skin petechiae               \r\nFollow up in 2 days if fever persists or child show signs of bleeding'),
 (43, 'PE', 'Pedia General Exam', 'GA: awake, fairly developed, fairly nourished\r\nVS:  Ht:                 Wt:  kg    HC:  cm\r\n        BP:                HR:         RR:            T: \r\nHEENT: closed ant fontanelle, anicteric sclera, pink conjunctiva, (-) ear discharge, (-) tragal tenderness, patent nasal passages, (-) TPC, (-) CLAD\r\nC/L: ECE, CBS, (-) rales, wheezes\r\nCVS: DHS, NR,RR, (-) murmur\r\nABD: protuberant, NABS, nontender, (-) hepatosplenomegaly\r\nEXT: (-) edema, (-) cyanosis \r\n'),
 (44, 'HX', 'Pedia ROS', 'GA:\r\n(+) weight loss\r\n(+) easy fatiguability\r\n(+) fever\r\nSkin\r\n(+) rashes\r\n(+) itchiness\r\n(+) dryness of skin\r\nHead\r\n(+) headache\r\nEyes\r\n(+) BOV\r\n(+) eye redness\r\n(+) double vision\r\nEars\r\n(+) hearing loss\r\n(+) dizziness\r\n(+) ear ache\r\n(+) ear discharge\r\nNose and Sinuses\r\n(+) frequent colds\r\n(+) nasal stuffiness\r\n(+) nasal discharge\r\n(+) nosebleed\r\nMouth and Throat\r\n(+) bleeding gums\r\n(+) sore throat\r\n(+) hoarseness\r\n(+) anterior neck mass\r\nBreast\r\n(+) breast lumps\r\n(+) nipple discharge\r\nRespiratory\r\n(+) cough\r\n(+) hemoptysis\r\n(+) wheezing\r\n(+) chest tightness\r\n(+) DOB\r\n(+) orthopnea\r\nCardiac\r\n(+) palpitations\r\n(+) PND\r\n(+) dyspnea\r\n(+) chest pain\r\nGIT\r\n(+) dysphagia\r\n(+) odynophagia\r\n(+) loss of appetite\r\n(+) indigestion\r\n(+) burping\r\n(+) bloatedness\r\n(+) change in stool caliber\r\n(+) hematochezia\r\n(+) hematemesis\r\n(+) LBM\r\n(+) constipation\r\n(+) abdominal pain\r\n(+) Jaundice\r\nUrinary\r\n(+) frequency\r\n(+) polyuria\r\n(+) nocturia\r\n(+) dysuria\r\n(+) hematuria\r\n(+) hesitancy\r\n(+) dribbling\r\n(+) incontinence\r\n(+) decreased force of urine\r\nGenital\r\n(+) bulging hernia\r\n(+) penile discharge\r\n(+) testicular pain\r\n(+) vaginal itchiness\r\n(+) vaginal discharge\r\nVascular\r\n(+) intermittent claudication\r\n(+) leg cramps\r\n(+) varicosities\r\nMusculoskeletal\r\n(+) muscle or joint pain\r\n(+) joint swelling\r\n(+) joint redness\r\n(+) joint stiffness\r\n(+) limitation of movement\r\nNeuro\r\n(+) fainting\r\n(+) seizures\r\n(+) weakness\r\n(+) paralysis\r\n(+) numbness\r\n(+) tingling\r\n(+) tremors\r\nHema\r\n(+) anemia\r\n(+) pallor\r\n(+) easy bruisability\r\nEndo\r\n(+) heat, cold intolerance\r\n(+) excessive sweating\r\n(+) exophthalmos\r\n(+) polydipsia\r\n(+) polyphagia\r\nPsychiatric\r\n(+) nervousness\r\n(+) tension\r\n(+) depression\r\n(+) suicidal ideation\r\n(+) agitation\r\n(+) sleep difficulty\r\n'),
 (45, 'TX', 'Mouth Ulcers', 'Treat mouth ulcers twice daily.\r\n- wash hands\r\n- wash child''s mouth with cleas soft cloth wrapped around the finger and wet with salt water\r\n- paint the mouth with half-strength gentian violet\r\n- wash hands again'),
@@ -16219,32 +16219,34 @@ CREATE TABLE IF NOT EXISTS `m_patient_epi_tcl` (
 -- Table structure for table `m_patient_fp`
 --
 
-DROP TABLE IF EXISTS `m_patient_fp`;
 CREATE TABLE IF NOT EXISTS `m_patient_fp` (
-  `fp_id` float NOT NULL auto_increment,
-  `patient_id` float NOT NULL default '0',
-  `date_enrolled` date NOT NULL,
-  `date_encoded` date NOT NULL,
-  `consult_id` float NOT NULL,
-  `last_edited` date NOT NULL,
-  `plan_more_children` char(1) NOT NULL default '',
-  `no_of_living_children_desired` tinyint(2) NOT NULL default '0',
-  `no_of_living_children_actual` tinyint(2) NOT NULL,
-  `birth_interval_desired` tinyint(2) NOT NULL,
-  `educ_id` varchar(10) NOT NULL default '',
-  `occup_id` varchar(10) NOT NULL default '',
-  `spouse_name` varchar(100) NOT NULL default '',
-  `spouse_educ_id` varchar(10) NOT NULL default '',
-  `spouse_occup_id` varchar(10) NOT NULL default '',
-  `ave_monthly_income` float NOT NULL default '0',
-  `user_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`fp_id`),
-  KEY `key_patient` (`patient_id`),
-  KEY `key_educ` (`educ_id`),
-  KEY `key_occup` (`occup_id`),
-  KEY `key_spouse_educ` (`spouse_educ_id`),
-  KEY `key_spouse_occup` (`spouse_occup_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+`fp_id` float NOT NULL auto_increment,
+`patient_id` float NOT NULL default '0',
+`date_enrolled` date NOT NULL,
+`date_encoded` date NOT NULL,
+`consult_id` float NOT NULL,
+`last_edited` date NOT NULL,
+`plan_more_children` char(1) NOT NULL default '',
+`no_of_living_children_desired` tinyint(2) NOT NULL default '0',
+`no_of_living_children_actual` tinyint(2) NOT NULL,
+`birth_interval_desired` tinyint(2) NOT NULL,
+`educ_id` varchar(10) NOT NULL default '',
+`occup_id` varchar(10) NOT NULL default '',
+`spouse_name` varchar(100) NOT NULL default '',
+`spouse_educ_id` varchar(10) NOT NULL default '',
+`spouse_occup_id` varchar(10) NOT NULL default '',
+`ave_monthly_income` float NOT NULL default '0',
+`user_id` int(11) NOT NULL default '0',
+`user_id_edited` int(11) NOT NULL,
+`uterine_mass_iud` int(3) NOT NULL,
+`pe_others` text NOT NULL,
+PRIMARY KEY  (`fp_id`),
+KEY `key_patient` (`patient_id`),
+KEY `key_educ` (`educ_id`),
+KEY `key_occup` (`occup_id`),
+KEY `key_spouse_educ` (`spouse_educ_id`),
+KEY `key_spouse_occup` (`spouse_occup_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `m_patient_fp`
@@ -16253,6 +16255,301 @@ CREATE TABLE IF NOT EXISTS `m_patient_fp` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `m_patient_fp_hx` (
+   `fp_id` float NOT NULL,
+   `patient_id` float NOT NULL,
+   `consult_id` float NOT NULL,
+   `history_id` varchar(100) NOT NULL,
+   `date_encoded` date NOT NULL,
+   `user_id` int(11) NOT NULL,
+   `last_edited` date NOT NULL,
+   `user_id_edited` int(11) NOT NULL
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE IF NOT EXISTS `m_patient_fp_pe` (
+   `fp_id` float NOT NULL,
+   `patient_id` float NOT NULL,
+   `pe_id` int(5) NOT NULL,
+   `consult_id` float NOT NULL,
+   `date_encoded` date NOT NULL,
+   `user_id` int(3) NOT NULL,
+   `last_edited` date NOT NULL,
+   `user_id_edited` int(3) NOT NULL
+ ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `m_patient_fp_pelvic` (
+    `fp_id` float NOT NULL,
+    `patient_id` float NOT NULL,
+    `consult_id` float NOT NULL,
+    `pelvic_id` int(5) NOT NULL,
+    `date_encoded` date NOT NULL,
+    `user_id` int(3) NOT NULL,
+    `last_edited` date NOT NULL,
+    `user_id_edited` int(3) NOT NULL
+  ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `m_patient_fp_obgyn` (
+    `fp_id` int(11) NOT NULL,
+    `patient_id` int(11) NOT NULL,
+    `obshx_id` int(5) NOT NULL,
+    `date_encoded` date NOT NULL,
+    `user_id` int(3) NOT NULL,
+    `last_edited` date NOT NULL,
+    `user_id_edited` int(3) NOT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `m_patient_fp_obgyn_details` (
+    `fp_id` float NOT NULL,
+    `patient_id` float NOT NULL,
+    `no_pregnancies` int(2) NOT NULL,
+    `fpal` varchar(10) NOT NULL,
+    `no_living_children` int(2) NOT NULL,
+    `date_last_delivery` date NOT NULL,
+    `type_last_delivery` varchar(50) NOT NULL,
+    `age_menarch` int(11) NOT NULL,
+    `past_menstrual_date` date NOT NULL,
+    `duration_bleeding` int(4) NOT NULL,
+    `date_encoded` date NOT NULL,
+    `user_id` int(11) NOT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `m_patient_fp_method` (
+ `fp_px_id` float NOT NULL AUTO_INCREMENT,
+ `fp_id` float NOT NULL,
+ `patient_id` float NOT NULL,
+ `consult_id` float NOT NULL,
+ `date_registered` date NOT NULL,
+ `date_encoded` date NOT NULL,
+ `method_id` varchar(10) NOT NULL,
+ `client_code` varchar(6) NOT NULL,
+ `treatment_partner` varchar(200) NOT NULL,
+ `permanent_method` set('Y','N') NOT NULL DEFAULT 'N',
+ `permanent_reason` varchar(200) NOT NULL,
+ `drop_out` set('Y','N') NOT NULL DEFAULT 'N',
+ `date_dropout` date NOT NULL,
+ `dropout_reason` text NOT NULL,
+ `dropout_remarks` text NOT NULL,
+ `user_id` float NOT NULL,
+ `last_edited` date NOT NULL,
+ `user_id_edited` float NOT NULL,
+ PRIMARY KEY (`fp_px_id`)
+ ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `m_patient_fp_method_service` (
+   `fp_service_id` float NOT NULL AUTO_INCREMENT,
+   `fp_id` float NOT NULL,
+   `fp_px_id` float NOT NULL,
+   `patient_id` float NOT NULL,
+   `consult_id` float NOT NULL,
+   `date_service` date NOT NULL,
+   `source_id` int(5) NOT NULL,
+   `quantity` int(11) NOT NULL DEFAULT '0',
+   `remarks` text NOT NULL,
+   `date_encoded` date NOT NULL,
+   `user_id` float NOT NULL,
+   `next_service_date` date NOT NULL,
+   PRIMARY KEY (`fp_service_id`)
+ ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `m_patient_fp_dropout` (
+  `dropout_id` float NOT NULL auto_increment,
+  `fp_id` float NOT NULL,
+  `patient_id` float NOT NULL,
+  `fp_px_id` float NOT NULL,
+  `reason_id` int(11) NOT NULL,
+  PRIMARY KEY  (`dropout_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+DROP TABLE IF EXISTS `m_lib_fp_dropoutreason`;
+CREATE TABLE IF NOT EXISTS `m_lib_fp_dropoutreason` (
+  `reason_id` int(5) NOT NULL auto_increment,
+  `reason_label` varchar(200) NOT NULL,
+  `fhsis_code` char(1) NOT NULL,
+  PRIMARY KEY  (`reason_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+INSERT INTO `m_lib_fp_dropoutreason` (`reason_id`, `reason_label`, `fhsis_code`) VALUES
+ 	(1, 'Pregnant', 'A'),(2, 'Desire to become pregnant', 'B'),(3, 'Medical complications', 'C'),
+ 	(4, 'Fear of side effects', 'D'),(5, 'Changed clinic', 'E'),(6, 'Husband disapproves', 'F'),
+ 	(7, 'Menopause', 'G'),(8, 'Lost or moved out of the area or residence', 'H'),(9, 'Failed to get supply', 'I'),
+ 	(10, 'IUD expelled', 'J'),(11, 'Unknown', 'K');
+
+
+
+DROP TABLE IF EXISTS `m_lib_fp_obgyn`;
+CREATE TABLE IF NOT EXISTS `m_lib_fp_obgyn` (
+   	`obshx_id` int(2) NOT NULL auto_increment,
+   	`obshx_name` varchar(200) NOT NULL,
+   	`obshx_cat` varchar(200) NOT NULL,
+    	PRIMARY KEY  (`obshx_id`)
+ 	) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+INSERT INTO `m_lib_fp_obgyn` (`obshx_id`, `obshx_name`, `obshx_cat`) VALUES
+ 	(1, 'Scanty', 'MENSES'),(2, 'Painful', 'MENSES'),(3, 'Moderate', 'MENSES'),(4, 'Regular', 'MENSES'),
+ 	(5, 'Heavy', 'MENSES'),(6, 'Hydaditiform Mole', 'OTHERS'),(7, 'Ecplopic Pregnancy', 'OTHERS'),
+ 	(8, 'No abnormal history', 'OTHERS');
+
+
+
+DROP TABLE IF EXISTS `m_lib_fp_methods`;
+CREATE TABLE IF NOT EXISTS `m_lib_fp_methods` (
+ 	  `method_id` varchar(10) NOT NULL DEFAULT '',
+ 	  `method_name` varchar(100) NOT NULL DEFAULT '',
+ 	  `method_gender` set('M','F') NOT NULL DEFAULT '',
+ 	  `fhsis_code` varchar(20) NOT NULL DEFAULT '',
+ 	  `report_order` int(11) NOT NULL,
+ 	  `unit` varchar(50) NOT NULL,
+ 	  PRIMARY KEY (`method_id`)
+ 	) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`, `fhsis_code`, `report_order`, `unit`) VALUES ('PILLS', 'Pills', 'F', 'PILLS', 3, 'set'),('CONDOM', 'Condom', 'M', 'CON', 11, 'pack'),('IUD', 'IUD', 'F', 'IUD', 4, 'set'),('NFPLAM', 'NFP Lactational amenorrhea', 'F', 'NFP-LAM', 8, ''),('DMPA', 'Depo-Lactational Amenorrhea ', 'F', 'DMPA', 5, 'vial'),('NFPBBT', 'NFP Basal Body Temperature', 'F', 'NFP-BBT', 7, ''),('NFPCM', 'NFP Cervical Mucus Method', 'F', 'NFP-CM', 6, ''),('NFPSTM', 'NFP Sympothermal Method', 'F', 'NFP-STM', 10, ''),('NFPSDM', 'NFP Standard Days Method', 'F', 'NFP-SDM', 9, ''),('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F', 'FSTR/BTL', 1, ''),('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2, '');
+
+
+DROP TABLE IF EXISTS `m_lib_fp_history_cat`;
+CREATE TABLE `m_lib_fp_history_cat` (`cat_id` varchar(10) NOT NULL default '',`cat_name` varchar(50) NOT NULL default '',PRIMARY KEY (`cat_id`))
+  ENGINE=MyISAM;
+
+INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('HEENT', 'HEENT');
+INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('CXHRT', 'CHEST/HEART');
+INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('ABD', 'ABDOMEN');
+INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('GEN', 'GENITAL');
+INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('EXT', 'EXTREMITIES');
+INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('SKIN', 'SKIN');
+INSERT INTO `m_lib_fp_history_cat` (`cat_id`, `cat_name`) VALUES ('ANY', 'HISTORY OF ANY OF THE FOLLOWING');
+
+
+
+DROP TABLE IF EXISTS `m_lib_fp_history`;
+CREATE TABLE `m_lib_fp_history` (`history_id` varchar(10) NOT NULL default '',`history_text` varchar(100) NOT NULL default '',`history_cat` varchar(15) NOT NULL default '',PRIMARY KEY (`history_id`)
+ )ENGINE=MyISAM;
+
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('EPILEPSY', 'Epilepsy/Convulsion/Seizure', 'HEENT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('HEADACHE', 'Severe headache/dizziness', 'HEENT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('VISION', 'Visual disturbance/blurring of vision', 'HEENT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('YCONJ', 'Yellowish conjunctive', 'HEENT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('ETHY', 'Enlarged thyroid', 'HEENT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('CXPAIN', 'Severe chest pain', 'CXHRT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('FATIGUE', 'Shortness of breath and easy fatiguability', 'CXHRT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('BRSTMASS', 'Breast/axillary masses', 'CXHRT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('NIPBLOOD', 'Nipple discharges (blood)', 'CXHRT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('NIPPUS', 'Nipple discharges (pus)', 'CXHRT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('SYS140', 'Systolic of 140 & above', 'CXHRT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('DIAS90', 'Diastolic of 90 & above', 'CXHRT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('CVAHARHD', 'Family history of CVA (strokes), hypertension, asthma, rheumatic heart disease', 'CXHRT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('MASSABD', 'Mass in the abdomen', 'ABD');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('GALL', 'History of gallbladder disease', 'ABD');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('LIVER', 'History of liver disease', 'ABD');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('UTERUS', 'Mass in the uterus', 'GEN');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('VAGDISCH', 'Vaginal discharge', 'GEN');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('INTERBLEED', 'Intermenstrual bleeding', 'GEN');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('POSTBLEED', 'Postcoital bleeding', 'GEN');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('VARICOSE', 'Severe varicosities', 'EXT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('LEGPAIN', 'Swelling or severe pain in the legs not related to injuries', 'EXT');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('YELLOWSKIN', 'Yellowish skin', 'SKIN');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('SMOKING', 'Smoking', 'ANY');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('ALLERGY', 'Allergies', 'ANY');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('DRUGINTAKE', 'Drug intake (anti-TB, anti-diabetic, anticonvulsant)', 'ANY');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('STD', 'STD', 'ANY');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('MPARTNERS', 'Multiple partners', 'ANY');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('BLEEDING', 'Bleeding tendencies (nose, gums, etc.)', 'ANY');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('ANEMIA', 'Anemia', 'ANY');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('DIABETES', 'Diabetes', 'ANY');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('HMOLE', 'Hydatidiform mole (w/in the last 12 mos.)', 'ANY');
+ INSERT INTO `m_lib_fp_history` (`history_id`, `history_text`, `history_cat`) VALUES ('ECTPREG', 'Ectopic pregnancy', 'ANY');
+
+
+
+DROP TABLE IF EXISTS `m_lib_fp_pe_cat`;
+CREATE TABLE IF NOT EXISTS `m_lib_fp_pe_cat` (
+  `pe_cat_id` varchar(20) NOT NULL,
+  `pe_cat_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`pe_cat_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+INSERT INTO `m_lib_fp_pe_cat` (`pe_cat_id`,`pe_cat_name`) VALUES ('CONJUNCTIVA','CONJUNCTIVA');
+INSERT INTO `m_lib_fp_pe_cat` (`pe_cat_id`,`pe_cat_name`) VALUES ('NECK','NECK');
+INSERT INTO `m_lib_fp_pe_cat` (`pe_cat_id`,`pe_cat_name`) VALUES ('BREAST','BREAST');
+INSERT INTO `m_lib_fp_pe_cat` (`pe_cat_id`,`pe_cat_name`) VALUES ('THORAX','THORAX');
+INSERT INTO `m_lib_fp_pe_cat` (`pe_cat_id`,`pe_cat_name`) VALUES ('ABDOMEN','ABDOMEN');
+INSERT INTO `m_lib_fp_pe_cat` (`pe_cat_id`,`pe_cat_name`) VALUES ('EXTREMITIES','EXTREMITIES');
+
+
+DROP TABLE IF EXISTS `m_lib_fp_pe`;
+CREATE TABLE `m_lib_fp_pe` (
+	`pe_id` INT( 5 ) NOT NULL AUTO_INCREMENT ,
+	`pe_name` VARCHAR( 100 ) NOT NULL ,
+	`pe_cat` VARCHAR( 20 ) NOT NULL ,PRIMARY KEY ( `pe_id` )
+	) ENGINE = MYISAM;
+
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Pale',`pe_cat`='CONJUNCTIVA';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Yellowish',`pe_cat`='CONJUNCTIVA';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Enlarged Thyroid',`pe_cat`='NECK';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Enlarged Lymph Nodes',`pe_cat`='NECK';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Mass',`pe_cat`='BREAST';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Nipple Discharge',`pe_cat`='BREAST';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Skin-orange-peel or dimpling',`pe_cat`='BREAST';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Enlarged Axillary Lymph Nodes',`pe_cat`='BREAST';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Abnormal Heart Sounds/Cardiac Rate',`pe_cat`='THORAX';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Abnormal Breath Sounds/Respiratory Rate',`pe_cat`='THORAX';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Enlarge Liver',`pe_cat`='ABDOMEN';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Mass',`pe_cat`='ABDOMEN';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Tenderness',`pe_cat`='ABDOMEN';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Edema',`pe_cat`='EXTREMITIES';
+INSERT INTO `m_lib_fp_pe` SET `pe_name`='Varicosities',`pe_cat`='EXTREMITIES';
+
+
+DROP TABLE IF EXISTS `m_lib_fp_pelvic_cat`;
+CREATE TABLE `m_lib_fp_pelvic_cat` (
+	`pelvic_cat_id` VARCHAR( 20 ) NOT NULL ,
+	`pelvic_cat_name` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( `pelvic_cat_id` )) ENGINE = MYISAM;
+
+INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('PERENIUM','PERENIUM');
+INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('VAGINA','VAGINA');
+INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('CERVIX','CERVIX');
+INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('CERVIXCOLOR','Color');
+INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('CERVIXCONSISTENCY','Consistency');
+INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('UTERUSPOS','UTERUS POSITION');
+INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('UTERUSSIZE','UTERUS SIZE');
+INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('UTERUSMASS','UTERUS MASS');
+INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('ADNEXA','ADNEXA');
+
+
+DROP TABLE IF EXISTS `m_lib_fp_pelvic`;
+CREATE TABLE `m_lib_fp_pelvic` (
+	`pelvic_id` INT( 5 ) NOT NULL AUTO_INCREMENT ,
+	`pelvic_name` VARCHAR( 50 ) NOT NULL ,
+	`pelvic_cat` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( `pelvic_id` )) ENGINE = MYISAM;
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Scars',`pelvic_cat`='PERENIUM';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Warts',`pelvic_cat`='PERENIUM';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Reddish',`pelvic_cat`='PERENIUM';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Laceration',`pelvic_cat`='PERENIUM';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Congested',`pelvic_cat`='VAGINA';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Bartholin\'s cyst',`pelvic_cat`='VAGINA';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Warts',`pelvic_cat`='VAGINA';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Skene\'s Gland Discharge',`pelvic_cat`='VAGINA';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Rectocele',`pelvic_cat`='VAGINA';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Cytocele',`pelvic_cat`='VAGINA';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Congested',`pelvic_cat`='CERVIX';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Erosion',`pelvic_cat`='CERVIX';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Discharge',`pelvic_cat`='CERVIX';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Polyps/Cyst',`pelvic_cat`='CERVIX';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Laceration',`pelvic_cat`='CERVIX';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Pinkish',`pelvic_cat`='CERVIXCOLOR';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Bluish',`pelvic_cat`='CERVIXCOLOR';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Bartholin\'s cyst',`pelvic_cat`='VAGINA';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Firm',`pelvic_cat`='CERVIXCONSISTENCY';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Soft',`pelvic_cat`='CERVIXCONSISTENCY';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Mid',`pelvic_cat`='UTERUSPOS';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Anteflexed',`pelvic_cat`='UTERUSPOS';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Retroflexed',`pelvic_cat`='UTERUSPOS';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Normal',`pelvic_cat`='UTERUSSIZE';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Small',`pelvic_cat`='UTERUSSIZE';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Large',`pelvic_cat`='UTERUSSIZE';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Normal',`pelvic_cat`='ADNEXA';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Mass',`pelvic_cat`='ADNEXA';
+INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Tenderness',`pelvic_cat`='ADNEXA';
 --
 -- Table structure for table `m_patient_injury_tcl`
 --
@@ -17422,7 +17719,7 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (4, 'Number of families who have consulted', 2, '', 'G', 'Y'),
 (5, 'Number of families with PhilHealth', 2, '', 'G', 'Y'),
 (6, 'Number of families with PhilHealth that have been given services', 2, '', 'G', 'Y'),
-(7, 'Number of FIC''s (including "OZ''s")', 3, '', 'G', 'Y'),
+(7, 'Number of FIC''s (including "OZ''s', 3, '', 'G', 'Y'),
 (8, 'Number of Antigen given', 3, '', 'G', 'Y'),
 (9, 'Number of Antigen not given', 3, '', 'G', 'Y'),
 (10, 'Number of Missed EPI appointments', 3, '', 'G', 'Y'),

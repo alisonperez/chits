@@ -433,6 +433,15 @@ class family_planning extends module{
 
 	function drop_tables(){
 		module::execsql("DROP table m_patient_fp");
+		module::execsql("DROP table m_patient_fp_dropout");
+		module::execsql("DROP table m_patient_fp_hx");
+		module::execsql("DROP table m_patient_fp_method");
+		module::execsql("DROP table m_patient_fp_method_service");
+		module::execsql("DROP table m_patient_fp_obgyn");
+		module::execsql("DROP table m_patient_fp_obgyn_details");
+		module::execsql("DROP table m_patient_fp_pe");
+		module::execsql("DROP table m_patient_fp_pelvic");
+
 		module::execsql("DROP table m_lib_fp_methods");
 		module::execsql("DROP table m_lib_fp_history_cat");
 		module::execsql("DROP table m_lib_fp_history");
@@ -440,6 +449,11 @@ class family_planning extends module{
 		module::execsql("DROP table m_lib_fp_pe");
 		module::execsql("DROP table m_lib_fp_pelvic_cat");
 		module::execsql("DROP table m_lib_fp_pelvic");
+		module::execsql("DROP table m_lib_fp_client");
+		module::execsql("DROP table m_lib_fp_dropoutreason");
+		module::execsql("DROP table m_lib_fp_obgyn");
+
+
 	}
 
 
