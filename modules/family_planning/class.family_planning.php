@@ -1296,7 +1296,7 @@ class family_planning extends module{
 					
 					echo "</td>";
 					
-					echo "<tr><td>Quantity (if applicable)</td>";
+					echo "<tr><td class='boxtitle'>Quantity (if applicable)</td>";
 					echo "<td><input type='text' name='txt_qty' size='3' value='$quantity'></input>&nbsp;".$unit."</td>";
 					echo "</tr>";
 					
