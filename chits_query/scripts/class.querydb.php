@@ -770,15 +770,15 @@ class querydb{
 	}
 	
 	function process_dhc_pho(){
-		echo "<a href='../pdf_reports/dental_pho.php'></a>";
+		echo "<a href='./pdf_reports/dental_pho.php'>Show PHO Dental Report</a>";
 	}
 	
 	function process_dhc_quarterly(){
-		echo "<a href='../pdf_reports/dental_quarterly.php'></a>";
+		echo "<a href='./pdf_reports/dental_quarterly.php'>Show Dental Quarterly Report</a>";
 	}
 	
 	function process_dhc_summary(){
-		echo "<a href='../pdf_reports/dental_summary.php'>Show Dental Summary Table</a>";
+		echo "<a href='./pdf_reports/dental_summary.php'>Show Dental Summary Table</a>";
 	}
 
 }
