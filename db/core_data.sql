@@ -15207,6 +15207,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_ptgroup` (
 
 INSERT INTO `m_lib_ptgroup` (`ptgroup_id`, `ptgroup_name`, `ptgroup_module`, `ptgroup_condition`) VALUES
 ('CHILD', 'Child Care', 'ccdev', 'is_child'),
+('DENTAL', 'Dental Health Care', 'dental', ''),
 ('DIAB', 'Diabetic', '', ''),
 ('FP', 'Family Planning', 'family_planning', ''),
 ('HPN', 'Hypertensive', '', ''),
