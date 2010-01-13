@@ -16371,38 +16371,38 @@ CREATE TABLE IF NOT EXISTS `m_lib_fp_dropoutreason` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 INSERT INTO `m_lib_fp_dropoutreason` (`reason_id`, `reason_label`, `fhsis_code`) VALUES
- 	(1, 'Pregnant', 'A'),(2, 'Desire to become pregnant', 'B'),(3, 'Medical complications', 'C'),
- 	(4, 'Fear of side effects', 'D'),(5, 'Changed clinic', 'E'),(6, 'Husband disapproves', 'F'),
- 	(7, 'Menopause', 'G'),(8, 'Lost or moved out of the area or residence', 'H'),(9, 'Failed to get supply', 'I'),
- 	(10, 'IUD expelled', 'J'),(11, 'Unknown', 'K');
+  (1, 'Pregnant', 'A'),(2, 'Desire to become pregnant', 'B'),(3, 'Medical complications', 'C'),
+  (4, 'Fear of side effects', 'D'),(5, 'Changed clinic', 'E'),(6, 'Husband disapproves', 'F'),
+  (7, 'Menopause', 'G'),(8, 'Lost or moved out of the area or residence', 'H'),(9, 'Failed to get supply', 'I'),
+  (10, 'IUD expelled', 'J'),(11, 'Unknown', 'K');
 
 
 
 DROP TABLE IF EXISTS `m_lib_fp_obgyn`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_obgyn` (
-   	`obshx_id` int(2) NOT NULL auto_increment,
-   	`obshx_name` varchar(200) NOT NULL,
-   	`obshx_cat` varchar(200) NOT NULL,
-    	PRIMARY KEY  (`obshx_id`)
- 	) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+    `obshx_id` int(2) NOT NULL auto_increment,
+    `obshx_name` varchar(200) NOT NULL,
+    `obshx_cat` varchar(200) NOT NULL,
+     PRIMARY KEY  (`obshx_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 INSERT INTO `m_lib_fp_obgyn` (`obshx_id`, `obshx_name`, `obshx_cat`) VALUES
- 	(1, 'Scanty', 'MENSES'),(2, 'Painful', 'MENSES'),(3, 'Moderate', 'MENSES'),(4, 'Regular', 'MENSES'),
- 	(5, 'Heavy', 'MENSES'),(6, 'Hydaditiform Mole', 'OTHERS'),(7, 'Ecplopic Pregnancy', 'OTHERS'),
- 	(8, 'No abnormal history', 'OTHERS');
+  (1, 'Scanty', 'MENSES'),(2, 'Painful', 'MENSES'),(3, 'Moderate', 'MENSES'),(4, 'Regular', 'MENSES'),
+  (5, 'Heavy', 'MENSES'),(6, 'Hydaditiform Mole', 'OTHERS'),(7, 'Ecplopic Pregnancy', 'OTHERS'),
+  (8, 'No abnormal history', 'OTHERS');
 
 
 
 DROP TABLE IF EXISTS `m_lib_fp_methods`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_methods` (
- 	  `method_id` varchar(10) NOT NULL DEFAULT '',
- 	  `method_name` varchar(100) NOT NULL DEFAULT '',
- 	  `method_gender` set('M','F') NOT NULL DEFAULT '',
- 	  `fhsis_code` varchar(20) NOT NULL DEFAULT '',
- 	  `report_order` int(11) NOT NULL,
- 	  `unit` varchar(50) NOT NULL,
- 	  PRIMARY KEY (`method_id`)
- 	) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+    `method_id` varchar(10) NOT NULL DEFAULT '',
+    `method_name` varchar(100) NOT NULL DEFAULT '',
+    `method_gender` set('M','F') NOT NULL DEFAULT '',
+    `fhsis_code` varchar(20) NOT NULL DEFAULT '',
+    `report_order` int(11) NOT NULL,
+    `unit` varchar(50) NOT NULL,
+    PRIMARY KEY (`method_id`)
+  ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`, `fhsis_code`, `report_order`, `unit`) VALUES ('PILLS', 'Pills', 'F', 'PILLS', 3, 'set'),('CONDOM', 'Condom', 'M', 'CON', 11, 'pack'),('IUD', 'IUD', 'F', 'IUD', 4, 'set'),('NFPLAM', 'NFP Lactational amenorrhea', 'F', 'NFP-LAM', 8, ''),('DMPA', 'Depo-Lactational Amenorrhea ', 'F', 'DMPA', 5, 'vial'),('NFPBBT', 'NFP Basal Body Temperature', 'F', 'NFP-BBT', 7, ''),('NFPCM', 'NFP Cervical Mucus Method', 'F', 'NFP-CM', 6, ''),('NFPSTM', 'NFP Sympothermal Method', 'F', 'NFP-STM', 10, ''),('NFPSDM', 'NFP Standard Days Method', 'F', 'NFP-SDM', 9, ''),('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F', 'FSTR/BTL', 1, ''),('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2, '');
 
@@ -16478,10 +16478,10 @@ INSERT INTO `m_lib_fp_pe_cat` (`pe_cat_id`,`pe_cat_name`) VALUES ('EXTREMITIES',
 
 DROP TABLE IF EXISTS `m_lib_fp_pe`;
 CREATE TABLE `m_lib_fp_pe` (
-	`pe_id` INT( 5 ) NOT NULL AUTO_INCREMENT ,
-	`pe_name` VARCHAR( 100 ) NOT NULL ,
-	`pe_cat` VARCHAR( 20 ) NOT NULL ,PRIMARY KEY ( `pe_id` )
-	) ENGINE = MYISAM;
+ `pe_id` INT( 5 ) NOT NULL AUTO_INCREMENT ,
+ `pe_name` VARCHAR( 100 ) NOT NULL ,
+ `pe_cat` VARCHAR( 20 ) NOT NULL ,PRIMARY KEY ( `pe_id` )
+ ) ENGINE = MYISAM;
 
 INSERT INTO `m_lib_fp_pe` SET `pe_name`='Pale',`pe_cat`='CONJUNCTIVA';
 INSERT INTO `m_lib_fp_pe` SET `pe_name`='Yellowish',`pe_cat`='CONJUNCTIVA';
@@ -16502,8 +16502,8 @@ INSERT INTO `m_lib_fp_pe` SET `pe_name`='Varicosities',`pe_cat`='EXTREMITIES';
 
 DROP TABLE IF EXISTS `m_lib_fp_pelvic_cat`;
 CREATE TABLE `m_lib_fp_pelvic_cat` (
-	`pelvic_cat_id` VARCHAR( 20 ) NOT NULL ,
-	`pelvic_cat_name` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( `pelvic_cat_id` )) ENGINE = MYISAM;
+ `pelvic_cat_id` VARCHAR( 20 ) NOT NULL ,
+ `pelvic_cat_name` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( `pelvic_cat_id` )) ENGINE = MYISAM;
 
 INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('PERENIUM','PERENIUM');
 INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('VAGINA','VAGINA');
@@ -16518,9 +16518,9 @@ INSERT INTO `m_lib_fp_pelvic_cat` (`pelvic_cat_id`,`pelvic_cat_name`) VALUES ('A
 
 DROP TABLE IF EXISTS `m_lib_fp_pelvic`;
 CREATE TABLE `m_lib_fp_pelvic` (
-	`pelvic_id` INT( 5 ) NOT NULL AUTO_INCREMENT ,
-	`pelvic_name` VARCHAR( 50 ) NOT NULL ,
-	`pelvic_cat` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( `pelvic_id` )) ENGINE = MYISAM;
+ `pelvic_id` INT( 5 ) NOT NULL AUTO_INCREMENT ,
+ `pelvic_name` VARCHAR( 50 ) NOT NULL ,
+ `pelvic_cat` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( `pelvic_id` )) ENGINE = MYISAM;
 INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Scars',`pelvic_cat`='PERENIUM';
 INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Warts',`pelvic_cat`='PERENIUM';
 INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Reddish',`pelvic_cat`='PERENIUM';
@@ -17827,3 +17827,29 @@ CREATE TABLE IF NOT EXISTS `user_logs` (
   `pc_ip` text NOT NULL,
   PRIMARY KEY (`log_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE IF NOT EXISTS `m_dental_patient_ohc` (`ohc_id` float NOT NULL auto_increment COMMENT 'Patient Oral Health Condition',`patient_id` int(11) NOT NULL,`consult_id` float NOT NULL,`is_patient_pregnant` char(1) COLLATE swe7_bin NOT NULL,`tooth_number` int(11) NOT NULL,`tooth_condition` varchar(5) collate swe7_bin NOT NULL,`date_of_oral` date NOT NULL,`dentist` float NOT NULL,PRIMARY KEY  (`ohc_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Patient Oral Health Condition' AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `m_dental_services` (`service_id` float NOT NULL auto_increment,`patient_id` float NOT NULL,`consult_id` float NOT NULL,`tooth_number` int(11) NOT NULL,`service_provided` varchar(5) collate swe7_bin NOT NULL,`date_of_service` date NOT NULL,`dentist` float NOT NULL,PRIMARY KEY  (`service_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `m_lib_dental_tooth_condition` (`legend` varchar(5) collate swe7_bin NOT NULL COMMENT 'condition legend',`status` varchar(50) collate swe7_bin NOT NULL COMMENT 'tooth status Perma/Tempo',`condition` varchar(50) NOT NULL COMMENT 'condition description',PRIMARY KEY  (`legend`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `m_lib_dental_tooth_condition` (`legend`, `status`, `condition`) VALUES ('D', 'Permanent', 'Decayed'),('F', 'Permanent', 'Filled'),('JC', 'Permanent', 'Jacket Crown'),('M', 'Permanent', 'Missing'),('P', 'Permanent', 'Pontic'),('S', 'Permanent', 'Supernumerary Tooth'),('Un', 'Permanent', 'Unerupted'),('X', 'Permanent', 'Indicated for Extraction'),('Y', 'Permanent', 'Sound/Sealed'),('d', 'Temporary', 'Decayed'),('e', 'Temporary', 'Missing'),('f', 'Temporary', 'Filled'),('jc', 'Temporary', 'Jacket Crown'),('p', 'Temporary', 'Pontic'),('s', 'Temporary', 'Supernumerary Tooth'),('un', 'Temporary', 'Unerupted'),('x', 'Temporary', 'Indicated for Extraction'),('y', 'Temporary', 'Sound/Sealed');
+
+CREATE TABLE IF NOT EXISTS `m_lib_dental_services` (`legend` varchar(5) collate swe7_bin NOT NULL COMMENT 'service legend',`service` varchar(50) NOT NULL COMMENT 'service description',PRIMARY KEY  (`legend`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `m_lib_dental_services` (`legend`, `service`) VALUES ('O', 'Others'),('PF', 'Permanent Filling'),('S', 'Sealant'),('TF', 'Temporary Filling'),('X', 'Extraction');
+
+CREATE TABLE IF NOT EXISTS `m_dental_patient_ohc_table_a` (`ohc_table_id` float NOT NULL auto_increment,`patient_id` float NOT NULL,`consult_id` float NOT NULL,`date_of_oral` date NOT NULL,`dental_caries` char(3) collate swe7_bin NOT NULL,`gingivitis_periodontal_disease` char(3) collate swe7_bin NOT NULL,`debris` char(3) collate swe7_bin NOT NULL,`calculus` char(3) collate swe7_bin NOT NULL,`abnormal_growth` char(3) collate swe7_bin NOT NULL,`cleft_lip_palate` char(3) collate swe7_bin NOT NULL,`others` char(3) collate swe7_bin NOT NULL,`healthy_gums` char(3) COLLATE swe7_bin NOT NULL,`dento_facial_anomaly` char(3) COLLATE swe7_bin NOT NULL,PRIMARY KEY  (`ohc_table_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `m_dental_fhsis` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`indicator` int(11) NOT NULL,`indicator_qualified` char(3) COLLATE swe7_bin NOT NULL,`date_of_consultation` date NOT NULL,`age` float NOT NULL,`gender` char(1) COLLATE swe7_bin NOT NULL,PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `m_dental_other_services` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`date_of_service` date NOT NULL,`dentist` float NOT NULL,`supervised_tooth_brushing` char(3) COLLATE swe7_bin NOT NULL,`altraumatic_restorative_treatment` char(3) COLLATE swe7_bin NOT NULL,`out_removal_of_unsavable_teeth` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`out_referral_of_complicates_cases` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`out_treatment_of_post_extraction_complications` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`out_drainage_of_localized_oral_abscess` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`education_and_counselling` char(3) COLLATE swe7_bin NOT NULL,`scaling` char(3) COLLATE swe7_bin NOT NULL,`gum_treatment` char(3) COLLATE swe7_bin NOT NULL,PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB  DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
