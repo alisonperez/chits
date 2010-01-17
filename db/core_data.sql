@@ -2323,12 +2323,12 @@ CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (
 --
 
 
-INSERT INTO `m_lib_fp_client` (`client_id`, `client_code`, `client_text`) VALUES
-(1, 'CU', 'Current User'),
-(2, 'NA', 'New Acceptor'),
-(3, 'CM', 'Changing Method'),
-(4, 'CC', 'Changing Clinic'),
-(5, 'RS', 'Restart');
+INSERT INTO `m_lib_fp_client` (`client_id`, `client_code`, `client_text`, `client_class`) VALUES
+(1, 'CU', 'Current User - New to Other Method', 'CU'),
+(2, 'NA', 'New Acceptor', 'NA'),
+(3, 'CM', 'Changing Method', 'CU'),
+(4, 'CC', 'Changing Clinic', 'CU'),
+(5, 'RS', 'Restart', 'CU');
 
 
 -- --------------------------------------------------------
