@@ -2308,12 +2308,12 @@ INSERT INTO `m_lib_education` (`educ_id`, `educ_name`) VALUES
 -- Table structure for table `m_lib_fp_client`
 --
 
-DROP TABLE IF EXISTS `m_lib_fp_client`;
 CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (
-  `client_id` int(7) NOT NULL auto_increment,
+  `client_id` int(7) NOT NULL AUTO_INCREMENT,
   `client_code` varchar(2) NOT NULL,
   `client_text` text NOT NULL,
-  PRIMARY KEY  (`client_id`)
+  `client_class` set('CU','NA') NOT NULL,
+  PRIMARY KEY (`client_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
@@ -2324,7 +2324,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (
 
 
 INSERT INTO `m_lib_fp_client` (`client_id`, `client_code`, `client_text`, `client_class`) VALUES
-(1, 'CU', 'Current User - New to Other Method', 'CU'),
+(1, 'CU', 'Current User (New to Other Method)', 'CU'),
 (2, 'NA', 'New Acceptor', 'NA'),
 (3, 'CM', 'Changing Method', 'CU'),
 (4, 'CC', 'Changing Clinic', 'CU'),
