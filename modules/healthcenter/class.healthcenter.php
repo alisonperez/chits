@@ -499,8 +499,8 @@ class healthcenter extends module{
             //   an existing patient in today's consult list
             if ($post_vars["submitconsult"] || $get_vars["enter_consult"] || $post_vars["confirm_add_consult"]) {
                 //$post_vars["consult_id"] = $get_vars["enter_consult"];
-                // confirms consult for found patients
-                $this->process_consult($menu_id, $post_vars, $get_vars);
+                // confirms consult for found patients		                
+		$this->process_consult($menu_id, $post_vars, $get_vars);
             }
             if ($post_vars["submitsearch"]) {
                 // lists down search results for patient
@@ -1227,6 +1227,8 @@ class healthcenter extends module{
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
+	
+
         // make sure you catch where patient_id is coming from
         if ($post_vars["consult_patient_id"]) {
             $patient_id = $post_vars["consult_patient_id"];
@@ -1266,8 +1268,10 @@ class healthcenter extends module{
                 }
             }
         } else {
+
             // insert into consult table if there are no
             //   possible duplicate entries
+
             $sql = "insert into m_consult (patient_id, user_id, healthcenter_id, consult_date) ".
                    "values ('$patient_id', '".$_SESSION["userid"]."', '".$_SESSION["datanode"]["code"]."', sysdate())";
             if ($result = mysql_query($sql)) {
@@ -1378,6 +1382,7 @@ class healthcenter extends module{
             $arg_list = func_get_args();
             $patient_id = $arg_list[0];
         }
+
         $date = date("Y-m-d");
         $sql = "select patient_id from m_consult ".
              "where consult_end = '0000-00-00 00:00:00' and ".

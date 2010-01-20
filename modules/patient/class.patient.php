@@ -253,7 +253,8 @@ class patient extends module{
         }
         if ($post_vars["submitpatient"]) {
             $this->process_patient($menu_id, $post_vars, $get_vars,$patient);
-        }
+        }                    
+        
         print "<table><tr valign='top'><td colspan='2'>";
         patient::patient_info($menu_id, $post_vars, $get_vars);
         print "</td></tr>";

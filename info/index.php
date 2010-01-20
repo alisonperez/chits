@@ -65,7 +65,22 @@ if ($user->check_users()) {
 // this is server-generated code
 // do not edit or delete
 include "../modules/_modules.php";
-
+mysql_query("ALTER TABLE `m_patient` DROP PRIMARY KEY , ADD PRIMARY KEY (`patient_id`)");
+mysql_query("ALTER TABLE `m_consult` DROP PRIMARY KEY , ADD PRIMARY KEY (`consult_id`)");
+mysql_query("ALTER TABLE `m_family` DROP PRIMARY KEY , ADD PRIMARY KEY (`family_id`)");
+mysql_query("ALTER TABLE `m_consult_notes` DROP PRIMARY KEY , ADD PRIMARY KEY (`notes_id`)");
+mysql_query("ALTER TABLE `content` DROP PRIMARY KEY , ADD PRIMARY KEY (`content_id`)");
+mysql_query("ALTER TABLE `m_patient_mc` DROP PRIMARY KEY, ADD PRIMARY KEY(`mc_id`)");
+mysql_query("ALTER TABLE `m_patient_fp` DROP PRIMARY KEY, ADD PRIMARY KEY(`fp_id`)");
+mysql_query("ALTER TABLE `m_patient_ccdev` DROP PRIMARY KEY, ADD PRIMARY KEY(`ccdev_id`)");
+mysql_query("ALTER TABLE `m_patient_ntp` DROP PRIMARY KEY, ADD PRIMARY KEY(`ntp_id`)"); 
+mysql_query("ALTER TABLE `m_consult_appointments` DROP PRIMARY KEY, ADD PRIMARY KEY(`schedule_id`)");
+mysql_query("ALTER TABLE `m_dental_fhsis` DROP PRIMARY KEY, ADD PRIMARY KEY(`record_number`)");
+mysql_query("ALTER TABLE `m_lib_population` DROP PRIMARY KEY, ADD PRIMARY KEY(`population_id`)");
+mysql_query("ALTER TABLE `m_news` DROP PRIMARY KEY, ADD PRIMARY KEY(`news_id`)");
+mysql_query("ALTER TABLE `m_patient_fp_dropout` DROP PRIMARY KEY, ADD PRIMARY KEY(`dropout_id`)");
+mysql_query("ALTER TABLE `m_patient_fp_method` DROP PRIMARY KEY, ADD PRIMARY KEY(`fp_px_id`)");
+mysql_query("ALTER TABLE `m_patient_fp_method_service` DROP PRIMARY KEY, ADD PRIMARY KEY(`fp_service_id`)");
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
