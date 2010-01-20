@@ -17758,7 +17758,11 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (61, 'DHC-PHO Report', 12, '', 'G', 'Y'),
 (62, 'DHC Summary Table', 12, '', 'S', 'Y'),
 (42, 'FP Quarterly Report', 9, '', 'Q', 'Y'),
-(43, 'FP Monthly Report', 9, '', 'M', 'Y');
+(43, 'FP Monthly Report', 9, '', 'M', 'Y'),
+(70, 'Morbidity Disease Weekly Report (W-BHS)', 7, '', 'W', 'Y'),
+(71, 'Morbidity Disease Monthly Report (M2)', 7, '', 'M', 'Y'),
+(72, 'Morbidity Disease Quarterly Report (Q2)', 7, '', 'Q', 'Y'),
+(73, 'Morbidity Disease Annual Report', 7, '', 'A', 'Y');
 
 
 -- --------------------------------------------------------
