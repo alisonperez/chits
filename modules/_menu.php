@@ -1,7 +1,7 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-01-13 18:11:37
+// Generated 2010-01-21 12:54:13
 // Module: _menu.php
 // Author: Herman Tolentino MD
 //
@@ -210,6 +210,9 @@ if ($HTTP_GET_VARS["menu_id"]) {
 		break;
 	case 1214:
 		$vaccine->_vaccine($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
+		break;
+	case 1352:
+		$weekly_calendar->_weekly_calendar($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
 		break;
 	}
 }

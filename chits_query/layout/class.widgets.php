@@ -100,7 +100,7 @@
 
 		echo "<tr><td>Start Date (yyyy-mm-dd)</td>";
 		echo "<td><input name=\"sdate\" type=\"text\" size=\"12\" maxlength=\"10\" value=\"$psdate\" readonly></input>";		
-		echo "<a href=\"javascript:show_calendar4('document.form_query.sdate', document.form_query.sdate.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a>";				
+		echo "<a href=\"javascript:show_calendar4('document.form_query.sdate', document.form_query.sdate.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a>";
 		echo "</td></tr>";
                 echo "<tr><td>End Date (yyyy-mm-dd)</td>";
                 echo "<td><input name=\"edate\" type=\"text\" size=\"12\" maxlength=\"10\" value=\"$pedate\" readonly>";
