@@ -184,6 +184,7 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 ('tcl', 'Y', '0.2-2004-05-19', 'CHITS Module - Target Client List', 'Herman Tolentino MD', 'tcl'),
 ('template', 'Y', '0.2-2004-05-02', 'CHITS Library - Template', 'Herman Tolentino MD', 'template'),
 ('vaccine', 'Y', '0.4-2004-05-21', 'CHITS Module - Vaccine', 'Herman Tolentino MD', 'vaccine'),
+('weekly_calendar', 'Y', '0.3-2010-01-21', 'CHITS Library - Weekly Calendar', 'darth_ali', 'weekly_calendar'),
 ('wtforage', 'Y', '0.1-2004-05-10', 'CHITS Library - Weight for Age', 'Ariel Betan/Herman Tolentino', 'wtforage');
 
 -- --------------------------------------------------------
@@ -356,6 +357,7 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('vaccine', 'healthcenter'),
 ('vaccine', 'module'),
 ('vaccine', 'patient'),
+('weekly_calendar', 'module'),
 ('wtforage', 'ccdev'),
 ('wtforage', 'healthcenter'),
 ('wtforage', 'module'),
@@ -458,8 +460,8 @@ INSERT INTO `module_menu` (`menu_id`, `module_id`, `menu_cat`, `menu_title`, `me
 (1347, 'fp', 'LIBRARIES', 'FP History', 1347, 'Y', '_fp_history'),
 (1348, 'fp', 'LIBRARIES', 'FP Methods', 1348, 'Y', '_fp_methods'),
 (1349, 'population', 'LIBRARIES', 'Population', 1349, 'Y', '_population'),
-(1350, 'computebmi', 'PATIENTS', 'Compute BMI', 1350, 'Y', '_computebmi');
-
+(1350, 'computebmi', 'PATIENTS', 'Compute BMI', 1350, 'Y', '_computebmi'),
+(1352, 'weekly_calendar', 'LIBRARIES', 'Weekly Calendar', 1352, 'Y', '_weekly_calendar');
 -- --------------------------------------------------------
 
 --
@@ -574,7 +576,8 @@ INSERT INTO `module_permissions` (`module_id`, `user_id`) VALUES
 ('region', 1),
 ('reminder', 1),
 ('template', 1),
-('vaccine', 1);
+('vaccine', 1),
+('weekly_calendar', 1);
 
 -- --------------------------------------------------------
 
@@ -17857,3 +17860,11 @@ CREATE TABLE IF NOT EXISTS `m_dental_fhsis` (`record_number` float NOT NULL AUTO
 
 CREATE TABLE IF NOT EXISTS `m_dental_other_services` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`date_of_service` date NOT NULL,`dentist` float NOT NULL,`supervised_tooth_brushing` char(3) COLLATE swe7_bin NOT NULL,`altraumatic_restorative_treatment` char(3) COLLATE swe7_bin NOT NULL,`out_removal_of_unsavable_teeth` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`out_referral_of_complicates_cases` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`out_treatment_of_post_extraction_complications` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`out_drainage_of_localized_oral_abscess` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`education_and_counselling` char(3) COLLATE swe7_bin NOT NULL,`scaling` char(3) COLLATE swe7_bin NOT NULL,`gum_treatment` char(3) COLLATE swe7_bin NOT NULL,PRIMARY KEY (`record_number`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE IF NOT EXISTS `m_lib_weekly_calendar` (
+  `year` year(4) NOT NULL,
+  `week` int(2) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
