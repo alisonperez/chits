@@ -13,7 +13,7 @@
 		$_SESSION[cat] = $_POST[sel_class];
 	endif;
 
-	if($_POST[sel_ques]!=0):
+	if($_POST[sel_ques]!=0):	      
 		$_SESSION[ques] = $_POST[sel_ques];
 	endif;	
 	
@@ -111,6 +111,17 @@ if($_SESSION["userid"]!=""):
 			$edate = strftime("%m/%d/%Y",mktime(0,0,0,($_POST[smonth]+1),0,$_POST[year]));						
 			
 			$queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy],0); //the fifth argument when set to zero, means that there is no form present in the query box
+                elseif($_SESSION[filter]==5): //weekly reports
+                        //print_r($_POST);
+                        $q_cal = mysql_query("SELECT date_format(start_date,'%m/%d/%Y'),date_format(end_date,'%m/%d/%Y') FROM m_lib_weekly_calendar WHERE year='$_POST[year]' AND week='$_POST[sel_week]'") or die("Cannot query: 169".mysql_error());
+                        
+                        if(mysql_num_rows($q_cal)!=0):
+                          list($sdate,$edate) = mysql_fetch_array($q_cal);
+                          $queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy],0);
+                        else:
+                          echo "<font color='red'>Start and end date for the week selected is not yet set (LIBRARIES --> WEEKLY CALENDAR).</font>";
+                        endif;
+                
                 else:
                 
 		endif;

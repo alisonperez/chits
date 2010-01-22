@@ -36,9 +36,9 @@ class querydb{
       elseif($frage>$toage):
         echo "Start age should be lower than end age.";	  
       elseif($diff < 0):
-		echo 'End month should be on or after the start month';
-	  elseif(empty($brgy)):
-		echo 'Please select one or more barangays.';
+	echo 'End month should be on or after the start month';
+      elseif(empty($brgy)):
+	echo 'Please select one or more barangays.';
       else:
 
       echo "<br><table border=\"1\">";
@@ -51,7 +51,7 @@ class querydb{
 	$_SESSION[edate_orig] = $edate_orig;
 	
 	$_SESSION[fp_method] = (isset($misc))?$misc:0; //assign fp method to a session if it exists from the form, otherwise place 0
-	
+
 	$this->stat_table($q,$_SESSION[ques]);
       
       endif;
@@ -282,6 +282,8 @@ class querydb{
 			$this->process_dhc_pho();
 		elseif($quesno==62):
 			$this->process_dhc_summary();
+		elseif($quesno>=70 && $quesno<=73):			
+			$this->process_morbidity($quesno);
 		else:
 			echo "No available query for this indicator.";
 		endif;
@@ -779,6 +781,14 @@ class querydb{
 	
 	function process_dhc_summary(){
 		echo "<a href='./pdf_reports/dental_summary.php'>Show Dental Summary Table</a>";
+	}
+	
+	function process_morbidity($quesno){		
+		$q_morb = mysql_query("SELECT ques_label FROM question WHERE ques_id=$quesno");
+		if(mysql_num_rows($q_morb)!=0):
+			list($ques_label) = mysql_fetch_array($q_morb);
+			echo "<a href='./pdf_reports/morbidity_report.php'>Show $ques_label</a>";		
+		endif;
 	}
 
 }
