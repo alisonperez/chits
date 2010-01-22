@@ -174,6 +174,7 @@ function show_morbidity(){
                     '40-44'=>array('M'=>0,'F'=>0),'45-49'=>array('M'=>0,'F'=>0),'50-54'=>array('M'=>0,'F'=>0),'55-59'=>array('M'=>0,'F'=>0),'60-64'=>array('M'=>0,'F'=>0),'>65'=>array('M'=>0,'F'=>0));
         $arr_age = array();
         $arr_row = array();
+        $total_male = $total_female = 0;  
         
         foreach($arr_gender as $gender_key=>$gender){
             //echo $gender;
@@ -231,15 +232,22 @@ function show_morbidity(){
         } 
         //after this foreach loop, arr_age_group will contain count per age group, per gender. array size is 32 (0-31)
       
-      array_push($arr_row,$diag_name,'icd10');
+      array_push($arr_row,$diag_name,' ');
         
       //print_r($arr_age_group);
+      
       foreach($arr_age_group as $age_group=>$arr_sex){
           foreach($arr_sex as $kasarian=>$kasarian_count){
               array_push($arr_row,$kasarian_count);
+              if($kasarian=='M'):
+                  $total_male += $kasarian_count;
+              else:
+                  $total_female += $kasarian_count;
+              endif;
           }      
       }
-      
+          array_push($arr_row,$total_male,$total_female);
+          $this->SetFont('Arial','','7');          
           $this->Row($arr_row);
      }
      
