@@ -121,16 +121,16 @@ function NbLines($w,$txt)
 function Header()
 {        
     $arr_gender = array();
-    $this->SetFont('Arial','BI','20');
-    $this->Cell(340,10,'M O R B I D I T Y   D I S E A S E   R E P O R T',1,1,C);
+    $this->SetFont('Arial','BI','16');
+    $this->Cell(340,8,'M O R B I D I T Y   D I S E A S E   R E P O R T',1,1,C);
     
     $this->SetFont('Arial','','8');
-    $w = array(60,24,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16);    
+    $w = array(60,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,24);    
     $this->SetWidths($w);
     $label = array('DISEASE','ICD CODE','Under 1','1-4','5-9','10-14','15-19','20-24','25-29','30-34','35-39','40-44','45-49','50-54','55-59','60-64','65&above','TOTAL');
     $this->Row($label);
     
-    $w = array(60,24,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8);        
+    $w = array(60,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,12,12);        
     array_push($arr_gender,' ',' ');
     
     for($i=0;$i<16;$i++){
@@ -151,7 +151,7 @@ function q_report_header($population){
 
 function show_morbidity(){
     
-    $w = array(60,24,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8);
+    $w = array(60,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,12,12);
     
     $arr_gender = array('M','F');
     
@@ -165,6 +165,7 @@ function show_morbidity(){
     $q_diagnosis = mysql_query("SELECT a.class_id,COUNT(a.class_id) as 'bilang',e.class_name FROM m_consult_notes_dxclass a, m_patient b, m_family_members c, m_family_address d,m_lib_notes_dxclass e WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.patient_id=b.patient_id AND b.patient_id=c.patient_id AND c.family_id=d.family_id AND d.barangay_id IN ($str_brgy) AND a.class_id=e.class_id GROUP by class_id ORDER by bilang DESC,a.class_id ASC") or die("Cannot query 158: ".mysql_error());
             
     //echo mysql_num_rows($q_diagnosis);
+    if(mysql_num_rows($q_diagnosis)!=0):
     
     while(list($diag_id, $count, $diag_name, $pxid) = mysql_fetch_array($q_diagnosis)){
         //echo $diag_id.'/'.$count.'/'.$diag_name.'<br>';
@@ -199,7 +200,7 @@ function show_morbidity(){
                 elseif($edad>=1 && $edad<=4):
                     $arr_age_group['1-4'][$gender] += $arr_age[$edad][$gender];
                 elseif($edad>=5 && $edad<=9):
-                    $arr_age_group['5-4'][$gender] += $arr_age[$edad][$gender];
+                    $arr_age_group['5-9'][$gender] += $arr_age[$edad][$gender];
                 elseif($edad>=10 && $edad<=14):
                     $arr_age_group['10-14'][$gender] += $arr_age[$edad][$gender];                    
                 elseif($edad>=15 && $edad<=19):
@@ -246,11 +247,17 @@ function show_morbidity(){
               endif;
           }      
       }
-          array_push($arr_row,$total_male,$total_female);
+
+          array_push($arr_row,$total_male,$total_female);                    
           $this->SetFont('Arial','','7');          
           $this->Row($arr_row);
      }
-     
+    
+    else:
+          $this->SetWidths(array('340'));
+          $this->SetFont('Arial','','10');          
+          $this->Row(array('No recorded morbidity and notifiable disease for this period'));
+    endif; 
      
      
      
