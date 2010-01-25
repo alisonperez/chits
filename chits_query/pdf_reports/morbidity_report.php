@@ -120,8 +120,11 @@ function NbLines($w,$txt)
 
 function Header()
 {        
+
+    $this->q_report_header();
+    
     $arr_gender = array();
-    $this->SetFont('Arial','BI','16');
+    $this->SetFont('Arial','B','15');
     $this->Cell(340,8,'M O R B I D I T Y   D I S E A S E   R E P O R T',1,1,C);
     
     $this->SetFont('Arial','','8');
@@ -141,12 +144,67 @@ function Header()
     
 }
 
-function q_report_header($population){
+function q_report_header(){
+    
     $this->SetFont('Arial','B','12');
-    $this->Cell(0,5,'FHSIS REPORT FOR THE QUARTER: '.$_SESSION[quarter]."          YEAR: ".$_SESSION[year],0,1,L);
-    $this->Cell(0,5, 'MUNICAPLITY/CITY NAME: '.$_SESSION[datanode][name],0,1,L);
-    $this->Cell(0,5,'PROVINCE: '.$_SESSION[province]."          PROJECTED POPULATION OF THE YEAR: ".$population,0,1,L);
+    $taon = $_SESSION[year];
+    if($_SESSION[ques]==70):   //morbidity weekly report
+        $freq = 'FHSIS REPORT FOR THE WEEK: ';
+        $freq_val = $_SESSION[week];        
+    elseif($_SESSION[ques]==71)://morbidity monthly report
+        $freq = 'FHSIS REPORT FOR THE MONTH: ';
+        $freq_val = date('F',mktime(0,0,0,$_SESSION[smonth],1,0));
+    elseif($_SESSION[ques]==72):
+        $freq = 'FHSIS REPORT FOR THE QUARTER: ';
+        $freq_val = $_SESSION[quarter];
+    elseif($_SESSION[ques]==73):
+        $freq = 'FHSIS ANNUAL REPORT FOR THE YEAR: ';
+        $freq_val = $_SESSION[year];
+    else:    
+    endif;
+    
+    $this->show_header_freq($freq,$freq_val);
+    $this->show_header_bhs();
+    $this->show_header_rhu();
+    $this->show_header_lgu();
+    $this->show_header_province();
+    $this->Ln();
+    
 }
+
+function show_header_freq($freq,$freq_val){
+    if($_SESSION[ques]==73):
+        $this->Cell(0,5,$freq.$freq_val."          YEAR: ".$_SESSION[year],0,1,L);            
+    else:
+        $this->Cell(0,5,$freq.$freq_val."          YEAR: ".$_SESSION[year],0,1,L);    
+    endif;
+}
+
+function show_header_bhs(){    
+    if($_SESSION[ques]==70 || $_SESSION[ques]==71):  //applies only to W-BHS and M2 reports
+        $this->Cell(0,5,'NAME OF BHS/BHC - Brgy '.$this->get_brgy(),0,1,L);    
+    endif;        
+}
+
+function show_header_rhu(){
+    if($_SESSION[ques]==70 || $_SESSION[ques]==71):   //applies only to W-BHS and M2 reports
+        $this->Cell(0,5,'CATCHMENT RHU/BHS: '.$_SESSION[datanode][name],0,1,L);        
+    endif;
+}
+
+function show_header_lgu(){
+    if($_SESSION[ques]==72 || $_SESSION[ques]==73): //applies only to Q2 and A2 reports
+        $this->Cell(0,5,'MUNICIPALITY/CITY OF: '.$_SESSION[lgu],0,1,L);
+    endif;
+}
+
+function show_header_province(){
+    if($_SESSION[ques]==72 || $_SESSION[ques]==73): //applies only to Q2 and A2 reports
+        $this->Cell(0,5,'PROVINCE: '.$_SESSION[province],0,1,L);
+    endif;
+}
+
+
 
 
 function show_morbidity(){
@@ -166,7 +224,7 @@ function show_morbidity(){
             
     //echo mysql_num_rows($q_diagnosis);
     if(mysql_num_rows($q_diagnosis)!=0):
-    
+    $bilang = 0;              
     while(list($diag_id, $count, $diag_name, $pxid) = mysql_fetch_array($q_diagnosis)){
         //echo $diag_id.'/'.$count.'/'.$diag_name.'<br>';
         
@@ -176,7 +234,8 @@ function show_morbidity(){
         $arr_age = array();
         $arr_row = array();
         $total_male = $total_female = 0;  
-        
+        $bilang += 1;    
+
         foreach($arr_gender as $gender_key=>$gender){
             //echo $gender;
             $q_px_id = mysql_query("SELECT a.patient_id,round((to_days(a.diagnosis_date)-to_days(b.patient_dob))/365,0) as computed_age FROM m_consult_notes_dxclass a, m_patient b WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' AND a.class_id='$diag_id' AND a.patient_id=b.patient_id AND b.patient_gender='$gender'") or die("Cannot query 164 ".mysql_error());
@@ -206,7 +265,7 @@ function show_morbidity(){
                 elseif($edad>=15 && $edad<=19):
                     $arr_age_group['15-19'][$gender] += $arr_age[$edad][$gender];                    
                 elseif($edad>=20 && $edad<=24):
-                    $arr_age_group['20-24'][$gender] += $arr_age[$edad][$gender];                    
+                    $arr_age_group['20-24'][$gender] += $arr_age[$edad][$gender];        
                 elseif($edad>=25 && $edad<=29):
                     $arr_age_group['25-29'][$gender] += $arr_age[$edad][$gender];
                 elseif($edad>=30 && $edad<=34):
@@ -220,7 +279,7 @@ function show_morbidity(){
                 elseif($edad>=50 && $edad<=54):
                     $arr_age_group['50-54'][$gender] += $arr_age[$edad][$gender];
                 elseif($edad>=55 && $edad<=59):
-                    $arr_age_group['55-59'][$gender] += $arr_age[$edad][$gender];                                                            
+                    $arr_age_group['55-59'][$gender] += $arr_age[$edad][$gender];
                 elseif($edad>=60 && $edad<=64):
                     $arr_age_group['60-64'][$gender] += $arr_age[$edad][$gender];
                 elseif($edad>=65):
@@ -250,19 +309,26 @@ function show_morbidity(){
 
           array_push($arr_row,$total_male,$total_female);                    
           $this->SetFont('Arial','','7');          
-          $this->Row($arr_row);
+          
+          for($x=0;$x<count($arr_row);$x++){
+              
+              if($x==0):
+                  $this->Cell($w[$x],6,$bilang.'. '.$arr_row[$x],'1',0,'L');
+              else:
+                  $this->Cell($w[$x],6,$arr_row[$x],'1',0,'L');              
+              endif;              
+          }
+          
+          $this->Ln();
+          
+          //$this->Row($arr_row);
      }
     
     else:
           $this->SetWidths(array('340'));
           $this->SetFont('Arial','','10');          
           $this->Row(array('No recorded morbidity and notifiable disease for this period'));
-    endif; 
-     
-     
-     
-        
-    
+    endif;                        
 }
 
 function get_brgy(){  //returns the barangay is CSV format. to be used in WHERE clause for determining barangay residence of patient

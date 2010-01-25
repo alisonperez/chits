@@ -121,7 +121,7 @@ function NbLines($w,$txt)
 function Header()
 {
     
-
+    
     $q_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$_SESSION[year]'") or die("Cannot query: 123". mysql_error());
     list($population)= mysql_fetch_array($q_pop);
     

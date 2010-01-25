@@ -113,6 +113,9 @@ if($_SESSION["userid"]!=""):
 			$queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy],0); //the fifth argument when set to zero, means that there is no form present in the query box
                 elseif($_SESSION[filter]==5): //weekly reports
                         //print_r($_POST);
+                        $_SESSION[week] = $_POST[sel_week];
+                        $_SESSION[year] = $_POST[year];
+                        
                         $q_cal = mysql_query("SELECT date_format(start_date,'%m/%d/%Y'),date_format(end_date,'%m/%d/%Y') FROM m_lib_weekly_calendar WHERE year='$_POST[year]' AND week='$_POST[sel_week]'") or die("Cannot query: 169".mysql_error());
                         
                         if(mysql_num_rows($q_cal)!=0):

@@ -787,7 +787,7 @@ class querydb{
 		$q_morb = mysql_query("SELECT ques_label FROM question WHERE ques_id=$quesno");
 		if(mysql_num_rows($q_morb)!=0):
 			list($ques_label) = mysql_fetch_array($q_morb);
-			echo "<a href='./pdf_reports/morbidity_report.php'>Show $ques_label</a>";		
+			echo "<a href='./pdf_reports/morbidity_report.php'>Show $ques_label</a>";
 		endif;
 	}
 
