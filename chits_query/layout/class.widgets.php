@@ -132,6 +132,8 @@
                         $this->disp_filter_monthly($query_brgy);
                 elseif($set_filter=='5'):
                         $this->disp_filter_weekly($query_brgy);
+                elseif($set_filter=='6'):
+                        $this->disp_filter_annual($query_brgy);
 		else:
 			$this->disp_filter_form2($query_brgy);
 		endif;
@@ -162,12 +164,15 @@
                         $_SESSION[filter] = 4;
                 elseif($report_type=='W'):
                         $_SESSION[filter] = 5;
+                elseif($report_type=='A'):
+                        $_SESSION[filter] = 6;
 		else:
 			$_SESSION[filter] = 1;
 		endif;
 		
                 return $_SESSION[filter];	
 	}
+
 
 	function disp_filter_form2($q_brgy){
 		$buwan_label = array('01'=>'January','02'=>'February','03'=>'March','04'=>'April','05'=>'May','06'=>'June',07=>'July','08'=>'August','09'=>'September','10'=>'October','11'=>'November','12'=>'December');
@@ -274,6 +279,7 @@
 	        $this->show_year();
 	        $this->checkbox_brgy($q_brgy);	        	        
 	}
+		
 	
 	function disp_week(){
 	        echo "<tr><td>Week</td>";
@@ -284,6 +290,11 @@
 	        }
 	        
 	        echo "</select></td></tr>";
+	}
+	
+	function disp_filter_annual($q_brgy){
+	        $this->show_year();
+                $this->checkbox_brgy($q_brgy);
 	}
 
 	

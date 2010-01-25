@@ -97,8 +97,7 @@ if($_SESSION["userid"]!=""):
                         
                         $_SESSION[quarter] = $_POST[sel_quarter];
                         $_SESSION[year] = $_POST[year];
-                        //print_r($_POST);
-                        
+                        //print_r($_POST);                        
                         //echo $sdate.'/'.$edate;
                         
                         $queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy],0);
@@ -111,6 +110,7 @@ if($_SESSION["userid"]!=""):
 			$edate = strftime("%m/%d/%Y",mktime(0,0,0,($_POST[smonth]+1),0,$_POST[year]));						
 			
 			$queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy],0); //the fifth argument when set to zero, means that there is no form present in the query box
+                
                 elseif($_SESSION[filter]==5): //weekly reports
                         //print_r($_POST);
                         $_SESSION[week] = $_POST[sel_week];
@@ -125,7 +125,14 @@ if($_SESSION["userid"]!=""):
                           echo "<font color='red'>Start and end date for the week selected is not yet set (LIBRARIES --> WEEKLY CALENDAR).</font>";
                         endif;
                 
-                else:
+                elseif($_SESSION[filter]==6): //annual reports
+                    $_SESSION[year] = $_POST[year];
+                    $sdate = date('m/d/Y',mktime(0,0,0,1,1,$_POST[year]));
+                    $edate = date('m/d/Y',mktime(0,0,0,12,31,$_POST[year]));                    
+                    
+                    $queryconn->querycrit($dbname,$dbname2,$sdate,$edate,$_POST[brgy],0);
+                    
+                else:	
                 
 		endif;
 	  endif;
