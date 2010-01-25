@@ -1,7 +1,7 @@
 <?
   session_start();
 	
-  $dbname = 'gerona_core';  
+  $dbname = 'chits';  
   $_SESSION["query"] = $dbname;
   $dbuser = $_SESSION["dbuser"];
   $dbpwd = $_SESSION["dbpass"];

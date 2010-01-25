@@ -17765,7 +17765,9 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (70, 'Morbidity Disease Weekly Report (W-BHS)', 7, '', 'W', 'Y'),
 (71, 'Morbidity Disease Monthly Report (M2)', 7, '', 'M', 'Y'),
 (72, 'Morbidity Disease Quarterly Report (Q2)', 7, '', 'Q', 'Y'),
-(73, 'Morbidity Disease Annual Report', 7, '', 'A', 'Y');
+(73, 'Morbidity Disease Annual Report', 7, '', 'A', 'Y'),
+(80, 'Maternal Care Monthly Report', 4, '', 'M', 'Y'),
+(81, 'Maternal Care Quarterly Report', 4, '', 'Q', 'Y');
 
 
 

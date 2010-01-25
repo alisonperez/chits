@@ -125,13 +125,11 @@ function Header()
 
 
 	$date_label = ($m1[0]==$m2[0])?$_SESSION[months][$m1[0]].' '.$m1[2]:$_SESSION[months][$m1[0]].' to '.$_SESSION[months][$m2[0]].' '.$m1[2];
-
-
 	$municipality_label = $_SESSION[datanode][name];
-	
-	$this->SetFont('Arial','B',12);
+        
+	$this->SetFont('Arial','B',12);        
 
-
+        if($_SESSION[ques]==36): //maternal care summary table                
 	$this->Cell(0,5,'Maternal Care Summary Table ( '.$date_label.' )'.' - '.$municipality_label,0,1,'C');
 	
 	if(in_array('all',$_SESSION[brgy])):
@@ -153,13 +151,43 @@ function Header()
 		}
 	endif;
 
-	$this->SetFont('Arial','',10);
-	
-	$this->Cell(0,5,$brgy_label,0,1,'C');
-		
+	$this->SetFont('Arial','',10);	
+	$this->Cell(0,5,$brgy_label,0,1,'C');		
 	$w = array(30,18,18,18,18,15,18,18,18,15,18,18,18,15,18,18,18,15,18); //340
 	$header = array('INDICATORS','Target','JAN','FEB','MAR','1st Q','APR','MAY','JUNE','2nd Q','JULY','AUG','SEPT','3rd Q','OCT','NOV','DEC','4th Q','TOTAL');
 	
+	elseif($_SESSION[ques]==80 || $_SESSION[ques]==81): //maternal care monthly and quarterly report respectively
+	    $q_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$_SESSION[year]'") or die("CAnnot query: 164");
+	    
+	    if(mysql_num_rows($q_pop)!=0):
+                list($population) = mysql_fetch_row($q_pop);
+            else:
+	        $population = 0;
+	    endif;
+	    
+            if($_SESSION[ques]==80):
+                $this->Cell(0,5,'FHSIS REPORT FOR THE MONTH: '.date('F',mktime(0,0,0,$_SESSION[smonth],1,0)).'          YEAR: '.$_SESSION[year],0,1,L);
+                $this->Cell(0,5,'NAME OF BHS: Brgy '.$this->get_brgy(),0,1,L); 
+                $w = array(200,40);                
+                $header = array('MATERNAL CARE', 'No.');
+                
+            elseif($_SESSION[ques]==81):
+                $w = array(166,25,25,25,47,52);
+                $header = array('Indicators', 'Eligible Population','No.','% / Rate','Interpretation','Recommendation/Action Taken');            
+                $this->Cell(0,5,'FHSIS REPORT FOR THE QUARTER: '.$_SESSION[quarter].'          YEAR: '.$_SESSION[year],0,1,L);            
+            else:
+            
+            endif;
+            
+            $this->Cell(0,5,'MUNICIPALITY/CITY OF: '.$_SESSION[lgu],0,1,L);
+            $this->Cell(0,5,'PROVINCE: '.$_SESSION[province].'          PROJECTED POPULATION OF THE YEAR: '.$population,0,1,L);
+            
+            $this->SetFont('Arial','B','13');
+        
+        else:
+         
+	endif;
+	$this->Ln();
 	$this->SetWidths($w);
 	$this->Row($header);	
 }
@@ -198,7 +226,7 @@ function show_mc_summary(){
 		$this->SetWidths($w);
 		
 		$this->Row(array($criteria[$i],$target,$mstat[1],$mstat[2],$mstat[3],$q_array[1],$mstat[4],$mstat[5],$mstat[6],$q_array[2],$mstat[7],$mstat[8],$mstat[9],$q_array[3],$mstat[10],$mstat[11],$mstat[12],$q_array[4],$gt));		
-		
+                		
 		//$this->Row(array($criteria[$i],$target,$array_target[1],$array_target[2],$array_target[3],$q_array[1],$array_target[4],$array_target[5],$array_target[6],$q_array[2],$array_target[7],$array_target[8],$array_target[9],$q_array[3],$array_target[10],$array_target[11],$array_target[12],$q_array[4],$gt));
 
 	}
@@ -544,6 +572,28 @@ function get_quarterly_total($r_month,$target){
 	}
 	return $q_total;
 }
+
+
+function get_brgy(){
+    $arr_brgy = array();
+      
+    if(in_array('all',$_SESSION[brgy])):
+        $q_brgy = mysql_query("SELECT barangay_id FROM m_lib_barangay ORDER by barangay_id ASC") or die("Cannot query 252". mysql_error());
+        
+        while(list($brgy_id) = mysql_fetch_array($q_brgy)){            
+            array_push($arr_brgy,$brgy_id);
+        }
+    else:
+        $arr_brgy = $_SESSION[brgy];
+    endif;
+                                                                  
+    
+    $str_brgy = implode(',',$arr_brgy);
+
+                                                                          
+    return $str_brgy;
+}
+
 
 
 function Footer(){

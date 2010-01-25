@@ -257,7 +257,7 @@ class querydb{
 		elseif($quesno==35):
 			$this->process_postpartum();
 
-		elseif($quesno==36):
+		elseif($quesno==36 || $quesno==80 || $quesno==81):
 			$this->process_mc_indicators();
 
 		elseif($quesno==37):
@@ -651,7 +651,23 @@ class querydb{
 	}
 
 	function process_mc_indicators(){
-		echo "<a href='./pdf_reports/mc_summary.php' target='new'>Show Maternal Care Summary Table</a>";
+		switch($_SESSION[ques]){
+			
+			case 36:
+				$report_name = 'Summary Table';
+				break;
+			case 80:
+				$report_name = 'Monthly Report';
+				break;
+			case 81:
+				$report_name = 'Quarterly Report';
+				break;
+			default:
+				$report_name = '';
+				break;						
+		}
+		
+		echo "<a href='./pdf_reports/mc_summary.php' target='new'>Show Maternal Care $report_name</a>";
 	}
 
 	function process_underone(){
