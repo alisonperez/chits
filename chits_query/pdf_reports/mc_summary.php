@@ -638,7 +638,7 @@ function compute_mc_rate($target,$actual){
         if($target==0):
             return 0;
         else:
-            return (($actual/$target)*100);
+            return round((($actual/$target)*100),0);
         endif;
 }
 
