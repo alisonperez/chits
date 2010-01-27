@@ -172,7 +172,7 @@ function Header()
                 $header = array('MATERNAL CARE', 'No.');
                 
             elseif($_SESSION[ques]==81):
-                $w = array(166,25,25,25,47,52);
+                $w = array(161,30,25,25,50,45);
                 $header = array('Indicators', 'Eligible Population','No.','% / Rate','Interpretation','Recommendation/Action Taken');            
                 $this->Cell(0,5,'FHSIS REPORT FOR THE QUARTER: '.$_SESSION[quarter].'          YEAR: '.$_SESSION[year],0,1,L);            
             else:
@@ -185,19 +185,20 @@ function Header()
             $this->SetFont('Arial','B','13');
         
         else:
-         
+             
 	endif;
+	
 	$this->Ln();
 	$this->SetWidths($w);
 	$this->Row($header);	
 }
 
 function show_mc_summary(){
-	$w = array(30,18,18,18,18,15,18,18,18,15,18,18,18,15,18,18,18,15,18); //340
+	
 
 
 	$criteria = array('Pregnant Women with 4 or more prenatal visits','Pregnant Women given 2 doses of TT','Pregnant Women given TT2 plus','Pregnant given complete iron with folic acid','Postpartum women with at least 2 PPV','Postpartum women given complete iron','Postpartum women given Vit. A','Postpartum women initiated breastfeeding');			
-	
+    
 	for($i=0;$i<count($criteria);$i++){
 	
 		$array_target = array();
@@ -222,10 +223,48 @@ function show_mc_summary(){
 
 		$q_array = $this->get_quarterly_total($mstat,$target);
 		$gt = array_sum($mstat);
-
-		$this->SetWidths($w);
-		
-		$this->Row(array($criteria[$i],$target,$mstat[1],$mstat[2],$mstat[3],$q_array[1],$mstat[4],$mstat[5],$mstat[6],$q_array[2],$mstat[7],$mstat[8],$mstat[9],$q_array[3],$mstat[10],$mstat[11],$mstat[12],$q_array[4],$gt));		
+                
+                if($_SESSION[ques]==36):
+                    $w = array(30,18,18,18,18,15,18,18,18,15,18,18,18,15,18,18,18,15,18); //340
+                    $this->SetWidths($w);                		
+                    $this->Row(array($criteria[$i],$target,$mstat[1],$mstat[2],$mstat[3],$q_array[1],$mstat[4],$mstat[5],$mstat[6],$q_array[2],$mstat[7],$mstat[8],$mstat[9],$q_array[3],$mstat[10],$mstat[11],$mstat[12],$q_array[4],$gt));
+                elseif($_SESSION[ques]==80):                    
+                    $w = array(200,40); //340 //monthly report                   
+                    $this->SetWidths($w);
+                    $arr_disp = array();
+                    $this->SetFont('Arial','',13);
+                    array_push($arr_disp,$criteria[$i],$mstat[$_SESSION[smonth]]);                    
+                    
+                    for($x=0;$x<count($arr_disp);$x++){
+                        if($x==0):
+                            $this->Cell($w[$x],6,($i+1).'. '.$arr_disp[$x],'1',0,'1');
+                        else:
+                            $this->Cell($w[$x],6,$arr_disp[$x],'1',0,'1');
+                        endif;
+                    }
+                    
+                    $this->Ln();
+                                        
+                elseif($_SESSION[ques]==81): //quarterly report
+                    $w = array(161,30,25,25,50,45);
+                    $this->SetWidths($w);
+                    $arr_disp = array();
+                    $this->SetFont('Arial','',13);                                                            
+                    
+                    array_push($arr_disp,$criteria[$i],$target,$q_array[$_SESSION[quarter]],$this->compute_mc_rate($target,$q_array[$_SESSION[quarter]]).'%',' ',' ');
+                    
+                    for($x=0;$x<count($arr_disp);$x++){
+                        if($x==0):
+                            $this->Cell($w[$x],6,($i+1).'. '.$arr_disp[$x],'1',0,'1');
+                        else:
+                            $this->Cell($w[$x],6,$arr_disp[$x],'1',0,'1');
+                        endif;
+                    }
+                    
+                    $this->Ln();
+                else:
+                
+                endif;
                 		
 		//$this->Row(array($criteria[$i],$target,$array_target[1],$array_target[2],$array_target[3],$q_array[1],$array_target[4],$array_target[5],$array_target[6],$q_array[2],$array_target[7],$array_target[8],$array_target[9],$q_array[3],$array_target[10],$array_target[11],$array_target[12],$q_array[4],$gt));
 
@@ -594,6 +633,14 @@ function get_brgy(){
     return $str_brgy;
 }
 
+
+function compute_mc_rate($target,$actual){
+        if($target==0):
+            return 0;
+        else:
+            return (($actual/$target)*100);
+        endif;
+}
 
 
 function Footer(){
