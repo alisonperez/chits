@@ -265,8 +265,7 @@ class querydb{
 
 		elseif($quesno==38):
 			$this->process_sickchild();
-		
-		elseif($quesno==39):
+		elseif($quesno==39 || $quesno==50 || $quesno==51):
 			$this->process_ccdev_summary();
 		elseif($quesno==40): //FP TCL
 			$this->process_fp_tcl();
@@ -739,7 +738,19 @@ class querydb{
 	}	
 
 	function process_ccdev_summary(){
-		echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Summary Table</a>";
+		switch($_SESSION[ques]){		
+			case 39:
+				echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Summary Table</a>";
+				break;
+			case 50:
+				echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Monthly Report</a>";
+				break;
+			case 51:
+				echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Quarterly Report</a>";
+				break;
+			default:			
+				break;		
+		}
 	}
 	
 	function process_fp_tcl(){
