@@ -199,7 +199,7 @@ function Header()
 	endif;	
 	    $this->Cell(0,5,'MUNICIPALITY/CITY OF: '.$_SESSION[lgu],0,1,L);
             $this->Cell(0,5,'PROVINCE: '.$_SESSION[province].'          PROJECTED POPULATION OF THE YEAR: '.$population,0,1,L);
-            $this->Ln();    
+            $this->Ln(15);    
             
 	else:
 	
@@ -247,7 +247,7 @@ function show_ccdev_summary(){
 		if(is_array($arr_indicators[$i])):
 
 			$sub_arr = array_keys($arr_indicators[$i]); //this will return the header title if the content is an array			
-
+			$counter = 0;
 			$arr_sub_indicators = $this->compute_indicators($i+1,$sub_arr,$arr_indicators[$i]);			
 			
 			if($_SESSION[ques]==39):
@@ -259,6 +259,7 @@ function show_ccdev_summary(){
 			for($j=0;$j<(count($arr_sub_indicators)/2);$j++){
 				$disp_arr = array();				
 				$load = 0;
+				
 				
 				$lbl_indicator = $this->disp_arr_indicator($i,$j);
 
@@ -288,16 +289,26 @@ function show_ccdev_summary(){
 				$this->SetWidths($header);			        
 				
 				//$this->Row($disp_arr);
-			        	
+			        
 				if($_SESSION[ques]==39):				    
 				    $this->Row($disp_arr);				    
                                 elseif($_SESSION[ques]==50):
-                                    $m_arr = array($disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]);
+                                    
+                                    $m_arr = array('     '.$disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]);                                    
                                     
                                     for($x=0;$x<count($m_arr);$x++){
+                                        if($counter==0):
+                                            $this->Cell($header[0],6,$sub_arr[0],'1',0,'L');
+                                            $this->Cell($header[1],6,' ','1',0,'L');
+                                            $this->Cell($header[2],6,' ','1',0,'L');
+                                            $this->Ln();
+                                            $counter = 1;                                            
+                                        endif;                                    
                                         $this->Cell($header[$x],6,$m_arr[$x],'1',0,'L');
                                     }
+                                    
                                     $this->Ln();
+                                    
                                     //$this->Row(array($disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]));                                
                                 elseif($_SESSION[ques]==51):
                                                                     
