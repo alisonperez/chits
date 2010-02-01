@@ -189,9 +189,9 @@ function Header()
 	
 	elseif($_SESSION[ques]==51):  //quarterly report
                 $w = array(120,30,60,20,50,55);
-                $w2 = array(150,20,20,20,20,50,55);
+                $w2 = array(120,30,20,20,20,20,50,55);
 		$header = array('Indicators', 'Eligible Population','Number','%','Interpretation','Recommendation/Action Taken');
-                $subheader = array('','Male','Female','Total','','','');
+                $subheader = array('','','Male','Female','Total','','','');
 		$this->Cell(0,5,'FHSIS REPORT FOR THE QUARTER: '.$_SESSION[quarter].'          YEAR: '.$_SESSION[year],0,1,L);
 		
 	else:
@@ -231,7 +231,8 @@ function show_ccdev_summary(){
         elseif($_SESSION[ques]==50):
             $header = array(200,40,40);
         elseif($_SESSION[ques]==51):
-            $header = array(120,30,60,20,50,55);        
+            $header = array(120,30,20,20,20,20,50,55);
+            //$header = array(120,30,60,20,50,55);        
         else:        
         endif;
 	
@@ -303,15 +304,35 @@ function show_ccdev_summary(){
                                             $this->Cell($header[2],6,' ','1',0,'L');
                                             $this->Ln();
                                             $counter = 1;                                            
-                                        endif;                                    
+                                        endif;
                                         $this->Cell($header[$x],6,$m_arr[$x],'1',0,'L');
                                     }
                                     
-                                    $this->Ln();
-                                    
+                                    $this->Ln();                                    
                                     //$this->Row(array($disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]));                                
                                 elseif($_SESSION[ques]==51):
-                                                                    
+                                    $q_arr = array('     '.$disp_arr[0],$target,$disp_arr[$q_index[$_SESSION[quarter]][0]],$disp_arr[$q_index[$_SESSION[smonth]][1]],0,' ',' ',' ');
+                                    
+                                    
+                                    for($x=0;$x<count($q_arr);$x++){
+                                        if($counter==0):
+                                            $this->Cell($header[0],6,$sub_arr[0],'1',0,'L');
+                                            $this->Cell($header[1],6,' ','1',0,'L');
+                                            $this->Cell($header[2],6,' ','1',0,'L');
+                                            $this->Cell($header[3],6,' ','1',0,'L');
+                                            $this->Cell($header[4],6,' ','1',0,'L');
+                                            $this->Cell($header[5],6,' ','1',0,'L');
+                                            $this->Cell($header[6],6,' ','1',0,'L');                                            
+                                            $this->Cell($header[7],6,' ','1',0,'L');                                            
+                                            $this->Ln();
+                                            $counter = 1;                                            
+                                        endif;
+                                        
+                                        $this->Cell($header[$x],6,$q_arr[$x],'1',0,'L');                                        
+                                    }
+                                 
+                                    $this->Ln();
+                                                                                                       
                                 else:
                                 
                                 endif;
@@ -345,16 +366,16 @@ function show_ccdev_summary(){
                         if($_SESSION[ques]==39):
                             $this->Row($disp_arr);
                         elseif($_SESSION[ques]==50):
-                            $q_arr = array($disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]);
+                            $m_arr = array($disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]);
                                     
                             for($x=0;$x<count($q_arr);$x++){
-                                $this->Cell($header[$x],6,$q_arr[$x],'1',0,'L');
+                                $this->Cell($header[$x],6,$m_arr[$x],'1',0,'L');
                             }
                             
                             $this->Ln();                        
                             //$this->Row(array($disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]));
                         elseif($_SESSION[ques]==51):
-                                                                    
+                            $q_arr = array('     '.$disp_arr[0],$target,$disp_arr[$q_index[$_SESSION[quarter]][0]],$disp_arr[$q_index[$_SESSION[smonth]][1]],0,0,0);
                         else:
                             
                         endif;
