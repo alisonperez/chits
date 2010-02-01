@@ -295,7 +295,7 @@ function show_ccdev_summary(){
 				    $this->Row($disp_arr);				    
                                 elseif($_SESSION[ques]==50):
                                     
-                                    $m_arr = array('     '.$disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]);                                    
+                                    $m_arr = array('     '.$disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]);
                                     
                                     for($x=0;$x<count($m_arr);$x++){
                                         if($counter==0):
@@ -311,7 +311,9 @@ function show_ccdev_summary(){
                                     $this->Ln();                                    
                                     //$this->Row(array($disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]));                                
                                 elseif($_SESSION[ques]==51):
-                                    $q_arr = array('     '.$disp_arr[0],$target,$disp_arr[$q_index[$_SESSION[quarter]][0]],$disp_arr[$q_index[$_SESSION[smonth]][1]],0,' ',' ',' ');
+                                    $total_q = $disp_arr[$q_index[$_SESSION[quarter]][0]] + $disp_arr[$q_index[$_SESSION[smonth]][1]];
+                                                
+                                    $q_arr = array('     '.$disp_arr[0],$target,$disp_arr[$q_index[$_SESSION[quarter]][0]],$disp_arr[$q_index[$_SESSION[smonth]][1]],$total_q,$this->compute_ccdev_rate($target,$total_q),' ',' ');
                                     
                                     
                                     for($x=0;$x<count($q_arr);$x++){
@@ -375,7 +377,14 @@ function show_ccdev_summary(){
                             $this->Ln();                        
                             //$this->Row(array($disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]));
                         elseif($_SESSION[ques]==51):
-                            $q_arr = array('     '.$disp_arr[0],$target,$disp_arr[$q_index[$_SESSION[quarter]][0]],$disp_arr[$q_index[$_SESSION[smonth]][1]],0,0,0);
+                            $total_q = $disp_arr[$q_index[$_SESSION[quarter]][0]] + $disp_arr[$q_index[$_SESSION[smonth]][1]];
+                            
+                            $q_arr = array('     '.$disp_arr[0],$target,$disp_arr[$q_index[$_SESSION[quarter]][0]],$disp_arr[$q_index[$_SESSION[smonth]][1]],$total_q,$this->compute_ccdev_rate($target,$total_q),'','');
+
+                            for($x=0;$x<count($q_arr);$x++){
+                                $this->Cell($header[$x],6,$q_arr[$x],'1',0,'L');
+                            }
+                            $this->Ln();
                         else:
                             
                         endif;
@@ -1279,6 +1288,16 @@ function get_brgy(){
                                                                           
     return $str_brgy;
 }
+
+
+function compute_ccdev_rate($target,$actual){
+    if($target==0):
+        return 0;
+    else:
+        return round((($actual/$target)*100),0);
+    endif;
+}
+
 
 }
 
