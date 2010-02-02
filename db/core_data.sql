@@ -1063,6 +1063,24 @@ CREATE TABLE IF NOT EXISTS `m_consult_lab_sputum` (
   KEY `key_user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+DROP TABLE IF EXISTS `m_lib_sputum_appearance`;
+CREATE TABLE IF NOT EXISTS `m_lib_sputum_appearance` (
+  `sputum_appearance_code` varchar(4) NOT NULL,
+  `sputum_appearance_name` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `m_lib_sputum_appearance`
+--
+
+INSERT INTO `m_lib_sputum_appearance` (`sputum_appearance_code`, `sputum_appearance_name`) VALUES
+('BS', 'Blood-Stained'),
+('MP', 'Mucopurulent'),
+('MC', 'Mucoid'),
+('SA', 'Salivary'),
+('QNS', 'Inadequate Specimen');
+
 --
 -- Dumping data for table `m_consult_lab_sputum`
 --

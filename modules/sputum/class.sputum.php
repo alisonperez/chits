@@ -8,8 +8,8 @@ class sputum extends module {
         //
         // do not forget to update version
         //
-        $this->author = 'Herman Tolentino MD';
-        $this->version = "0.3-".date("Y-m-d");
+        $this->author = 'Herman Tolentino MD / darth_ali';
+        $this->version = "0.5-".date("Y-m-d");
         $this->module = "sputum";
         $this->description = "CHITS Module - Sputum Microscopy";
 
@@ -104,6 +104,15 @@ class sputum extends module {
             "CONSTRAINT `m_consult_lab_sputum_ibfk_1` FOREIGN KEY (`consult_id`) REFERENCES `m_consult` (`consult_id`) ON DELETE CASCADE,".
             "CONSTRAINT `m_consult_lab_sputum_ibfk_2` FOREIGN KEY (`request_id`) REFERENCES `m_consult_lab` (`request_id`) ON DELETE CASCADE".
             ") TYPE=InnoDB; ");
+            
+        
+        module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_sputum_appearance` (
+          `sputum_appearance_code` varchar(4) NOT NULL,
+            `sputum_appearance_name` text NOT NULL
+            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;");                        
+            
+        module::execsql("INSERT INTO `m_lib_sputum_appearance` (`sputum_appearance_code`, `sputum_appearance_name`) VALUES
+            ('BS', 'Blood-Stained'),('MP', 'Mucopurulent'),('MC', 'Mucoid'),('SA', 'Salivary'),('QNS', 'Inadequate Specimen');");
 
     }
 
@@ -505,7 +514,7 @@ class sputum extends module {
         $ret_val .= "<option value='BS' ".($appearance_id=="BS"?"selected":"").">Blood-stained</option>";
         $ret_val .= "<option value='MP' ".($appearance_id=="MP"?"selected":"").">Mucopurulent</option>";
         $ret_val .= "<option value='MC' ".($appearance_id=="MC"?"selected":"").">Mucoid</option>";
-        $ret_val .= "<option value='SL' ".($appearance_id=="SL"?"selected":"").">Saliva</option>";
+        $ret_val .= "<option value='SL' ".($appearance_id=="SL"?"selected":"").">Saliva</option>";        
         $ret_val .= "</select>";
         return $ret_val;
     }
