@@ -157,14 +157,14 @@ class lab extends module {
             // this establishes access to API of lab modules
             $eval_string = $get_vars["module"]."::_consult_lab_".$get_vars["module"]."(\$menu_id, \$post_vars, \$get_vars, \$validuser, \$isadmin);";
             // this executes lab module
-            if (class_exists($get_vars["module"])) {
-                eval("$eval_string");
+            if (class_exists($get_vars["module"])) {                                
+                eval('$eval_string');
             } else {
                 print "<b><font color='red'>WARNING:</font> module ".$get_vars["module"]." not loaded.</b><br/>";
             }
         }
         print "</td></tr>";
-        print "</table>";
+        print "</table>";        
     }
 
     function request_info() {
@@ -253,11 +253,9 @@ class lab extends module {
             }
         }
         print "<b>".FTITLE_PENDING_LAB_REQUESTS."</b><br/><br/>";
-        $sql = "select c.request_id, l.lab_name, l.lab_module, date_format(c.request_timestamp, '%a %d %b %Y, %h:%i%p') ".
-               "from m_lib_laboratory l, m_consult_lab c ".
-               "where l.lab_id = c.lab_id and ".
-               "c.consult_id = '".$get_vars["consult_id"]."' and ".
-               "c.done_timestamp = ''";
+        $sql = "select c.request_id, l.lab_name, l.lab_module, date_format(c.request_timestamp, '%a %d %b %Y, %h:%i%p') from m_lib_laboratory l, m_consult_lab c where l.lab_id = c.lab_id and c.consult_id ='$get_vars[consult_id]' and c.done_timestamp = '0000-00-00' AND request_done='N'";
+               
+        
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
                 print "<table width='300'><tr><td>";
@@ -273,7 +271,7 @@ class lab extends module {
                         // access result API for lab exam
                         // <module_name>::_consult_lab_<module_name>_results()
                         $eval_string = "$mod::_consult_lab_".$get_vars["module"]."_results(\$menu_id, \$post_vars, \$get_vars);";
-                        if (class_exists($mod)) {
+                        if (class_exists($mod)) {                            
                             eval("$eval_string");
                         } else {
                             print "<b><font color='red'>WARNING:</font> $mod missing.</b><br/>";
@@ -287,12 +285,8 @@ class lab extends module {
         }
         print "<br/>";
         print "<b>".FTITLE_COMPLETED_LAB_REQUESTS."</b><br/><br/>";
-        $sql = "select c.request_id, l.lab_name, l.lab_module, date_format(c.request_timestamp, '%a %d %b %Y, %h:%i%p') ".
-               "from m_lib_laboratory l, m_consult_lab c ".
-               "where l.lab_id = c.lab_id and ".
-               "c.consult_id = '".$get_vars["consult_id"]."' and ".
-               "c.done_timestamp <> ''";
-        if ($result = mysql_query($sql)) {
+        $sql = "select c.request_id, l.lab_name, l.lab_module, date_format(c.request_timestamp, '%a %d %b %Y, %h:%i%p') from m_lib_laboratory l, m_consult_lab c where l.lab_id = c.lab_id and c.consult_id = '$get_vars[consult_id]' and c.done_timestamp <> '0000-00-00' and c.request_done='Y'";
+        if ($result = mysql_query($sql)) {                
             if (mysql_num_rows($result)) {
                 print "<table><tr><td>";
                 while (list($id, $name, $mod, $ts1, $ts2) = mysql_fetch_array($result)) {
@@ -304,7 +298,9 @@ class lab extends module {
                         // <module_name>::_consult_lab_<module_name>_results()
                         $eval_string = "$mod::_consult_lab_".$get_vars["module"]."_results(\$menu_id, \$post_vars, \$get_vars);";
                         if (class_exists($mod)) {
-                            eval("$eval_string");
+                            //echo $eval_string;                            
+                            //sputum::_consult_lab_sputum($_GET["menu_id"],$_POST,$_GET);
+                            eval('$eval_string');
                         } else {
                             print "<b><font color='red'>WARNING:</font> $mod missing.</b><br/>";
                         }

@@ -122,6 +122,7 @@ class sputum extends module {
             $post_vars = $arg_list[1];
             $get_vars = $arg_list[2];
         }
+                
         $sql = "select l.request_id, l.request_user_id, l.request_done, ".
                "date_format(l.request_timestamp, '%a %d %b %Y, %h:%i%p') request_timestamp, ".
                "s.consult_id, s.patient_id, done_user_id, ".
@@ -588,6 +589,7 @@ class sputum extends module {
             break;
         }
     }
+    
 
 // end of class
 }
