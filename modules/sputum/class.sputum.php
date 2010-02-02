@@ -121,6 +121,17 @@ class sputum extends module {
                         
         module::execsql("INSERT INTO `m_lib_sputum_reading` (`sputum_reading_code`, `sputum_reading_label`) VALUES
             ('Z', 'Zero'),('PN', '+N'),('1P', '1+'),('2P', '2+'),('3P', '3+');");
+            
+            
+        module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_sputum_period` (
+          `period_code` varchar(5) NOT NULL,
+            `period_label` text NOT NULL
+            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+            
+            
+        module::execsql("INSERT INTO `m_lib_sputum_period` (`period_code`, `period_label`) VALUES
+        ('DX', 'Before Treatment'),('E02', 'End of 2nd Month'),('E03', 'End of 3rd Month'),('E04', 'End of 4th Month'),
+        ('E05', 'End of 5th Month'),('7M', 'After 7th Month');");
 
     }
 
@@ -128,6 +139,7 @@ class sputum extends module {
         module::execsql("DROP TABLE `m_consult_lab_sputum`;");
         module::execsql("DROP TABLE `m_lib_sputum_appearance`;");
         module::execsql("DROP TABLE `m_lib_sputum_reading`;");        
+        module::execsql("DROP TABLE `m_lib_sputum_period`;");        
     }
 
 
@@ -325,8 +337,8 @@ class sputum extends module {
         print "<tr valign='top'><td>";
         print "<span class='boxtitle'>".LBL_RELEASE_FLAG."</span><br> ";
         print "<input type='checkbox' name='release_flag' ".(($sputum["release_flag"]?$sputum["release_flag"]:$post_vars["release_flag"])=="Y"?"checked":"")." value='1'/> ".INSTR_RELEASE_FLAG."<br />";
-        print "<br/></td></tr>";
-        print "<tr><td><br>";
+        print "</td></tr>";
+        print "<tr><td align='center'>";
         if ($get_vars["request_id"]) {
             print "<input type='hidden' name='request_id' value='".$get_vars["request_id"]."'>";
             if ($_SESSION["priv_update"]) {
@@ -476,15 +488,28 @@ class sputum extends module {
             $arg_list = func_get_args();
             $period_id = $arg_list[0];
         }
-        $ret_val .= "<select name='sputum_period' class='tinylight'>";
-        $ret_val .= "<option value=''>Select Period</option>";
-        $ret_val .= "<option value='DX' ".($period_id=="DX"?"selected":"").">Before Treatment</option>";
-        $ret_val .= "<option value='EO2' ".($period_id=="EO2"?"selected":"").">End of 2nd Month</option>";
-        $ret_val .= "<option value='EO3' ".($period_id=="EO3"?"selected":"").">End of 3rd Month</option>";
-        $ret_val .= "<option value='EO4' ".($period_id=="EO4"?"selected":"").">End of 4th Month</option>";
-        $ret_val .= "<option value='EO5' ".($period_id=="EO5"?"selected":"").">End of 5th Month</option>";
-        $ret_val .= "<option value='7M' ".($period_id=="7M"?"selected":"").">After 7th Month</option>";
-        $ret_val .= "</select>";
+        
+        $ret_val = '';
+        
+        $q_period = mysql_query("SELECT period_code,period_label FROM m_lib_sputum_period") or die("Cannot query 494: ".mysql_query());
+        
+        if(mysql_num_rows($q_period)!=0):
+            $ret_val .= "<select name='sputum_period' class='tinylight'>";
+            $ret_val .= "<option value=''>Select Period</option>";
+            
+            while(list($period_code,$period_label)=mysql_fetch_array($q_period)){
+                if($period_code==$period_id):
+                    $ret_val .= "<option value='$period_code' selected>$period_label</option>";
+                else:
+                    $ret_val .= "<option value='$period_code'>$period_label</option>";                
+                endif;
+            }
+
+            echo "</select>";            
+        else:
+            echo "<font color='red'>WARNING: library for the period is not present.</font>";
+        endif;
+                                
         return $ret_val;
     }
 
@@ -553,14 +578,29 @@ class sputum extends module {
             $reading_id = $arg_list[0];
             $control_name = $arg_list[1];
         }
+        
+        $ret_val = '';
+        
+        $q_reading = mysql_query("SELECT sputum_reading_code, sputum_reading_label FROM m_lib_sputum_reading") or die("Cannot query 556".mysql_error());
+        
+        if(mysql_num_rows($q_reading)!=0):
+                
         $ret_val .= "<select name='$control_name' class='tinylight'>";
         $ret_val .= "<option value=''>Select Reading</option>";
-        $ret_val .= "<option value='Z' ".($reading_id=="Z"?"selected":"").">Zero</option>";
-        $ret_val .= "<option value='PN' ".($reading_id=="PN"?"selected":"").">+N</option>";
-        $ret_val .= "<option value='1P' ".($reading_id=="1P"?"selected":"").">1+</option>";
-        $ret_val .= "<option value='2P' ".($reading_id=="2P"?"selected":"").">2+</option>";
-        $ret_val .= "<option value='3P' ".($reading_id=="3P"?"selected":"").">3+</option>";
-        $ret_val .= "</select>";
+        
+        while(list($reading_code,$reading_label) = mysql_fetch_array($q_reading)){
+            if($reading_code == $reading_id):
+                $ret_val .= "<option value='$reading_code' selected>$reading_label</option>";
+            else:
+                $ret_val .= "<option value='$reading_code'>$reading_label</option>";
+            endif;
+        }
+                
+        
+        else:
+            echo "<font color='red'>WARNING: library for reading not present.</font>";
+        endif;
+        
         return $ret_val;
     }
 

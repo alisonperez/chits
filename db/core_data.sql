@@ -1098,9 +1098,26 @@ INSERT INTO `m_lib_sputum_reading` (`sputum_reading_code`, `sputum_reading_label
 ('1P', '1+'),
 ('2P', '2+'),
 ('3P', '3+');
+
+
+
+DROP TABLE IF EXISTS `m_lib_sputum_period`;
+CREATE TABLE IF NOT EXISTS `m_lib_sputum_period` (
+  `period_code` varchar(5) NOT NULL,
+  `period_label` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 --
--- Dumping data for table `m_consult_lab_sputum`
+-- Dumping data for table `m_lib_sputum_period`
 --
+
+INSERT INTO `m_lib_sputum_period` (`period_code`, `period_label`) VALUES
+('DX', 'Before Treatment'),
+('E02', 'End of 2nd Month'),
+('E03', 'End of 3rd Month'),
+('E04', 'End of 4th Month'),
+('E05', 'End of 5th Month'),
+('7M', 'After 7th Month');
 
 
 -- --------------------------------------------------------
