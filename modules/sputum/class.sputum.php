@@ -113,6 +113,14 @@ class sputum extends module {
             
         module::execsql("INSERT INTO `m_lib_sputum_appearance` (`sputum_appearance_code`, `sputum_appearance_name`) VALUES
             ('BS', 'Blood-Stained'),('MP', 'Mucopurulent'),('MC', 'Mucoid'),('SA', 'Salivary'),('QNS', 'Inadequate Specimen');");
+            
+        module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_sputum_reading` (
+          `sputum_reading_code` varchar(5) NOT NULL,
+            `sputum_reading_label` text NOT NULL
+            ) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+                        
+        module::execsql("INSERT INTO `m_lib_sputum_reading` (`sputum_reading_code`, `sputum_reading_label`) VALUES
+            ('Z', 'Zero'),('PN', '+N'),('1P', '1+'),('2P', '2+'),('3P', '3+');");
 
     }
 
@@ -287,6 +295,9 @@ class sputum extends module {
         print "<td>".sputum::show_sputum_appearance(($sputum["sp1_appearance"]?$sputum["sp1_appearance"]:$post_vars["sp1_appearance"]),'sp1_appearance')."</td>";
         print "<td>".sputum::show_sputum_appearance(($sputum["sp2_appearance"]?$sputum["sp2_appearance"]:$post_vars["sp2_appearance"]),'sp2_appearance')."</td>";
         print "<td>".sputum::show_sputum_appearance(($sputum["sp3_appearance"]?$sputum["sp3_appearance"]:$post_vars["sp3_appearance"]),'sp3_appearance')."</td>";
+        
+        
+        
         print "</tr>";
         print "<tr><td class='boxtitle'>".LBL_READING."</td>";
         print "<td>".sputum::show_sputum_reading(($sputum["sp1_reading"]?$sputum["sp1_reading"]:$post_vars["sp1_reading"]),'sp1_reading')."</td>";
@@ -509,13 +520,29 @@ class sputum extends module {
             $appearance_id = $arg_list[0];
             $control_name = $arg_list[1];
         }
-        $ret_val .= "<select name='$control_name' class='tinylight'>";
-        $ret_val .= "<option value=''>Select Appearance</option>";
-        $ret_val .= "<option value='BS' ".($appearance_id=="BS"?"selected":"").">Blood-stained</option>";
-        $ret_val .= "<option value='MP' ".($appearance_id=="MP"?"selected":"").">Mucopurulent</option>";
-        $ret_val .= "<option value='MC' ".($appearance_id=="MC"?"selected":"").">Mucoid</option>";
-        $ret_val .= "<option value='SL' ".($appearance_id=="SL"?"selected":"").">Saliva</option>";        
-        $ret_val .= "</select>";
+        $ret_val = '';        
+        $q_sputum_appearance = mysql_query("SELECT sputum_appearance_code,sputum_appearance_name FROM m_lib_sputum_appearance") or die("Cannot query: 513".mysql_error());
+        
+        if(mysql_num_rows($q_sputum_appearance)!=0):
+        
+        $ret_val .= "<select name='$control_name' class='tinylight'>";        
+        $ret_val .= "<option value=''>Select Appearance</option>";        
+        
+        while(list($appear_code,$appear_label) = mysql_fetch_array($q_sputum_appearance)){
+            if($appear_code==$appearance_id):
+                $ret_val .= "<option value='$appear_code' selected>$appear_label</option>";
+            else:
+                $ret_val .= "<option value='$appear_code'>$appear_label</option>";            
+            endif;
+            
+        }
+
+        $ret_val .= "</select>";        
+                                
+        else:
+            echo "<font class='red'>WARNING: Library for appearance does not exists.</font>";
+        endif;
+        
         return $ret_val;
     }
 

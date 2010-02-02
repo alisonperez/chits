@@ -1081,6 +1081,23 @@ INSERT INTO `m_lib_sputum_appearance` (`sputum_appearance_code`, `sputum_appeara
 ('SA', 'Salivary'),
 ('QNS', 'Inadequate Specimen');
 
+
+DROP TABLE IF EXISTS `m_lib_sputum_reading`;
+CREATE TABLE IF NOT EXISTS `m_lib_sputum_reading` (
+  `sputum_reading_code` varchar(5) NOT NULL,
+  `sputum_reading_label` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `m_lib_sputum_reading`
+--
+
+INSERT INTO `m_lib_sputum_reading` (`sputum_reading_code`, `sputum_reading_label`) VALUES
+('Z', 'Zero'),
+('PN', '+N'),
+('1P', '1+'),
+('2P', '2+'),
+('3P', '3+');
 --
 -- Dumping data for table `m_consult_lab_sputum`
 --
