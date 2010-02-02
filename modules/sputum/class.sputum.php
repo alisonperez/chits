@@ -125,8 +125,9 @@ class sputum extends module {
     }
 
     function drop_tables() {
-
         module::execsql("DROP TABLE `m_consult_lab_sputum`;");
+        module::execsql("DROP TABLE `m_lib_sputum_appearance`;");
+        module::execsql("DROP TABLE `m_lib_sputum_reading`;");        
     }
 
 
