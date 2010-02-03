@@ -539,24 +539,28 @@ class sputum extends module {
             $arg_list = func_get_args();
             $period_id = $arg_list[0];
         }
+    
         switch($period_id) {
         case "DX":
             return "Before Treatment";
             break;
-        case "EO2":
+        case "E02":            
             return "End of 2nd Month";
             break;
-        case "EO3":
+        case "E03":
             return "End of 3rd Month";
             break;
-        case "EO4":
+        case "E04":
             return "End of 4th Month";
             break;
-        case "EO5":
+        case "E05":
             return "End of 5th Month";
             break;
         case "7M":
             return "After 7th Month";
+            break;
+        default:
+            return;
             break;
         }
     }
