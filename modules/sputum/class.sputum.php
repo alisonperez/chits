@@ -239,8 +239,9 @@ class sputum extends module {
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
+        
         print "<table width='300'>";
-        print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=sputum&request_id=".$get_vars["request_id"]."&lab_id=SPT' name='form_lab' method='post'>";
+        print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=sputum&request_id=".$get_vars["request_id"]."&lab_id=SPT". "&ptmenu=LABS' name='form_lab' method='post'>";
         print "<tr valign='top'><td>";
         print "<b>".FTITLE_LAB_EXAM_FORM."</b><br><br>";
         print "</td></tr>";
@@ -364,6 +365,9 @@ class sputum extends module {
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
+        
+        //print_r($arg_list);
+        
         if ($post_vars["submitlab"]) {
             $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
             switch($post_vars["submitlab"]) {
@@ -389,7 +393,20 @@ class sputum extends module {
                 mysql_query("SET autocommit=0;") or die(mysql_error());
                 mysql_query("START TRANSACTION;") or die(mysql_error());
 
+
                 if ($release_flag=="Y") {
+                    if(empty($_POST["lab_diagnosis"])):
+                        echo "<script language='Javascript'>";
+                        echo "window.alert('Cannot close / release sputum exam yet. Please indicate LAB DIAGNOSIS!')";                        
+                        echo "</script>";
+                        
+                    elseif(empty($_POST["sputum_period"])):
+                        echo "<script language='Javascript'>"; 
+                        echo "window.alert('Cannot close / release sputum exam yet.  Please indicate PERIOD OF SPUTUM EXAMS!')"; 
+                        echo "</script>";
+                                                                
+                    else:
+                    
                     $sql = "update m_consult_lab set ".
                            "done_timestamp = sysdate(), ".
                            "request_done = 'Y', ".
@@ -401,9 +418,12 @@ class sputum extends module {
                     } else {
                         mysql_query("ROLLBACK;") or die(mysql_error());
                         mysql_query("SET autocommit=1;") or die(mysql_error());
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&request_id=".$post_vars["request_id"]."&lab_id=".$get_vars["lab_id"]);
+                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&request_id=".$post_vars["request_id"]."&lab_id=".$get_vars["lab_id"]."&ptmenu=LABS");
                     }
+                                                
+                    endif;
                 }
+                              
                 // try insert first, will fail if previous request has been inserted
                 // because of primary key constraint - then it will cascade to update below...
                 $sql_sputum = "insert into m_consult_lab_sputum (consult_id, request_id, patient_id, ".
@@ -418,7 +438,7 @@ class sputum extends module {
                 if ($result_sputum = mysql_query($sql_sputum)) {
                     mysql_query("COMMIT;") or die(mysql_error());
                     mysql_query("SET autocommit=1;") or die(mysql_error());
-                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&request_id=".$get_vars["request_id"]."&lab_id=".$get_vars["lab_id"]);
+                    //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&request_id=".$get_vars["request_id"]."&lab_id=".$get_vars["lab_id"]."&ptmenu=LABS");
                 } else {
                     $sql_update = "update m_consult_lab_sputum set ".
                                   "lab_timestamp = sysdate(), ".
@@ -436,26 +456,27 @@ class sputum extends module {
                                   "user_id = '".$_SESSION["userid"]."', ".
                                   "release_flag = '$release_flag' ".
                                   "where request_id = '".$post_vars["request_id"]."'";
-                    if ($result_update = mysql_query($sql_update)) {
+                    if ($result_update = mysql_query($sql_update)) {                        
                         mysql_query("COMMIT;") or die(mysql_error());
                         mysql_query("SET autocommit=1;") or die(mysql_error());
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]);
+                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS");
                     } else {
                         mysql_query("ROLLBACK;") or die(mysql_error());
                         mysql_query("SET autocommit=1;") or die(mysql_error());
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]);
+                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS");
                     }
-                }
+                }                
+                
                 break;
             case "Delete Lab Exam":
                 if (module::confirm_delete($menu_id, $post_vars, $get_vars)) {
                     $sql = "delete from m_consult_lab where request_id = '".$post_vars["request_id"]."'";
                     if ($result = mysql_query($sql)) {
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]);
+                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS");
                     }
                 } else {
                     if ($post_vars["confirm_delete"]=="No") {
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]);
+                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS");
                     }
                 }
                 break;

@@ -1013,7 +1013,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_lab` (
   `request_id` float NOT NULL auto_increment,
   `patient_id` float NOT NULL default '0',
   `lab_id` varchar(10) NOT NULL default '',
-  `request_timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `request_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `request_user_id` float NOT NULL default '0',
   `consult_id` float NOT NULL default '0',
   `request_done` char(1) NOT NULL default 'N',

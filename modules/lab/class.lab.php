@@ -89,22 +89,21 @@ class lab extends module {
         module::execsql("insert into m_lib_laboratory (lab_id, lab_name, lab_module) values ('CCS', 'Cervical Cancer Screening', 'ccs')");
 
         // lab requests
-        module::execsql("CREATE TABLE `m_consult_lab` (".
-            "`request_id` float NOT NULL auto_increment,".
-            "`patient_id` float NOT NULL default '0',".
-            "`lab_id` varchar(10) NOT NULL default '',".
-            "`request_timestamp` timestamp(14) NOT NULL,".
-            "`request_user_id` float NOT NULL default '0',".
-            "`consult_id` float NOT NULL default '0',".
-            "`request_done` char(1) NOT NULL default 'N',".
-            "`done_timestamp` timestamp(14) NOT NULL,".
-            "`done_user_id` float NOT NULL default '0',".
-            "PRIMARY KEY  (`request_id`),".
-            "KEY `key_user1` (`request_user_id`),".
-            "KEY `key_patient` (`patient_id`),".
-            "KEY `key_user2` (`done_user_id`),".
-            "KEY `key_consult` (`consult_id`),".
-            "KEY `key_lab` (`lab_id`),".
+        module::execsql("CREATE TABLE IF NOT EXISTS `m_consult_lab` (
+	   `request_id` float NOT NULL AUTO_INCREMENT,
+	   `patient_id` float NOT NULL DEFAULT '0',
+	   `lab_id` varchar(10) NOT NULL DEFAULT '',
+	   `request_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	   `request_user_id` float NOT NULL DEFAULT '0',
+	   `consult_id` float NOT NULL DEFAULT '0',
+	   `request_done` char(1) NOT NULL DEFAULT 'N',
+	   `done_timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+	   `done_user_id` float NOT NULL DEFAULT '0',
+	    PRIMARY KEY (`request_id`),
+	    KEY `key_user1` (`request_user_id`),
+	    KEY `key_patient` (`patient_id`),
+	    KEY `key_user2` (`done_user_id`),
+	    KEY `key_consult` (`consult_id`),".
             "FOREIGN KEY (`consult_id`) REFERENCES `m_consult`(`consult_id`) ON DELETE CASCADE, ".
             "FOREIGN KEY (`patient_id`) REFERENCES `m_patient`(`patient_id`) ON DELETE CASCADE".
             ") TYPE=InnoDB; ");
@@ -302,7 +301,7 @@ class lab extends module {
                         if (class_exists($mod)) {
                             //echo $eval_string;                            
                             //sputum::_consult_lab_sputum($_GET["menu_id"],$_POST,$_GET);
-                            eval('$eval_string');
+                            eval("$eval_string");
                         } else {
                             print "<b><font color='red'>WARNING:</font> $mod missing.</b><br/>";
                         }
