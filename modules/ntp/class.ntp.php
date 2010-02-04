@@ -637,6 +637,11 @@ class ntp extends module {
             $n->process_ntp($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
         }
         switch($get_vars["ntp"]) {
+
+	case "SYMP":
+	    $n->form_ntp_symptomatic($menu_id,$post_vars,$get_vars,$validuser,$isadmin);
+	    break;
+
         case "VISIT1":
             $n->form_patient_ntp($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
             break;
@@ -669,10 +674,18 @@ class ntp extends module {
             //print_r($arg_list);
         }
         if (!isset($get_vars["ntp"])) {
+
             header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=VISIT1".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:""));
         }
         print "<table cellpadding='1' cellspacing='1' width='300' bgcolor='#9999FF' style='border: 1px solid black'><tr valign='top'><td nowrap>";
+
+	print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=SYMP".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="SYMP"?"<b>TB SYMPTOMATIC</b>":"TB SYMPTOMATIC"))."</a>";
+
         print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=VISIT1".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="VISIT1"?"<b>VISIT1</b>":"VISIT1"))."</a>";
+
+	
+
+
         if ($get_vars["ntp_id"]) {
             print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=INTAKE".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="INTAKE"?"<b>INTENSIVE</b>":"INTENSIVE"))."</a>";
             print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=COLL".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="COLL"?"<b>MAINT</b>":"MAINT"))."</a>";
@@ -1011,6 +1024,57 @@ class ntp extends module {
         print "</td></tr>";
         print "</form>";
         print "</table><br>";
+    }
+
+    function form_ntp_symptomatic(){
+      if(func_num_args()>0):
+	$arg_list = func_get_args();
+        $menu_id = $arg_list[0];
+	$post_vars = $arg_list[1];
+	$get_vars = $arg_list[2];
+	$validuser = $arg_list[3];
+	$isadmin = $arg_list[4];
+      endif;
+
+      echo "<table>";
+      echo "<tr><td>PATIENT IS TB SYMPTOMATIC?</td>";
+      echo "<td><select name='sel_symp' size='1'>";
+      echo "<option value=''>Please Specify</option>";
+      echo "<option value='Y'>Yes</option>";
+      echo "<option value='N'>No</option>";
+      echo "</select></td><tr>";
+
+
+      echo "<tr>";
+      echo "<td colspan='2'>SPUTUM EXAMINATION (before treatment)</td>";            
+      echo "</tr>";
+
+      echo "<tr>";
+      
+      for($i=0;$i<2;$i++){
+
+      echo "<td>";      
+      echo "<table border='1'>";
+      echo "<tr><td>#</td><td>Date</td></tr>";
+      
+	
+      for($j=1;$j<4;$j++){
+	echo "<tr><td>$j</td><td>";
+	echo "<input type='text' size='11' disabled name='$i.$j'></input>";
+	echo "</td></tr>";
+      }
+      
+      echo "</table>";
+      echo "</td>";
+      }      
+      echo "</tr>";
+
+      echo "<tr><td>Date Referred for X-Ray</td>";
+      echo "<td><input type='text' name='date_referred_xray' size='1'></input></td>";
+      echo "</tr>";
+
+      echo "</table>";
+
     }
 
     function form_patient_ntp() {
