@@ -154,7 +154,7 @@ class sputum extends module {
             $get_vars = $arg_list[2];
         }
                 
-        $sql = "select l.request_id, l.request_user_id, l.request_done, ".
+        $sql = mysql_query("select l.request_id, l.request_user_id, l.request_done, ".
                "date_format(l.request_timestamp, '%a %d %b %Y, %h:%i%p') request_timestamp, ".
                "s.consult_id, s.patient_id, done_user_id, ".
                "if(l.done_timestamp<>'00000000000000', date_format(l.done_timestamp, '%a %d %b %Y, %h:%i%p'), 'NA') done_timestamp, ".
@@ -162,13 +162,21 @@ class sputum extends module {
                "s.sp1_collection_date, s.sp2_collection_date, s.sp3_collection_date, ".
                "s.sp1_appearance, s.sp2_appearance, s.sp3_appearance, ".
                "s.sp1_reading, s.sp2_reading, s.sp3_reading, s.lab_diagnosis, ".
-               "s.user_id, s.request_id, s.release_flag, s.sputum_period ".
+               "s.user_id, s.request_id, s.release_flag, s.sputum_period,s.lab_diag1,s.lab_diag2,s.lab_diag3 ".
                "from m_consult_lab_sputum s, m_consult_lab l ".
                "where l.request_id = s.request_id and ".
-               "s.request_id = '".$get_vars["request_id"]."'";
-        if ($result = mysql_query($sql)) {
-            if (mysql_num_rows($result)) {
-                $sputum = mysql_fetch_array($result);
+               "s.request_id = '".$get_vars["request_id"]."'") or die("Cannot query ".mysql_error());
+               
+              
+        if ($sql) {
+            if (mysql_num_rows($sql)) {
+                $sputum = mysql_fetch_array($sql);
+                
+                $res1 = ((!empty($sputum["lab_diag1"])?(($sputum["lab_diag1"]=="P")?"Positive":(($sputum["lab_diag1"]=="N")?"Negative":"Doubtful")):"No diagnosis yet"));
+                $res2 = ((!empty($sputum["lab_diag2"])?(($sputum["lab_diag2"]=="P")?"Positive":(($sputum["lab_diag2"]=="N")?"Negative":"Doubtful")):"No diagnosis yet"));          
+                $res3 = ((!empty($sputum["lab_diag3"])?(($sputum["lab_diag3"]=="P")?"Positive":(($sputum["lab_diag3"]=="N")?"Negative":"Doubtful")):"No diagnosis yet"));          
+                
+                
                 print "<a name='sputum'>";
                 print "<table style='border: 1px dotted black'><tr><td>";
                 print "<span class='tinylight'>";
@@ -184,10 +192,10 @@ class sputum extends module {
                 print "SPUTUM EXAM PERIOD:<br/> ";
                 print "&nbsp;&nbsp;".sputum::get_sputum_period_name($sputum["sputum_period"])."<br/>";
                 print "<hr size='1'/>";
-                print "SPECIMEN COLLECTION DATES:<br/>";
-                print "sp #1: ".$sputum["sp1_collection_date"]."<br/>";
-                print "sp #2: ".$sputum["sp2_collection_date"]."<br/>";
-                print "sp #3: ".$sputum["sp3_collection_date"]."<br/>";
+                print "SPECIMEN COLLECTION DATES - DIAGNOSIS<br/>";
+                print "sp #1: ".$sputum["sp1_collection_date"]." - ".$res1."<br/>";
+                print "sp #2: ".$sputum["sp2_collection_date"]." - ".$res2."<br/>";
+                print "sp #3: ".$sputum["sp3_collection_date"]." - ".$res3."<br/>";
                 print "<hr size='1'/>";
                 print "SPECIMEN VISUAL APPEARANCE:<br/>";
                 print "sp #1: ".sputum::get_sputum_appearance_name($sputum["sp1_appearance"])."<br/>";
@@ -199,11 +207,14 @@ class sputum extends module {
                 print "sp #2: ".sputum::get_sputum_reading_name($sputum["sp2_reading"])."<br/>";
                 print "sp #3: ".sputum::get_sputum_reading_name($sputum["sp3_reading"])."<br/>";
                 print "<hr size='1'/>";
-                print "LAB DIAGNOSIS: ".sputum::get_diagnosis_name($sputum["lab_diagnosis"])."<br/>";
+                print "FINAL LAB DIAGNOSIS: ".sputum::get_diagnosis_name($sputum["lab_diagnosis"])."<br/>";
                 print "</span>";
                 print "</td></tr></table>";
             }
+            
         }
+        
+        
     }
 
     function _consult_lab_sputum() {
