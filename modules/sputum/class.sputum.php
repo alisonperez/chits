@@ -2,7 +2,7 @@
 class sputum extends module {
 
     // Author: Herman Tolentino MD
-    // CHITS Project 2004
+    // CHITS Project 2004-2010
 
     function sputum() {
         //
@@ -93,6 +93,7 @@ class sputum extends module {
             "`sp1_reading` varchar(10) NOT NULL default '',".
             "`sp2_reading` varchar(10) NOT NULL default '',".
             "`sp3_reading` varchar(10) NOT NULL default '',".
+	    "`sp3_reading` varchar(10) NOT NULL default '',".
             "`lab_diagnosis` varchar(10) NOT NULL default '',".
             "`user_id` float NOT NULL default '0',".
             "`release_flag` char(1) NOT NULL default '',".
