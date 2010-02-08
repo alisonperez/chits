@@ -177,7 +177,7 @@ class sputum extends module {
                 $res3 = ((!empty($sputum["lab_diag3"])?(($sputum["lab_diag3"]=="P")?"Positive":(($sputum["lab_diag3"]=="N")?"Negative":"Doubtful")):"No diagnosis yet"));          
                 
                 
-                print "<a name='sputum'>";
+                print "<a name='sputum_result'>";
                 print "<table style='border: 1px dotted black'><tr><td>";
                 print "<span class='tinylight'>";
                 print "<b>SPUTUM RESULTS FOR ".strtoupper(patient::get_name($sputum["patient_id"]))."</b><br/>";
@@ -251,6 +251,7 @@ class sputum extends module {
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
+        echo "<a name='sputum_form'></a>";
         
         print "<table width='300'>";
         print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=sputum&request_id=".$get_vars["request_id"]."&lab_id=SPT". "&ptmenu=LABS' name='form_lab' method='post'>";
@@ -280,7 +281,7 @@ class sputum extends module {
         if ($get_vars["request_id"]) {
             $sql_sputum = "select sp1_collection_date, sp2_collection_date, sp3_collection_date, ".
                           "sp1_appearance, sp2_appearance, sp3_appearance, ".
-                          "sp1_reading, sp2_reading, sp3_reading, lab_diagnosis, release_flag, sputum_period ".
+                          "sp1_reading, sp2_reading, sp3_reading, lab_diag1, lab_diag2, lab_diag3, lab_diagnosis, release_flag, sputum_period ".
                           "from m_consult_lab_sputum ".
                           "where request_id = '".$get_vars["request_id"]."'";
             if ($result_sputum = mysql_query($sql_sputum)) {
@@ -325,9 +326,9 @@ class sputum extends module {
         print "</tr>";
 
 	print "<tr><td class='boxtitle'>SPUTUM EXAM DIAGNOSIS</td>";
-	print sputum::show_sputum_dropdown('lab_diag1',$sputum["sp1_diag"]);
-        print sputum::show_sputum_dropdown('lab_diag2',$sputum["sp2_diag"]);
-        print sputum::show_sputum_dropdown('lab_diag3',$sputum["sp3_diag"]);
+	print sputum::show_sputum_dropdown('lab_diag1',$sputum["lab_diag1"]);
+        print sputum::show_sputum_dropdown('lab_diag2',$sputum["lab_diag2"]);
+        print sputum::show_sputum_dropdown('lab_diag3',$sputum["lab_diag3"]);
 	print "</tr>";
 
         print "<tr><td class='boxtitle'>".LBL_READING."</td>";
@@ -443,15 +444,20 @@ class sputum extends module {
                               
                 // try insert first, will fail if previous request has been inserted
                 // because of primary key constraint - then it will cascade to update below...
+                
                 $sql_sputum = "insert into m_consult_lab_sputum (consult_id, request_id, patient_id, ".
                               "lab_timestamp, sp1_collection_date, sp2_collection_date, sp3_collection_date, ".
                               "sp1_appearance, sp2_appearance, sp3_appearance, ".
-                              "sp1_reading, sp2_reading, sp3_reading, lab_diagnosis, sputum_period, ".
+                              "sp1_reading, sp2_reading, sp3_reading, lab_diag1, lab_diag2, lab_diag3, lab_diagnosis, sputum_period, ".
                               "user_id, release_flag) values ('".$get_vars["consult_id"]."', '".$post_vars["request_id"]."', ".
                               "'$patient_id', sysdate(), '$sp1_collection_date', '$sp2_collection_date', '$sp3_collection_date', ".
                               "'".$post_vars["sp1_appearance"]."', '".$post_vars["sp2_appearance"]."', '".$post_vars["sp3_appearance"]."', ".
                               "'".$post_vars["sp1_reading"]."', '".$post_vars["sp2_reading"]."', '".$post_vars["sp3_reading"]."', ".
+                              "'".$post_vars["lab_diag1"]."', '".$post_vars["lab_diag2"]."', '".$post_vars["lab_diag3"]."', ".                              
                               "'".$post_vars["lab_diagnosis"]."', '".$post_vars["sputum_period"]."', '".$_SESSION["userid"]."', '$release_flag')";
+                  
+                  
+                              
                 if ($result_sputum = mysql_query($sql_sputum)) {
                     mysql_query("COMMIT;") or die(mysql_error());
                     mysql_query("SET autocommit=1;") or die(mysql_error());
@@ -468,6 +474,9 @@ class sputum extends module {
                                   "sp1_reading = '".$post_vars["sp1_reading"]."', ".
                                   "sp2_reading = '".$post_vars["sp2_reading"]."', ".
                                   "sp3_reading = '".$post_vars["sp3_reading"]."', ".
+                                  "lab_diag1 = '".$post_vars["lab_diag1"]."', ".
+                                  "lab_diag2 = '".$post_vars["lab_diag2"]."', ".                                  
+                                  "lab_diag3 = '".$post_vars["lab_diag3"]."', ".                                                                    
                                   "lab_diagnosis = '".$post_vars["lab_diagnosis"]."', ".
                                   "sputum_period = '".$post_vars["sputum_period"]."', ".
                                   "user_id = '".$_SESSION["userid"]."', ".
@@ -476,11 +485,11 @@ class sputum extends module {
                     if ($result_update = mysql_query($sql_update)) {                        
                         mysql_query("COMMIT;") or die(mysql_error());
                         mysql_query("SET autocommit=1;") or die(mysql_error());
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS");
+                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum_form");
                     } else {
                         mysql_query("ROLLBACK;") or die(mysql_error());
                         mysql_query("SET autocommit=1;") or die(mysql_error());
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS");
+                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum_form");
                     }
                 }                
                 
@@ -714,9 +723,9 @@ class sputum extends module {
 	
 	$arg_list = func_get_args();      
         $dropdown_name = $arg_list[0];
-	$sputum_result_value = $arg_list[1];
+	$sputum_result_value = $arg_list[1];	
       endif;
-      
+              
         print "<td><select name='$dropdown_name' size='1' class='tinylight'>" ;
         print "<option value=''>Select Diagnosis</option>";
         print "<option value='P' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="P"?"selected":"").">Positive</option>";
