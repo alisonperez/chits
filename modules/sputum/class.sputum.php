@@ -309,10 +309,15 @@ class sputum extends module {
         print "<td>".sputum::show_sputum_appearance(($sputum["sp1_appearance"]?$sputum["sp1_appearance"]:$post_vars["sp1_appearance"]),'sp1_appearance')."</td>";
         print "<td>".sputum::show_sputum_appearance(($sputum["sp2_appearance"]?$sputum["sp2_appearance"]:$post_vars["sp2_appearance"]),'sp2_appearance')."</td>";
         print "<td>".sputum::show_sputum_appearance(($sputum["sp3_appearance"]?$sputum["sp3_appearance"]:$post_vars["sp3_appearance"]),'sp3_appearance')."</td>";
-        
-        
-        
+        	        
         print "</tr>";
+
+	print "<tr><td class='boxtitle'>SPUTUM EXAM DIAGNOSIS</td>";
+	print sputum::show_sputum_dropdown('lab_diag1',$sputum["sp1_diag"]);
+        print sputum::show_sputum_dropdown('lab_diag2',$sputum["sp2_diag"]);
+        print sputum::show_sputum_dropdown('lab_diag3',$sputum["sp3_diag"]);
+	print "</tr>";
+
         print "<tr><td class='boxtitle'>".LBL_READING."</td>";
         print "<td>".sputum::show_sputum_reading(($sputum["sp1_reading"]?$sputum["sp1_reading"]:$post_vars["sp1_reading"]),'sp1_reading')."</td>";
         print "<td>".sputum::show_sputum_reading(($sputum["sp2_reading"]?$sputum["sp2_reading"]:$post_vars["sp2_reading"]),'sp2_reading')."</td>";
@@ -323,7 +328,7 @@ class sputum extends module {
         print sputum::show_sputum_period(($sputum["sputum_period"]?$sputum["sputum_period"]:$post_vars["sputum_period"]));
         print "</td>";
         print "</tr>";
-        print "<tr><td class='boxtitle'>".LBL_LAB_DIAGNOSIS."</td>";
+        print "<tr><td class='boxtitle'>FINAL ".LBL_LAB_DIAGNOSIS."</td>";
         print "<td colspan='3'>";
         print "<select name='lab_diagnosis' class='tinylight'>";
         print "<option value=''>Select Diagnosis</option>";
@@ -690,6 +695,24 @@ class sputum extends module {
             return "Doubtful";
             break;
         }
+    }
+
+    function show_sputum_dropdown(){
+      if(func_num_args()>0):
+	
+	$arg_list = func_get_args();      
+        $dropdown_name = $arg_list[0];
+	$sputum_result_value = $arg_list[1];
+      endif;
+      
+        print "<td><select name='$dropdown_name' size='1' class='tinylight'>" ;
+        print "<option value=''>Select Diagnosis</option>";
+        print "<option value='P' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="P"?"selected":"").">Positive</option>";
+        print "<option value='N' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="N"?"selected":"").">Negative</option>";
+        print "<option value='D' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="D"?"selected":"").">Doubtful</option>";
+        print "</select></td>";
+
+
     }
     
 
