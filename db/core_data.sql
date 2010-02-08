@@ -1097,11 +1097,18 @@ CREATE TABLE IF NOT EXISTS `m_lib_sputum_reading` (
 
 INSERT INTO `m_lib_sputum_reading` (`sputum_reading_code`, `sputum_reading_label`) VALUES
 ('Z', 'Zero'),
-('PN', '+N'),
+('+1', '+1'),
+('+2', '+2'),
+('+3', '+3'),
+('+4', '+4'),
+('+5', '+5'),
+('+6', '+6'),
+('+7', '+7'),
+('+8', '+8'),
+('+9', '+9'),
 ('1P', '1+'),
 ('2P', '2+'),
 ('3P', '3+');
-
 
 
 DROP TABLE IF EXISTS `m_lib_sputum_period`;

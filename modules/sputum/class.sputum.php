@@ -121,7 +121,8 @@ class sputum extends module {
             ) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
                         
         module::execsql("INSERT INTO `m_lib_sputum_reading` (`sputum_reading_code`, `sputum_reading_label`) VALUES
-            ('Z', 'Zero'),('PN', '+N'),('1P', '1+'),('2P', '2+'),('3P', '3+');");
+('Z', 'Zero'),('PN', '+N'),('1P', '1+'),('2P', '2+'),('3P', '3+'),('+1', '+1'),('+2', '+2'),
+('+3', '+3'),('+4', '+4'),('+5', '+5'),('+6', '+6'),('+7', '+7'),('+8', '+8');");
             
             
         module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_sputum_period` (
@@ -174,7 +175,7 @@ class sputum extends module {
                 
                 $res1 = ((!empty($sputum["lab_diag1"])?(($sputum["lab_diag1"]=="P")?"Positive":(($sputum["lab_diag1"]=="N")?"Negative":"Doubtful")):"No diagnosis yet"));
                 $res2 = ((!empty($sputum["lab_diag2"])?(($sputum["lab_diag2"]=="P")?"Positive":(($sputum["lab_diag2"]=="N")?"Negative":"Doubtful")):"No diagnosis yet"));          
-                $res3 = ((!empty($sputum["lab_diag3"])?(($sputum["lab_diag3"]=="P")?"Positive":(($sputum["lab_diag3"]=="N")?"Negative":"Doubtful")):"No diagnosis yet"));          
+                $res3 = ((!empty($sputum["lab_diag3"])?(($sputum["lab_diag3"]=="P")?"Positive":(($sputum["lab_diag3"]=="N")?"Negative":"Doubtful")):"No diagnosis yet"));
                 
                 
                 print "<a name='sputum_result'>";
@@ -688,6 +689,33 @@ class sputum extends module {
         case "PN":
             return "+N";
             break;
+        case "+1":
+            return "+1";
+            break;
+        case "+2":
+            return "+2";
+            break;
+        case "+3":
+            return "+3";
+            break;
+        case "+4":
+            return "+4";
+            break;
+        case "+5":
+            return "+5";
+            break;
+        case "+6":
+            return "+6";
+            break;
+        case "+7":
+            return "+7";
+            break;
+        case "+8":
+            return "+8";
+            break;
+        case "+9":
+            return "+9";
+            break;        
         case "1P":
             return "1+";
             break;
@@ -720,7 +748,6 @@ class sputum extends module {
 
     function show_sputum_dropdown(){
       if(func_num_args()>0):
-	
 	$arg_list = func_get_args();      
         $dropdown_name = $arg_list[0];
 	$sputum_result_value = $arg_list[1];	
@@ -730,7 +757,7 @@ class sputum extends module {
         print "<option value=''>Select Diagnosis</option>";
         print "<option value='P' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="P"?"selected":"").">Positive</option>";
         print "<option value='N' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="N"?"selected":"").">Negative</option>";
-        print "<option value='D' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="D"?"selected":"").">Doubtful</option>";
+        //print "<option value='D' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="D"?"selected":"").">Doubtful</option>";
         print "</select></td>";
 
 
