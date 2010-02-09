@@ -969,6 +969,11 @@ class ntp extends module {
                 header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"].($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:""));
             }
             break;
+            
+        case "Save TB Symptomatic":
+        
+            breah;
+            
         case "Print Referral":
             break;
         }
@@ -1035,7 +1040,9 @@ class ntp extends module {
 	$validuser = $arg_list[3];
 	$isadmin = $arg_list[4];
       endif;
-
+      
+      echo "<a name='tb_symptomatic'>";
+      echo "<form action='' name='form_symptomatic' method='POST'>";
       echo "<table>";
       echo "<tr><td>PATIENT IS TB SYMPTOMATIC?</td>";
       echo "<td><select name='sel_symp' size='1'>";
@@ -1051,7 +1058,7 @@ class ntp extends module {
 
       echo "<tr>";
       
-      for($i=0;$i<2;$i++){
+      for($i=1;$i<3;$i++){
 
       echo "<td>";      
       echo "<table border='1'>";
@@ -1062,19 +1069,55 @@ class ntp extends module {
 	echo "<tr><td>$j</td><td>";
 	echo "<input type='text' size='11' disabled name='$i.$j'></input>";
 	echo "</td></tr>";
-      }
+      }      
+      echo "<tr>";
+      echo "<td align='2' colspan='2'>";
+      echo "<input name='submit_diag'.$i type='button' value='Import Dates'></input>";     
+      echo "</td>";
+      echo "</tr>";
       
       echo "</table>";
       echo "</td>";
-      }      
+      }
+            
       echo "</tr>";
 
       echo "<tr><td>Date Referred for X-Ray</td>";
-      echo "<td><input type='text' name='date_referred_xray' size='1'></input></td>";
+      echo "<td><input type='text' name='date_referred_xray' size='8'></input>&nbsp;";
+      echo "<a href=\"javascript:show_calendar4('document.form_symptomatic.date_referred_xray', document.form_symptomatic.date_referred_xray.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";
+      echo "</td>";
       echo "</tr>";
 
+      echo "<tr><td>Date X-Ray Received</td>";
+      echo "<td><input type='text' name='date_received_xray' size='8'></input>&nbsp;";
+      echo "<a href=\"javascript:show_calendar4('document.form_symptomatic.date_received_xray', document.form_symptomatic.date_received_xray.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr><td>X-ray Results</td>";
+      echo "<td><select name='xray_result' size='1'>";
+      echo "<option value=''>Select Result</option>";
+      echo "<option value='P'>Positive</option>";
+      echo "<option value='N'>Negative</option>";
+      echo "</select></td>";
+      echo "</tr>";
+      
+      echo "<tr><td>Additional Remarks</td>";
+      echo "<td>";
+      echo "<textarea cols='20' rows='5' name='symptomatic_remarks'></textarea>";
+      echo "</td>";
+      echo "</tr>";      
+      
+      
+      echo "<tr align='center'>";
+      echo "<td colspan='2'><input type='submit' name='submitntp' value='Save TB Symptomatic'></input>&nbsp;&nbsp;";
+      echo "<input type='reset' value='Clear'>";
+      echo "</td>";
+      echo "</tr>";
+      
       echo "</table>";
-
+      
+      echo "</form>";
     }
 
     function form_patient_ntp() {

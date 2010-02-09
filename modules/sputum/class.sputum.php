@@ -326,7 +326,7 @@ class sputum extends module {
         	        
         print "</tr>";
 
-	print "<tr><td class='boxtitle'>SPUTUM EXAM DIAGNOSIS</td>";
+	print "<tr><td class='boxtitle'>SPUTUM EXAM RESULT</td>";
 	print sputum::show_sputum_dropdown('lab_diag1',$sputum["lab_diag1"]);
         print sputum::show_sputum_dropdown('lab_diag2',$sputum["lab_diag2"]);
         print sputum::show_sputum_dropdown('lab_diag3',$sputum["lab_diag3"]);
@@ -754,7 +754,7 @@ class sputum extends module {
       endif;
               
         print "<td><select name='$dropdown_name' size='1' class='tinylight'>" ;
-        print "<option value=''>Select Diagnosis</option>";
+        print "<option value=''>Select Result</option>";
         print "<option value='P' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="P"?"selected":"").">Positive</option>";
         print "<option value='N' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="N"?"selected":"").">Negative</option>";
         //print "<option value='D' ".(($sputum_result_value?$sputum_result_value:$_POST["$dropdown_name"])=="D"?"selected":"").">Doubtful</option>";
