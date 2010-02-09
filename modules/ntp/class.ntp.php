@@ -353,6 +353,7 @@ class ntp extends module {
 
         module::execsql("CREATE TABLE `m_consult_ntp_symptomatics` (
             `symptomatic_id` FLOAT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+            `ntp_id` float NOT NULL,
             `consult_id` FLOAT NOT NULL ,
             `patient_id` INT NOT NULL ,
             `sputum_diag1` FLOAT NOT NULL ,
@@ -363,7 +364,7 @@ class ntp extends module {
             `remarks` TEXT NOT NULL ,
             `user_id` FLOAT NOT NULL ,
             `date_updated` DATETIME NOT NULL
-        ) ENGINE = MYISAM ;")            
+        ) ENGINE = MYISAM ;");
 
     }
 
@@ -1122,6 +1123,27 @@ class ntp extends module {
       echo "<tr><td>Additional Remarks</td>";
       echo "<td>";
       echo "<textarea cols='20' rows='5' name='symptomatic_remarks'></textarea>";
+      echo "</td>";
+      echo "</tr>";      
+      
+      echo "<tr><td>Link to NTP Treatment</td>";
+      echo "<td>";
+      $pxid = healthcenter::get_patient_id($_GET["consult_id"]);
+      
+      $q_ntp = mysql_query("SELECT ntp_id,date_format(ntp_consult_date,'%m/%d/%Y') as consult_date,intensive_start_date,maintenance_start_date,course_end_flag FROM m_patient_ntp WHERE patient_id='$pxid' ORDER by consult_date DESC") or die("Cannot query: 1132".mysql_error());
+      
+      if(mysql_num_rows($q_ntp)==0):
+          echo "<font color='red' size='2'>Patient has never underwent any NTP treatment.</font>";
+      else:
+          echo "<select name='select_ntp' size='1'>";
+          echo "<option value=''>Select NTP Treatment</option>";
+          
+          while($r_ntp = mysql_fetch_array($q_ntp)){
+              echo "<option value='$r_ntp[ntp_id]'>(#$r_ntp[ntp_id])$r_ntp[consult_date] (I: $r_ntp[intensive_start_date], M: $r_ntp[maintenance_start_date])</option>";
+          }
+          
+          echo "</select>";
+      endif;            
       echo "</td>";
       echo "</tr>";      
       

@@ -1618,6 +1618,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_sputum` (
 
 CREATE TABLE `m_consult_ntp_symptomatics` (
 	`symptomatic_id` FLOAT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	`ntp_id` float NOT NULL,
 	`consult_id` FLOAT NOT NULL ,
 	`patient_id` INT NOT NULL ,
 	`sputum_diag1` FLOAT NOT NULL ,
