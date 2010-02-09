@@ -1616,6 +1616,21 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_sputum` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE `m_consult_ntp_symptomatics` (
+	`symptomatic_id` FLOAT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	`consult_id` FLOAT NOT NULL ,
+	`patient_id` INT NOT NULL ,
+	`sputum_diag1` FLOAT NOT NULL ,
+	`sputum_diag2` FLOAT NOT NULL ,
+	`xray_date_referred` DATE NOT NULL ,
+	`xray_date_received` INT NOT NULL ,
+	`xray_result` CHAR( 1 ) NOT NULL ,
+	`remarks` TEXT NOT NULL ,
+	`user_id` FLOAT NOT NULL ,
+	`date_updated` DATETIME NOT NULL
+) ENGINE = MYISAM ;
+
+
 --
 -- Table structure for table `m_consult_philhealth_labs`
 --

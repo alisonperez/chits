@@ -8,8 +8,8 @@ class ntp extends module {
         //
         // do not forget to update version
         //
-        $this->author = 'Herman Tolentino MD';
-        $this->version = "0.8-".date("Y-m-d");
+        $this->author = 'Herman Tolentino MD / darth_ali';
+        $this->version = "0.81-".date("Y-m-d");
         $this->module = "ntp";
         $this->description = "CHITS Module - Natl TB Program";
         // 0.3 installed foreign key constraints
@@ -20,6 +20,7 @@ class ntp extends module {
         //     intensive_projected_end_date, maintenance_projected_end_date
         // 0.7 debugged and optimized refresh and display of ntp data
         // 0.8 added projected sputum exam dates
+            // 0.81. added a SYMPTOMATIC submenu
 
     }
 
@@ -347,6 +348,22 @@ class ntp extends module {
             "CONSTRAINT `m_consult_ntp_labs_request_ibfk_1` FOREIGN KEY (`consult_id`) REFERENCES `m_consult` (`consult_id`) ON DELETE CASCADE,".
             "CONSTRAINT `m_consult_ntp_labs_request_ibfk_2` FOREIGN KEY (`request_id`) REFERENCES `m_consult_lab` (`request_id`) ON DELETE CASCADE".
             ") TYPE=InnoDB; ");
+            
+
+
+        module::execsql("CREATE TABLE `m_consult_ntp_symptomatics` (
+            `symptomatic_id` FLOAT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+            `consult_id` FLOAT NOT NULL ,
+            `patient_id` INT NOT NULL ,
+            `sputum_diag1` FLOAT NOT NULL ,
+            `sputum_diag2` FLOAT NOT NULL ,
+            `xray_date_referred` DATE NOT NULL ,
+            `xray_date_received` INT NOT NULL ,
+            `xray_result` CHAR( 1 ) NOT NULL ,
+            `remarks` TEXT NOT NULL ,
+            `user_id` FLOAT NOT NULL ,
+            `date_updated` DATETIME NOT NULL
+        ) ENGINE = MYISAM ;")            
 
     }
 
@@ -1071,7 +1088,7 @@ class ntp extends module {
 	echo "</td></tr>";
       }      
       echo "<tr>";
-      echo "<td align='2' colspan='2'>";
+      echo "<td align='center' colspan='2'>";
       echo "<input name='submit_diag'.$i type='button' value='Import Dates'></input>";     
       echo "</td>";
       echo "</tr>";

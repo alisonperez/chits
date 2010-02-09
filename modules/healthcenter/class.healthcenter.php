@@ -1303,7 +1303,7 @@ class healthcenter extends module{
             $arg_list = func_get_args();
             $systolic = $arg_list[0];
             $diastolic = $arg_list[1];
-			$edad = $arg_list[2];
+            $edad = $arg_list[2];
         }
 		
 		if($edad >= 18):
