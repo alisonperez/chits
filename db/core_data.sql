@@ -17787,7 +17787,7 @@ CREATE TABLE IF NOT EXISTS `question` (
   `report_type` set('G','W','M','Q','A','S') NOT NULL DEFAULT 'G',
   `visible` set('Y','N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY (`ques_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `question`
@@ -17845,7 +17845,14 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (72, 'Morbidity Disease Quarterly Report (Q2)', 7, '', 'Q', 'Y'),
 (73, 'Morbidity Disease Annual Report', 7, '', 'A', 'Y'),
 (80, 'Maternal Care Monthly Report', 4, '', 'M', 'Y'),
-(81, 'Maternal Care Quarterly Report', 4, '', 'Q', 'Y');
+(81, 'Maternal Care Quarterly Report', 4, '', 'Q', 'Y'),
+(50, 'Child Care Monthly Report', 8, '', 'M', 'Y'),
+(51, 'Child Care Quarterly Report', 8, '', 'Q', 'Y'),
+(66, 'Leprosy Summary Table', 13, '', 'S', 'Y'),
+(67, 'Leprosy Quarterly Report', 13, '', 'Q', 'Y'),
+(90, 'TB Symptomatics Masterlist', 5, '', 'Q', 'Y'),
+(91, 'NTP Laboratory Register', 5, '', 'G', 'Y'),
+(92, 'Tubeculosis Quarterly Report', 5, '', 'Q', 'Y');
 
 
 

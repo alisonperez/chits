@@ -105,3 +105,7 @@ function pick(pxid,pxfirst,pxlast){
   }  
   window.close();        
 }
+
+function import_sputum(){
+        winopen = window.open("../site/import_sputum.php","searchpx","width=300,height=300");
+}

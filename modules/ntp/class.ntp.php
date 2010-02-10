@@ -1090,7 +1090,7 @@ class ntp extends module {
       }      
       echo "<tr>";
       echo "<td align='center' colspan='2'>";
-      echo "<input name='submit_diag'.$i type='button' value='Import Dates'></input>";     
+      echo "<input name='submit_diag'.$i type='button' value='Import Dates' onclick='import_sputum();'></input>";     
       echo "</td>";
       echo "</tr>";
       
