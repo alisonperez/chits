@@ -107,5 +107,6 @@ function pick(pxid,pxfirst,pxlast){
 }
 
 function import_sputum(){
-        winopen = window.open("../site/import_sputum.php","searchpx","width=300,height=300");
+        
+        winopen = window.open("../site/import_sputum.php?id="+form_symptomatic.pxid.value,"importsputum","width=600,height=600");
 }

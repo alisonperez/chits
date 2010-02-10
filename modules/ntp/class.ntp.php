@@ -989,8 +989,8 @@ class ntp extends module {
             break;
             
         case "Save TB Symptomatic":
-        
-            breah;
+            print_r($_POST);
+            break;
             
         case "Print Referral":
             break;
@@ -1059,8 +1059,13 @@ class ntp extends module {
 	$isadmin = $arg_list[4];
       endif;
       
+      $pxid = healthcenter::get_patient_id($_GET["consult_id"]);      
+      
       echo "<a name='tb_symptomatic'>";
-      echo "<form action='' name='form_symptomatic' method='POST'>";
+
+      echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&ntp=$_GET[ntp]' name='form_symptomatic' method='POST'>";
+
+      echo "<input type='hidden' value='$pxid' name='pxid'></input>";
       echo "<table>";
       echo "<tr><td>PATIENT IS TB SYMPTOMATIC?</td>";
       echo "<td><select name='sel_symp' size='1'>";
@@ -1073,32 +1078,15 @@ class ntp extends module {
       echo "<tr>";
       echo "<td colspan='2'>SPUTUM EXAMINATION (before treatment)</td>";            
       echo "</tr>";
-
       echo "<tr>";
       
-      for($i=1;$i<3;$i++){
-
-      echo "<td>";      
-      echo "<table border='1'>";
-      echo "<tr><td>#</td><td>Date</td></tr>";
+      echo "<tr><td>1st</td><td>";      
+      $this->show_sputum_test('sputum_diag1',$pxid);      
+      echo "</td></tr>";
       
-	
-      for($j=1;$j<4;$j++){
-	echo "<tr><td>$j</td><td>";
-	echo "<input type='text' size='11' disabled name='$i.$j'></input>";
-	echo "</td></tr>";
-      }      
-      echo "<tr>";
-      echo "<td align='center' colspan='2'>";
-      echo "<input name='submit_diag'.$i type='button' value='Import Dates' onclick='import_sputum();'></input>";     
-      echo "</td>";
-      echo "</tr>";
-      
-      echo "</table>";
-      echo "</td>";
-      }
-            
-      echo "</tr>";
+      echo "<tr><td>2nd</td><td>";      
+      $this->show_sputum_test('sputum_diag2',$pxid);      
+      echo "</td></tr>";                            
 
       echo "<tr><td>Date Referred for X-Ray</td>";
       echo "<td><input type='text' name='date_referred_xray' size='8'></input>&nbsp;";
@@ -1128,7 +1116,7 @@ class ntp extends module {
       
       echo "<tr><td>Link to NTP Treatment</td>";
       echo "<td>";
-      $pxid = healthcenter::get_patient_id($_GET["consult_id"]);
+      
       
       $q_ntp = mysql_query("SELECT ntp_id,date_format(ntp_consult_date,'%m/%d/%Y') as consult_date,intensive_start_date,maintenance_start_date,course_end_flag FROM m_patient_ntp WHERE patient_id='$pxid' ORDER by consult_date DESC") or die("Cannot query: 1132".mysql_error());
       
@@ -1150,7 +1138,7 @@ class ntp extends module {
       
       echo "<tr align='center'>";
       echo "<td colspan='2'><input type='submit' name='submitntp' value='Save TB Symptomatic'></input>&nbsp;&nbsp;";
-      echo "<input type='reset' value='Clear'>";
+      echo "<input type='reset' value='Clear' name='btn_submit'></input>";
       echo "</td>";
       echo "</tr>";
       
@@ -3022,6 +3010,25 @@ class ntp extends module {
             }
         }
         print "</table><br>";
+    }
+    
+    function show_sputum_test($form_name,$pxid){
+        $q_sputum = mysql_query("SELECT request_id,sp1_collection_date,sp2_collection_date,sp3_collection_date,sp1_reading,sp2_reading,sp3_reading from m_consult_lab_sputum WHERE patient_id='$pxid' ORDER BY sp1_collection_date DESC,sp2_collection_date DESC, sp3_collection_date DESC") or die("Cannot query 3052:".mysql_error());
+        
+        if(mysql_num_rows($q_sputum)!=0):
+            echo "<select name='$form_name' size='1'>";
+            echo "<option value=''>Select Sputum Exam</option>";
+            
+            while($r_sputum=mysql_fetch_array($q_sputum)){
+                echo "<option value='$r_sputum[request_id]'>(1) $r_sputum[sp1_collection_date]($r_sputum[sp1_reading]), (2) $r_sputum[sp2_collection_date]($r_sputum[sp2_reading]), (3) $r_sputum[sp3_collection_date]($r_sputum[sp3_reading])</option>";
+            }            
+            
+            echo "</select>";
+        else:
+            echo"<font color='red' size='2'><b>No record for sputum exam. Please record SPUTUM RESULTS <a href='$_SERVER[SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS'>here</a></font>";        
+        endif;
+
+        
     }
 
 // end of class
