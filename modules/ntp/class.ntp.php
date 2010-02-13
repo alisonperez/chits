@@ -990,6 +990,9 @@ class ntp extends module {
             
         case "Save TB Symptomatic":
             print_r($_POST);
+            
+            $q_ntp = mysql_query("SELECT patient_id FROM m_consult_ntp_symptomatics WHERE patient_id='$_POST[patient_id]' AND ") or die("Cannot query 994 ".mysql_error());
+            
             break;
             
         case "Print Referral":
@@ -1114,16 +1117,26 @@ class ntp extends module {
       echo "</td>";
       echo "</tr>";      
       
-      echo "<tr><td>Link to NTP Treatment</td>";
+
+      echo "<tr><td>Enroll Patient to NTP?</td>";
       echo "<td>";
+      echo "<select name='enroll_flag' size='1'>";
+      echo "<option value=''>Select</option>";
+      echo "<option value='Y'>Yes</option>";
+      echo "<option value='N'>No</option>";
+      echo "</select></td>";
+      echo "</tr>";     
       
+      echo "<tr><td>Link to NTP Treatment (if px underwent TX)</td>";
+      echo "<td valign='top'>";
       
       $q_ntp = mysql_query("SELECT ntp_id,date_format(ntp_consult_date,'%m/%d/%Y') as consult_date,intensive_start_date,maintenance_start_date,course_end_flag FROM m_patient_ntp WHERE patient_id='$pxid' ORDER by consult_date DESC") or die("Cannot query: 1132".mysql_error());
       
       if(mysql_num_rows($q_ntp)==0):
           echo "<font color='red' size='2'>Patient has never underwent any NTP treatment.</font>";
+          echo "<input type='hidden' name='select_ntp_tx' value=''></input>";
       else:
-          echo "<select name='select_ntp' size='1'>";
+          echo "<select name='select_ntp_tx' size='1'>";
           echo "<option value=''>Select NTP Treatment</option>";
           
           while($r_ntp = mysql_fetch_array($q_ntp)){
@@ -1132,6 +1145,7 @@ class ntp extends module {
           
           echo "</select>";
       endif;            
+      
       echo "</td>";
       echo "</tr>";      
       
@@ -3025,7 +3039,7 @@ class ntp extends module {
             
             echo "</select>";
         else:
-            echo"<font color='red' size='2'><b>No record for sputum exam. Please record SPUTUM RESULTS <a href='$_SERVER[SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS'>here</a></font>";        
+            echo"<font color='red' size='2'>No record for sputum exam. Please record SPUTUM RESULTS <a href='$_SERVER[SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS'>here</a></font>";        
         endif;
 
         

@@ -1616,20 +1616,23 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_sputum` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `m_consult_ntp_symptomatics` (
-	`symptomatic_id` FLOAT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-	`ntp_id` float NOT NULL,
-	`consult_id` FLOAT NOT NULL ,
-	`patient_id` INT NOT NULL ,
-	`sputum_diag1` FLOAT NOT NULL ,
-	`sputum_diag2` FLOAT NOT NULL ,
-	`xray_date_referred` DATE NOT NULL ,
-	`xray_date_received` INT NOT NULL ,
-	`xray_result` CHAR( 1 ) NOT NULL ,
-	`remarks` TEXT NOT NULL ,
-	`user_id` FLOAT NOT NULL ,
-	`date_updated` DATETIME NOT NULL
-) ENGINE = MYISAM ;
+CREATE TABLE IF NOT EXISTS `m_consult_ntp_symptomatics` (
+  `symptomatic_id` float NOT NULL AUTO_INCREMENT,
+  `ntp_id` float NOT NULL,
+  `consult_id` float NOT NULL,
+  `patient_id` int(11) NOT NULL,
+  `sputum_diag1` float NOT NULL,
+  `sputum_diag2` float NOT NULL,
+  `xray_date_referred` date NOT NULL,
+  `xray_date_received` int(11) NOT NULL,
+  `xray_result` char(1) NOT NULL,
+  `remarks` text NOT NULL,
+  `enroll_flag` char(1) NOT NULL,
+  `user_id` float NOT NULL,
+  `date_updated` datetime NOT NULL,
+  PRIMARY KEY (`symptomatic_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 
 
 --
