@@ -1615,6 +1615,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_sputum` (
 
 
 -- --------------------------------------------------------
+DROP TABLE IF EXISTS `m_consult_ntp_symptomatics`;
 
 CREATE TABLE IF NOT EXISTS `m_consult_ntp_symptomatics` (
   `symptomatic_id` float NOT NULL AUTO_INCREMENT,
@@ -1627,12 +1628,12 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_symptomatics` (
   `xray_date_received` int(11) NOT NULL,
   `xray_result` char(1) NOT NULL,
   `remarks` text NOT NULL,
+  `symptomatic_flag` char(1) NOT NULL,
   `enroll_flag` char(1) NOT NULL,
   `user_id` float NOT NULL,
   `date_updated` datetime NOT NULL,
   PRIMARY KEY (`symptomatic_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 
 
 --

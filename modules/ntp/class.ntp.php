@@ -352,19 +352,22 @@ class ntp extends module {
 
 
         module::execsql("CREATE TABLE `m_consult_ntp_symptomatics` (
-            `symptomatic_id` FLOAT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-            `ntp_id` float NOT NULL,
-            `consult_id` FLOAT NOT NULL ,
-            `patient_id` INT NOT NULL ,
-            `sputum_diag1` FLOAT NOT NULL ,
-            `sputum_diag2` FLOAT NOT NULL ,
-            `xray_date_referred` DATE NOT NULL ,
-            `xray_date_received` INT NOT NULL ,
-            `xray_result` CHAR( 1 ) NOT NULL ,
-            `remarks` TEXT NOT NULL ,
-            `user_id` FLOAT NOT NULL ,
-            `date_updated` DATETIME NOT NULL
-        ) ENGINE = MYISAM ;");
+		  `symptomatic_id` float NOT NULL AUTO_INCREMENT,
+  		  `ntp_id` float NOT NULL,
+  		  `consult_id` float NOT NULL,
+		  `patient_id` int(11) NOT NULL,
+		  `sputum_diag1` float NOT NULL,
+		  `sputum_diag2` float NOT NULL,
+		  `xray_date_referred` date NOT NULL,
+		  `xray_date_received` int(11) NOT NULL,
+		  `xray_result` char(1) NOT NULL,
+		  `remarks` text NOT NULL,
+		  `symptomatic_flag` char(1) NOT NULL,
+		  `enroll_flag` char(1) NOT NULL,
+		  `user_id` float NOT NULL,
+		  `date_updated` datetime NOT NULL,
+		  PRIMARY KEY (`symptomatic_id`)
+		) ENGINE=MyISAM");
 
     }
 
@@ -989,9 +992,48 @@ class ntp extends module {
             break;
             
         case "Save TB Symptomatic":
-            print_r($_POST);
+            //print_r($_POST);
+            /*
+            $q_ntp = mysql_query("SELECT patient_id FROM m_consult_ntp_symptomatics WHERE patient_id='$_POST[pxid]' AND enroll_flag=''") or die("Cannot query 994 ".mysql_error());
             
-            $q_ntp = mysql_query("SELECT patient_id FROM m_consult_ntp_symptomatics WHERE patient_id='$_POST[patient_id]' AND ") or die("Cannot query 994 ".mysql_error());
+            if(mysql_num_rows($q_ntp)!=0):                                    
+                
+                if($_POST["enroll_flag"]=='Y'):
+                    echo "<script language='Javascript'>";
+                    echo "window.alert('Upon enrollment of patient, do no forget to update LINK TO NTP TREATMENT by selecting the treatment date.')";
+                    echo "</script>";
+                endif;
+                
+            
+                    list($symp_id) = mysql_fetch_array($q_ntp);
+                    $update_symp = mysql_query("UPDATE m_consult_ntp_symptomatics SET ntp_id='$_POST[select_ntp_tx]',consult_id='$_GET[consult_id]',patient_id='$_POST[pxid]',sputum_diag1='$_POST[sputum_diag1]',sputum_diag2='$_POST[sputum_diag2]',xray_date_referred='$xray_referred',xray_date_received='$xray_received',xray_result='$_POST[xray_result]',remarks='$_POST[symptomatic_remarks]',enroll_flag='$_POST[enroll_flag]',user_id='$_SESSION[useid]',date_updated=NOW() WHERE symptomatic_id='$symp_id'") or die("Cannot query 998 ".mysql_error());                
+            */
+                
+            //else:
+                //echo 'no symptomatic record, therefore create';
+                list($xm,$xd,$xy) = explode('/',$_POST["date_referred_xray"]);
+                $xray_referred = $xy.'-'.$xm.'-'.$xd;
+                
+                list($ym,$yd,$yy) = explode('/',$_POST["date_received_xray"]);
+                $xray_received = $yy.'-'.$ym.'-'.$yd;                                            
+                //echo $xray_received;
+              
+                $insert_symp = mysql_query("INSERT INTO m_consult_ntp_symptomatics SET ntp_id='$_POST[select_ntp_tx]',consult_id='$_GET[consult_id]',patient_id='$_POST[pxid]',sputum_diag1='$_POST[sputum_diag1]',sputum_diag2='$_POST[sputum_diag2]',xray_date_referred='$xray_referred',xray_date_received='$xray_received',xray_result='$_POST[xray_result]',remarks='$_POST[symptomatic_remarks]',symptomatic_flag='$_POST[sel_symp]',enroll_flag='$_POST[enroll_flag]',user_id='$_SESSION[useid]',date_updated=NOW()") or die("Cannot query: 1000 ".mysql_error()); 
+                
+                
+                echo "<script language='Javascript'>";
+                
+                if($insert_symp):
+                    echo "window.alert('Record for TB Symptomatic was successfully been saved!')";
+                else:
+                    echo "window.alert('Record for TB Symptomatic not saved. Kindly check the entries')";                
+                endif;
+                
+                
+                echo "</script>";
+
+                
+            //endif;
             
             break;
             
@@ -1067,9 +1109,28 @@ class ntp extends module {
       echo "<a name='tb_symptomatic'>";
 
       echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&ntp=$_GET[ntp]' name='form_symptomatic' method='POST'>";
-
+           
       echo "<input type='hidden' value='$pxid' name='pxid'></input>";
       echo "<table>";
+      echo "<tr><td>SELECT RECORD TO VIEW</td>";
+      
+      echo "<td>";      
+      $q_symp_rec = mysql_query("SELECT symptomatic_id,date_format(date_updated,'%Y-%m-%d') as 'symp_date',symptomatic_flag FROM m_consult_ntp_symptomatics ORDER by 'symp_date' ASC") or die("Cannot query 1115: ".mysql_error());
+            
+      
+      if(mysql_num_rows($q_symp_rec)==0):
+          echo "No saved record for TB Symptomatic yet";
+      else:      
+          echo "<select name='sel_symp_rec' value='1'>";          
+          while(list($symp_id,$symp_date, $symp_flag) = mysql_fetch_array($q_symp_rec)){          
+              echo "<option value='$symp_id'>$symp_date / SYMP? $symp_flag</option>";
+          }
+          
+          echo "</select>";
+      endif;
+      
+      echo "</td>";
+      
       echo "<tr><td>PATIENT IS TB SYMPTOMATIC?</td>";
       echo "<td><select name='sel_symp' size='1'>";
       echo "<option value=''>Please Specify</option>";
