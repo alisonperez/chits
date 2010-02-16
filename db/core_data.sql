@@ -1622,6 +1622,7 @@ CREATE TABLE IF NOT EXISTS `m_consult_ntp_symptomatics` (
   `ntp_id` float NOT NULL,
   `consult_id` float NOT NULL,
   `patient_id` int(11) NOT NULL,
+  `date_seen` date NOT NULL,
   `sputum_diag1` float NOT NULL,
   `sputum_diag2` float NOT NULL,
   `xray_date_referred` date NOT NULL,

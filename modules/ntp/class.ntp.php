@@ -353,9 +353,10 @@ class ntp extends module {
 
         module::execsql("CREATE TABLE `m_consult_ntp_symptomatics` (
 		  `symptomatic_id` float NOT NULL AUTO_INCREMENT,
-  		  `ntp_id` float NOT NULL,
-  		  `consult_id` float NOT NULL,
+		  `ntp_id` float NOT NULL,
+		  `consult_id` float NOT NULL,
 		  `patient_id` int(11) NOT NULL,
+		  `date_seen` date NOT NULL,
 		  `sputum_diag1` float NOT NULL,
 		  `sputum_diag2` float NOT NULL,
 		  `xray_date_referred` date NOT NULL,
@@ -1018,7 +1019,10 @@ class ntp extends module {
                 $xray_received = $yy.'-'.$ym.'-'.$yd;                                            
                 //echo $xray_received;
               
-                $insert_symp = mysql_query("INSERT INTO m_consult_ntp_symptomatics SET ntp_id='$_POST[select_ntp_tx]',consult_id='$_GET[consult_id]',patient_id='$_POST[pxid]',sputum_diag1='$_POST[sputum_diag1]',sputum_diag2='$_POST[sputum_diag2]',xray_date_referred='$xray_referred',xray_date_received='$xray_received',xray_result='$_POST[xray_result]',remarks='$_POST[symptomatic_remarks]',symptomatic_flag='$_POST[sel_symp]',enroll_flag='$_POST[enroll_flag]',user_id='$_SESSION[useid]',date_updated=NOW()") or die("Cannot query: 1000 ".mysql_error()); 
+                list($seen_m,$seen_d,$seen_y) = explode('/',$_POST["date_symptomatic"]);
+                $date_seen = $seen_y.'-'.$seen_m.'-'.$seen_d;
+                
+                $insert_symp = mysql_query("INSERT INTO m_consult_ntp_symptomatics SET ntp_id='$_POST[select_ntp_tx]',consult_id='$_GET[consult_id]',patient_id='$_POST[pxid]',sputum_diag1='$_POST[sputum_diag1]',sputum_diag2='$_POST[sputum_diag2]',xray_date_referred='$xray_referred',xray_date_received='$xray_received',xray_result='$_POST[xray_result]',remarks='$_POST[symptomatic_remarks]',symptomatic_flag='$_POST[sel_symp]',enroll_flag='$_POST[enroll_flag]',user_id='$_SESSION[useid]',date_updated=NOW(),date_seen='$date_seen'") or die("Cannot query: 1000 ".mysql_error()); 
                 
                 
                 echo "<script language='Javascript'>";
@@ -1115,15 +1119,15 @@ class ntp extends module {
       echo "<tr><td>SELECT RECORD TO VIEW</td>";
       
       echo "<td>";      
-      $q_symp_rec = mysql_query("SELECT symptomatic_id,date_format(date_updated,'%Y-%m-%d') as 'symp_date',symptomatic_flag FROM m_consult_ntp_symptomatics ORDER by 'symp_date' ASC") or die("Cannot query 1115: ".mysql_error());
+      $q_symp_rec = mysql_query("SELECT symptomatic_id,date_format(date_updated,'%Y-%m-%d') as 'symp_date',symptomatic_flag,date_format(date_seen,'%Y-%m-%d') as 'date_seen' FROM m_consult_ntp_symptomatics ORDER by 'date_seen' ASC") or die("Cannot query 1115: ".mysql_error());
             
       
       if(mysql_num_rows($q_symp_rec)==0):
           echo "No saved record for TB Symptomatic yet";
       else:      
           echo "<select name='sel_symp_rec' value='1'>";          
-          while(list($symp_id,$symp_date, $symp_flag) = mysql_fetch_array($q_symp_rec)){          
-              echo "<option value='$symp_id'>$symp_date / SYMP? $symp_flag</option>";
+          while(list($symp_id,$symp_date, $symp_flag, $date_seen) = mysql_fetch_array($q_symp_rec)){          
+              echo "<option value='$symp_id'>$date_seen / SYMP? $symp_flag</option>";
           }
           
           echo "</select>";
@@ -1134,10 +1138,16 @@ class ntp extends module {
       echo "<tr><td>PATIENT IS TB SYMPTOMATIC?</td>";
       echo "<td><select name='sel_symp' size='1'>";
       echo "<option value=''>Please Specify</option>";
-      echo "<option value='Y'>Yes</option>";
+      echo "<option value='Y' SELECTED>Yes</option>";
       echo "<option value='N'>No</option>";
       echo "</select></td><tr>";
 
+      $now = date('m/d/Y');
+      echo "<tr><td>Date Patient Seen</td>";
+      echo "<td><input type='text' name='date_symptomatic' size='8' value='$now'></input>&nbsp;";
+      echo "<a href=\"javascript:show_calendar4('document.form_symptomatic.date_symptomatic', document.form_symptomatic.date_symptomatic.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr>";
       echo "<td colspan='2'>SPUTUM EXAMINATION (before treatment)</td>";            
