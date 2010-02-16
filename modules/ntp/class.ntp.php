@@ -1040,7 +1040,11 @@ class ntp extends module {
             //endif;
             
             break;
-            
+        
+        case "View TB SYMP Record":
+            //print_r($_POST);            
+            break;
+        
         case "Print Referral":
             break;
         }
@@ -1108,7 +1112,14 @@ class ntp extends module {
 	$isadmin = $arg_list[4];
       endif;
       
-      $pxid = healthcenter::get_patient_id($_GET["consult_id"]);      
+      $pxid = healthcenter::get_patient_id($_GET["consult_id"]);                
+      
+      if($_POST[sel_symp_rec]):
+          $q_symp_rec = mysql_query("SELECT symptomatic_id,ntp_id,date_format(date_seen,'%m/%d/%Y') as 'date_seen',sputum_diag1,sputum_diag2,date_format(xray_date_referred,'%m/%d/%Y') as 'xray_referred', date_format(xray_date_received,'%m/%d/%Y') as 'xray_received',xray_result,remarks,symptomatic_flag,enroll_flag FROM m_consult_ntp_symptomatics WHERE symptomatic_id='$_POST[sel_symp_rec]'") or die("Cannot query 1118: ".mysql_error());
+          $r_symp = mysql_fetch_array($q_symp_rec);         
+          print_r($r_symp);
+      endif;
+      
       
       echo "<a name='tb_symptomatic'>";
 
@@ -1130,20 +1141,28 @@ class ntp extends module {
               echo "<option value='$symp_id'>$date_seen / SYMP? $symp_flag</option>";
           }
           
-          echo "</select>&nbsp;";
+          echo "</select>&nbsp;&nbsp;";
           echo "<input type='submit' name='submitntp' value='View TB SYMP Record'></input>";          
       endif;
       
       echo "</td>";
       
       echo "<tr><td>PATIENT IS TB SYMPTOMATIC?</td>";
+      
+      if($r_symp[symptomatic_flag]=='N'):
+          $n = 'SELECTED';
+      else:
+          $y = 'SELECTED';
+      endif;
+      
+      
       echo "<td><select name='sel_symp' size='1'>";
       echo "<option value=''>Please Specify</option>";
-      echo "<option value='Y' SELECTED>Yes</option>";
-      echo "<option value='N'>No</option>";
+      echo "<option value='Y' $y>Yes</option>";
+      echo "<option value='N' $n>No</option>";
       echo "</select></td><tr>";
 
-      $now = date('m/d/Y');
+      $now = (!empty($r_symp[date_seen])?$r_symp[date_seen]:date('m/d/Y'));
       echo "<tr><td>Date Patient Seen</td>";
       echo "<td><input type='text' name='date_symptomatic' size='8' value='$now'></input>&nbsp;";
       echo "<a href=\"javascript:show_calendar4('document.form_symptomatic.date_symptomatic', document.form_symptomatic.date_symptomatic.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";
@@ -1156,11 +1175,11 @@ class ntp extends module {
       echo "<tr>";
       
       echo "<tr><td>1st</td><td>";      
-      $this->show_sputum_test('sputum_diag1',$pxid);      
+      $this->show_sputum_test('sputum_diag1',$pxid,$r_symp[sputum_diag1]);      
       echo "</td></tr>";
       
       echo "<tr><td>2nd</td><td>";      
-      $this->show_sputum_test('sputum_diag2',$pxid);      
+      $this->show_sputum_test('sputum_diag2',$pxid,$r_symp[sputum_diag2]);      
       echo "</td></tr>";                            
 
       echo "<tr><td>Date Referred for X-Ray</td>";
@@ -1594,7 +1613,7 @@ class ntp extends module {
         if ($result_ntp = mysql_query($sql_ntp)) {
             if (mysql_num_rows($result_ntp)) {
                 while (list($nid, $pid, $regdate, $outcome) = mysql_fetch_array($result_ntp)) {
-                    print "<img src='../images/arrow_redwhite' border='0'/> REGISTRY NO: <font color='red'>".module::pad_zero($nid,7)."</font> ";
+                    print "<img src='../images/arrow_redwhite.gif' border='0'/> REGISTRY NO: <font color='red'>".module::pad_zero($nid,7)."</font> ";
                     print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=VISIT1&ntp_id=$nid'>$regdate</a> ";
                     print ($outcome=="TX"?"<font color='green'>OPEN</font>":"<font color='red'>CLOSED</font>");
                     print "<br/>";
@@ -3098,7 +3117,9 @@ class ntp extends module {
         print "</table><br>";
     }
     
-    function show_sputum_test($form_name,$pxid){
+    function show_sputum_test($form_name,$pxid, $sputum_id){
+    
+        
         $q_sputum = mysql_query("SELECT request_id,sp1_collection_date,sp2_collection_date,sp3_collection_date,sp1_reading,sp2_reading,sp3_reading from m_consult_lab_sputum WHERE patient_id='$pxid' ORDER BY sp1_collection_date DESC,sp2_collection_date DESC, sp3_collection_date DESC") or die("Cannot query 3052:".mysql_error());
         
         if(mysql_num_rows($q_sputum)!=0):
@@ -3106,7 +3127,11 @@ class ntp extends module {
             echo "<option value=''>Select Sputum Exam</option>";
             
             while($r_sputum=mysql_fetch_array($q_sputum)){
-                echo "<option value='$r_sputum[request_id]'>(1) $r_sputum[sp1_collection_date]($r_sputum[sp1_reading]), (2) $r_sputum[sp2_collection_date]($r_sputum[sp2_reading]), (3) $r_sputum[sp3_collection_date]($r_sputum[sp3_reading])</option>";
+                if($r_sputum[request_id]==$sputum_id):
+                    echo "<option value='$r_sputum[request_id]' SELECTED>(1) $r_sputum[sp1_collection_date]($r_sputum[sp1_reading]), (2) $r_sputum[sp2_collection_date]($r_sputum[sp2_reading]), (3) $r_sputum[sp3_collection_date]($r_sputum[sp3_reading])</option>";                
+                else:
+                    echo "<option value='$r_sputum[request_id]'>(1) $r_sputum[sp1_collection_date]($r_sputum[sp1_reading]), (2) $r_sputum[sp2_collection_date]($r_sputum[sp2_reading]), (3) $r_sputum[sp3_collection_date]($r_sputum[sp3_reading])</option>";
+                endif;
             }            
             
             echo "</select>";

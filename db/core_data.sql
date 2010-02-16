@@ -2519,7 +2519,7 @@ INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`) VAL
 ('CONDOM', 'Condom', 'M'),
 ('IUD', 'IUD', 'F'),
 ('NFPLAM', 'NFP Lactational amenorrhea', 'F'),
-('DMPA', 'Depo-Lactational Amenorrhea ', 'F'),
+('DMPA', 'Depot Medroxyprogesterone Acetate', 'F'),
 ('NFPBBT', 'NFP Basal Body Temperature', 'F'),
 ('NFPCM', 'NFP Cervical Mucus Method', 'F'),
 ('NFPSTM', 'NFP Sympothermal Method', 'F'),
