@@ -1119,7 +1119,7 @@ class ntp extends module {
       echo "<tr><td>SELECT RECORD TO VIEW</td>";
       
       echo "<td>";      
-      $q_symp_rec = mysql_query("SELECT symptomatic_id,date_format(date_updated,'%Y-%m-%d') as 'symp_date',symptomatic_flag,date_format(date_seen,'%Y-%m-%d') as 'date_seen' FROM m_consult_ntp_symptomatics ORDER by 'date_seen' ASC") or die("Cannot query 1115: ".mysql_error());
+      $q_symp_rec = mysql_query("SELECT symptomatic_id,date_format(date_updated,'%Y-%m-%d') as 'symp_date',symptomatic_flag,date_format(date_seen,'%Y-%m-%d') as 'date_seen' FROM m_consult_ntp_symptomatics WHERE patient_id='$pxid' ORDER by 'date_seen' ASC") or die("Cannot query 1115: ".mysql_error());
             
       
       if(mysql_num_rows($q_symp_rec)==0):
@@ -1130,7 +1130,8 @@ class ntp extends module {
               echo "<option value='$symp_id'>$date_seen / SYMP? $symp_flag</option>";
           }
           
-          echo "</select>";
+          echo "</select>&nbsp;";
+          echo "<input type='submit' name='submitntp' value='View TB SYMP Record'></input>";          
       endif;
       
       echo "</td>";
