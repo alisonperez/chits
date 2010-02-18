@@ -360,7 +360,7 @@ class ntp extends module {
 		  `sputum_diag1` float NOT NULL,
 		  `sputum_diag2` float NOT NULL,
 		  `xray_date_referred` date NOT NULL,
-		  `xray_date_received` int(11) NOT NULL,
+		  `xray_date_received` date NOT NULL,
 		  `xray_result` char(1) NOT NULL,
 		  `remarks` text NOT NULL,
 		  `symptomatic_flag` char(1) NOT NULL,
@@ -1017,8 +1017,7 @@ class ntp extends module {
                 
                 list($ym,$yd,$yy) = explode('/',$_POST["date_received_xray"]);
                 $xray_received = $yy.'-'.$ym.'-'.$yd;                                            
-                //echo $xray_received;
-              
+                
                 list($seen_m,$seen_d,$seen_y) = explode('/',$_POST["date_symptomatic"]);
                 $date_seen = $seen_y.'-'.$seen_m.'-'.$seen_d;
                 
@@ -1118,6 +1117,11 @@ class ntp extends module {
           $q_symp_rec = mysql_query("SELECT symptomatic_id,ntp_id,date_format(date_seen,'%m/%d/%Y') as 'date_seen',sputum_diag1,sputum_diag2,date_format(xray_date_referred,'%m/%d/%Y') as 'xray_referred', date_format(xray_date_received,'%m/%d/%Y') as 'xray_received',xray_result,remarks,symptomatic_flag,enroll_flag FROM m_consult_ntp_symptomatics WHERE symptomatic_id='$_POST[sel_symp_rec]'") or die("Cannot query 1118: ".mysql_error());
           $r_symp = mysql_fetch_array($q_symp_rec);         
           print_r($r_symp);
+          
+          $date_seen = (($r_symp[date_seen]=='00/00/0000')?'':$r_symp[date_seen]);
+          $xray_refer = (($r_symp[xray_referred]=='00/00/0000')?'':$r_symp[xray_referred]);
+          $xray_receive = (($r_symp[xray_received]=='00/00/0000')?'':$r_symp[xray_received]);
+          
       endif;
       
       
@@ -1182,39 +1186,57 @@ class ntp extends module {
       $this->show_sputum_test('sputum_diag2',$pxid,$r_symp[sputum_diag2]);      
       echo "</td></tr>";                            
 
+      
+      
       echo "<tr><td>Date Referred for X-Ray</td>";
-      echo "<td><input type='text' name='date_referred_xray' size='8'></input>&nbsp;";
+      echo "<td><input type='text' name='date_referred_xray' size='8' value='$xray_refer')></input>&nbsp;";
       echo "<a href=\"javascript:show_calendar4('document.form_symptomatic.date_referred_xray', document.form_symptomatic.date_referred_xray.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr><td>Date X-Ray Received</td>";
-      echo "<td><input type='text' name='date_received_xray' size='8'></input>&nbsp;";
+      echo "<td><input type='text' name='date_received_xray' size='8' value='$xray_receive'></input>&nbsp;";
       echo "<a href=\"javascript:show_calendar4('document.form_symptomatic.date_received_xray', document.form_symptomatic.date_received_xray.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";
       echo "</td>";
       echo "</tr>";
+    
+      if($r_symp[xray_result]=='P'):
+          $p = 'SELECTED';
+      elseif($r_symp[xray_result]=='N'):
+          $n = 'SELECTED';
+      else:
+          $d = '';
+      endif;
       
       echo "<tr><td>X-ray Results</td>";
       echo "<td><select name='xray_result' size='1'>";
-      echo "<option value=''>Select Result</option>";
-      echo "<option value='P'>Positive</option>";
-      echo "<option value='N'>Negative</option>";
+      echo "<option value='' $d>Select Result</option>";
+      echo "<option value='P' $p>Positive</option>";
+      echo "<option value='N' $n>Negative</option>";
       echo "</select></td>";
       echo "</tr>";
       
       echo "<tr><td>Additional Remarks</td>";
       echo "<td>";
-      echo "<textarea cols='20' rows='5' name='symptomatic_remarks'></textarea>";
+      echo "<textarea cols='20' rows='5' name='symptomatic_remarks'>$r_symp[remarks]</textarea>";
       echo "</td>";
       echo "</tr>";      
       
+      if($r_symp[enroll_flag]=='N'):
+          $n = 'SELECTED';
+      elseif($r_symp[enroll_flag]=='Y'):
+          $y = 'SELECTED';
+      else:
+          $d = 'SELECTED';
+      endif;
+
 
       echo "<tr><td>Enroll Patient to NTP?</td>";
       echo "<td>";
       echo "<select name='enroll_flag' size='1'>";
-      echo "<option value=''>Select</option>";
-      echo "<option value='Y'>Yes</option>";
-      echo "<option value='N'>No</option>";
+      echo "<option value='' $d>Select</option>";
+      echo "<option value='Y' $y>Yes</option>";
+      echo "<option value='N' $n>No</option>";
       echo "</select></td>";
       echo "</tr>";     
       
@@ -1231,7 +1253,11 @@ class ntp extends module {
           echo "<option value=''>Select NTP Treatment</option>";
           
           while($r_ntp = mysql_fetch_array($q_ntp)){
-              echo "<option value='$r_ntp[ntp_id]'>(#$r_ntp[ntp_id])$r_ntp[consult_date] (I: $r_ntp[intensive_start_date], M: $r_ntp[maintenance_start_date])</option>";
+              if($r_symp[ntp_id]==$r_ntp[ntp_id]):
+                  echo "<option value='$r_ntp[ntp_id]' SELECTED>(#$r_ntp[ntp_id])$r_ntp[consult_date] (I: $r_ntp[intensive_start_date], M: $r_ntp[maintenance_start_date])</option>";                  
+              else:          
+                  echo "<option value='$r_ntp[ntp_id]'>(#$r_ntp[ntp_id])$r_ntp[consult_date] (I: $r_ntp[intensive_start_date], M: $r_ntp[maintenance_start_date])</option>";
+              endif;              
           }
           
           echo "</select>";
@@ -1242,7 +1268,13 @@ class ntp extends module {
       
       
       echo "<tr align='center'>";
-      echo "<td colspan='2'><input type='submit' name='submitntp' value='Save TB Symptomatic'></input>&nbsp;&nbsp;";
+      if($_POST[sel_symp_rec]):
+          echo "<td colspan='2'><input type='submit' name='submitntp' value='Update TB Symptomatic'></input>&nbsp;&nbsp;";      
+      else:      
+          echo "<td colspan='2'><input type='submit' name='submitntp' value='Save TB Symptomatic'></input>&nbsp;&nbsp;";
+      endif;
+      
+      
       echo "<input type='reset' value='Clear' name='btn_submit'></input>";
       echo "</td>";
       echo "</tr>";
