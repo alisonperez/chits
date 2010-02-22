@@ -992,25 +992,7 @@ class ntp extends module {
             }
             break;
             
-        case "Save TB Symptomatic":
-            //print_r($_POST);
-            /*
-            $q_ntp = mysql_query("SELECT patient_id FROM m_consult_ntp_symptomatics WHERE patient_id='$_POST[pxid]' AND enroll_flag=''") or die("Cannot query 994 ".mysql_error());
-            
-            if(mysql_num_rows($q_ntp)!=0):                                    
-                
-                if($_POST["enroll_flag"]=='Y'):
-                    echo "<script language='Javascript'>";
-                    echo "window.alert('Upon enrollment of patient, do no forget to update LINK TO NTP TREATMENT by selecting the treatment date.')";
-                    echo "</script>";
-                endif;
-                
-            
-                    list($symp_id) = mysql_fetch_array($q_ntp);
-                    $update_symp = mysql_query("UPDATE m_consult_ntp_symptomatics SET ntp_id='$_POST[select_ntp_tx]',consult_id='$_GET[consult_id]',patient_id='$_POST[pxid]',sputum_diag1='$_POST[sputum_diag1]',sputum_diag2='$_POST[sputum_diag2]',xray_date_referred='$xray_referred',xray_date_received='$xray_received',xray_result='$_POST[xray_result]',remarks='$_POST[symptomatic_remarks]',enroll_flag='$_POST[enroll_flag]',user_id='$_SESSION[useid]',date_updated=NOW() WHERE symptomatic_id='$symp_id'") or die("Cannot query 998 ".mysql_error());                
-            */
-                
-            //else:
+        case "Save TB Symptomatic":            
                 //echo 'no symptomatic record, therefore create';
                 list($xm,$xd,$xy) = explode('/',$_POST["date_referred_xray"]);
                 $xray_referred = $xy.'-'.$xm.'-'.$xd;
@@ -1033,13 +1015,37 @@ class ntp extends module {
                 endif;
                 
                 
-                echo "</script>";
-
-                
-            //endif;
-            
+                echo "</script>";                                        
             break;
-        
+            
+        case "Update TB Symptomatic":
+                list($xm,$xd,$xy) = explode('/',$_POST["date_referred_xray"]);
+                $xray_referred = $xy.'-'.$xm.'-'.$xd;
+                
+                list($ym,$yd,$yy) = explode('/',$_POST["date_received_xray"]);
+                $xray_received = $yy.'-'.$ym.'-'.$yd;                                            
+                
+                list($seen_m,$seen_d,$seen_y) = explode('/',$_POST["date_symptomatic"]);
+                $date_seen = $seen_y.'-'.$seen_m.'-'.$seen_d;
+                                                    
+                if($_POST["enroll_flag"]=='Y' && $_POST["select_ntp_tx"]==''):
+                    echo "<script language='Javascript'>";
+                    echo "window.alert('Upon enrollment of patient, do no forget to update LINK TO NTP TREATMENT by selecting the treatment date.')";
+                    echo "</script>";
+                endif;                                                        
+                
+                $update_symp = mysql_query("UPDATE m_consult_ntp_symptomatics SET ntp_id='$_POST[select_ntp_tx]',date_seen='$date_seen',sputum_diag1='$_POST[sputum_diag1]',sputum_diag2='$_POST[sputum_diag2]',xray_date_referred='$xray_referred',xray_date_received='$xray_received',xray_result='$_POST[xray_result]',remarks='$_POST[symptomatic_remarks]',symptomatic_flag='$_POST[sel_symp]',enroll_flag='$_POST[enroll_flag]' WHERE symptomatic_id='$_POST[sel_symp_rec]'") or die("Cannot query 998 ".mysql_error());
+                
+                echo "<script language='Javascript'>";
+                
+                if($update_symp):
+                    echo "window.alert('Update of TB Symptomatic record was successful!')";
+                else:
+                    echo "window.alert('Update of TB Symptomatic record was not successful. Please check entries.')";
+                endif;
+                
+                echo "</script>";
+            
         case "View TB SYMP Record":
             //print_r($_POST);            
             break;
@@ -1116,7 +1122,7 @@ class ntp extends module {
       if($_POST[sel_symp_rec]):
           $q_symp_rec = mysql_query("SELECT symptomatic_id,ntp_id,date_format(date_seen,'%m/%d/%Y') as 'date_seen',sputum_diag1,sputum_diag2,date_format(xray_date_referred,'%m/%d/%Y') as 'xray_referred', date_format(xray_date_received,'%m/%d/%Y') as 'xray_received',xray_result,remarks,symptomatic_flag,enroll_flag FROM m_consult_ntp_symptomatics WHERE symptomatic_id='$_POST[sel_symp_rec]'") or die("Cannot query 1118: ".mysql_error());
           $r_symp = mysql_fetch_array($q_symp_rec);         
-          print_r($r_symp);
+          //print_r($r_symp);
           
           $date_seen = (($r_symp[date_seen]=='00/00/0000')?'':$r_symp[date_seen]);
           $xray_refer = (($r_symp[xray_referred]=='00/00/0000')?'':$r_symp[xray_referred]);
@@ -1124,12 +1130,17 @@ class ntp extends module {
           
       endif;
       
-      
+      if($_POST[confirm_del]==1):          
+          $this->delete_symp($_POST[sel_symp_rec]);xxx
+      endif;
+        
       echo "<a name='tb_symptomatic'>";
 
       echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&ntp=$_GET[ntp]' name='form_symptomatic' method='POST'>";
-           
+                 
       echo "<input type='hidden' value='$pxid' name='pxid'></input>";
+      echo "<input type='hidden' name='confirm_del' value='0'></input>";
+      
       echo "<table>";
       echo "<tr><td>SELECT RECORD TO VIEW</td>";
       
@@ -1174,17 +1185,17 @@ class ntp extends module {
       echo "</tr>";
 
       echo "<tr>";
-      echo "<td colspan='2'>SPUTUM EXAMINATION (before treatment)</td>";            
+      echo "<td colspan='2'>SPUTUM EXAMINATION (before treatment)</td>";
       echo "</tr>";
       echo "<tr>";
       
-      echo "<tr><td>1st</td><td>";      
-      $this->show_sputum_test('sputum_diag1',$pxid,$r_symp[sputum_diag1]);      
+      echo "<tr><td>1st</td><td>";
+      $this->show_sputum_test('sputum_diag1',$pxid,$r_symp[sputum_diag1]);
       echo "</td></tr>";
       
-      echo "<tr><td>2nd</td><td>";      
-      $this->show_sputum_test('sputum_diag2',$pxid,$r_symp[sputum_diag2]);      
-      echo "</td></tr>";                            
+      echo "<tr><td>2nd</td><td>";
+      $this->show_sputum_test('sputum_diag2',$pxid,$r_symp[sputum_diag2]);
+      echo "</td></tr>";
 
       
       
@@ -1269,7 +1280,13 @@ class ntp extends module {
       
       echo "<tr align='center'>";
       if($_POST[sel_symp_rec]):
-          echo "<td colspan='2'><input type='submit' name='submitntp' value='Update TB Symptomatic'></input>&nbsp;&nbsp;";      
+          echo "<td colspan='2'><input type='submit' name='submitntp' value='Update TB Symptomatic'></input>&nbsp;&nbsp;";
+          
+          if($_SESSION["priv_delete"]):
+            echo "<input type='button' name='deletesymp' value='Delete TB Symptomatic' onclick='delete_symp()'></input>&nbsp;&nbsp;";
+          endif;
+          
+          echo "<input type='button' name='cancel' value='Cancel Transaction' onclick='history.go(-1)'></input>&nbsp;&nbsp;";
       else:      
           echo "<td colspan='2'><input type='submit' name='submitntp' value='Save TB Symptomatic'></input>&nbsp;&nbsp;";
       endif;
