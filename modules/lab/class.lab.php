@@ -142,6 +142,9 @@ class lab extends module {
             //print_r($arg_list);
         }
         $l = new lab;
+        
+        
+        
         print "<table width='600'>";
         print "<tr><td>";
         $l->request_info($menu_id, $post_vars, $get_vars);
@@ -327,6 +330,7 @@ class lab extends module {
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
         switch($post_vars["submitlab"]) {
         case "Send Request":
+            mysql_query("ALTER TABLE `m_consult_lab` DROP PRIMARY KEY, ADD PRIMARY KEY(`request_id`)");
             if ($post_vars["lab_exam"]) {
                 foreach($post_vars["lab_exam"] as $key=>$value) {
                     $sql = "insert into m_consult_lab (consult_id, patient_id, lab_id, request_timestamp, request_user_id) ".
