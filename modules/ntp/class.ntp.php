@@ -509,9 +509,11 @@ class ntp extends module {
             $arg_list = func_get_args();
             $type_id = $arg_list[0];
         }
-        $sql = "select n.lab_id, l.lab_name ".
+        /*$sql = "select n.lab_id, l.lab_name ".
                "from m_lib_laboratory l, m_consult_ntp_labs n ".
-               "where l.lab_id = n.lab_id order by l.lab_name";
+               "where l.lab_id = n.lab_id order by l.lab_name"; */
+               
+        $sql = "select lab_id, lab_name FROM m_lib_laboratory ORDER by lab_name ASC";
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
                 while (list($id, $name) = mysql_fetch_array($result)) {
@@ -575,10 +577,13 @@ class ntp extends module {
         print "<tr valign='top'><td>";
         print "<span class='library'>".FTITLE_NTP_LABS."</span><br>";
         print "</td></tr>";
+        
+        
         $sql = "select n.lab_id, l.lab_name ".
                "from m_lib_laboratory l, m_consult_ntp_labs n ".
                "where l.lab_id = n.lab_id ".
                "order by l.lab_name";
+                                
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
                 while (list($id, $name) = mysql_fetch_array($result)) {
@@ -678,6 +683,10 @@ class ntp extends module {
         case "LABS":
             // lab requests: either request or generate referral
             $n->form_consult_ntp_lab($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
+            
+            //if a request has been made, show the queue of labs here
+            $n->form_pending_request($menu_id,$post_vars,$get_vars,$validuser,$isadmin);
+            
             // lab requests done outside of ntp but can be
             // assigned to ntp, e.g., first sputum exam
             $n->form_consult_assign_lab($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
@@ -977,6 +986,10 @@ class ntp extends module {
             break;
         case "Send Request":
             if ($post_vars["registry_id"]) {
+                //print_r($post_vars);
+                
+                //$sql_lab = mysql_query("INSERT INTO m_consult_lab SET consult_id='$get_vars[consult_id]', patient_id='$get_vars[patient_id]', lab_id, request_timestamp, request_user_id ")
+                
                 foreach($post_vars["ntp_lab"] as $key=>$value) {
                     $sql_lab = "insert into m_consult_lab (consult_id, patient_id, lab_id, request_timestamp, request_user_id) ".
                                "values ('".$get_vars["consult_id"]."', '$patient_id', '$value', sysdate(), '".$_SESSION["userid"]."')";
@@ -988,7 +1001,7 @@ class ntp extends module {
                         $result_ntp = mysql_query($sql_ntp);
                     }
                 }
-                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"].($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:""));
+                //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"].($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:""."&ntp=LABS""));
             }
             break;
             
@@ -1587,10 +1600,10 @@ class ntp extends module {
         print ntp::show_ntp_labs();
         print "</td></tr>";
         print "<tr><td><br />";
-        if ($_SESSION["priv_add"]) {
+        //if ($_SESSION["priv_add"]) {
             print "<input type='hidden' name='registry_id' value='".$get_vars["ntp_id"]."'/>";
             print "<input type='submit' value = 'Send Request' class='textbox' name='submitntp' style='border: 1px solid #000000'> ";
-        }
+        //}
         print "<br /></td></tr>";
         print "</form>";
         print "</table><br>";
@@ -3204,6 +3217,66 @@ class ntp extends module {
         
     }
     
+    function form_pending_request(){
+        if(func_num_args()>0):
+            $arg_list = func_num_args();
+            $menu_id = $arg_list[0];
+            $post_vars = $arg_list[1];
+            $get_vars = $arg_list[2];
+            $validuser = $arg_list[3];
+            $isadmin = $arg_list[4];
+        endif;
+                                                                                                       
+    $pxid = healthcenter::get_patient_id($_GET["consult_id"]);
+    $s = new sputum();    
+                                                                                                           
+    //$q_sputum = mysql_query("SELECT a.request_id, date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request',a.sp1_collection_date,a.lab_diagnosis,c.period_label FROM m_consult_lab_sputum a, m_consult_ntp_sputum b, m_lib_sputum_period c, m_consult_lab d WHERE a.request_id=d.request_id AND d.patient_id='$pxid' AND a.request_id=b.request_id AND b.ntp_id='$_GET[ntp_id]' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());
+
+    $q_sputum = mysql_query("SELECT d.request_id, date_format(d.request_timestamp,'%Y-%m-%d') as 'date_request' FROM m_consult_ntp_labs_request b, m_consult_lab d WHERE d.request_id=b.request_id AND d.patient_id='$pxid' AND b.ntp_id='$_GET[ntp_id]' AND d.request_done='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());    
+    
+    if(mysql_num_rows($q_sputum)!=0):
+        echo "<p>The following lab exams are still ongoing at the laboratory</p>";
+        echo "<table>";
+        echo "<tr><td colspan='5'>PENDING LAB REQUESTS</td></tr>";
+        echo "<tr><td>Date Requested</td><td>Start of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";
+
+        while(list($lab_id,$date_request)=mysql_fetch_array($q_sputum)){
+            $q_sputum2 = mysql_query("SELECT date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request2',a.sp1_collection_date,a.lab_diagnosis,c.period_label FROM m_consult_lab_sputum a, m_lib_sputum_period c WHERE a.request_id='$lab_id' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());                        
+            list($date_req,$first_sputum,$lab_diagnosis,$period_label) = mysql_fetch_array($q_sputum2);
+
+            $q_lab = mysql_query("SELECT b.request_id,a.lab_name,a.lab_module FROM m_lib_laboratory a, m_consult_lab b where a.lab_id=b.lab_id AND b.consult_id='$_GET[consult_id]'") or die("Cannot query 3246 ".mysql_error());
+            list($request_id,$lab_name, $mod) = mysql_fetch_array($q_lab);
+            
+            echo "<tr align='center'>";
+            echo "<td>$date_request</td>";
+            echo "<td>$first_sputum</td>";
+            echo "<td>$lab_diagnosis</td>";            
+            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=$mod&request_id=$lab_id#sputum_form' target='new'>View</a></td>";
+
+            /*if ($get_vars["request_id"]==$id && $get_vars["module"]==$mod):                    
+                        // access result API for lab exam
+                        // <module_name>::_consult_lab_<module_name>_results()
+                        $eval_string = "$s::_consult_lab_".$get_vars["module"]."_results(\$menu_id, \$post_vars, \$get_vars);";
+                    if (class_exists($mod)):                    
+                     //echo $eval_string;
+                     //sputum::_consult_lab_sputum($_GET["menu_id"],$_POST,$_GET);
+                         eval("$eval_string");
+                    else:
+                         print "<b><font color='red'>WARNING:</font> $mod missing.</b><br/>";
+                    endif;            
+            endif;*/
+
+                                                                                                                                                                                                                                                                                                                    
+            echo "</tr>";
+        }
+        echo "</table>";
+        
+    else:
+        
+    endif;
+                                                                                                                             
+    }
+        
 // end of class
 }
 ?>

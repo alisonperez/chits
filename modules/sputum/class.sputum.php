@@ -763,7 +763,6 @@ class sputum extends module {
 
     }
     
-
 // end of class
 }
 ?>
