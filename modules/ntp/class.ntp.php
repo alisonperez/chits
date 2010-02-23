@@ -1131,7 +1131,7 @@ class ntp extends module {
       endif;
       
       if($_POST[confirm_del]==1):          
-          $this->delete_symp($_POST[sel_symp_rec]);xxx
+          $this->delete_symp_record($_GET,$_POST[sel_symp_rec]);
       endif;
         
       echo "<a name='tb_symptomatic'>";
@@ -3190,7 +3190,20 @@ class ntp extends module {
 
         
     }
-
+    
+    function delete_symp_record($get_vars,$symp_id){
+        $del_symp = mysql_query("DELETE FROM m_consult_ntp_symptomatics WHERE symptomatic_id='$symp_id'") or die("Cannot query 3195 ".mysql_error());
+                    
+        if($del_symp):
+            header("location: $_SERVER[PHP_SELF]?page=$get_vars[page]&menu_id=$get_vars[menu_id]&consult_id=$get_vars[consult_id]&ptmenu=$get_vars[ptmenu]&module=$get_vars[module]&ntp=$get_vars[ntp]");
+        else:
+            echo "<font color='red'>TB Symptomatic record was not deleted.</font>";
+        endif;
+        
+        
+        
+    }
+    
 // end of class
 }
 ?>
