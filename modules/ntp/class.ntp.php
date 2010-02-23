@@ -513,11 +513,11 @@ class ntp extends module {
                "from m_lib_laboratory l, m_consult_ntp_labs n ".
                "where l.lab_id = n.lab_id order by l.lab_name"; */
                
-        $sql = "select lab_id, lab_name FROM m_lib_laboratory ORDER by lab_name ASC";
+        $sql = "select lab_id, lab_name FROM m_lib_laboratory WHERE lab_id='SPT' ORDER by lab_name ASC";
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
                 while (list($id, $name) = mysql_fetch_array($result)) {
-                    print "<input type='checkbox' name='ntp_lab[]' value='$id' class='textbox' /> $name<br />";
+                    print "<input type='checkbox' name='ntp_lab[]' value='$id' class='textbox' CHECKED /> $name<br />";
                 }
                 return $ret_val;
             }
@@ -686,6 +686,10 @@ class ntp extends module {
             
             //if a request has been made, show the queue of labs here
             $n->form_pending_request($menu_id,$post_vars,$get_vars,$validuser,$isadmin);
+            
+            //list the completed sputum exams for this NTP case 
+            $n->form_completed_request($menu_id,$post_vars,$get_vars,$validuser,$isadmin);
+            
             
             // lab requests done outside of ntp but can be
             // assigned to ntp, e.g., first sputum exam
@@ -3233,11 +3237,11 @@ class ntp extends module {
     //$q_sputum = mysql_query("SELECT a.request_id, date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request',a.sp1_collection_date,a.lab_diagnosis,c.period_label FROM m_consult_lab_sputum a, m_consult_ntp_sputum b, m_lib_sputum_period c, m_consult_lab d WHERE a.request_id=d.request_id AND d.patient_id='$pxid' AND a.request_id=b.request_id AND b.ntp_id='$_GET[ntp_id]' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());
 
     $q_sputum = mysql_query("SELECT d.request_id, date_format(d.request_timestamp,'%Y-%m-%d') as 'date_request' FROM m_consult_ntp_labs_request b, m_consult_lab d WHERE d.request_id=b.request_id AND d.patient_id='$pxid' AND b.ntp_id='$_GET[ntp_id]' AND d.request_done='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());    
+
+    echo "<table>";
+    echo "<tr><td colspan='5'>PENDING LAB REQUESTS</td></tr>";    
     
-    if(mysql_num_rows($q_sputum)!=0):
-        echo "<p>The following lab exams are still ongoing at the laboratory</p>";
-        echo "<table>";
-        echo "<tr><td colspan='5'>PENDING LAB REQUESTS</td></tr>";
+    if(mysql_num_rows($q_sputum)!=0):                
         echo "<tr><td>Date Requested</td><td>Start of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";
 
         while(list($lab_id,$date_request)=mysql_fetch_array($q_sputum)){
@@ -3251,30 +3255,51 @@ class ntp extends module {
             echo "<td>$date_request</td>";
             echo "<td>$first_sputum</td>";
             echo "<td>$lab_diagnosis</td>";            
-            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=$mod&request_id=$lab_id#sputum_form' target='new'>View</a></td>";
-
-            /*if ($get_vars["request_id"]==$id && $get_vars["module"]==$mod):                    
-                        // access result API for lab exam
-                        // <module_name>::_consult_lab_<module_name>_results()
-                        $eval_string = "$s::_consult_lab_".$get_vars["module"]."_results(\$menu_id, \$post_vars, \$get_vars);";
-                    if (class_exists($mod)):                    
-                     //echo $eval_string;
-                     //sputum::_consult_lab_sputum($_GET["menu_id"],$_POST,$_GET);
-                         eval("$eval_string");
-                    else:
-                         print "<b><font color='red'>WARNING:</font> $mod missing.</b><br/>";
-                    endif;            
-            endif;*/
-
-                                                                                                                                                                                                                                                                                                                    
+            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=$mod&request_id=$lab_id#sputum_form' target='new'>View</a></td>";                                                                                                                                                                                                                                                                                                                    
             echo "</tr>";
         }
-        echo "</table>";
         
     else:
+        echo "<tr><td>No pending sputum exam yet</td></tr>";          
+    endif;                                                                                                                             
+    
+    echo "</table>";
+    }
+    
         
-    endif;
-                                                                                                                             
+    function form_completed_request(){
+        if(func_num_args()>0):
+            $arg_list = func_num_args();
+            $menu_id = $arg_list[0];
+            $post_vars = $arg_list[1];
+            $get_vars = $arg_list[2];
+            $validuser = $arg_list[3];
+            $isadmin = $arg_list[4];
+        endif;    
+        
+        $pxid = healthcenter::get_patient_id($_GET[consult_id]);
+        
+        $q_completed = mysql_query("SELECT a.request_id, date_format(a.request_timestamp,'%Y-%m-%d') as 'date_request',date_format(a.done_timestamp,'%Y-%m-%d') as 'date_done',b.lab_diagnosis FROM m_consult_lab a, m_consult_lab_sputum b, m_consult_ntp_labs_request c WHERE a.request_id=b.request_id AND b.request_id=c.request_id AND a.patient_id='$pxid' AND c.ntp_id='$_GET[ntp_id]' AND a.request_done='Y' ORDER by 'date_request' ASC") or die("CAnnot query 3291 ".mysql_error());
+
+
+        echo "<br><table>";
+        echo "<tr><td colspan='5'>COMPLETED SPUTUM EXAMS</td></tr>";        
+        if(mysql_num_rows($q_completed)!=0):                        
+            echo "<tr><td>Date Requested</td><td>Date Released</td><td>Final Diagnosis</td><td>View Details</td>";        
+            
+            while(list($request_id,$date_request,$date_release,$diag) = mysql_fetch_array($q_completed)){
+                echo "<tr>";
+                echo "<td>$date_request</td>";
+                echo "<td>$date_release</td>";
+                echo "<td>$diag</td>";
+                echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$request_id#sputum_result' target='new'>View</a</td>";
+                echo "</tr>";
+            }
+        else:
+            echo "<tr><td>No completed sputum exam yet</td></tr>";  
+        endif;
+        
+        echo "</table>";        
     }
         
 // end of class
