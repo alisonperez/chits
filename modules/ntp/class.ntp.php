@@ -684,6 +684,9 @@ class ntp extends module {
             // lab requests: either request or generate referral
             $n->form_consult_ntp_lab($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
             
+            //display DSSM tests that have been done before the actual treatment
+            $n->check_before_dssm($_GET["ntp_id"]);            
+            
             //if a request has been made, show the queue of labs here
             $n->form_pending_request($menu_id,$post_vars,$get_vars,$validuser,$isadmin);
             
@@ -693,7 +696,7 @@ class ntp extends module {
             
             // lab requests done outside of ntp but can be
             // assigned to ntp, e.g., first sputum exam
-            $n->form_consult_assign_lab($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
+            //$n->form_consult_assign_lab($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
             break;
         }
     }
@@ -3233,19 +3236,21 @@ class ntp extends module {
                                                                                                        
     $pxid = healthcenter::get_patient_id($_GET["consult_id"]);
     $s = new sputum();    
-                                                                                                           
+    
+    
+    
     //$q_sputum = mysql_query("SELECT a.request_id, date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request',a.sp1_collection_date,a.lab_diagnosis,c.period_label FROM m_consult_lab_sputum a, m_consult_ntp_sputum b, m_lib_sputum_period c, m_consult_lab d WHERE a.request_id=d.request_id AND d.patient_id='$pxid' AND a.request_id=b.request_id AND b.ntp_id='$_GET[ntp_id]' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());
 
     $q_sputum = mysql_query("SELECT d.request_id, date_format(d.request_timestamp,'%Y-%m-%d') as 'date_request' FROM m_consult_ntp_labs_request b, m_consult_lab d WHERE d.request_id=b.request_id AND d.patient_id='$pxid' AND b.ntp_id='$_GET[ntp_id]' AND d.request_done='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());    
 
-    echo "<table>";
+    echo "<br><table>";
     echo "<tr><td colspan='5'>PENDING LAB REQUESTS</td></tr>";    
     
     if(mysql_num_rows($q_sputum)!=0):                
         echo "<tr><td>Date Requested</td><td>Start of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";
 
         while(list($lab_id,$date_request)=mysql_fetch_array($q_sputum)){
-            $q_sputum2 = mysql_query("SELECT date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request2',a.sp1_collection_date,a.lab_diagnosis,c.period_label FROM m_consult_lab_sputum a, m_lib_sputum_period c WHERE a.request_id='$lab_id' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());                        
+            $q_sputum2 = mysql_query("SELECT date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request2',a.sp1_collection_date,a.lab_diagnosis,c.period_label FROM m_consult_lab_sputum a, m_lib_sputum_period c WHERE a.request_id='$lab_id' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("Cannot query 395 ".mysql_error());
             list($date_req,$first_sputum,$lab_diagnosis,$period_label) = mysql_fetch_array($q_sputum2);
 
             $q_lab = mysql_query("SELECT b.request_id,a.lab_name,a.lab_module FROM m_lib_laboratory a, m_consult_lab b where a.lab_id=b.lab_id AND b.consult_id='$_GET[consult_id]'") or die("Cannot query 3246 ".mysql_error());
@@ -3254,13 +3259,13 @@ class ntp extends module {
             echo "<tr align='center'>";
             echo "<td>$date_request</td>";
             echo "<td>$first_sputum</td>";
-            echo "<td>$lab_diagnosis</td>";            
-            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=$mod&request_id=$lab_id#sputum_form' target='new'>View</a></td>";                                                                                                                                                                                                                                                                                                                    
+            echo "<td>$lab_diagnosis</td>";
+            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=$mod&request_id=$lab_id#sputum_form' target='new'>View</a></td>";
             echo "</tr>";
         }
         
     else:
-        echo "<tr><td>No pending sputum exam yet</td></tr>";          
+        echo "<tr><td>No pending sputum exam yet</td></tr>";
     endif;                                                                                                                             
     
     echo "</table>";
@@ -3300,6 +3305,46 @@ class ntp extends module {
         endif;
         
         echo "</table>";        
+    }
+    
+    function check_before_dssm($ntp_id){
+        $q_sputum = mysql_query("SELECT symptomatic_id, sputum_diag1, sputum_diag2 FROM m_consult_ntp_symptomatics WHERE ntp_id='$ntp_id'") or die("Cannot query 3306 ".mysql_error());
+        
+        if(mysql_num_rows($q_sputum)!=0):
+            list($symp_id,$sputum1,$sputum2) = mysql_fetch_array($q_sputum);
+            
+            $q_sputum1 = mysql_query("SELECT date_format(sp1_collection_date,'%Y-%m-%d') as 'sp1',date_format(sp2_collection_date,'%Y-%m-%d') as 'sp2',date_format(sp3_collection_date,'%Y-%m-%d') as 'sp3',lab_diagnosis,release_flag FROM m_consult_lab_sputum WHERE request_id='$sputum1'") or die("Cannot query 3313 ".mysql_error());
+            list($first1,$sec1,$last1,$diag1,$rel1) = mysql_fetch_array($q_sputum1);
+            $ref1 = ($rel1=='Y')?'sputum_result':'sputum_form';
+            
+            $q_sputum2 = mysql_query("SELECT date_format(sp1_collection_date,'%Y-%m-%d') as 'sp1',date_format(sp2_collection_date,'%Y-%m-%d') as 'sp2',date_format(sp3_collection_date,'%Y-%m-%d') as 'sp3',lab_diagnosis,release_flag FROM m_consult_lab_sputum WHERE request_id='$sputum2'") or die("Cannot query 3316 ".mysql_error());
+            list($first2,$sec2,$last2,$diag2,$rel2) = mysql_fetch_array($q_sputum2);                        
+            $ref2 = ($rel2=='Y')?'sputum_result':'sputum_form';
+
+            echo "<br><table>";
+            echo "<tr><td colspan='5'>DSSM EXAM BEFORE TREATMENT</td></tr>";
+            echo "<tr><td></td><td>1st</td><td>2nd</td><td>3rd</td><td>Result</td><td>View Details</td></tr>";
+            
+            echo "<tr>";
+            echo "<td>1</td>";
+            echo "<td>$first1</td>";
+            echo "<td>$sec1</td>";            
+            echo "<td>$last1</td>";                                    
+            echo "<td>$diag1</td>";            
+            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$sputum1#$ref1' target='new'>View</a</td>";
+            
+            echo "<tr>";
+            echo "<td>2</td>";
+            echo "<td>$first2</td>";
+            echo "<td>$sec2</td>";            
+            echo "<td>$last2</td>";                                    
+            echo "<td>$diag2</td>";            
+            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$sputum2#$ref2' target='new'>View</a</td>";
+            echo "</table><br>";
+        
+        else:
+            echo "<br><font color='red'>No DSSM Before Treatment Recorded or the DSSM is not yet tagged to the NTP treatment in TB Symptomatic menu.</font><br>";
+        endif;
     }
         
 // end of class
