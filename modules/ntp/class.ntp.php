@@ -516,7 +516,7 @@ class ntp extends module {
         $sql = "select lab_id, lab_name FROM m_lib_laboratory WHERE lab_id='SPT' ORDER by lab_name ASC";
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
-                while (list($id, $name) = mysql_fetch_array($result)) {
+                while (list($id, $name) = mysql_fetch_array($result)) {                    
                     print "<input type='checkbox' name='ntp_lab[]' value='$id' class='textbox' CHECKED /> $name<br />";
                 }
                 return $ret_val;
@@ -684,6 +684,10 @@ class ntp extends module {
             // lab requests: either request or generate referral
             $n->form_consult_ntp_lab($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
             
+            //create a dropdown box showing NTP consults done for the patient but not             
+            $n->form_ntp_import($menu_id,$post_vars,$get_vars,$validuser,$isadmin);
+
+            
             //display DSSM tests that have been done before the actual treatment
             $n->check_before_dssm($_GET["ntp_id"]);            
             
@@ -692,6 +696,8 @@ class ntp extends module {
             
             //list the completed sputum exams for this NTP case 
             $n->form_completed_request($menu_id,$post_vars,$get_vars,$validuser,$isadmin);
+            
+            //xxxx-- do function that will import sputum labs done outside request
             
             
             // lab requests done outside of ntp but can be
@@ -995,9 +1001,9 @@ class ntp extends module {
             if ($post_vars["registry_id"]) {
                 //print_r($post_vars);
                 
-                //$sql_lab = mysql_query("INSERT INTO m_consult_lab SET consult_id='$get_vars[consult_id]', patient_id='$get_vars[patient_id]', lab_id, request_timestamp, request_user_id ")
+                //$sql_lab = mysql_query("INSERT INTO m_consult_lab SET consult_id='$get_vars[consult_id]', patient_id='$get_vars[patient_id]', lab_id, request_timestamp, request_user_id ")                                
                 
-                foreach($post_vars["ntp_lab"] as $key=>$value) {
+                foreach($post_vars["ntp_lab"] as $key=>$value) {                    
                     $sql_lab = "insert into m_consult_lab (consult_id, patient_id, lab_id, request_timestamp, request_user_id) ".
                                "values ('".$get_vars["consult_id"]."', '$patient_id', '$value', sysdate(), '".$_SESSION["userid"]."')";
                     if ($result_lab = mysql_query($sql_lab)) {
@@ -1068,6 +1074,10 @@ class ntp extends module {
             
         case "View TB SYMP Record":
             //print_r($_POST);            
+            break;
+        
+        case "Import Sputum Test":
+            echo "alison";
             break;
         
         case "Print Referral":
@@ -1590,7 +1600,7 @@ class ntp extends module {
             $get_vars = $arg_list[2];
             $validuser = $arg_list[3];
             $isadmin = $arg_list[4];
-            //print_r($arg_list);
+            print_r($arg_list);
         }
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
         print "<table width='300'>";
@@ -3345,6 +3355,43 @@ class ntp extends module {
         else:
             echo "<br><font color='red'>No DSSM Before Treatment Recorded or the DSSM is not yet tagged to the NTP treatment in TB Symptomatic menu.</font><br>";
         endif;
+    }
+    
+    function form_ntp_import(){
+        if(func_num_args()>0):
+            $arg_list = func_num_args();
+            $menu_id = $arg_list[0];
+            $post_vars = $arg_list[1];
+            $get_vars = $arg_list[2];
+            $validuser = $arg_list[3];
+            $isadmin = $arg_list[4];
+        endif;
+        
+        $pxid = healthcenter::get_patient_id($_GET["consult_id"]);
+        
+        $q_ntp = mysql_query("SELECT request_id,sp1_collection_date,sp2_collection_date,sp3_collection_date,sp1_reading,sp2_reading,sp3_reading FROM m_consult_lab_sputum WHERE patient_id='$pxid' ORDER by sp1_collection_date DESC") or die("Cannot query: 3366 ".mysql_error());
+        
+        if(mysql_num_rows($q_ntp)!=0):
+            echo "<p>The following are sputum tests done for the patient yet need to be imported</p>";
+            
+            echo "<select name='sel_import_ntp' size='1'>";
+            
+            while(list($request_id,$sp1,$sp2,$sp3,$sp1_read,$sp2_read,$sp3_read)=mysql_fetch_array($q_ntp)){
+                //echo $request_id.'<br>';
+                                
+                $q_ntp_req = mysql_query("SELECT ntp_id, request_id FROM m_consult_ntp_labs_request WHERE request_id ='$request_id'") or die("Cannot query 3373: ".mysql_error());
+                                
+                if(mysql_num_rows($q_ntp_req)==0):
+                    echo "<option value='$request_id'>(1)$sp1($sp1_read), (2)$sp2($sp2_read), (3)$sp3($sp3_read)</option>";
+                endif;
+            }
+            
+            echo "</select>";
+            echo "<input type='submit' name='submitntp' value='Import Sputum Test'></input>";
+            echo "<br>";
+        else:
+        
+        endif;                
     }
         
 // end of class
