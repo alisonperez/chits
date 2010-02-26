@@ -697,12 +697,11 @@ class ntp extends module {
             //list the completed sputum exams for this NTP case 
             $n->form_completed_request($menu_id,$post_vars,$get_vars,$validuser,$isadmin);
             
-            //xxxx-- do function that will import sputum labs done outside request
-            
-            
+            //xxxx-- do function that will import sputum labs done outside request                        
             // lab requests done outside of ntp but can be
             // assigned to ntp, e.g., first sputum exam
             //$n->form_consult_assign_lab($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
+
             break;
         }
     }
@@ -1077,7 +1076,15 @@ class ntp extends module {
             break;
         
         case "Import Sputum Test":
-            echo "alison";
+	    //print_r($_POST);
+	    $pxid = healthcenter::get_patient_id($_GET["consult_id"]);
+
+	    $q_import = mysql_query("INSERT into m_consult_ntp_labs_request SET consult_id='$_GET[consult_id]',patient_id='$pxid',ntp_id='$_GET[ntp_id]',request_id='$_POST[sel_import_ntp]',user_id='$_SESSION[userid]',request_timestamp='NOW()'") or die("Cannot query 1080 ".mysql_error());
+	    
+	    if($q_import):
+		echo 'alison';
+	    endif;
+
             break;
         
         case "Print Referral":
@@ -3372,6 +3379,7 @@ class ntp extends module {
         $q_ntp = mysql_query("SELECT request_id,sp1_collection_date,sp2_collection_date,sp3_collection_date,sp1_reading,sp2_reading,sp3_reading FROM m_consult_lab_sputum WHERE patient_id='$pxid' ORDER by sp1_collection_date DESC") or die("Cannot query: 3366 ".mysql_error());
         
         if(mysql_num_rows($q_ntp)!=0):
+	    echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&ntp=$_GET[ntp]&ntp_id=$_GET[ntp_id]' method='POST'>";
             echo "<p>The following are sputum tests done for the patient yet need to be imported</p>";
             
             echo "<select name='sel_import_ntp' size='1'>";
@@ -3382,12 +3390,17 @@ class ntp extends module {
                 $q_ntp_req = mysql_query("SELECT ntp_id, request_id FROM m_consult_ntp_labs_request WHERE request_id ='$request_id'") or die("Cannot query 3373: ".mysql_error());
                                 
                 if(mysql_num_rows($q_ntp_req)==0):
-                    echo "<option value='$request_id'>(1)$sp1($sp1_read), (2)$sp2($sp2_read), (3)$sp3($sp3_read)</option>";
+		    $q_symp = mysql_query("SELECT symptomatic_id FROM m_consult_ntp_symptomatics WHERE sputum_diag1='$request_id' OR sputum_diag2='$request_id' AND patient_id='$pxid'") or die("Cannot query 3393 ".mysql_error());
+
+		    if(mysql_num_rows($q_symp)==0):
+                    	echo "<option value='$request_id'>(1)$sp1($sp1_read), (2)$sp2($sp2_read), (3)$sp3($sp3_read)</option>";
+		    endif;		
                 endif;
             }
             
             echo "</select>";
             echo "<input type='submit' name='submitntp' value='Import Sputum Test'></input>";
+	    echo "</form>";
             echo "<br>";
         else:
         

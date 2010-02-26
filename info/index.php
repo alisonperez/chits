@@ -65,6 +65,7 @@ if ($user->check_users()) {
 // this is server-generated code
 // do not edit or delete
 include "../modules/_modules.php";
+
 mysql_query("ALTER TABLE `m_patient` DROP PRIMARY KEY , ADD PRIMARY KEY (`patient_id`)");
 mysql_query("ALTER TABLE `m_consult` DROP PRIMARY KEY , ADD PRIMARY KEY (`consult_id`)");
 mysql_query("ALTER TABLE `m_family` DROP PRIMARY KEY , ADD PRIMARY KEY (`family_id`)");
