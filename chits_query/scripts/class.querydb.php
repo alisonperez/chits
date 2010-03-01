@@ -283,6 +283,8 @@ class querydb{
 			$this->process_dhc_summary();
 		elseif($quesno>=70 && $quesno<=73):			
 			$this->process_morbidity($quesno);
+		elseif($quesno>=90 && $quesno<=99):
+			$this->process_tb($quesno);		
 		else:
 			echo "No available query for this indicator.";
 		endif;
@@ -815,6 +817,14 @@ class querydb{
 		if(mysql_num_rows($q_morb)!=0):
 			list($ques_label) = mysql_fetch_array($q_morb);
 			echo "<a href='./pdf_reports/morbidity_report.php'>Show $ques_label</a>";
+		endif;
+	}
+	
+	function process_tb($quesno){			
+		$q_tb = mysql_query("SELECT ques_label FROM question WHERE ques_id='$quesno'") or die("Cannot query 824 ".mysql_error());
+		if(mysql_num_rows($q_tb)!=0):
+			list($ques_label) = mysql_fetch_array($q_tb);
+			echo "<a href='./pdf_reports/tb_report.php'>Show $ques_label</a>";
 		endif;
 	}
 
