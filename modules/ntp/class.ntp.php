@@ -829,8 +829,7 @@ class ntp extends module {
                         list($tm,$td,$ty) = explode('/',$post_vars["date_outcome"]);
                         $treatment_end_date = $ty.'-'.$tm.'-'.$td;
                     endif;
-                } else {
-                    
+                } else {                    
                     $treatment_end_date = '0000-00-00';
                 }
                 $previous_tx = ($post_vars["previous_treatment_flag"]?"Y":"N");
