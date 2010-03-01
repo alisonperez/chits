@@ -1081,10 +1081,6 @@ class ntp extends module {
 
 	    $q_import = mysql_query("INSERT into m_consult_ntp_labs_request SET consult_id='$_GET[consult_id]',patient_id='$pxid',ntp_id='$_GET[ntp_id]',request_id='$_POST[sel_import_ntp]',user_id='$_SESSION[userid]',request_timestamp='NOW()'") or die("Cannot query 1080 ".mysql_error());
 	    
-	    if($q_import):
-		echo 'alison';
-	    endif;
-
             break;
         
         case "Print Referral":
@@ -1298,13 +1294,13 @@ class ntp extends module {
           echo "<input type='hidden' name='select_ntp_tx' value=''></input>";
       else:
           echo "<select name='select_ntp_tx' size='1'>";
-          echo "<option value=''>Select NTP Treatment</option>";
+          echo "<option value=''>Start of TX (I:start of INTENSIVE,M:start of MAINTENANCE)</option>";
           
           while($r_ntp = mysql_fetch_array($q_ntp)){
               if($r_symp[ntp_id]==$r_ntp[ntp_id]):
-                  echo "<option value='$r_ntp[ntp_id]' SELECTED>(#$r_ntp[ntp_id])$r_ntp[consult_date] (I: $r_ntp[intensive_start_date], M: $r_ntp[maintenance_start_date])</option>";                  
+                  echo "<option value='$r_ntp[ntp_id]' SELECTED>$r_ntp[consult_date] (I: $r_ntp[intensive_start_date], M: $r_ntp[maintenance_start_date])</option>";                  
               else:          
-                  echo "<option value='$r_ntp[ntp_id]'>(#$r_ntp[ntp_id])$r_ntp[consult_date] (I: $r_ntp[intensive_start_date], M: $r_ntp[maintenance_start_date])</option>";
+                  echo "<option value='$r_ntp[ntp_id]'>$r_ntp[consult_date] (I: $r_ntp[intensive_start_date], M: $r_ntp[maintenance_start_date])</option>";
               endif;              
           }
           
@@ -1607,7 +1603,7 @@ class ntp extends module {
             $get_vars = $arg_list[2];
             $validuser = $arg_list[3];
             $isadmin = $arg_list[4];
-            print_r($arg_list);
+            //print_r($arg_list);
         }
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
         print "<table width='300'>";
