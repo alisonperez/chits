@@ -822,7 +822,7 @@ class ntp extends module {
 
                 // if treatment outcome is any other than TX end this course
                 $course_end_flag = ($post_vars["treatment_outcome"]<>"TX"?"Y":"N");
-                if ($course_end_flag=="Y") {
+                if ($course_end_flag=="Y") {                    
                     $treatment_end_date = date("Y-m-d");
                 } else {
                     $treatment_end_date = '0000-00-00';
@@ -1353,12 +1353,15 @@ class ntp extends module {
                    "region_id, body_weight, bcg_scar, tb_class, ".
                    "previous_treatment_flag, previous_treatment_duration, previous_treatment_drugs, ".
                    "treatment_category_id, contact_person, outcome_id, patient_type_id, ".
-                   "treatment_partner_id, course_end_flag ".
+                   "treatment_partner_id, course_end_flag, treatment_end_date ".
                    "from m_patient_ntp where ntp_id = '".$get_vars["ntp_id"]."'";
             if ($result = mysql_query($sql)) {
-                if (mysql_num_rows($result)) {
+                if (mysql_num_rows($result)) {                    
                     $ntp = mysql_fetch_array($result);
-                }
+                    
+                    list($y,$m,$d) = explode('-',$ntp["treatment_end_date"]);
+                    $date_outcome = ($ntp["treatment_end_date"]=='0000-00-00')?'':($m.'/'.$d.'/'.$y);                                
+                }                
             }
         }
         print "<a name='visit1_form'>";
@@ -1458,9 +1461,16 @@ class ntp extends module {
         }
         print "<span class='boxtitle'>".LBL_TREATMENT_OUTCOME."</span><br> ";
         print ntp::show_treatment_outcomes($outcome);
-        print "<br/><small>".INSTR_TREATMENT_OUTCOME."</small><br/>";
+        print "<br/><small>".INSTR_TREATMENT_OUTCOME."</small><br/>";                
         print "</td></tr>";
         print "<tr><td>";
+        
+        print "<span class='boxtitle'>DATE OUTCOME RECORDED</span><br> ";
+        print "<input type='text' name='date_outcome' size='7' value='$date_outcome'></input>&nbsp;";
+        print "<a href=\"javascript:show_calendar4('document.form_ntp_visit1.date_outcome', document.form_ntp_visit1.date_outcome.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a><br>";        
+        print "</td></tr>";
+        print "<tr><td>";
+        
         if ($get_vars["ntp_id"]) {
             print "<input type='hidden' name='ntp_id' value='".$get_vars["ntp_id"]."'/>";
             if ($_SESSION["priv_update"] || $_SESSION["isadmin"]) {
