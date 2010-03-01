@@ -824,8 +824,15 @@ class querydb{
 		$q_tb = mysql_query("SELECT ques_label FROM question WHERE ques_id='$quesno'") or die("Cannot query 824 ".mysql_error());
 		if(mysql_num_rows($q_tb)!=0):
 			list($ques_label) = mysql_fetch_array($q_tb);
-			echo "<a href='./pdf_reports/tb_report.php'>Show $ques_label</a>";
+			if($quesno=='92' || $quesno=='93'):
+				echo "<a href='./pdf_reports/tb_report.php'>Show $ques_label</a>";
+			elseif($quesno==94):
+				echo "<a href='./pdf_reports/tb_summary.php'>Show $ques_label</a>";				
+			else:
+			endif;
+			
 		endif;
+		
 	}
 
 }
