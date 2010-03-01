@@ -822,9 +822,15 @@ class ntp extends module {
 
                 // if treatment outcome is any other than TX end this course
                 $course_end_flag = ($post_vars["treatment_outcome"]<>"TX"?"Y":"N");
-                if ($course_end_flag=="Y") {                    
-                    $treatment_end_date = date("Y-m-d");
+                if ($course_end_flag=="Y") {             
+                    if(empty($post_vars["date_outcome"])):
+                        $treatment_end_date = date("Y-m-d");
+                    else:
+                        list($tm,$td,$ty) = explode('/',$post_vars["date_outcome"]);
+                        $treatment_end_date = $ty.'-'.$tm.'-'.$td;
+                    endif;
                 } else {
+                    
                     $treatment_end_date = '0000-00-00';
                 }
                 $previous_tx = ($post_vars["previous_treatment_flag"]?"Y":"N");
@@ -854,7 +860,7 @@ class ntp extends module {
                              "tb_class = '".$post_vars["tb_class"]."' ".
                              "where ntp_id = '".$post_vars["ntp_id"]."' ";
                 if ($result_first = mysql_query($sql_first)) {
-                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=ntp&ntp=VISIT1&ntp_id=".$get_vars["ntp_id"]);
+                    //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=ntp&ntp=VISIT1&ntp_id=".$get_vars["ntp_id"]);
                 }
             }
             break;
@@ -1465,7 +1471,7 @@ class ntp extends module {
         print "</td></tr>";
         print "<tr><td>";
         
-        print "<span class='boxtitle'>DATE OUTCOME RECORDED</span><br> ";
+        print "<br><span class='boxtitle'>DATE OUTCOME RECORDED</span><br> ";
         print "<input type='text' name='date_outcome' size='7' value='$date_outcome'></input>&nbsp;";
         print "<a href=\"javascript:show_calendar4('document.form_ntp_visit1.date_outcome', document.form_ntp_visit1.date_outcome.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a><br>";        
         print "</td></tr>";
