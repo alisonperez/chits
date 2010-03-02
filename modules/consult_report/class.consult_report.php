@@ -448,7 +448,10 @@ class consult_report extends module {
 		print "</tr>";
 
 		while (list($pid,$pname,$sex,$age,$addr,$bgy,$fid,$phid,$cc,$dx,$tx) = mysql_fetch_array($result)) {
-		
+		    $q_brgy = mysql_query("SELECT c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$pid' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 451 ".mysql_error());		    
+		    list($brgy) = mysql_fetch_array($q_brgy);
+		    
+		    
 		
 		    //for displaying the vitals signs
 		    $selvitals = mysql_query("SELECT vitals_weight,vitals_temp,vitals_systolic,vitals_diastolic,vitals_heartrate,
@@ -467,7 +470,8 @@ class consult_report extends module {
 		    print "<td class='tinylight' align=center>".$pid."</td>";
 		    print "<td class='tinylight' align=center>".$pname." / ".$sex." / ".$age."</td>";
 		    print "<td class='tinylight' align=center>".$addr."</td>";                  
-		    print "<td class='tinylight' align=center>".$resbrgy[barangay_name]."</td>";
+		    //print "<td class='tinylight' align=center>".$resbrgy[barangay_name]."</td>";
+		    print "<td class='tinylight' align=center>".$brgy."</td>";
 		    print "<td class='tinylight' align=center>".($fid==0?"-":$fid)."</td>";
 		    print "<td class='tinylight' align=center>".($phid==0?"-":$phid)."</td>";		    
 		    
@@ -523,6 +527,10 @@ class consult_report extends module {
 		    $select_brgy = mysql_query("SELECT barangay_name from m_lib_barangay WHERE barangay_id='$bgy'") or die(mysql_error());		        
 		    $resbrgy = mysql_fetch_array($select_brgy);
 		    
+		    $q_brgy = mysql_query("SELECT c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$pid' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 451 ".mysql_error());		    
+		    list($brgy) = mysql_fetch_array($q_brgy);
+		    
+		    
 		    $res_vitals = mysql_fetch_array($selvitals);
 		    $bp = (empty($res_vitals[vitals_systolic]) && empty($res_vitals[vitals_diastolic]))?'-':$res_vitals[vitals_systolic].'/'.$res_vitals[vitals_diastolic];
 		    $count = mysql_num_rows($selvitals);
@@ -533,7 +541,8 @@ class consult_report extends module {
 		    print "<td class='tinylight' align=center>".$pname." / ".$sex." / ".$age."</td>";               
 		    print "<td class='tinylight' align=center>".$addr."</td>";                        
 		    //print "<td class='tinylight' align=center>".$bgy."</td>";                        
-		    print "<td class='tinylight' align=center>".$resbrgy[barangay_name]."</td>";                        
+		    //print "<td class='tinylight' align=center>".$resbrgy[barangay_name]."</td>";                        
+		    print "<td class='tinylight' align=center>".$brgy."</td>";                        
 		    print "<td class='tinylight' align=center>".($fid==0?"-":$fid)."</td>";                        
 		    print "<td class='tinylight' align=center>".($phid==0?"-":$phid)."</td>";
 		    print "<td class='tinylight' align=center>RR: $res_vitals[vitals_resprate],
@@ -585,6 +594,9 @@ class consult_report extends module {
 		    $select_brgy = mysql_query("SELECT barangay_name from m_lib_barangay WHERE barangay_id='$bgy'") or die(mysql_error());		        
 		    $resbrgy = mysql_fetch_array($select_brgy);
 		    
+		    $q_brgy = mysql_query("SELECT c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$pid' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 451 ".mysql_error());		    
+		    list($brgy) = mysql_fetch_array($q_brgy);
+		    
 		    $res_vitals = mysql_fetch_array($selvitals);
 		    $bp = (empty($res_vitals[vitals_systolic]) && empty($res_vitals[vitals_diastolic]))?'-':$res_vitals[vitals_systolic].'/'.$res_vitals[vitals_diastolic];
 		    $count = mysql_num_rows($selvitals);
@@ -598,7 +610,8 @@ class consult_report extends module {
 		    print "<td class='tinylight' align=center>".($pp_wk==0?"-":$pp_wk)."</td>";
 		    print "<td class='tinylight' align=center>".$addr."</td>";
 		    //print "<td class='tinylight' align=center>".$bgy."</td>";
-		    print "<td class='tinylight' align=center>".$resbrgy[barangay_name]."</td>";		    
+		    //print "<td class='tinylight' align=center>".$resbrgy[barangay_name]."</td>";		    
+		    print "<td class='tinylight' align=center>".$brgy."</td>";		    
 		    print "<td class='tinylight' align=center>".($fid==0?"-":$fid)."</td>";
 		    print "<td class='tinylight' align=center>".($phid==0?"-":$phid)."</td>";
 		    print "<td class='tinylight' align=center>$res_vitals[consult_id] BP: $bp, Wt: $res_vitals[vitals_weight] kg</td>"; // display the vital signs
