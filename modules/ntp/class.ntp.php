@@ -859,7 +859,7 @@ class ntp extends module {
                              "tb_class = '".$post_vars["tb_class"]."' ".
                              "where ntp_id = '".$post_vars["ntp_id"]."' ";
                 if ($result_first = mysql_query($sql_first)) {
-                    //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=ntp&ntp=VISIT1&ntp_id=".$get_vars["ntp_id"]);
+                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=ntp&ntp=VISIT1&ntp_id=".$get_vars["ntp_id"]);
                 }
             }
             break;
