@@ -277,6 +277,7 @@ function show_tb_summary(){
 	$brgy_pop = $this->get_brgy_pop();    //compute for the brgy population: ALL or specific brgys only
         $target_pop = $this->get_target($brgy_pop); //compute for the target of FP        
         $str_brgy = $this->get_brgy(); //return list of barangays in CSV format
+                
         $header = array(54,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8);              
         $arr_indicators = array('TB Symptomatics who underwent DSSM','Smear Positive Discovered','New Smear (+) cases initiated treatment','New Smear (+) cured','Smear (+) retreatment case initiated Tx','Smear (+) retreatment case for cured');
         
@@ -296,7 +297,9 @@ function show_tb_summary(){
           
           $male_quarterly = $this->get_quarterly_total($male_monthly);
           $female_quarterly = $this->get_quarterly_total($female_monthly);
-
+          
+          if($_SESSION[ques]==94):
+          
           for($k=1;$k<((count($male_monthly)+count($female_monthly)+count($male_quarterly)+count($female_quarterly))/7);$k++){
             for($l=0;$l<3;$l++){
               array_push($disp_arr,$male_monthly[$k+$load+$l],$female_monthly[$k+$load+$l]);
@@ -307,6 +310,15 @@ function show_tb_summary(){
           }
           
           array_push($disp_arr,array_sum($male_quarterly),array_sum($female_quarterly)); //grand total
+    
+          elseif($_SESSION[ques]==93):
+          
+          
+          elseif($_SESSION[ques]==94):
+              
+          else:
+          
+          endif;
           
           $this->SetWidths($header);
           $this->Row($disp_arr);
@@ -340,9 +352,9 @@ function compute_indicator($indicator){
             if($this->get_px_brgy($pxid,$brgy)){
               $month_stat[$this->get_max_month($sp3_date)] += 1;
             }          
-          }                
+          }
         endif;          
-          array_push($arr_gender_stat,$month_stat);        
+          array_push($arr_gender_stat,$month_stat);
   
         }
                 
@@ -446,9 +458,9 @@ function compute_indicator($indicator){
               
               array_push($arr_gender_stat,$month_stat);
           }
-      
-          
+                
           break;
+          
       default:
       
         break;
