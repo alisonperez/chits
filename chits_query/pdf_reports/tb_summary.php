@@ -319,8 +319,9 @@ function compute_indicator($indicator){
     
       case 4: //smear (+) re-treatment - relapsed, return after default, treatment failure. CAT 2 TB patients
           $arr_retreat = array('FAIL','OTH','RAD','REL');
+          
           for($x=0;$x<count($arr_gender);$x++){
-              $q_retreatment = mysql_query("SELECT a.patient_id,a.ntp_id,a.intensive_start_date,a.patient_type_id FROM m_patient_ntp a, m_patient b WHERE a.patient_id=b.patient_id AND a.patient_type_id IN ('$arr_retreat') AND a.intensive_start_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.patient_gender='$arr_gender[$x]'") or die("Cannot query: 322 ".mysql_error());
+              $q_retreatment = mysql_query("SELECT a.patient_id,a.ntp_id,a.intensive_start_date,a.patient_type_id FROM m_patient_ntp a, m_patient b WHERE a.patient_id=b.patient_id AND a.patient_type_id IN ('FAIL','OTH','RAD','REL') AND a.intensive_start_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.patient_gender='$arr_gender[$x]'") or die("Cannot query: 322 ".mysql_error());
           
               if(mysql_num_rows($q_retreatment)!=0):
                   while(list($pxid,$ntp_id,$intensive_start,$pxtype)=mysql_fetch_array($q_retreatment)){
@@ -339,7 +340,7 @@ function compute_indicator($indicator){
           $arr_retreat = array('FAIL','OTH','RAD','REL');
           
           for($x<0;$x<count($arr_gender);$x++){
-              $q_retreatment_cured = mysql_query("SELECT a.patient_id,a.ntp_id,a.intensive_start_date,a.treatment_end_date,a.patient_type_id,a.outcome_id FROM m_patient_ntp a, m_patient b WHERE a.patient_id=b.patient_id AND a.patient_type_id IN ('$arr_retreat') AND a.outcome_id='CURE' AND a.treatment_end_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.patient_gender='$arr_gender[$x]'") or die("Cannot query 342 ".mysql_error());
+              $q_retreatment_cured = mysql_query("SELECT a.patient_id,a.ntp_id,a.intensive_start_date,a.treatment_end_date,a.patient_type_id,a.outcome_id FROM m_patient_ntp a, m_patient b WHERE a.patient_id=b.patient_id AND a.patient_type_id IN ('FAIL','OTH','RAD','REL') AND a.outcome_id='CURE' AND a.treatment_end_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND b.patient_gender='$arr_gender[$x]'") or die("Cannot query 342 ".mysql_error());
               
               if(mysql_num_rows($q_retreatment_cured)!=0):
                   while(list($pxid,$ntp_id,$intensive_start,$tx_end,$px_type,$outcome)=mysql_fetch_array($q_retreatment_cured)){
