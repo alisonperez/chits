@@ -149,13 +149,15 @@ function Header()
 function show_records()
 {	
 
-	$r_prenatal = array_unique($_SESSION[prenatal_mc_px]);
-	//print_r($r_prenatal);
-	
+	$r_prenatal = array_values(array_unique($_SESSION[prenatal_mc_px]));		
 	
 	$w = array(30,30,55,85,10,30,25,25,25,25);
 	$r_rec = array();
+	
 	for($i=0;$i<count($r_prenatal);$i++){
+	        
+	        //echo $r_prenatal[$i].'<br>';
+	        
 		$q_px = mysql_query("SELECT patient_lastname,patient_firstname,TO_DAYS(patient_dob) as kaarawan FROM m_patient WHERE patient_id='$r_prenatal[$i]'") or die(mysql_error());
 
 		$q_name = mysql_query("SELECT a.patient_id,a.patient_lastname,a.patient_firstname,TO_DAYS(a.patient_dob) as day_bday,b.family_id,c.address,d.barangay_name FROM m_patient a,m_family_members b,m_family_address c,m_lib_barangay d WHERE a.patient_id='$r_prenatal[$i]' AND a.patient_id=b.patient_id AND b.family_id=c.family_id AND c.barangay_id=d.barangay_id") or die("Cannot query: 137");
@@ -164,12 +166,8 @@ function show_records()
 		//$q_prenatal = mysql_query("SELECT a.patient_lmp,a.patient_edc,a.obscore_gp,b.prenatal_date,TO_DAYS(b.prenatal_date) as day_prenatal FROM m_patient_mc a, m_consult_mc_prenatal b WHERE a.patient_id='$r_prenatal[$i]' AND a.patient_id=b.patient_id AND b.visit_sequence='1' AND end_pregnancy_flag='N'") or die(mysql_error());
 		$q_prenatal = mysql_query("SELECT a.patient_lmp,a.patient_edc,a.obscore_gp,b.prenatal_date,TO_DAYS(b.prenatal_date) as day_prenatal FROM m_patient_mc a, m_consult_mc_prenatal b WHERE a.patient_id='$r_prenatal[$i]' AND a.patient_id=b.patient_id AND end_pregnancy_flag='N' ORDER by b.prenatal_date ASC") or die(mysql_error());
 
-		$result_prenatal = mysql_fetch_array($q_prenatal);
-		
-		//print_r($result_prenatal);
-		//print_r($r_name);
-		echo $r_name[patient_lastname].'-'.$r_name[day_bday].'<br>';
-		
+		$result_prenatal = mysql_fetch_array($q_prenatal);				
+	        
 		if(empty($r_name[patient_lastname]) && empty($r_name[patient_firstname])):
 			$r_px = mysql_fetch_array($q_px);
 			$pangalan = $r_px[patient_lastname].', '.$r_px[patient_firstname];
