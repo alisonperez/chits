@@ -127,13 +127,14 @@ function Header()
 	$gender = array();
 	
 	$date_label = ($m1[0]==$m2[0])?$_SESSION[months][$m1[0]].' '.$m1[2]:$_SESSION[months][$m1[0]].' to '.$_SESSION[months][$m2[0]].' '.$m1[2];
-
         
 	$municipality_label = $_SESSION[datanode][name];
 	
 	$this->SetFont('Arial','B',12);
 
-
+	
+	if($_SESSION[ques]==94):
+	
 	$this->Cell(0,5,'Tuberculosis Summary Table ( '.$date_label.' )'.' - '.$municipality_label,0,1,'C');
 	
 	if(in_array('all',$_SESSION[brgy])):
@@ -163,8 +164,7 @@ function Header()
 	$w = array(54,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16); //340
     	$header = array('INDICATORS','Target','JAN','FEB','MAR','1st Q','APR','MAY','JUNE','2nd Q','JULY','AUG','SEPT','3rd Q','OCT','NOV','DEC','4th Q','TOTAL');	
       		
-	$this->SetWidths($w);
-	$this->Row($header);		
+	
 	
 	$w2 = array(54,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8);
 	array_push($gender,' ',' ');
@@ -172,10 +172,104 @@ function Header()
 	  array_push($gender,'M','F');	  
 	}
 	
+	
+	
+	elseif($_SESSION[ques]==92 || $_SESSION[ques]==93):
+	    $this->q_report_header();		   
+            
+            
+            
+
+    	    
+    	    if($_SESSION[ques]==92): //TB Q report table header
+    	        $this->SetFont('Arial','B',15);	    	        	    
+    	        $this->Cell(310,8,'D I S E A S E   C O N T R O L',1,1,C);    	    
+    	        $this->SetFont('Arial','B',12);
+    	        
+                
+                $w = array('100','90','60','60');
+                $header = array('TUBERCULOSIS','Number','Interpretation','Recommendation / Actions Taken');
+	    
+                $w2 = array('100','30','30','30','60','60');
+                $header2 = array(' ','Male','Female','Total',' ',' ');
+                
+	    elseif($_SESSION[ques]==93): //TB M report table header
+	        $this->SetFont('Arial','B',15);	    	        	    
+    	        $this->Cell(190,8,'D I S E A S E   C O N T R O L',1,1,C);
+    	        
+	        $this->SetFont('Arial','B',12);
+
+	        $w = array('100','45','45');
+                $header = array('TUBERCULOSIS','MALE','FEMALE');
+	    
+	    else:
+	    
+	    endif;
+	else:
+	
+	endif;			
+	
+	$this->SetWidths($w);
+	$this->Row($header);
+	
 	$this->SetWidths($w2);
-	$this->Row($gender);			
+	$this->Row($gender);		
+	
+	$this->Row($header2);
 }
 
+function q_report_header(){
+    $this->SetFont('Arial','B','12');
+    
+    $taon = $_SESSION[year];
+    
+    if($_SESSION[ques]==92): //TB Quarterly Report
+        $freq = 'FHSIS REPORT FOR THE QUARTER: ';
+        $freq_val = $_SESSION[quarter];
+    elseif($_SESSION[ques]==93): //TB Monthly Report
+        $freq = 'FHSIS REPORT FOR THE MONTH: ';
+        $freq_val = date('F',mktime(0,0,0,$_SESSION[smonth],1,0));
+    else:
+        
+    endif;
+    
+    $this->show_header_freq($freq,$freq_val);
+    $this->show_header_bhs();
+    $this->show_header_rhu();
+    $this->show_header_lgu();
+    $this->show_header_province();
+    $this->Ln();                    
+}
+
+function show_header_freq($freq,$freq_val){    
+    $this->Cell(0,5,$freq.$freq_val."          YEAR: ".$_SESSION[year],0,1,L);    
+}
+
+function show_header_bhs(){    
+    if($_SESSION[ques]==93):  //applies only to W-BHS and M2 reports
+        $this->Cell(0,5,'NAME OF BHS/BHC - Brgy '.$this->get_brgy(),0,1,L);
+    endif;
+}
+
+function show_header_rhu(){
+    if($_SESSION[ques]==93):   //applies only to W-BHS and M2 reports
+        $this->Cell(0,5,'CATCHMENT RHU/BHS: '.$_SESSION[datanode][name],0,1,L);        
+    endif;
+}
+
+function show_header_lgu(){
+    if($_SESSION[ques]==92): //applies only to Q2 and A2 reports
+        $this->Cell(0,5,'MUNICIPALITY/CITY OF: '.$_SESSION[lgu],0,1,L);
+    endif;
+}
+                
+function show_header_province(){
+    if($_SESSION[ques]==92): //applies only to Q2 and A2 reports
+        $this->Cell(0,5,'PROVINCE: '.$_SESSION[province],0,1,L);
+    endif;
+}
+                                
+                            
 
 function show_tb_summary(){
 	

@@ -825,7 +825,7 @@ class querydb{
 		if(mysql_num_rows($q_tb)!=0):
 			list($ques_label) = mysql_fetch_array($q_tb);
 			if($quesno=='92' || $quesno=='93'):
-				echo "<a href='./pdf_reports/tb_report.php'>Show $ques_label</a>";
+				echo "<a href='./pdf_reports/tb_summary.php'>Show $ques_label</a>";
 			elseif($quesno==94):
 				echo "<a href='./pdf_reports/tb_summary.php'>Show $ques_label</a>";				
 			else:
