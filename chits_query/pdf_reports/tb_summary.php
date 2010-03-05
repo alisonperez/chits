@@ -176,11 +176,7 @@ function Header()
 	
 	elseif($_SESSION[ques]==92 || $_SESSION[ques]==93):
 	    $this->q_report_header();		   
-            
-            
-            
-
-    	    
+                                        	    
     	    if($_SESSION[ques]==92): //TB Q report table header
     	        $this->SetFont('Arial','B',15);	    	        	    
     	        $this->Cell(310,8,'D I S E A S E   C O N T R O L',1,1,C);    	    
@@ -277,6 +273,8 @@ function show_tb_summary(){
 	$brgy_pop = $this->get_brgy_pop();    //compute for the brgy population: ALL or specific brgys only
         $target_pop = $this->get_target($brgy_pop); //compute for the target of FP        
         $str_brgy = $this->get_brgy(); //return list of barangays in CSV format
+        $m_index = array('1'=>array('2','3'),'2'=>array('4','5'),'3'=>array('6','7'),'4'=>array('10','11'),'5'=>array('12','13'),'6'=>array('14','15'),'7'=>array('18','19'),'8'=>array('20','21'),'9'=>array('22','23'),'10'=>array('26','27'),'11'=>array('28','29'),'12'=>array('30','31'));
+        $q_index = array('1'=>array('8','9'),'2'=>array('16','17'),'3'=>array('24','25'),'4'=>array('32','33'));
                 
         $header = array(54,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8);              
         $arr_indicators = array('TB Symptomatics who underwent DSSM','Smear Positive Discovered','New Smear (+) cases initiated treatment','New Smear (+) cured','Smear (+) retreatment case initiated Tx','Smear (+) retreatment case for cured');
@@ -300,6 +298,8 @@ function show_tb_summary(){
           
           if($_SESSION[ques]==94):
           
+          $header = array(54,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8);                        
+          
           for($k=1;$k<((count($male_monthly)+count($female_monthly)+count($male_quarterly)+count($female_quarterly))/7);$k++){
             for($l=0;$l<3;$l++){
               array_push($disp_arr,$male_monthly[$k+$load+$l],$female_monthly[$k+$load+$l]);
@@ -311,11 +311,27 @@ function show_tb_summary(){
           
           array_push($disp_arr,array_sum($male_quarterly),array_sum($female_quarterly)); //grand total
     
-          elseif($_SESSION[ques]==93):
+          elseif($_SESSION[ques]==93): //TB M report
+              $header = array('100','45','45');          
+              print_r($male_monthly);
+              $m_arr = array('     '.$disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]);
+
+
+              for($x=0;$x<count($m_arr);$x++){
+
+                  if($counter==0):
+                      $this->Cell($header[0],6,$disp_arr[0],'1',0,'L');
+                      $this->Cell($header[1],6,' ','1',0,'L');
+                      $this->Cell($header[2],6,' ','1',0,'L');
+                      $this->Ln();
+                      $counter = 1;                                            
+                  endif;
+                  $this->Cell($header[$x],6,$m_arr[$x],'1',0,'L');              
+             } 
+             
           
-          
-          elseif($_SESSION[ques]==94):
-              
+          elseif($_SESSION[ques]==92):
+              $header = array('100','30','30','30','60','60');
           else:
           
           endif;
