@@ -831,8 +831,13 @@ class querydb{
 			if($quesno=='92' || $quesno=='93'):
 				echo "<a href='./pdf_reports/tb_summary.php'>Show $ques_label</a>";
 			elseif($quesno==94):
-				echo "<a href='./pdf_reports/tb_summary.php'>Show $ques_label</a>";				
+				echo "<a href='./pdf_reports/tb_summary.php'>Show $ques_label</a>";
+			elseif($quesno==95): //tb register
+				echo "<a href='./pdf_reports/tb_symptomatics.php'>Show $ques_label</a>";
+			elseif($quesno==90): //tb symptomatics
+				echo "<a href='./pdf_reports/tb_symptomatics.php'>Show $ques_label</a>";
 			else:
+				
 			endif;
 			
 		endif;
