@@ -794,13 +794,13 @@ class ntp extends module {
                     }
                 }
 
-                $sql_first = "insert into m_patient_ntp (patient_id, occupation_id, ".
+                /*$sql_first = "insert into m_patient_ntp (patient_id, occupation_id, ".
                              "household_contacts, region_id, body_weight, bcg_scar, ".
                              "previous_treatment_flag, previous_treatment_duration, ".
                              "previous_treatment_drugs, treatment_category_id, ".
                              "contact_person, outcome_id, patient_type_id, ".
                              "treatment_partner_id, healthcenter_id, ntp_timestamp, ".
-                             "ntp_consult_date, user_id, tb_class) ".
+                             "ntp_consult_date, user_id, tb_class, source_patient, refer_physician, tbdc_review) ".
                              "values ('$patient_id', '".$post_vars["occupation"]."', ".
                              "'".$post_vars["hh_contacts"]."', '".$post_vars["region"]."', ".
                              "'$body_weight', '$bcg_scar', '$previous_tx', ".
@@ -813,6 +813,11 @@ class ntp extends module {
                              "'".$_SESSION["datanode"]["code"]."', sysdate(), ".
                              "sysdate(), '".$_SESSION["userid"]."', ".
                              "'".$post_vars["tb_class"]."')";
+                */
+                
+                $healthcenter = $_SESSION["datanode"]["code"];
+                $sql_first = "INSERT INTO m_patient_ntp SET patient_id='$patient_id',occupation_id='$post_vars[occupation]',household_contacts='$post_vars[hh_contacts]',region_id='$post_vars[region]',body_weight='$body_weight',bcg_scar='$bcg_scar',previous_treatment_flag='$previous_tx',previous_treatment_duration='$post_vars[previous_treatment_duration]',previous_treatment_drugs='$tx_drugs',treatment_category_id='$post_vars[treatment_category]',contact_person='$post_vars[contact_person]',outcome_id='$post_vars[treatment_outcome]',patient_type_id='$post_vars[patient_type]',treatment_partner_id='$post_vars[treatment_partner]',healthcenter_id='$healthcenter',ntp_timestamp=sysdate(),ntp_consult_date=sysdate(),user_id='$_SESSION[userid]',tb_class='$post_vars[tb_class]',source_patient='$post_vars[source_px]',refer_physician='$post_vars[refer_physician]',tbdc_review='$post_vars[tbdc_review]'";
+                
                 if ($result_first = mysql_query($sql_first)) {
                     header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]);
                 }
@@ -862,9 +867,15 @@ class ntp extends module {
                              "treatment_partner_id = '".$post_vars["treatment_partner"]."', ".
                              "ntp_timestamp = sysdate(), ".
                              "user_id = '".$_SESSION["userid"]."', ".
-                             "tb_class = '".$post_vars["tb_class"]."' ".
-                             "where ntp_id = '".$post_vars["ntp_id"]."' ";
-                if ($result_first = mysql_query($sql_first)) {
+                             "tb_class = '".$post_vars["tb_class"]."', ".
+                             "source_patient = '".$post_vars["source_px"]."', ".
+                             "refer_physician = '".$post_vars["refer_physician"]."', ".
+                             "tbdc_review = '".$post_vars["tbdc_review"]."' ".
+                             " where ntp_id = '".$post_vars["ntp_id"]."' ";
+
+                $result_first = mysql_query($sql_first) or die("Cannot query 876 ".mysql_error());
+                
+                if ($result_first) {
                     header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=ntp&ntp=VISIT1&ntp_id=".$get_vars["ntp_id"]);
                 }
             }
@@ -1364,14 +1375,22 @@ class ntp extends module {
                    "region_id, body_weight, bcg_scar, tb_class, ".
                    "previous_treatment_flag, previous_treatment_duration, previous_treatment_drugs, ".
                    "treatment_category_id, contact_person, outcome_id, patient_type_id, ".
-                   "treatment_partner_id, course_end_flag, treatment_end_date ".
+                   "treatment_partner_id, course_end_flag, treatment_end_date,source_patient,refer_physician,tbdc_review ".
                    "from m_patient_ntp where ntp_id = '".$get_vars["ntp_id"]."'";
             if ($result = mysql_query($sql)) {
                 if (mysql_num_rows($result)) {                    
                     $ntp = mysql_fetch_array($result);
                     
                     list($y,$m,$d) = explode('-',$ntp["treatment_end_date"]);
-                    $date_outcome = ($ntp["treatment_end_date"]=='0000-00-00')?'':($m.'/'.$d.'/'.$y);                                
+                    $date_outcome = ($ntp["treatment_end_date"]=='0000-00-00')?'':($m.'/'.$d.'/'.$y);
+                    
+                    if($ntp[source_patient]=='Public'):
+                        $public = 'SELECTED';
+                    elseif($ntp[source_patient]=='Private'):
+                        $private = 'SELECTED';
+                    else:
+                        $def = 'SELECTED';
+                    endif;
                 }                
             }
         }
@@ -1424,15 +1443,15 @@ class ntp extends module {
         print "<tr valign='top'><td>";
         print "<span class='boxtitle'>SOURCE OF PATIENT</span><br> ";
         print "<select name='source_px'>";
-        print "<option value=''>Select Source</option>";
-        print "<option value='Public'>Public</option>";
-        print "<option value='Private'>Private</option>";
+        print "<option value='' $def>Select Source</option>";
+        print "<option value='Public' $public>Public</option>";
+        print "<option value='Private' $private>Private</option>";
         print "</select>";
         print "</td></tr>";
         
         print "<tr valign='top'><td>";
         print "<span class='boxtitle'>NAME OF REFERRING PHYSICIAN</span><br> ";
-        print "<input type='text' name='refer_physician' value='' size='20'></input>";
+        print "<input type='text' name='refer_physician' value='$ntp[refer_physician]' size='20'></input>";
         print "</td></tr>";
         
         
@@ -1485,9 +1504,9 @@ class ntp extends module {
         print "<tr><td>";
         print "<span class='boxtitle'>REVIEWED BY TBDC?</span><br> ";        
         print "<select name='tbdc_review' size='1'>";
-        print "<option value=''>Select</option>";
-        print "<option value='Y'>Yes</option>";
-        print "<option value='N'>No</option>";
+        print "<option value='' ".($ntp["tbdc_review"]==""?"selected":"").">Select</option>";
+        print "<option value='Y' ".($ntp["tbdc_review"]=="Y"?"selected":"").">Yes</option>";
+        print "<option value='N' ".($ntp["tbdc_review"]=="N"?"selected":"").">No</option>";
         print "</select>";
         print "</td></tr>";
         
