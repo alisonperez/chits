@@ -17855,9 +17855,12 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (51, 'Child Care Quarterly Report', 8, '', 'Q', 'Y'),
 (66, 'Leprosy Summary Table', 13, '', 'S', 'Y'),
 (67, 'Leprosy Quarterly Report', 13, '', 'Q', 'Y'),
-(90, 'TB Symptomatics Masterlist', 5, '', 'Q', 'Y'),
+(90, 'TB Symptomatics Masterlist', 5, '', 'G', 'Y'),
 (91, 'NTP Laboratory Register', 5, '', 'G', 'Y'),
-(92, 'Tubeculosis Quarterly Report', 5, '', 'Q', 'Y');
+(92, 'Tubeculosis Quarterly Report', 5, '', 'Q', 'Y'),
+(93, 'Tuberculosis Monthly Report', 5, '', 'M', 'Y'),
+(94, 'Tuberculosis Summary Table', 5, '', 'S', 'Y'),
+(95, 'TB Register', 5, '', 'G', 'Y');
 
 
 
