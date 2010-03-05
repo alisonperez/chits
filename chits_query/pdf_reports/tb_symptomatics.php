@@ -121,20 +121,43 @@ function Header()
 		list($brgy_label) = mysql_fetch_array($brgy_name);
 	endif;
 	
-	$this->SetFont('Arial','B',12);
-	$this->Cell(0,5,'TB SYMPTOMATIC MASTERLIST'.'( '.$_SESSION[sdate_orig].' to '.$_SESSION[edate_orig].' )'.' - '.$_SESSION[datanode][name],0,1,'C');
-
-
-	$this->SetFont('Arial','',10);
-
-	$this->Cell(0,5,$brgy_label,0,1,'C');	
 	
-	$w = array(20,25,50,40,10,10,84,44,17,40); //340
-	$header = array('Family Serial No.','Date of Registration','Name','Address','Age','Sex','Date Sputum Collected / Examination Result','X-ray Examination','TB Case Number','Remarks');
+	
+	if($_SESSION[ques]==90):
+	    $this->SetFont('Arial','B',12);	
+	    
+	    $this->Cell(0,5,'TB SYMPTOMATIC MASTERLIST'.'( '.$_SESSION[sdate_orig].' to '.$_SESSION[edate_orig].' )'.' - '.$_SESSION[datanode][name],0,1,'C');
+	    $this->SetFont('Arial','',10);
+	    $this->Cell(0,5,$brgy_label,0,1,'C');	
+	
+	    $w = array(20,25,50,40,10,10,84,44,17,40); //340
+	    $header = array('Family Serial No.','Date of Registration','Name','Address','Age','Sex','Date Sputum Collected / Examination Result','X-ray Examination','TB Case Number','Remarks');
 
-        $this->SetFont('Arial','',8);	
-	$w2 = array(20,25,50,40,10,10,42,42,22,22,17,40);
-	$header2 = array('','','','','','','1st','2nd','Date Referred','Date & result','','');	
+	    $this->SetFont('Arial','',8);	
+	    $w2 = array(20,25,50,40,10,10,42,42,22,22,17,40);
+	    $header2 = array('','','','','','','1st','2nd','Date Referred','Date & result','','');		    
+	    
+        elseif($_SESSION[ques]==91):
+            $this->SetFont('Arial','B',12);	
+            $this->Cell(0,5,'NTP LABORATORY REGISTER'.'( '.$_SESSION[sdate_orig].' to '.$_SESSION[edate_orig].' )'.' - '.$_SESSION[datanode][name],0,1,'C');        
+            
+            $this->SetFont('Arial','',10);
+	    $this->Cell(0,5,$brgy_label,0,1,'C');	
+	    
+	    $w = array(15,23,35,10,7,35,40,25,84,35,30); //340
+	    $header = array('Family Serial No.','Date of Registration','Name','Age','Sex','Name of Collection/Treatment Unit','Address','Reason for Examination','Date of Examination / Result','Remarks','Signature of MT/Microscopist');
+	        	        	        
+            $this->SetFont('Arial','',8);	
+	                
+            $w2 = array(15,23,35,10,7,35,40,10,15,42,42,35,30);
+            $header2 = array('','','','','','','','DX','F-up (TB Case no)','1st','2nd','','');
+            	                        	                        	    
+        else:
+        
+        endif;
+
+
+	
         
         $this->SetWidths($w);
         $this->Row($header);
@@ -145,21 +168,25 @@ function Header()
 
 
 function show_symptomatic(){ 
-    $w = array(20,25,50,40,10,10,42,42,22,22,17,40);
+    
     
     if($_SESSION[brgy]=='all'):
         $q_symptomatic = mysql_query("SELECT patient_id,date_seen,TO_DAYS(date_seen) as day_seen,ntp_id,sputum_diag1,sputum_diag2,xray_date_referred, xray_date_received,xray_result,remarks FROM m_consult_ntp_symptomatics WHERE date_seen BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' ORDER by date_seen ASC") or die("Cannot query: 150: ".mysql_error()); 
     else:
-        $q_symptomatic = mysql_query("SELECT a.patient_id,a.date_seen,a.ntp_id,a.sputum_diag1,a.sputum_diag2,a.xray_date_referred,a.xray_date_received,a.xray_result,a.remarks FROM m_consult_ntp_symptomatics a,m_family_members b,m_family_address c WHERE a.date_seen BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' AND a.patient_id=b.patient_id AND b.family_id=c.family_id AND c.barangay_id='$_SESSION[brgy]' ORDER by date_seen ASC") or die("Cannot query: 152: ".mysql_error());     
+        $q_symptomatic = mysql_query("SELECT a.patient_id,a.date_seen,TO_DAYS(a.date_seen),a.ntp_id,a.sputum_diag1,a.sputum_diag2,a.xray_date_referred,a.xray_date_received,a.xray_result,a.remarks FROM m_consult_ntp_symptomatics a,m_family_members b,m_family_address c WHERE a.date_seen BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' AND a.patient_id=b.patient_id AND b.family_id=c.family_id AND c.barangay_id='$_SESSION[brgy]' ORDER by date_seen ASC") or die("Cannot query: 152: ".mysql_error());     
     endif;                
     
     if(mysql_num_rows($q_symptomatic)!=0):
 
         while(list($pxid,$date_seen,$day_seen,$ntp_id,$sputum_diag1,$sputum_diag2,$xray_refer,$xray_receive,$xray_result,$remarks)=mysql_fetch_array($q_symptomatic)){
+                        
+            
             $q_px = mysql_query("SELECT a.patient_lastname,a.patient_firstname,c.address,d.barangay_name,TO_DAYS(a.patient_dob) as kaarawan, b.family_id,a.patient_gender FROM m_patient a,m_family_members b,m_family_address c,m_lib_barangay d WHERE a.patient_id='$pxid' AND a.patient_id=b.patient_id AND b.family_id=c.family_id AND c.barangay_id=d.barangay_id") or die("Cannot query 157 ".mysql_error());
             
             if(mysql_num_rows($q_px)!=0):                            
                 while(list($lname,$fname,$address,$brgy,$birthday,$family_id,$gender)=mysql_fetch_array($q_px)){
+                
+                    $sputum1 = $sputum2 = "";
                     $q_sputum1 = mysql_query("SELECT sp1_collection_date,sp2_collection_date,sp3_collection_date,lab_diagnosis FROM m_consult_lab_sputum WHERE request_id='$sputum_diag1'") or die("Cannot query 161 ".mysql_error());
                     list($a_sp1,$a_sp2,$a_sp3,$a_diag) = mysql_fetch_array($q_sputum1);
                     
@@ -183,8 +210,19 @@ function show_symptomatic(){
                     $xray_receive = ($xray_receive=='0000-00-00')?'':$xray_receive;
                     $xray_refer = ($xray_refer=='0000-00-00')?'':$xray_refer;                    
                     
-                    $this->SetWidths($w);                                        
-                    $this->Row(array($family_id,$date_seen,$lname.', '.$fname,$address.', '.$brgy,$edad,$gender,$sputum1,$sputum2,$xray_refer,$xray_receive.''.$xray_res,$ntp_id,$remarks));
+                    $this->SetFont('Arial','',10);                    
+                    
+                    if($_SESSION[ques]==90):
+                        $w = array(20,25,50,40,10,10,42,42,22,22,17,40);                    
+                        $this->SetWidths($w);                                        
+                        $this->Row(array($family_id,$date_seen,$lname.', '.$fname,$address.', '.$brgy,$edad,$gender,$sputum1,$sputum2,$xray_refer,$xray_receive.''.$xray_res,$ntp_id,$remarks));
+                    elseif($_SESSION[ques]==91):
+                        $w = array(15,23,35,10,7,35,40,10,15,42,42,35,30);                    
+                        $this->SetWidths($w);                                        
+                        $this->Row(array($family_id,$a_sp1,$lname.', '.$fname,$edad,$gender,$_SESSION[datanode][name].' '.'RHU',$address.', '.$brgy,'','',$sputum1,$sputum2,$remarks,''));                    
+                    else:
+                    
+                    endif;
                 }                            
             endif;
         }                        

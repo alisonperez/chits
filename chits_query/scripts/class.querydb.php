@@ -836,6 +836,8 @@ class querydb{
 				echo "<a href='./pdf_reports/tb_symptomatics.php'>Show $ques_label</a>";
 			elseif($quesno==90): //tb symptomatics
 				echo "<a href='./pdf_reports/tb_symptomatics.php'>Show $ques_label</a>";
+			elseif($quesno==91): //ntp lab register
+				echo "<a href='./pdf_reports/tb_symptomatics.php'>Show $ques_label</a>";
 			else:
 				
 			endif;
