@@ -1470,7 +1470,7 @@ class ntp extends module {
         print "</td></tr>";
         print "<tr><td>";
         
-        print "<br><span class='boxtitle'>DATE OUTCOME RECORDED</span><br> ";
+        print "<br><span class='boxtitle'>DATE FINAL OUTCOME RECORDED</span><br> ";
         print "<input type='text' name='date_outcome' size='7' value='$date_outcome'></input>&nbsp;";
         print "<a href=\"javascript:show_calendar4('document.form_ntp_visit1.date_outcome', document.form_ntp_visit1.date_outcome.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a><br>";        
         print "</td></tr>";

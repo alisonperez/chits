@@ -296,9 +296,7 @@ function show_tb_summary(){
           $male_quarterly = $this->get_quarterly_total($male_monthly);
           $female_quarterly = $this->get_quarterly_total($female_monthly);
           
-          if($_SESSION[ques]==94):
-          
-          $header = array(54,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8);                        
+          //print_r($female_monthly);                                        
           
           for($k=1;$k<((count($male_monthly)+count($female_monthly)+count($male_quarterly)+count($female_quarterly))/7);$k++){
             for($l=0;$l<3;$l++){
@@ -310,34 +308,39 @@ function show_tb_summary(){
           }
           
           array_push($disp_arr,array_sum($male_quarterly),array_sum($female_quarterly)); //grand total
-    
+          
+          if($_SESSION[ques]==94):    
+              $header = array(54,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8);                                  
+              $this->SetWidths($header);
+              $this->Row($disp_arr);  
+          
           elseif($_SESSION[ques]==93): //TB M report
               $header = array('100','45','45');          
-              print_r($male_monthly);
+              
               $m_arr = array('     '.$disp_arr[0],$disp_arr[$m_index[$_SESSION[smonth]][0]],$disp_arr[$m_index[$_SESSION[smonth]][1]]);
-
-
-              for($x=0;$x<count($m_arr);$x++){
-
-                  if($counter==0):
-                      $this->Cell($header[0],6,$disp_arr[0],'1',0,'L');
-                      $this->Cell($header[1],6,' ','1',0,'L');
-                      $this->Cell($header[2],6,' ','1',0,'L');
-                      $this->Ln();
-                      $counter = 1;                                            
-                  endif;
-                  $this->Cell($header[$x],6,$m_arr[$x],'1',0,'L');              
-             } 
-             
+              
+              $this->Cell($header[0],6,$m_arr[0],'1',0,'L');   
+              $this->Cell($header[1],6,$m_arr[1],'1',0,'L');   
+              $this->Cell($header[2],6,$m_arr[2],'1',0,'L');   
+              $this->Ln();                               
           
           elseif($_SESSION[ques]==92):
               $header = array('100','30','30','30','60','60');
+              
+              $total_q =  $disp_arr[$q_index[$_SESSION[quarter]][0]] + $disp_arr[$q_index[$_SESSION[quarter]][1]];
+              $q_arr = array($disp_arr[0],$disp_arr[$q_index[$_SESSION[quarter]][0]],$disp_arr[$q_index[$_SESSION[quarter]][1]],$total_q,'','');
+              
+              $this->Cell($header[0],6,$q_arr[0],'1',0,'L');
+              $this->Cell($header[1],6,$q_arr[1],'1',0,'L');
+              $this->Cell($header[2],6,$q_arr[2],'1',0,'L');
+              $this->Cell($header[3],6,$q_arr[3],'1',0,'L');
+              $this->Cell($header[4],6,$q_arr[4],'1',0,'L');
+              $this->Cell($header[5],6,$q_arr[5],'1',0,'L');
+              
+              $this->Ln();
           else:
           
-          endif;
-          
-          $this->SetWidths($header);
-          $this->Row($disp_arr);
+          endif;                    
           
         }			
 }
