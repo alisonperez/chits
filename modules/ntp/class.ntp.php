@@ -1413,6 +1413,23 @@ class ntp extends module {
         }
         print "</select>";
         print "</td></tr>";
+        
+        
+        print "<tr valign='top'><td>";
+        print "<span class='boxtitle'>SOURCE OF PATIENT</span><br> ";
+        print "<select name='source_px'>";
+        print "<option value=''>Select Source</option>";
+        print "<option value='Public'>Public</option>";
+        print "<option value='Private'>Private</option>";
+        print "</select>";
+        print "</td></tr>";
+        
+        print "<tr valign='top'><td>";
+        print "<span class='boxtitle'>NAME OF REFERRING PHYSICIAN</span><br> ";
+        print "<input type='text' name='refer_physician' value='' size='20'></input>";
+        print "</td></tr>";
+        
+        
         print "<tr valign='top'><td>";
         print "<span class='boxtitle'>".LBL_BCG_SCAR."</span><br> ";
         print "<select name='bcg_scar'>";
@@ -1458,23 +1475,35 @@ class ntp extends module {
         print "<span class='boxtitle'>".LBL_TREATMENT_PARTNER."</span><br> ";
         print ntp::show_treatment_partners($ntp["treatment_partner_id"]);
         print "</td></tr>";
+        
+        print "<tr><td>";
+        print "<span class='boxtitle'>REVIEWED BY TBDC?</span><br> ";        
+        print "<select name='tbdc_review' size='1'>";
+        print "<option value=''>Select</option>";
+        print "<option value='Y'>Yes</option>";
+        print "<option value='N'>No</option>";
+        print "</select>";
+        print "</td></tr>";
+        
         print "<tr valign='top'><td>";
         if (!$ntp["outcome_id"]) {
             $outcome = "TX";
         } else {
             $outcome = $ntp["outcome_id"];
         }
-        print "<span class='boxtitle'>".LBL_TREATMENT_OUTCOME."</span><br> ";
+        print "<br><span class='boxtitle'>".LBL_TREATMENT_OUTCOME."</span><br> ";
         print ntp::show_treatment_outcomes($outcome);
         print "<br/><small>".INSTR_TREATMENT_OUTCOME."</small><br/>";                
         print "</td></tr>";
-        print "<tr><td>";
         
-        print "<br><span class='boxtitle'>DATE FINAL OUTCOME RECORDED</span><br> ";
-        print "<input type='text' name='date_outcome' size='7' value='$date_outcome'></input>&nbsp;";
+        print "<tr><td>";        
+        print "<span class='boxtitle'>DATE FINAL OUTCOME RECORDED</span><br> ";
+        print "<input type='text' name='date_outcome' size='8' value='$date_outcome'></input>&nbsp;";
         print "<a href=\"javascript:show_calendar4('document.form_ntp_visit1.date_outcome', document.form_ntp_visit1.date_outcome.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a><br>";        
         print "</td></tr>";
         print "<tr><td>";
+        
+        
         
         if ($get_vars["ntp_id"]) {
             print "<input type='hidden' name='ntp_id' value='".$get_vars["ntp_id"]."'/>";
