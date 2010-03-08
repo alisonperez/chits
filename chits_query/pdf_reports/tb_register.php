@@ -209,7 +209,8 @@ function q_report_header(){
 }
 
 function show_first(){
-
+    
+    //$q_mysql = mysql_query("SELECT patient_id FROM ") or die("Cannot query 212 ".mysql_error());
 }
 
 
@@ -247,37 +248,6 @@ function show_header_province(){
     if($_SESSION[ques]==72 || $_SESSION[ques]==73): //applies only to Q2 and A2 reports
         $this->Cell(0,5,'PROVINCE: '.$_SESSION[province],0,1,L);
     endif;
-}
-
-
-
-
-function show_tb(){
-    switch($_SESSION[ques]){
-        case '90':
-            $this->process_tb_symp();
-            break;
-            
-        case '92':
-            $this->process_tb_monthly();
-            break;
-            
-        case '93':
-            $this->process_tb_quarterly();
-            break;
-            
-        default:
-        
-            break;    
-    }            
-}
-
-
-function process_tb_symp(){}
-
-function process_tb_monthly(){
-
-
 }
 
 function get_brgy(){  //returns the barangay is CSV format. to be used in WHERE clause for determining barangay residence of patient
@@ -355,18 +325,11 @@ function Footer(){
 }
 
 $_SESSION[pahina] = ($_GET[page]==1)?1:2;
-
 $pdf = new PDF('L','mm','Legal');
-
 $pdf->AliasNbPages();
 $pdf->SetFont('Arial','',10);
-
 $pdf->AddPage();
-
 $_SESSION[pahina]==1?$pdf->show_first():$pdf->show_second();
-
-//$pdf->AddPage();
-//$pdf->show_fp_summary();
 $pdf->Output();
 
 ?>
