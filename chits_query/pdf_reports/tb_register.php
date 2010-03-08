@@ -119,58 +119,64 @@ function NbLines($w,$txt)
 
 
 function Header()
-{        
+{            
+    //$this->q_report_header();
+    //print_r($_SESSION);
+    $date_label = $_SESSION[sdate_orig].' to '.$_SESSION[edate_orig];    
+    $municipality_label = $_SESSION[datanode][name];    
     
-    if($_SESSION[ques_no]==92 || $_SESSION[ques_no]==93):  //header for TB M and Q reports
+    $this->SetFont('Arial','B','15');    
+    $this->Cell(0,5,'T B    R E G I S T E R ( '.$date_label.' )'.' - '.$municipality_label,0,1,'C');
     
     
-    $this->q_report_header();
+    $arr_brgy = array($_SESSION[brgy]);
     
-    $arr_gender = array();
-    $this->SetFont('Arial','B','15');
-    $this->Cell(340,8,'M O R B I D I T Y   D I S E A S E   R E P O R T',1,1,C);
-    
-    $this->SetFont('Arial','','8');
-    $w = array(60,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,24);    
-    $this->SetWidths($w);
-    $label = array('DISEASE','ICD CODE','Under 1','1-4','5-9','10-14','15-19','20-24','25-29','30-34','35-39','40-44','45-49','50-54','55-59','60-64','65&above','TOTAL');
-    $this->Row($label);
-    
-    $w = array(60,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,12,12);        
-    array_push($arr_gender,' ',' ');
-    
-    for($i=0;$i<16;$i++){
-        array_push($arr_gender,'M','F');
-    }
-    
-    $this->SetWidths($w);
-    $this->Row($arr_gender);
-    
-    elseif($_SESSION[ques_no]==94): //header for TB summary table
-        $this->SetFont('Arial','B','15');
-        $this->Cell(340,8,'M O R B I D I T Y   D I S E A S E   R E P O R T',1,1,C);
-    
-        $this->SetFont('Arial','','8');
-        $w = array(60,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,24);    
-        $this->SetWidths($w);
-        $label = array('DISEASE','ICD CODE','Under 1','1-4','5-9','10-14','15-19','20-24','25-29','30-34','35-39','40-44','45-49','50-54','55-59','60-64','65&above','TOTAL');
-        $this->Row($label);
-    
-        $w = array(60,16,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,12,12);        
-        array_push($arr_gender,' ',' ');
-    
-        for($i=0;$i<16;$i++){
-            array_push($arr_gender,'M','F');
+    if(in_array('all',$arr_brgy)):        
+        $brgy_label = '(All Barangays)';                
+    else:
+        $brgy_label = '(';
+                            
+        for($i=0;$i<count($_SESSION[brgy]);$i++){
+            $brgy = $_SESSION[brgy][$i];
+            $q_brgy = mysql_query("SELECT barangay_name FROM m_lib_barangay WHERE barangay_id='$brgy'") or die("Cannot query: 139");
+            list($brgyname) = mysql_fetch_array($q_brgy);
+                                                                        
+                      
+            if($i!=(count($_SESSION[brgy])-1)):                             
+                $brgy_label.= $brgyname.', ';
+            else:
+                $brgy_label.= $brgyname.')';
+            endif;                                                                                                                                            
         }
+    endif;    
+        
+    $this->SetFont('Arial','','10');
+    $this->Cell(0,5,$brgy_label,0,1,'C');		    
+    $this->Ln(10);
     
-        $this->SetWidths($w);
-        $this->Row($arr_gender);        
+    if($_SESSION[pahina]==1):
+        $w = array(21,20,40,9,9,50,40,20,40,18,58,17);        
+        $header = array('Date of Registration','TB Case No.','Name','Age','Sex','Address','Health Facility','Source of Patient','Name of Referring Physician','Class of TB Diag (P/EP)','Type of Patient','Category');
+        
+        $w2 = array(21,20,40,9,9,50,40,10,10,40,18,8,13,13,8,8,8,17);
+        $header2 = array('','','','','','','','Pub','Pri','','','New','Relapse','Trans In','RAD','Fail','Oth','');
     
+    elseif($_SESSION[pahina]==2):
+        $w = array(25,161,90,20,20,20);
+        $header = array('Date Treatment Started','Sputum Examination Results / Weight Record','Treatment Outcome','Type of TX Partner','TBDC Review (Y/N)','Remarks');
+    
+        $w2 = array(25,23,23,23,23,23,23,23,15,15,15,15,15,15,20,20,20);
+        $header2 = array('','Before TX','2nd mo','3rd mo','4th mo','5th mo','6th mo','>7 mo','Cured','Tx Comp','Died','Failed','Defaulted','Time Out','','','');
+        
     else:
     
     endif;
     
-    
+    $this->SetFont('Arial','','8');    
+    $this->SetWidths($w);
+    $this->Row($header);
+    $this->SetWidths($w2);
+    $this->Row($header2);
     
 }
 
@@ -200,6 +206,15 @@ function q_report_header(){
     $this->show_header_province();
     $this->Ln();
     
+}
+
+function show_first(){
+
+}
+
+
+function show_second(){
+
 }
 
 function show_header_freq($freq,$freq_val){
@@ -339,6 +354,8 @@ function Footer(){
 
 }
 
+$_SESSION[pahina] = ($_GET[page]==1)?1:2;
+
 $pdf = new PDF('L','mm','Legal');
 
 $pdf->AliasNbPages();
@@ -346,7 +363,7 @@ $pdf->SetFont('Arial','',10);
 
 $pdf->AddPage();
 
-$pdf->show_tb();
+$_SESSION[pahina]==1?$pdf->show_first():$pdf->show_second();
 
 //$pdf->AddPage();
 //$pdf->show_fp_summary();
