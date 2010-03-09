@@ -120,7 +120,6 @@ function delete_symp(){
 
 function delete_sputum(){
         if(window.confirm('Do you really want to remove this TB Sputum record from this table?')){        
-                window.alert('Viva Espana!');
+                window.alert('The Sputum Record record was successfully been removed.');
         }
-
 }

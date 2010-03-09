@@ -728,17 +728,15 @@ class ntp extends module {
         }
         print "<table cellpadding='1' cellspacing='1' width='300' bgcolor='#9999FF' style='border: 1px solid black'><tr valign='top'><td nowrap>";
 
-	print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=SYMP".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="SYMP"?"<b>TB SYMPTOMATIC</b>":"TB SYMPTOMATIC"))."</a>";
+	print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=SYMP".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]."#tb_symptomatic":"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="SYMP"?"<b>TB SYMPTOMATIC</b>":"TB SYMPTOMATIC"))."</a>";
 
-        print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=VISIT1".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="VISIT1"?"<b>VISIT1</b>":"VISIT1"))."</a>";
+        print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=VISIT1".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]."#prevtx":"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="VISIT1"?"<b>VISIT1</b>":"VISIT1"))."</a>";
 
 	
-
-
         if ($get_vars["ntp_id"]) {
-            print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=INTAKE".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="INTAKE"?"<b>INTENSIVE</b>":"INTENSIVE"))."</a>";
-            print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=COLL".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="COLL"?"<b>MAINT</b>":"MAINT"))."</a>";
-            print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=LABS".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="LABS"?"<b>LABS</b>":"LABS"))."</a>";
+            print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=INTAKE".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]."#intensive_form":"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="INTAKE"?"<b>INTENSIVE</b>":"INTENSIVE"))."</a>";
+            print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=COLL".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]."#maintenance_form":"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="COLL"?"<b>MAINT</b>":"MAINT"))."</a>";
+            print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=LABS".($get_vars["ntp_id"]?"&ntp_id=".$get_vars["ntp_id"]."#lab_form":"")."' class='groupmenu'>".strtoupper(($get_vars["ntp"]=="LABS"?"<b>LABS</b>":"LABS"))."</a>";
         }
         print "</td></tr></table><br/>";
     }
@@ -1203,15 +1201,15 @@ class ntp extends module {
         
       echo "<a name='tb_symptomatic'>";
 
-      echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&ntp=$_GET[ntp]' name='form_symptomatic' method='POST'>";
+      echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&ntp=$_GET[ntp]#tb_symptomatic' name='form_symptomatic' method='POST'>";
                  
       echo "<input type='hidden' value='$pxid' name='pxid'></input>";
       echo "<input type='hidden' name='confirm_del' value='0'></input>";
       
       echo "<table>";
-      echo "<tr><td>SELECT RECORD TO VIEW</td>";
+      echo "<tr><td class='boxtitle'>SELECT RECORD TO VIEW</td>";
       
-      echo "<td>";      
+      echo "<td class='boxtitle'>";      
       $q_symp_rec = mysql_query("SELECT symptomatic_id,date_format(date_updated,'%Y-%m-%d') as 'symp_date',symptomatic_flag,date_format(date_seen,'%Y-%m-%d') as 'date_seen' FROM m_consult_ntp_symptomatics WHERE patient_id='$pxid' ORDER by 'date_seen' ASC") or die("Cannot query 1115: ".mysql_error());
             
       
@@ -1229,7 +1227,7 @@ class ntp extends module {
       
       echo "</td>";
       
-      echo "<tr><td>PATIENT IS TB SYMPTOMATIC?</td>";
+      echo "<tr><td class='boxtitle'>PATIENT IS TB SYMPTOMATIC?</td>";
       
       if($r_symp[symptomatic_flag]=='N'):
           $n = 'SELECTED';
@@ -1245,34 +1243,34 @@ class ntp extends module {
       echo "</select></td><tr>";
 
       $now = (!empty($r_symp[date_seen])?$r_symp[date_seen]:date('m/d/Y'));
-      echo "<tr><td>Date Patient Seen</td>";
+      echo "<tr><td class='boxtitle'>Date Patient Seen</td>";
       echo "<td><input type='text' name='date_symptomatic' size='8' value='$now'></input>&nbsp;";
       echo "<a href=\"javascript:show_calendar4('document.form_symptomatic.date_symptomatic', document.form_symptomatic.date_symptomatic.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr>";
-      echo "<td colspan='2'>SPUTUM EXAMINATION (before treatment)</td>";
+      echo "<td colspan='2' class='boxtitle'>SPUTUM EXAMINATION (before treatment)</td>";
       echo "</tr>";
       echo "<tr>";
       
-      echo "<tr><td>1st</td><td>";
+      echo "<tr><td class='boxtitle'>1st</td><td>";
       $this->show_sputum_test('sputum_diag1',$pxid,$r_symp[sputum_diag1]);
       echo "</td></tr>";
       
-      echo "<tr><td>2nd</td><td>";
+      echo "<tr><td class='boxtitle'>2nd</td><td>";
       $this->show_sputum_test('sputum_diag2',$pxid,$r_symp[sputum_diag2]);
       echo "</td></tr>";
 
       
       
-      echo "<tr><td>Date Referred for X-Ray</td>";
+      echo "<tr><td class='boxtitle'>Date Referred for X-Ray</td>";
       echo "<td><input type='text' name='date_referred_xray' size='8' value='$xray_refer')></input>&nbsp;";
       echo "<a href=\"javascript:show_calendar4('document.form_symptomatic.date_referred_xray', document.form_symptomatic.date_referred_xray.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr><td>Date X-Ray Received</td>";
+      echo "<tr><td class='boxtitle'>Date X-Ray Received</td>";
       echo "<td><input type='text' name='date_received_xray' size='8' value='$xray_receive'></input>&nbsp;";
       echo "<a href=\"javascript:show_calendar4('document.form_symptomatic.date_received_xray', document.form_symptomatic.date_received_xray.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a></input>";
       echo "</td>";
@@ -1286,7 +1284,7 @@ class ntp extends module {
           $d = '';
       endif;
       
-      echo "<tr><td>X-ray Results</td>";
+      echo "<tr><td class='boxtitle'>X-ray Results</td>";
       echo "<td><select name='xray_result' size='1'>";
       echo "<option value='' $d>Select Result</option>";
       echo "<option value='P' $p>Positive</option>";
@@ -1294,7 +1292,7 @@ class ntp extends module {
       echo "</select></td>";
       echo "</tr>";
       
-      echo "<tr><td>Additional Remarks</td>";
+      echo "<tr><td class='boxtitle'>Additional Remarks</td>";
       echo "<td>";
       echo "<textarea cols='20' rows='5' name='symptomatic_remarks'>$r_symp[remarks]</textarea>";
       echo "</td>";
@@ -1309,7 +1307,7 @@ class ntp extends module {
       endif;
 
 
-      echo "<tr><td>Enroll Patient to NTP?</td>";
+      echo "<tr><td class='boxtitle'>Enroll Patient to NTP?</td>";
       echo "<td>";
       echo "<select name='enroll_flag' size='1'>";
       echo "<option value='' $d>Select</option>";
@@ -1318,7 +1316,7 @@ class ntp extends module {
       echo "</select></td>";
       echo "</tr>";     
       
-      echo "<tr><td>Link to NTP Treatment (if px underwent TX)</td>";
+      echo "<tr><td class='boxtitle'>Link to NTP Treatment (if px underwent TX)</td>";
       echo "<td valign='top'>";
       
       $q_ntp = mysql_query("SELECT ntp_id,date_format(ntp_consult_date,'%m/%d/%Y') as consult_date,intensive_start_date,maintenance_start_date,course_end_flag FROM m_patient_ntp WHERE patient_id='$pxid' ORDER by consult_date DESC") or die("Cannot query: 1132".mysql_error());
@@ -1576,7 +1574,7 @@ class ntp extends module {
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
         print "<a name='intensive_form'>";
         print "<table width='300'>";
-        print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=$menu_id&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=".$get_vars["ntp"]."&ntp_id=".$get_vars["ntp_id"]."' name='form_intensive' method='post'>";
+        print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=$menu_id&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=".$get_vars["ntp"]."&ntp_id=".$get_vars["ntp_id"]."#intensive_form"."' name='form_intensive' method='post'>";
         print "<tr valign='top'><td>";
         print "<input type='hidden' name='patient_id' value='$patient_id'/>";
         print "<b>".FTITLE_NTP_INTAKE_DATA_FORM."</b><br/><br/>";
@@ -1630,7 +1628,7 @@ class ntp extends module {
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
         print "<a name='maintenance_form'>";
         print "<table width='300'>";
-        print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=$menu_id&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=".$get_vars["ntp"]."&ntp_id=".$get_vars["ntp_id"]."' name='form_maintenance' method='post'>";
+        print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=$menu_id&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=".$get_vars["ntp"]."&ntp_id=".$get_vars["ntp_id"]."#maintenance_form"."' name='form_maintenance' method='post'>";
         print "<tr valign='top'><td>";
         print "<input type='hidden' name='patient_id' value='$patient_id'/>";
         print "<b>".FTITLE_NTP_COLLECTION_DATA_FORM."</b><br/><br/>";
@@ -1692,6 +1690,7 @@ class ntp extends module {
         print "<tr valign='top'><td>";
         print "<b>".FTITLE_NTP_LAB_FORM."</b><br/><br/>";
         print "</td></tr>";
+        print "<a name='lab_form'></a>";
         print "<tr valign='top'><td>";
         print "<span class='boxtitle'>".LBL_NTP_REGISTRY_ID."</span><br> ";
         print "REGISTRY ID: <font color='red'>".module::pad_zero($get_vars["ntp_id"],7)."</font><br/>";
