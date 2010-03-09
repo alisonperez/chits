@@ -3338,14 +3338,14 @@ class ntp extends module {
     $q_sputum = mysql_query("SELECT d.request_id, date_format(d.request_timestamp,'%Y-%m-%d') as 'date_request' FROM m_consult_ntp_labs_request b, m_consult_lab d WHERE d.request_id=b.request_id AND d.patient_id='$pxid' AND b.ntp_id='$_GET[ntp_id]' AND d.request_done='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());    
 
     echo "<br><table>";
-    echo "<tr><td colspan='5'>PENDING LAB REQUESTS</td></tr>";    
+    echo "<tr><td colspan='6'>PENDING LAB REQUESTS</td></tr>";    
     
     if(mysql_num_rows($q_sputum)!=0):                
-        echo "<tr><td>#</td><td>Date Requested</td><td>Start of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";
+        echo "<tr><td>#</td><td>Date Requested</td><td>Start of Sputum Exam</td><td>End of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";
 
         while(list($lab_id,$date_request)=mysql_fetch_array($q_sputum)){
-            $q_sputum2 = mysql_query("SELECT date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request2',a.sp1_collection_date,a.lab_diagnosis,c.period_label FROM m_consult_lab_sputum a, m_lib_sputum_period c WHERE a.request_id='$lab_id' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("Cannot query 395 ".mysql_error());
-            list($date_req,$first_sputum,$lab_diagnosis,$period_label) = mysql_fetch_array($q_sputum2);
+            $q_sputum2 = mysql_query("SELECT date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request2',a.sp1_collection_date,a.lab_diagnosis,c.period_label,a.sp3_collection_date FROM m_consult_lab_sputum a, m_lib_sputum_period c WHERE a.request_id='$lab_id' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("Cannot query 395 ".mysql_error());
+            list($date_req,$first_sputum,$lab_diagnosis,$period_label,$third_sputum) = mysql_fetch_array($q_sputum2);
 
             $q_lab = mysql_query("SELECT b.request_id,a.lab_name,a.lab_module FROM m_lib_laboratory a, m_consult_lab b where a.lab_id=b.lab_id AND b.consult_id='$_GET[consult_id]'") or die("Cannot query 3246 ".mysql_error());
             list($request_id,$lab_name, $mod) = mysql_fetch_array($q_lab);
@@ -3354,6 +3354,7 @@ class ntp extends module {
             echo "<td>$lab_id</td>";
             echo "<td>$date_request</td>";
             echo "<td>$first_sputum</td>";
+            echo "<td>$third_sputum</td>";
             echo "<td>$lab_diagnosis</td>";
             echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=$mod&request_id=$lab_id#sputum_form' target='new'>View</a></td>";
             echo "</tr>";
@@ -3379,19 +3380,20 @@ class ntp extends module {
         
         $pxid = healthcenter::get_patient_id($_GET[consult_id]);
         
-        $q_completed = mysql_query("SELECT a.request_id, date_format(a.request_timestamp,'%Y-%m-%d') as 'date_request',date_format(a.done_timestamp,'%Y-%m-%d') as 'date_done',b.lab_diagnosis FROM m_consult_lab a, m_consult_lab_sputum b, m_consult_ntp_labs_request c WHERE a.request_id=b.request_id AND b.request_id=c.request_id AND a.patient_id='$pxid' AND c.ntp_id='$_GET[ntp_id]' AND a.request_done='Y' ORDER by 'date_request' ASC") or die("CAnnot query 3291 ".mysql_error());
+        $q_completed = mysql_query("SELECT a.request_id, date_format(a.request_timestamp,'%Y-%m-%d') as 'date_request',date_format(a.done_timestamp,'%Y-%m-%d') as 'date_done',b.lab_diagnosis,b.sp1_collection_date,b.sp3_collection_date FROM m_consult_lab a, m_consult_lab_sputum b, m_consult_ntp_labs_request c WHERE a.request_id=b.request_id AND b.request_id=c.request_id AND a.patient_id='$pxid' AND c.ntp_id='$_GET[ntp_id]' AND a.request_done='Y' ORDER by 'date_request' ASC") or die("CAnnot query 3291 ".mysql_error());
 
 
         echo "<br><table>";
-        echo "<tr><td colspan='5'>COMPLETED SPUTUM EXAMS</td></tr>";        
+        echo "<tr><td colspan='6'>COMPLETED SPUTUM EXAMS</td></tr>";        
         if(mysql_num_rows($q_completed)!=0):                        
-            echo "<tr><td>#</td><td>Date Requested</td><td>Date Released</td><td>Final Diagnosis</td><td>View Details</td>";        
+            echo "<tr><td>#</td><td>Date Requested</td><td>Start of Sputum Exam</td><td>End of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";        
             
-            while(list($request_id,$date_request,$date_release,$diag) = mysql_fetch_array($q_completed)){
+            while(list($request_id,$date_request,$date_release,$diag,$sp1,$sp3) = mysql_fetch_array($q_completed)){
                 echo "<tr>";
                 echo "<td>$request_id</td>";
                 echo "<td>$date_request</td>";
-                echo "<td>$date_release</td>";
+                echo "<td>$sp1</td>";
+                echo "<td>$sp3</td>";
                 echo "<td>$diag</td>";
                 echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$request_id#sputum_result' target='new'>View</a</td>";
                 echo "</tr>";
