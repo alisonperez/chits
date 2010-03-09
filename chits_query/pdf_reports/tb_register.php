@@ -306,6 +306,7 @@ function show_first(){
             
                 $w = array(21,20,40,9,9,50,40,10,10,40,18,8,13,13,8,8,8,17);    
                 
+                $this->SetFont('Arial','','8');                
                 $this->SetWidths($w);
                 $this->Row(array($date_reg,$ntp_id,$lname.', '.$fname,$edad,$gender,$address.', '.$brgy,$_SESSION[datanode][name],$pub,$pri,$refer_md,$tb_class,$new,$rel,$trans,$rad,$fail,$oth,$tx_cat."\n".' '));
 
@@ -322,7 +323,7 @@ function show_first(){
             
                 $before_diag = $this->get_sputum_result($before_result);
             
-                $before = $before_sp3_date.'/'."\n".$before_diag.'/'.$wt;
+                $before = ($before_sp3_date!='0000-00-00')?$before_sp3_date.'/'."\n".$before_diag.'/'.$wt:'';
                 
                 $q_sputum = mysql_query("SELECT a.consult_id,b.request_id,b.sp3_collection_date,b.sputum_period,b.lab_diagnosis FROM m_consult_ntp_labs_request a, m_consult_lab_sputum b WHERE a.ntp_id='$r_ntp[$x]' AND a.request_id=b.request_id") or die("Cannot query 340".mysql_error());
                 
@@ -364,10 +365,9 @@ function show_first(){
                     }
                     
                 endif;
+                                
                 
-                
-                
-                $this->SetFont('Arial','','8');
+                $this->SetFont('Arial','','7');
                 $this->SetWidths($w);
                 $this->Row(array($intensive_date,$before,$sputum_2nd,$sputum_3rd,$sputum_4th,$sputum_5th,$sputum_6th,$sputum_7th,$cured,$tx_comp,$died,$failed,$defaulted,$timeout,$partner_name,$tbdc,''));
                     

@@ -176,7 +176,7 @@ class ntp extends module {
         module::execsql("insert into m_lib_ntp_treatment_outcome (outcome_id, outcome_name) values ('COMP', 'Treatment Completed')");
         module::execsql("insert into m_lib_ntp_treatment_outcome (outcome_id, outcome_name) values ('DIED', 'Patient Died')");
         module::execsql("insert into m_lib_ntp_treatment_outcome (outcome_id, outcome_name) values ('FAIL', 'Treatment Failure')");
-        module::execsql("insert into m_lib_ntp_treatment_outcome (outcome_id, outcome_name) values ('LOST', 'Lost to Follow-up')");
+        module::execsql("insert into m_lib_ntp_treatment_outcome (outcome_id, outcome_name) values ('LOST', 'Defaulted / Lost to Follow-up')");
         module::execsql("insert into m_lib_ntp_treatment_outcome (outcome_id, outcome_name) values ('TOUT', 'Transfer Out')");
         module::execsql("insert into m_lib_ntp_treatment_outcome (outcome_id, outcome_name) values ('TX', 'Under Treatment')");
 
@@ -188,9 +188,9 @@ class ntp extends module {
             ") TYPE=InnoDB;");
 
         // load initial data
-        module::execsql("INSERT INTO `m_lib_ntp_treatment_category` VALUES ('1','Regimen 1','6SCC (2HRZE/4HR)\nNew case\n1. Smear (+)\n2. Seriously ill:\n2.1 Smear (-); extensive lung lesion; moderately or far advanced radiolographic lesion\n2.2 Extra-pulmonary cases\n');");
-        module::execsql("INSERT INTO `m_lib_ntp_treatment_category` VALUES ('2','Regimen 2','8SCC (2HRZES/1HRZE/5HRE)\n1. Relapse\n2. Faliures\n3. Others');");
-        module::execsql("INSERT INTO `m_lib_ntp_treatment_category` VALUES ('3','Regimen 3','4SCC (2HRZ/2HR)\n1. New case: smear(-) PTB Minimal');");
+        module::execsql("INSERT INTO `m_lib_ntp_treatment_category` VALUES ('1','Category 1','6SCC (2HRZE/4HR)\nNew case\n1. Smear (+)\n2. Seriously ill:\n2.1 Smear (-); extensive lung lesion; moderately or far advanced radiolographic lesion\n2.2 Extra-pulmonary cases\n');");
+        module::execsql("INSERT INTO `m_lib_ntp_treatment_category` VALUES ('2','Category 2','8SCC (2HRZES/1HRZE/5HRE)\n1. Relapse\n2. Faliures\n3. Others');");
+        module::execsql("INSERT INTO `m_lib_ntp_treatment_category` VALUES ('3','Category 3','4SCC (2HRZ/2HR)\n1. New case: smear(-) PTB Minimal');");
 
         // tb_class: P=pulmonary E=extrapulmonary
         module::execsql("CREATE TABLE `m_patient_ntp` (".
