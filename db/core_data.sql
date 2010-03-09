@@ -1127,6 +1127,7 @@ INSERT INTO `m_lib_sputum_period` (`period_code`, `period_label`) VALUES
 ('E03', 'End of 3rd Month'),
 ('E04', 'End of 4th Month'),
 ('E05', 'End of 5th Month'),
+('E06', 'End of 6th month'),
 ('7M', 'After 7th Month');
 
 

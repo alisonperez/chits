@@ -209,14 +209,177 @@ function q_report_header(){
 }
 
 function show_first(){
+    $r_patient = $_SESSION[ntp_px];
+    $r_ntp = $_SESSION[ntp_id];
     
-    //$q_mysql = mysql_query("SELECT patient_id FROM ") or die("Cannot query 212 ".mysql_error());
+    
+    for($x=0;$x<count($r_ntp);$x++){
+        $w = array(21,20,40,9,9,50,40,10,10,40,18,8,13,13,8,8,8,17);
+        $pub = $pri = $new = $relapse = $trans = $rad = $fail = $oth = "";
+        $cured = $tx_comp = $died = $failed = $defaulted = $timeout = "";
+        
+        $q_mysql = mysql_query("SELECT date_format(ntp_consult_date,'%Y-%m-%d') as 'date_reg',ntp_id,intensive_start_date,TO_DAYS(intensive_start_date) as 'intensive_days',tb_class,patient_type_id,treatment_category_id,outcome_id,source_patient,refer_physician,tbdc_review,treatment_partner_id FROM m_patient_ntp WHERE ntp_id='$r_ntp[$x]'") or die("Cannot query 212 ".mysql_error());
+        
+        if(mysql_num_rows($q_mysql)!=0):            
+            list($date_reg,$ntp_id,$intensive_date,$intensive_start_day,$tb_class,$pxtype,$tx_cat,$outcome,$source,$refer_md,$tbdc,$tx_partner) = mysql_fetch_array($q_mysql);
+            $q_px = mysql_query("SELECT patient_lastname, patient_firstname, TO_DAYS(patient_dob) as 'bday',patient_gender FROM m_patient WHERE patient_id='$r_patient[$x]'") or die("Cannot query 221 ".mysql_error());
+            list($lname,$fname,$bday_days,$gender) = mysql_fetch_array($q_px);
+            
+            $q_brgy = mysql_query("SELECT b.address,c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$r_patient[$x]' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 224 ".mysql_error());
+            list($address,$brgy) = mysql_fetch_array($q_brgy);
+            
+            $edad = ($intensive_start_day-$bday_days)/365;
+            $edad = ($edad < 1)?round($edad,1):floor($edad);
+            
+            switch($source){            
+                case 'Public':
+                    $pub = '/';
+                    break;
+                case 'Private':
+                    $pri = '/';
+                    break;
+                default:
+                    $pub = $pri = '';
+                    break;  
+            }
+            
+                    
+            switch($pxtype){
+                case 'FAIL':
+                    $fail = '/';
+                    break;
+                case 'NEW':
+                    $new = '/';
+                    break;
+                case 'OTH':
+                    $oth = '/';
+                    break;
+                case 'RAD':
+                    $rad = '/';
+                    break;
+                case 'REL':
+                    $rel = '/';
+                    break;
+                case 'TIN':
+                    $trans = '/';
+                    break;
+                default:                
+                    break;                
+            }
+            
+            
+            switch($outcome){                    
+                    case 'COMP':
+                        $tx_comp = '/';
+                        break;
+                        
+                    case 'CURE':
+                        $cured = '/';
+                        break;
+                        
+                    case 'DIED':
+                        $died = '/';
+                        break;
+                        
+                    case 'FAIL':
+                        $fail = '/';
+                        break;
+                    
+                    case 'LOST':
+                        $defaulted = '/';
+                        break;
+                        
+                    case 'TOUT':                    
+                        $timeout = '/';
+                        break;
+                    
+                    case 'TX':
+                        $under_tx = '/';
+                        break;
+                                        
+                    default:                        
+                        break;                                        
+                }            
+            
+            
+            if($_SESSION[pahina]==1):
+            
+                $w = array(21,20,40,9,9,50,40,10,10,40,18,8,13,13,8,8,8,17);    
+                
+                $this->SetWidths($w);
+                $this->Row(array($date_reg,$ntp_id,$lname.', '.$fname,$edad,$gender,$address.', '.$brgy,$_SESSION[datanode][name],$pub,$pri,$refer_md,$tb_class,$new,$rel,$trans,$rad,$fail,$oth,$tx_cat."\n".' '));
+
+            elseif($_SESSION[pahina]==2):
+                $w = array(25,23,23,23,23,23,23,23,15,15,15,15,15,15,20,20,20);
+                //$cured = $tx_comp = $died = $failed = $defaulted = $timeout = $under_tx = "";
+                $q_txpartner = mysql_query("SELECT partner_name FROM m_lib_ntp_treatment_partner WHERE partner_id='$tx_partner'") or die("Cannot query 314".mysql_error());
+                list($partner_name) = mysql_fetch_array($q_txpartner);
+                
+                $q_before_tx = mysql_query("SELECT a.sputum_diag1,b.sp3_collection_date,b.consult_id,b.lab_diagnosis FROM m_consult_ntp_symptomatics a, m_consult_lab_sputum b WHERE a.ntp_id='$r_ntp[$x]' AND a.sputum_diag1=b.request_id") or die("Cannot query 317: ".mysql_error());
+                list($sputum_diag,$before_sp3_date,$consult_id,$before_result) = mysql_fetch_array($q_before_tx);
+                    
+                $wt = $this->get_weight($consult_id);                                            
+            
+                $before_diag = $this->get_sputum_result($before_result);
+            
+                $before = $before_sp3_date.'/'."\n".$before_diag.'/'.$wt;
+                
+                $q_sputum = mysql_query("SELECT a.consult_id,b.request_id,b.sp3_collection_date,b.sputum_period,b.lab_diagnosis FROM m_consult_ntp_labs_request a, m_consult_lab_sputum b WHERE a.ntp_id='$r_ntp[$x]' AND a.request_id=b.request_id") or die("Cannot query 340".mysql_error());
+                
+                if(mysql_num_rows($q_sputum)!=0):                                        
+                    
+                    while(list($consult_id,$request_id,$sp3,$sputum_period,$result)=mysql_fetch_array($q_sputum)){                        
+                       $wt2 = $this->get_weight($consult_id);
+                       $result = $this->get_sputum_result($result);
+                       switch($sputum_period){
+                           case 'E02':                               
+                               $sputum_2nd = $sp3.'/'.$result.'/'.$wt2;
+                               break;
+                               
+                           case 'E03':
+                               $sputum_3rd = $sp3.'/'.$result.'/'.$wt2;
+                               break;
+                               
+                           case 'E04':
+                               $sputum_4th = $sp3.'/'.$result.'/'.$wt2;                               
+                               break;
+                               
+                           case 'E05':
+                               $sputum_5th = $sp3.'/'.$result.'/'.$wt2;                                                          
+                               break;
+                               
+                           case 'E06':
+                               $sputum_6th = $sp3.'/'.$result.'/'.$wt2;                                                                                      
+                                break;
+                                
+                           case '7M':
+                               $sputum_7th = $sp3.'/'.$result.'/'.$wt2;                                                                                                                 
+                               break;
+                           
+                           default:
+                               $sputum_2nd = $sputum_3rd = $sputum_4th = $sputum_5th = $sputum_6th = $sputum_7th = '';
+                               break;
+                       
+                       }
+                    }
+                    
+                endif;
+                
+                
+                
+                $this->SetFont('Arial','','8');
+                $this->SetWidths($w);
+                $this->Row(array($intensive_date,$before,$sputum_2nd,$sputum_3rd,$sputum_4th,$sputum_5th,$sputum_6th,$sputum_7th,$cured,$tx_comp,$died,$failed,$defaulted,$timeout,$partner_name,$tbdc,''));
+                    
+            else:
+                
+            endif;
+            
+        endif;
+    }
 }
 
 
-function show_second(){
-
-}
 
 function show_header_freq($freq,$freq_val){
     if($_SESSION[ques]==73):
@@ -310,7 +473,34 @@ function get_px_brgy(){
         endif; 
 }
 
+function get_sputum_result($diag){
 
+    switch($diag){
+        case 'P':
+            $diag = 'Positive';
+            break;
+                        
+        case 'N':
+            $diag = 'Negative';
+            break;
+                        
+        case 'D':
+            $diag = 'Doubtful';
+            break;
+                        
+        default:                    
+            $diag = '';
+            break;                
+    }
+    
+    return $diag;
+}
+
+function get_weight($consult_id){
+    $q_weight = mysql_query("SELECT vitals_weight FROM m_consult_vitals WHERE consult_id='$consult_id'") or die("Cannot query 320".mysql_error());
+    list($wt) = mysql_fetch_array($q_weight);
+    return $wt;
+}
 
 function Footer(){
     $this->SetY(-15);
@@ -329,7 +519,10 @@ $pdf = new PDF('L','mm','Legal');
 $pdf->AliasNbPages();
 $pdf->SetFont('Arial','',10);
 $pdf->AddPage();
-$_SESSION[pahina]==1?$pdf->show_first():$pdf->show_second();
+
+$pdf->show_first();
+
+//$_SESSION[pahina]==1?$pdf->show_first():$pdf->show_first();
 $pdf->Output();
 
 ?>

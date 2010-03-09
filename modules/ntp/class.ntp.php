@@ -1099,10 +1099,22 @@ class ntp extends module {
         
         case "Import Sputum Test":
 	    //print_r($_POST);
-	    $pxid = healthcenter::get_patient_id($_GET["consult_id"]);
-
-	    $q_import = mysql_query("INSERT into m_consult_ntp_labs_request SET consult_id='$_GET[consult_id]',patient_id='$pxid',ntp_id='$_GET[ntp_id]',request_id='$_POST[sel_import_ntp]',user_id='$_SESSION[userid]',request_timestamp='NOW()'") or die("Cannot query 1080 ".mysql_error());
-	    
+            if($_POST[sel_import_ntp]!=''):
+	        $pxid = healthcenter::get_patient_id($_GET["consult_id"]);
+	        $q_import = mysql_query("INSERT into m_consult_ntp_labs_request SET consult_id='$_GET[consult_id]',patient_id='$pxid',ntp_id='$_GET[ntp_id]',request_id='$_POST[sel_import_ntp]',user_id='$_SESSION[userid]',request_timestamp='NOW()'") or die("Cannot query 1080 ".mysql_error());
+	        
+	        if($q_import):
+	            echo "<script language='Javascript'>";
+	            echo "window.alert('Sputum exam was successfully imported! Please check the tables below.')";	            	            
+	            echo "</script>";
+	        endif;
+            
+            else:                
+                echo "<script language='Javascript'>";
+                echo "window.alert('No sputum exam was imported.')";	            	            
+                echo "</script>";	        
+	    endif;	        
+            
             break;
         
         case "Print Referral":
@@ -3329,7 +3341,7 @@ class ntp extends module {
     echo "<tr><td colspan='5'>PENDING LAB REQUESTS</td></tr>";    
     
     if(mysql_num_rows($q_sputum)!=0):                
-        echo "<tr><td>Date Requested</td><td>Start of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";
+        echo "<tr><td>#</td><td>Date Requested</td><td>Start of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";
 
         while(list($lab_id,$date_request)=mysql_fetch_array($q_sputum)){
             $q_sputum2 = mysql_query("SELECT date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request2',a.sp1_collection_date,a.lab_diagnosis,c.period_label FROM m_consult_lab_sputum a, m_lib_sputum_period c WHERE a.request_id='$lab_id' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("Cannot query 395 ".mysql_error());
@@ -3339,6 +3351,7 @@ class ntp extends module {
             list($request_id,$lab_name, $mod) = mysql_fetch_array($q_lab);
             
             echo "<tr align='center'>";
+            echo "<td>$lab_id</td>";
             echo "<td>$date_request</td>";
             echo "<td>$first_sputum</td>";
             echo "<td>$lab_diagnosis</td>";
@@ -3372,10 +3385,11 @@ class ntp extends module {
         echo "<br><table>";
         echo "<tr><td colspan='5'>COMPLETED SPUTUM EXAMS</td></tr>";        
         if(mysql_num_rows($q_completed)!=0):                        
-            echo "<tr><td>Date Requested</td><td>Date Released</td><td>Final Diagnosis</td><td>View Details</td>";        
+            echo "<tr><td>#</td><td>Date Requested</td><td>Date Released</td><td>Final Diagnosis</td><td>View Details</td>";        
             
             while(list($request_id,$date_request,$date_release,$diag) = mysql_fetch_array($q_completed)){
                 echo "<tr>";
+                echo "<td>$request_id</td>";
                 echo "<td>$date_request</td>";
                 echo "<td>$date_release</td>";
                 echo "<td>$diag</td>";
@@ -3407,13 +3421,19 @@ class ntp extends module {
             echo "<tr><td colspan='5'>DSSM EXAM BEFORE TREATMENT</td></tr>";
             echo "<tr><td></td><td>1st</td><td>2nd</td><td>3rd</td><td>Result</td><td>View Details</td></tr>";
             
+            if(!empty($first1)):
+            
             echo "<tr>";
             echo "<td>1</td>";
             echo "<td>$first1</td>";
             echo "<td>$sec1</td>";            
             echo "<td>$last1</td>";                                    
             echo "<td>$diag1</td>";            
-            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$sputum1#$ref1' target='new'>View</a</td>";
+            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$sputum1#$ref1' target='new'>View</a</td></tr>";
+            
+            endif;
+            
+            if(!empty($first2)):
             
             echo "<tr>";
             echo "<td>2</td>";
@@ -3421,8 +3441,10 @@ class ntp extends module {
             echo "<td>$sec2</td>";            
             echo "<td>$last2</td>";                                    
             echo "<td>$diag2</td>";            
-            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$sputum2#$ref2' target='new'>View</a</td>";
+            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$sputum2#$ref2' target='new'>View</a</td></tr>";
             echo "</table><br>";
+            
+            endif;
         
         else:
             echo "<br><font color='red'>No DSSM Before Treatment Recorded or the DSSM is not yet tagged to the NTP treatment in TB Symptomatic menu.</font><br>";
@@ -3442,25 +3464,27 @@ class ntp extends module {
         $pxid = healthcenter::get_patient_id($_GET["consult_id"]);
         
         $q_ntp = mysql_query("SELECT request_id,sp1_collection_date,sp2_collection_date,sp3_collection_date,sp1_reading,sp2_reading,sp3_reading FROM m_consult_lab_sputum WHERE patient_id='$pxid' ORDER by sp1_collection_date DESC") or die("Cannot query: 3366 ".mysql_error());
+        //$q_ntp = mysql_query("SELECT DISTINCT a.request_id,a.sp1_collection_date,a.sp2_collection_date,a.sp3_collection_date,a.sp1_reading,a.sp2_reading,a.sp3_reading FROM m_consult_lab_sputum a, m_consult_ntp_labs_request b WHERE a.patient_id='$pxid' AND a.request_id<>b.request_id ORDER by sp1_collection_date DESC") or die("Cannot query: 3366 ".mysql_error());                
         
-        if(mysql_num_rows($q_ntp)!=0):
+        if(mysql_num_rows($q_ntp)!=0):                                                                      
+            
 	    echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&ntp=$_GET[ntp]&ntp_id=$_GET[ntp_id]' method='POST'>";
             echo "<p>The following are sputum tests done for the patient yet need to be imported</p>";
-            
-            echo "<select name='sel_import_ntp' size='1'>";
-            
-            while(list($request_id,$sp1,$sp2,$sp3,$sp1_read,$sp2_read,$sp3_read)=mysql_fetch_array($q_ntp)){
-                //echo $request_id.'<br>';
-                                
+                        
+            echo "<select name='sel_import_ntp' size='1'>";            
+            echo "<option value=''>Select Sputum Test</option>";    
+            while(list($request_id,$sp1,$sp2,$sp3,$sp1_read,$sp2_read,$sp3_read)=mysql_fetch_array($q_ntp)){            
+                            
                 $q_ntp_req = mysql_query("SELECT ntp_id, request_id FROM m_consult_ntp_labs_request WHERE request_id ='$request_id'") or die("Cannot query 3373: ".mysql_error());
-                                
-                if(mysql_num_rows($q_ntp_req)==0):
-		    $q_symp = mysql_query("SELECT symptomatic_id FROM m_consult_ntp_symptomatics WHERE sputum_diag1='$request_id' OR sputum_diag2='$request_id' AND patient_id='$pxid'") or die("Cannot query 3393 ".mysql_error());
-
-		    if(mysql_num_rows($q_symp)==0):
-                    	echo "<option value='$request_id'>(1)$sp1($sp1_read), (2)$sp2($sp2_read), (3)$sp3($sp3_read)</option>";
+            
+                if(mysql_num_rows($q_ntp_req)==0):                    
+		    $q_symp = mysql_query("SELECT symptomatic_id FROM m_consult_ntp_symptomatics WHERE sputum_diag1='$request_id' AND patient_id='$pxid'") or die("Cannot query 3393 ".mysql_error());
+		    $q_symp2 = mysql_query("SELECT symptomatic_id FROM m_consult_ntp_symptomatics WHERE sputum_diag2='$request_id' AND patient_id='$pxid'") or die("Cannot query 3393 ".mysql_error());		    
+		    
+		    if((mysql_num_rows($q_symp)==0) && (mysql_num_rows($q_symp2)==0)):		        
+                    	echo "<option value='$request_id'>(1)$sp1($sp1_read), (2)$sp2($sp2_read), (3)$sp3($sp3_read)</option>";                    	
 		    endif;		
-                endif;
+               endif;
             }
             
             echo "</select>";
@@ -3468,7 +3492,7 @@ class ntp extends module {
 	    echo "</form>";
             echo "<br>";
         else:
-        
+            
         endif;                
     }
         

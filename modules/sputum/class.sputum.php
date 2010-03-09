@@ -133,7 +133,7 @@ class sputum extends module {
             
         module::execsql("INSERT INTO `m_lib_sputum_period` (`period_code`, `period_label`) VALUES
         ('DX', 'Before Treatment'),('E02', 'End of 2nd Month'),('E03', 'End of 3rd Month'),('E04', 'End of 4th Month'),
-        ('E05', 'End of 5th Month'),('7M', 'After 7th Month');");
+        ('E05', 'End of 5th Month'),('E06', 'End of 6th Month'),('7M', 'After 7th Month');");
 
     }
 
