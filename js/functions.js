@@ -115,6 +115,12 @@ function delete_symp(){
         if(window.confirm('Do you really want to delete this TB Symptomatic record?')){
                 form_symptomatic.confirm_del.value = 1;
                 form_symptomatic.submit();                
+        }        
+}
+
+function delete_sputum(){
+        if(window.confirm('Do you really want to remove this TB Sputum record from this table?')){        
+                window.alert('Viva Espana!');
         }
-        
+
 }

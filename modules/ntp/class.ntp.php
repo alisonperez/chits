@@ -3339,12 +3339,16 @@ class ntp extends module {
 
     echo "<br><table>";
     echo "<tr><td colspan='6'>PENDING LAB REQUESTS</td></tr>";    
-    
+    echo "<a name='pending'></a>";
     if(mysql_num_rows($q_sputum)!=0):                
         echo "<tr><td>#</td><td>Date Requested</td><td>Start of Sputum Exam</td><td>End of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";
 
         while(list($lab_id,$date_request)=mysql_fetch_array($q_sputum)){
-            $q_sputum2 = mysql_query("SELECT date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request2',a.sp1_collection_date,a.lab_diagnosis,c.period_label,a.sp3_collection_date FROM m_consult_lab_sputum a, m_lib_sputum_period c WHERE a.request_id='$lab_id' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("Cannot query 395 ".mysql_error());
+            //$q_sputum2 = mysql_query("SELECT date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request2',a.sp1_collection_date,a.lab_diagnosis,c.period_label,a.sp3_collection_date FROM m_consult_lab_sputum a, m_lib_sputum_period c WHERE a.request_id='$lab_id' AND a.sputum_period=c.period_code AND a.release_flag='N' ORDER by 'date_request' ASC") or die("Cannot query 395 ".mysql_error());
+            
+            $q_sputum2 = mysql_query("SELECT date_format('%Y-%m-%d',a.lab_timestamp) as 'date_request2',a.sp1_collection_date,a.lab_diagnosis,c.period_label,a.sp3_collection_date FROM m_consult_lab_sputum a, m_lib_sputum_period c WHERE a.request_id='$lab_id' AND a.release_flag='N' ORDER by 'date_request' ASC") or die("Cannot query 395 ".mysql_error());
+                        
+            
             list($date_req,$first_sputum,$lab_diagnosis,$period_label,$third_sputum) = mysql_fetch_array($q_sputum2);
 
             $q_lab = mysql_query("SELECT b.request_id,a.lab_name,a.lab_module FROM m_lib_laboratory a, m_consult_lab b where a.lab_id=b.lab_id AND b.consult_id='$_GET[consult_id]'") or die("Cannot query 3246 ".mysql_error());
@@ -3356,8 +3360,25 @@ class ntp extends module {
             echo "<td>$first_sputum</td>";
             echo "<td>$third_sputum</td>";
             echo "<td>$lab_diagnosis</td>";
-            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=$mod&request_id=$lab_id#sputum_form' target='new'>View</a></td>";
+            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=$mod&request_id=$lab_id#sputum_form' target='new'>View</a>&nbsp;";
+            echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=DETAILS&module=ntp&request_id=$lab_id&ntp=LABS&ntp_id=$_GET[ntp_id]&action=delete&table=pending#pending' onclick=''>Delete</a></td>";
             echo "</tr>";
+            
+            
+            if($_GET[action]=='delete' && $_GET[table]=='pending'):
+                
+                if($_GET[delete]=='y'):
+                    $this->remove_sputum_request($_GET[request_id],'pending');                    
+                else:
+                    echo "<tr><td colspan='6'>";
+                    echo "<font color='red'>Are you sure you wanted to remove record from this table? </font>";
+                    echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=DETAILS&module=ntp&request_id=$lab_id&ntp=LABS&ntp_id=$_GET[ntp_id]&action=delete&table=pending&delete=y#pending''>Yes</a>&nbsp;&nbsp;";
+                    echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=DETAILS&module=ntp&request_id=$lab_id&ntp=LABS&ntp_id=$_GET[ntp_id]#pending''>No</a>";                                        
+                    echo "</td>";
+                    echo "</tr>";
+                endif;
+            endif;
+
         }
         
     else:
@@ -3382,9 +3403,12 @@ class ntp extends module {
         
         $q_completed = mysql_query("SELECT a.request_id, date_format(a.request_timestamp,'%Y-%m-%d') as 'date_request',date_format(a.done_timestamp,'%Y-%m-%d') as 'date_done',b.lab_diagnosis,b.sp1_collection_date,b.sp3_collection_date FROM m_consult_lab a, m_consult_lab_sputum b, m_consult_ntp_labs_request c WHERE a.request_id=b.request_id AND b.request_id=c.request_id AND a.patient_id='$pxid' AND c.ntp_id='$_GET[ntp_id]' AND a.request_done='Y' ORDER by 'date_request' ASC") or die("CAnnot query 3291 ".mysql_error());
 
-
+        if($_GET[action]=='delete'):
+        
+        endif;
         echo "<br><table>";
         echo "<tr><td colspan='6'>COMPLETED SPUTUM EXAMS</td></tr>";        
+        echo "<a name='completed'></a>";
         if(mysql_num_rows($q_completed)!=0):                        
             echo "<tr><td>#</td><td>Date Requested</td><td>Start of Sputum Exam</td><td>End of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";        
             
@@ -3395,8 +3419,25 @@ class ntp extends module {
                 echo "<td>$sp1</td>";
                 echo "<td>$sp3</td>";
                 echo "<td>$diag</td>";
-                echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$request_id#sputum_result' target='new'>View</a</td>";
+                echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$request_id#sputum_result' target='new'>View</a>&nbsp;";
+                echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=DETAILS&module=ntp&request_id=$request_id&ntp=LABS&ntp_id=$_GET[ntp_id]&action=delete&table=completed#completed'>Delete</a><br>";                                
+                echo "</td>";
                 echo "</tr>";
+
+                                
+                if($_GET[action]=='delete' && $_GET[table]=='completed'):
+                    if($_GET[delete]=='y'):
+                        $this->remove_sputum_request($_GET[request_id],'completed');                    
+                    else:
+                        echo "<tr><td colspan='6'>";
+                        echo "<font color='red'>Are you sure you wanted to remove record from this table? </font>";
+                        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=DETAILS&module=ntp&request_id=$request_id&ntp=LABS&ntp_id=$_GET[ntp_id]&action=delete&table=completed&delete=y#completed''>Yes</a>&nbsp;&nbsp;";
+                        echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=DETAILS&module=ntp&request_id=$request_id&ntp=LABS&ntp_id=$_GET[ntp_id]#completed''>No</a>";                                        
+                        echo "</td>";
+                        echo "</tr>";
+                    endif;
+                endif;
+                
             }
         else:
             echo "<tr><td>No completed sputum exam yet</td></tr>";  
@@ -3496,6 +3537,21 @@ class ntp extends module {
         else:
             
         endif;                
+    }
+    
+    
+    function remove_sputum_request($lab_id,$source_table){
+        
+        
+        $delete_request_sputum = mysql_query("DELETE FROM m_consult_ntp_labs_request WHERE request_id='$lab_id'") or die("Cannot query 3531".mysql_error());
+        if($delete_request_sputum):
+            echo "<script language='Javascript'>";
+            echo "window.alert('The sputum exam was removed. You may IMPORT it again from the form above if needed.')";            
+            echo "</script>";            
+        endif;
+        
+        header("location: $_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=DETAILS&module=ntp&request_id=$request_id&ntp=LABS&ntp_id=$_GET[ntp_id]#$source_table");
+        
     }
         
 // end of class
