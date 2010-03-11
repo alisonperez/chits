@@ -1206,7 +1206,10 @@ class ntp extends module {
       echo "<input type='hidden' value='$pxid' name='pxid'></input>";
       echo "<input type='hidden' name='confirm_del' value='0'></input>";
       
-      echo "<table>";
+      echo "<table bgcolor='#5CB3FF'>";
+      print "<tr valign='top' class='tb_table_header'><td colspan='2'>";
+      print "<b>TB SYMPTOMATIC DATA ENTRY FORM</b>";
+      print "</td></tr>";
       echo "<tr><td class='boxtitle'>SELECT RECORD TO VIEW</td>";
       
       echo "<td class='boxtitle'>";      
@@ -1405,10 +1408,10 @@ class ntp extends module {
             }
         }
         print "<a name='visit1_form'>";
-        print "<table width='300'>";
+        print "<table width='300' bgcolor='#5CB3FF'>";
         print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=$menu_id&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=VISIT1&ntp_id=".$get_vars["ntp_id"]."#prevtx' name='form_ntp_visit1' method='post'>";
-        print "<tr valign='top'><td>";
-        print "<b>".FTITLE_NTP_VISIT1_DATA."</b><br/><br/>";
+        print "<tr valign='top' class='tb_table_header'><td>";
+        print "<b>".FTITLE_NTP_VISIT1_DATA."</b>";
         print "</td></tr>";
         print "<tr valign='top'><td>";
         print "<span class='tinylight'>".INSTR_NTP_VISIT1_DATA."</span><br/><br/>";
@@ -1573,11 +1576,11 @@ class ntp extends module {
         }
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
         print "<a name='intensive_form'>";
-        print "<table width='300'>";
+        print "<table width='300' bgcolor='#5CB3FF'>";
         print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=$menu_id&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=".$get_vars["ntp"]."&ntp_id=".$get_vars["ntp_id"]."#intensive_form"."' name='form_intensive' method='post'>";
-        print "<tr valign='top'><td>";
+        print "<tr valign='top' class='tb_table_header'><td>";
         print "<input type='hidden' name='patient_id' value='$patient_id'/>";
-        print "<b>".FTITLE_NTP_INTAKE_DATA_FORM."</b><br/><br/>";
+        print "<b>".FTITLE_NTP_INTAKE_DATA_FORM."</b>";
         print "</td></tr>";
         print "<tr valign='top'><td>";
         print "<font color='red'><b>".LBL_INTENSIVE_PHASE."</b></font><br/><br/>";
@@ -1627,11 +1630,11 @@ class ntp extends module {
         }
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
         print "<a name='maintenance_form'>";
-        print "<table width='300'>";
+        print "<table width='300' bgcolor='#5CB3FF'>";
         print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=$menu_id&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=".$get_vars["ntp"]."&ntp_id=".$get_vars["ntp_id"]."#maintenance_form"."' name='form_maintenance' method='post'>";
-        print "<tr valign='top'><td>";
+        print "<tr valign='top' class='tb_table_header'><td>";
         print "<input type='hidden' name='patient_id' value='$patient_id'/>";
-        print "<b>".FTITLE_NTP_COLLECTION_DATA_FORM."</b><br/><br/>";
+        print "<b>".FTITLE_NTP_COLLECTION_DATA_FORM."</b>";
         print "</td></tr>";
         print "<tr valign='top'><td>";
         print "<font color='red'><b>".LBL_MAINTENANCE_PHASE."</b></font><br/><br/>";
@@ -1685,10 +1688,10 @@ class ntp extends module {
             //print_r($arg_list);
         }
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
-        print "<table width='300'>";
+        print "<table width='300' bgcolor='#5CB3FF'>";
         print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=$menu_id&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&ntp=LABS&ntp_id=".$get_vars["ntp_id"]."' name='form_vitalsigns' method='post'>";
-        print "<tr valign='top'><td>";
-        print "<b>".FTITLE_NTP_LAB_FORM."</b><br/><br/>";
+        print "<tr valign='top'><td class='tb_table_header'>";
+        print "<b>".FTITLE_NTP_LAB_FORM."</b>";
         print "</td></tr>";
         print "<a name='lab_form'></a>";
         print "<tr valign='top'><td>";
@@ -3336,8 +3339,8 @@ class ntp extends module {
 
     $q_sputum = mysql_query("SELECT d.request_id, date_format(d.request_timestamp,'%Y-%m-%d') as 'date_request' FROM m_consult_ntp_labs_request b, m_consult_lab d WHERE d.request_id=b.request_id AND d.patient_id='$pxid' AND b.ntp_id='$_GET[ntp_id]' AND d.request_done='N' ORDER by 'date_request' ASC") or die("CAnnot query 395 ".mysql_error());    
 
-    echo "<br><table>";
-    echo "<tr><td colspan='6'>PENDING LAB REQUESTS</td></tr>";    
+    echo "<br><table bgcolor='#5CB3FF'>";
+    echo "<tr class='tb_table_header'><td colspan='6'><b>PENDING LAB REQUESTS</b></td></tr>";    
     echo "<a name='pending'></a>";
     if(mysql_num_rows($q_sputum)!=0):                
         echo "<tr><td>#</td><td>Date Requested</td><td>Start of Sputum Exam</td><td>End of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";
@@ -3405,8 +3408,8 @@ class ntp extends module {
         if($_GET[action]=='delete'):
         
         endif;
-        echo "<br><table>";
-        echo "<tr><td colspan='6'>COMPLETED SPUTUM EXAMS</td></tr>";        
+        echo "<br><table bgcolor='#5CB3FF'>";
+        echo "<tr class='tb_table_header'><td colspan='6'><b>COMPLETED SPUTUM EXAMS</b></td></tr>";        
         echo "<a name='completed'></a>";
         if(mysql_num_rows($q_completed)!=0):                        
             echo "<tr><td>#</td><td>Date Requested</td><td>Start of Sputum Exam</td><td>End of Sputum Exam</td><td>Final Diagnosis</td><td>View Details</td>";        
@@ -3459,12 +3462,13 @@ class ntp extends module {
             list($first2,$sec2,$last2,$diag2,$rel2) = mysql_fetch_array($q_sputum2);                        
             $ref2 = ($rel2=='Y')?'sputum_result':'sputum_form';
 
-            echo "<br><table>";
-            echo "<tr><td colspan='5'>DSSM EXAM BEFORE TREATMENT</td></tr>";
-            echo "<tr><td></td><td>1st</td><td>2nd</td><td>3rd</td><td>Result</td><td>View Details</td></tr>";
+            echo "<br><table bgcolor='#5CB3FF'>";
+            echo "<tr align='center' class='tb_table_header'><td colspan='5'><b>DSSM EXAM BEFORE TREATMENT</b></td></tr>";
+            
             
             if(!empty($first1)):
             
+            echo "<tr><td></td><td>1st</td><td>2nd</td><td>3rd</td><td>Result</td><td>View Details</td></tr>";            
             echo "<tr>";
             echo "<td>1</td>";
             echo "<td>$first1</td>";
@@ -3483,10 +3487,10 @@ class ntp extends module {
             echo "<td>$sec2</td>";            
             echo "<td>$last2</td>";                                    
             echo "<td>$diag2</td>";            
-            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$sputum2#$ref2' target='new'>View</a</td></tr>";
-            echo "</table><br>";
-            
+            echo "<td><a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=sputum&request_id=$sputum2#$ref2' target='new'>View</a</td></tr>";                        
             endif;
+            
+            echo "</table>";
         
         else:
             echo "<br><font color='red'>No DSSM Before Treatment Recorded or the DSSM is not yet tagged to the NTP treatment in TB Symptomatic menu.</font><br>";
@@ -3511,7 +3515,9 @@ class ntp extends module {
         if(mysql_num_rows($q_ntp)!=0):                                                                      
             
 	    echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&ntp=$_GET[ntp]&ntp_id=$_GET[ntp_id]' method='POST'>";
-            echo "<p>The following are sputum tests done for the patient yet need to be imported</p>";
+	    echo "<table bgcolor='#5CB3FF'><tr><td class='tb_table_header'><b>IMPORT SPUTUM TEST</b></td></tr>";
+	    echo "<tr><td>";
+            echo "<p class='boxtitle'>The following are sputum tests done for the patient yet need to be imported</p>";
                         
             echo "<select name='sel_import_ntp' size='1'>";            
             echo "<option value=''>Select Sputum Test</option>";    
@@ -3532,6 +3538,8 @@ class ntp extends module {
             echo "</select>";
             echo "<input type='submit' name='submitntp' value='Import Sputum Test' style='border: 1px solid #000000'></input>";
 	    echo "</form>";
+	    echo "</td></tr>";
+	    echo "</table>";
             echo "<br>";
         else:
             

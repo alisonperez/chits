@@ -125,6 +125,7 @@ small { font-family: verdana, sans serif}
 .patient { font-family: verdana, arial, sans serif; font-size: 14pt; font-weight: bold; color: #99CC66; }
 .newstitle { font-family: verdana, arial, sans serif; font-size: 12pt; font-weight: bold; color: #666699; }
 .newsbody { font-family: Georgia, Times New Roman, Serif; font-size: 12pt; font-weight: normal; color: black; }
+.tb_table_header { background-color: #15317E; color: white; text-align: center; }
 -->
 </style>
 </head>
