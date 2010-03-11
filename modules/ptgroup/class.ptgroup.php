@@ -189,9 +189,14 @@ class ptgroup extends module {
             $arg_list = func_get_args();
             $age = $arg_list[0];
             $gender = $arg_list[1];
-        }
+        }     
+        
+        
+            
         $sql = "select ptgroup_id, ptgroup_name, ptgroup_condition ".
                "from m_lib_ptgroup order by ptgroup_name";
+                       
+                
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
                 while(list($id, $name, $cond) = mysql_fetch_array($result)) {
@@ -204,7 +209,7 @@ class ptgroup extends module {
                             if (ptgroup::is_child($age)) {
                                 print "<input type='checkbox' name='ptgroup[]' value='$id'> $name<br/>";
                             }
-                        }
+                        }                                                
                     } else {
                         print "<input type='checkbox' name='ptgroup[]' value='$id'> $name<br/>";
                     }

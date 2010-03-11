@@ -434,10 +434,7 @@ class family_planning extends module{
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (`client_id` int(7) NOT NULL AUTO_INCREMENT,`client_code` varchar(2) NOT NULL,
 		            `client_text` text NOT NULL,`client_class` set('CU','NA') NOT NULL, PRIMARY KEY (`client_id`)
 		            ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
-                              
-                --
-                -- Dumping data for table `m_lib_fp_client`
-                --          
+                                              
           
                 module::execsql("INSERT INTO `m_lib_fp_client` (`client_id`, `client_code`, `client_text`, `client_class`) VALUES
                 (1, 'CU', 'Current User (Continuing User)', 'CU'),
