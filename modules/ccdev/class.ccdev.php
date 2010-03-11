@@ -256,6 +256,8 @@ class ccdev extends module {
         $c = new ccdev;
         //$imci = new imci;
 
+        mysql_query("ALTER TABLE `m_patient_ccdev` DROP PRIMARY KEY, ADD PRIMARY KEY(`ccdev_id`)");
+
         $c->ccdev_menu($menu_id, $post_vars, $get_vars);
         if ($post_vars["submitccdev"]) {
             $c->process_ccdev($menu_id, $post_vars, $get_vars);

@@ -663,9 +663,12 @@ class ntp extends module {
             //print_r($arg_list);
         }
 
-        $n = new ntp;
-
+        $n = new ntp;        
         $n->ntp_menu($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
+        
+        mysql_query("ALTER TABLE `m_patient_ntp` DROP PRIMARY KEY , ADD PRIMARY KEY (`ntp_id`)");
+        mysql_query("ALTER TABLE `m_consult_ntp_symptomatics` DROP PRIMARY KEY , ADD PRIMARY KEY (`symptomatic_id`)");
+        
         if ($post_vars["submitntp"]) {
             $n->process_ntp($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
         }

@@ -482,8 +482,9 @@ class mc extends module {
             //print_r($arg_list);
         }
         $m = new mc;
-
         $m->mc_menu($menu_id, $post_vars, $get_vars);
+        
+        mysql_query("ALTER TABLE `m_patient_mc` DROP PRIMARY KEY, ADD PRIMARY KEY(`mc_id`)");
 	     
 	if ($post_vars["submitmc"]) {
             $m->process_mc($menu_id, $post_vars, $get_vars);

@@ -496,6 +496,13 @@ class family_planning extends module{
 		$fp = new family_planning;
 		$fp->fp_menu($_GET["menu_id"],$_POST,$_GET,$_SESSION["validuser"],$_SESSION["isadmin"]);
 		//$fp->form_fp($menu_id,$post_vars,$get_vars,$isadmin);
+		
+		
+                mysql_query("ALTER TABLE `m_patient_fp_dropout` DROP PRIMARY KEY, ADD PRIMARY KEY(`dropout_id`)");
+                mysql_query("ALTER TABLE `m_patient_fp_method` DROP PRIMARY KEY, ADD PRIMARY KEY(`fp_px_id`)");   
+                mysql_query("ALTER TABLE `m_patient_fp_method_service` DROP PRIMARY KEY, ADD PRIMARY KEY(`fp_service_id`)");
+                mysql_query("ALTER TABLE `m_patient_fp` DROP PRIMARY KEY, ADD PRIMARY KEY(`fp_id`)");  
+		
 
 		if($_POST["submit_fp"]):
 			//print_r($_POST);

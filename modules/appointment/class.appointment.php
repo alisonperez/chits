@@ -151,6 +151,9 @@ class appointment extends module {
             $validuser = $arg_list[3];
             $isadmin = $arg_list[4];
         }
+        
+        mysql_query("ALTER TABLE `m_consult_appointments` DROP PRIMARY KEY, ADD PRIMARY KEY(`schedule_id`)");
+        
         if ($post_vars["submitsked"]) {
             appointment::process_appointment_record($menu_id, $post_vars, $get_vars);
         }

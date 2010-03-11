@@ -213,6 +213,9 @@ class notes extends module {
         }
         $n = new notes;
         $n->notes_menu($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
+        
+        mysql_query("ALTER TABLE `m_consult_notes` DROP PRIMARY KEY , ADD PRIMARY KEY (`notes_id`)");
+        
         if ($post_vars["submitnotes"]) {
             $n->process_consult_notes($menu_id, $post_vars, $get_vars, $validuser, $isadmin);
         }

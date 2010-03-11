@@ -95,13 +95,14 @@ class population extends module{
 		//display dependecy error
 
 		if($exitinfo = $this->missing_dependencies('population')):
-            return print($exitinfo);
+        	    return print($exitinfo);
 		endif;
-
+		
+		mysql_query("ALTER TABLE `m_lib_population` DROP PRIMARY KEY, ADD PRIMARY KEY(`population_id`)");
 
 		if($post_vars["submitpop"]):
 			$this->process_population($menu_id, $post_vars, $get_vars);
-        //    header("location: ".$_SERVER["PHP_SELF"]."?page=LIBRARIES&menu_id=$menu_id");			
+			//    header("location: ".$_SERVER["PHP_SELF"]."?page=LIBRARIES&menu_id=$menu_id");			
 		endif;
 
 		$this->form_population($menu_id, $post_vars, $get_vars);
@@ -155,7 +156,7 @@ class population extends module{
 			$arg_list = func_get_args();
 			$menu_id=$arg_list[0];
 			$post_vars = $arg_list[1];
-            $get_vars = $arg_list[2];
+	            $get_vars = $arg_list[2];
 		endif;
 
 

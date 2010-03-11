@@ -466,6 +466,10 @@ class healthcenter extends module{
         if ($exitinfo = $this->missing_dependencies('healthcenter')) {
             return print($exitinfo);
         }
+        
+        mysql_query("ALTER TABLE `m_consult` DROP PRIMARY KEY , ADD PRIMARY KEY (`consult_id`)");
+        
+        
         if (func_num_args()>0) {
             $arg_list = func_get_args();
             $menu_id = $arg_list[0];

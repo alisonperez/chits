@@ -66,7 +66,7 @@ if ($user->check_users()) {
 // do not edit or delete
 include "../modules/_modules.php";
 
-mysql_query("ALTER TABLE `m_patient` DROP PRIMARY KEY , ADD PRIMARY KEY (`patient_id`)");
+/*mysql_query("ALTER TABLE `m_patient` DROP PRIMARY KEY , ADD PRIMARY KEY (`patient_id`)");
 mysql_query("ALTER TABLE `m_consult` DROP PRIMARY KEY , ADD PRIMARY KEY (`consult_id`)");
 mysql_query("ALTER TABLE `m_family` DROP PRIMARY KEY , ADD PRIMARY KEY (`family_id`)");
 mysql_query("ALTER TABLE `m_consult_notes` DROP PRIMARY KEY , ADD PRIMARY KEY (`notes_id`)");
@@ -86,6 +86,7 @@ mysql_query("ALTER TABLE `m_dental_other_services` DROP PRIMARY KEY, ADD PRIMARY
 mysql_query("ALTER TABLE `m_dental_patient_ohc` DROP PRIMARY KEY, ADD PRIMARY KEY(`ohc_id`)");
 mysql_query("ALTER TABLE `m_dental_patient_ohc_table_a` DROP PRIMARY KEY, ADD PRIMARY KEY(`ohc_table_id`)");
 mysql_query("ALTER TABLE `m_dental_services` DROP PRIMARY KEY, ADD PRIMARY KEY(`service_id`)");
+*/
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">

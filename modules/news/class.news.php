@@ -109,6 +109,9 @@ class news extends module {
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
+        
+        mysql_query("ALTER TABLE `m_news` DROP PRIMARY KEY, ADD PRIMARY KEY(`news_id`)");
+                
         print "<table width='300'>";
         print "<tr valign='top'><td>";
         print "<span class='library'>".FTITLE_SITE_NEWS."</span><br>";

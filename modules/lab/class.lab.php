@@ -143,7 +143,8 @@ class lab extends module {
         }
         $l = new lab;
         
-        
+        mysql_query("ALTER TABLE `m_consult_lab` DROP PRIMARY KEY , ADD PRIMARY KEY (`request_id`)");
+                
         
         print "<table width='600'>";
         print "<tr><td>";

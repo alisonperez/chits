@@ -245,6 +245,9 @@ class patient extends module{
         if ($exitinfo = $this->missing_dependencies('patient')) {
             return print($exitinfo);
         }
+        
+        mysql_query("ALTER TABLE `m_patient` DROP PRIMARY KEY , ADD PRIMARY KEY (`patient_id`)");
+        
         print "<span class='patient'>".FTITLE_PATIENTS."</span><br/><br/>";
         if ($post_vars["submitsearch"]) {
             if ($errorinfo = $this->process_search($menu_id, $post_vars, $get_vars)) {

@@ -138,6 +138,10 @@ class family extends module{
         if ($exitinfo = $this->missing_dependencies('family')) {
             return print($exitinfo);
         }
+        
+        mysql_query("ALTER TABLE `m_consult_notes` DROP PRIMARY KEY , ADD PRIMARY KEY (`notes_id`)");
+        
+        
         print "<span class='patient'>".FTITLE_FAMILY_RECORDS."</span><br/>";
         print "<table width='600' cellpadding='2'>";
         print "<tr valign='top'><td width='50%'>";
