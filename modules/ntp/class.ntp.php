@@ -1222,7 +1222,7 @@ class ntp extends module {
           }
           
           echo "</select>&nbsp;&nbsp;";
-          echo "<input type='submit' name='submitntp' value='View TB SYMP Record'></input>";          
+          echo "<input type='submit' name='submitntp' value='View TB SYMP Record' style='border: 1px solid #000000'></input>";
       endif;
       
       echo "</td>";
@@ -1345,19 +1345,19 @@ class ntp extends module {
       
       echo "<tr align='center'>";
       if($_POST[sel_symp_rec]):
-          echo "<td colspan='2'><input type='submit' name='submitntp' value='Update TB Symptomatic'></input>&nbsp;&nbsp;";
+          echo "<td colspan='2'><input type='submit' name='submitntp' value='Update TB Symptomatic' style='border: 1px solid #000000'></input>&nbsp;&nbsp;";
           
           if($_SESSION["priv_delete"]):
-            echo "<input type='button' name='deletesymp' value='Delete TB Symptomatic' onclick='delete_symp()'></input>&nbsp;&nbsp;";
+            echo "<input type='button' name='deletesymp' value='Delete TB Symptomatic' onclick='delete_symp()' style='border: 1px solid #000000'></input>&nbsp;&nbsp;";
           endif;
           
-          echo "<input type='button' name='cancel' value='Cancel Transaction' onclick='history.go(-1)'></input>&nbsp;&nbsp;";
+          echo "<input type='button' name='cancel' value='Cancel Transaction' onclick='history.go(-1)' style='border: 1px solid #000000'></input>&nbsp;&nbsp;";
       else:      
-          echo "<td colspan='2'><input type='submit' name='submitntp' value='Save TB Symptomatic'></input>&nbsp;&nbsp;";
+          echo "<td colspan='2'><input type='submit' name='submitntp' value='Save TB Symptomatic' style='border: 1px solid #000000'></input>&nbsp;&nbsp;";
       endif;
       
       
-      echo "<input type='reset' value='Clear' name='btn_submit'></input>";
+      echo "<input type='reset' value='Clear' name='btn_submit' style='border: 1px solid #000000'></input>";
       echo "</td>";
       echo "</tr>";
       
@@ -3530,7 +3530,7 @@ class ntp extends module {
             }
             
             echo "</select>";
-            echo "<input type='submit' name='submitntp' value='Import Sputum Test'></input>";
+            echo "<input type='submit' name='submitntp' value='Import Sputum Test' style='border: 1px solid #000000'></input>";
 	    echo "</form>";
             echo "<br>";
         else:

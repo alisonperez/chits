@@ -427,7 +427,29 @@ class family_planning extends module{
 		module::execsql("INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Normal',`pelvic_cat`='ADNEXA'");
 		module::execsql("INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Mass',`pelvic_cat`='ADNEXA'");
 		module::execsql("INSERT INTO `m_lib_fp_pelvic` SET `pelvic_name`='Tenderness',`pelvic_cat`='ADNEXA'");
+		
+
+
+
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_fp_client` (`client_id` int(7) NOT NULL AUTO_INCREMENT,`client_code` varchar(2) NOT NULL,
+		            `client_text` text NOT NULL,`client_class` set('CU','NA') NOT NULL, PRIMARY KEY (`client_id`)
+		            ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
+                              
+                --
+                -- Dumping data for table `m_lib_fp_client`
+                --          
+          
+                module::execsql("INSERT INTO `m_lib_fp_client` (`client_id`, `client_code`, `client_text`, `client_class`) VALUES
+                (1, 'CU', 'Current User (Continuing User)', 'CU'),
+                (2, 'NA', 'New Acceptor', 'NA'),
+                (3, 'CM', 'Changing Method', 'CU'),
+                (4, 'CC', 'Changing Clinic', 'CU'),
+                (5, 'RS', 'Restart', 'CU')");
+          
+		
 	}
+
+
 
 
 
@@ -1192,7 +1214,11 @@ class family_planning extends module{
 		$q_gender =  mysql_query("SELECT patient_gender FROM m_patient WHERE patient_id='$pxid'") or die("Cannot query: 158");
 		list($gender) = mysql_fetch_array($q_gender);
 
-		$q_methods = mysql_query("SELECT method_id,method_name FROM m_lib_fp_methods WHERE method_gender='$gender' ORDER by method_name ASC") or die("Cannot query: 268");
+                if($gender=='M'):
+		    $q_methods = mysql_query("SELECT method_id,method_name FROM m_lib_fp_methods WHERE method_gender='$gender' ORDER by method_name ASC") or die("Cannot query: 1196");
+                else:
+                    $q_methods = mysql_query("SELECT method_id,method_name FROM m_lib_fp_methods ORDER by method_name ASC") or die("Cannot query: 1198");                
+                endif;
 
 		if(mysql_num_rows($q_methods)!=0):
 			echo "<select name='$form_name'>";
