@@ -449,9 +449,7 @@ class consult_report extends module {
 
 		while (list($pid,$pname,$sex,$age,$addr,$bgy,$fid,$phid,$cc,$dx,$tx) = mysql_fetch_array($result)) {
 		    $q_brgy = mysql_query("SELECT c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$pid' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 451 ".mysql_error());		    
-		    list($brgy) = mysql_fetch_array($q_brgy);
-		    
-		    
+		    list($brgy) = mysql_fetch_array($q_brgy);		    		    
 		
 		    //for displaying the vitals signs
 		    $selvitals = mysql_query("SELECT vitals_weight,vitals_temp,vitals_systolic,vitals_diastolic,vitals_heartrate,
