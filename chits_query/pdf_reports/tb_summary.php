@@ -243,7 +243,7 @@ function show_header_freq($freq,$freq_val){
 
 function show_header_bhs(){    
     if($_SESSION[ques]==93):  //applies only to W-BHS and M2 reports
-        $this->Cell(0,5,'NAME OF BHS/BHC - Brgy '.$this->get_brgy(),0,1,L);
+        $this->Cell(0,5,'NAME OF BHS/BHC- '.$this->get_brgy_header(),0,1,L);
     endif;
 }
 
@@ -542,6 +542,34 @@ function get_brgy(){  //returns the barangay is CSV format. to be used in WHERE 
     return $str_brgy;
         
 }
+
+function get_brgy_header(){
+    $arr_brgy = array();
+    $str_brgy = '';    
+
+    if(in_array('all',$_SESSION[brgy])):
+        /*$q_brgy = mysql_query("SELECT barangay_name FROM m_lib_barangay ORDER by barangay_id ASC") or die("Cannot query 252". mysql_error());        
+        while(list($brgy_name) = mysql_fetch_array($q_brgy)){            
+            array_push($arr_brgy,$brgy_id);
+        }*/
+        $str_brgy = 'All Barangay';
+    else:
+        $arr_brgy = $_SESSION[brgy];
+		
+	for($x=0;$x<count($arr_brgy);$x++){
+	
+        $q_brgy = mysql_query("SELECT barangay_name FROM m_lib_barangay WHERE barangay_id = '$arr_brgy[$x]' ORDER by barangay_id ASC") or die("Cannot query 252". mysql_error());        
+        
+	while(list($brgy) = mysql_fetch_array($q_brgy)){
+		$str_brgy = $str_brgy.'  '.$brgy;
+	}	        
+
+	}                
+    endif;                                                                         
+                                                                          
+    return $str_brgy;
+}
+
 
 function create_qt_gt($arr_in_months){  //this function receives an array representing totals in 12 months. transform the array by inserting
     				     // quarterly and grand totals    

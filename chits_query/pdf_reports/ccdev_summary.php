@@ -180,7 +180,7 @@ function Header()
 	if($_SESSION[ques]==50):  //monthly report
 		$this->Cell(0,5,'FHSIS REPORT FOR THE MONTH: '.date('F',mktime(0,0,0,$_SESSION[smonth],1,0)).'          YEAR: '.$_SESSION[year],0,1,L);
                 
-		$this->Cell(0,5,'NAME OF BHS: Brgy '.$this->get_brgy(),0,1,L);                                 
+		$this->Cell(0,5,'NAME OF BHS: '.$this->get_brgy(),0,1,L);                                 
 		$w = array(200,40,40);                
 		
 		$header = array('CHILD CARE', 'Male', 'Female');
@@ -1271,20 +1271,27 @@ function get_px_brgy(){
 
 function get_brgy(){
     $arr_brgy = array();
-      
+    $str_brgy = '';    
+
     if(in_array('all',$_SESSION[brgy])):
-        $q_brgy = mysql_query("SELECT barangay_id FROM m_lib_barangay ORDER by barangay_id ASC") or die("Cannot query 252". mysql_error());
-        
-        while(list($brgy_id) = mysql_fetch_array($q_brgy)){            
+        /*$q_brgy = mysql_query("SELECT barangay_name FROM m_lib_barangay ORDER by barangay_id ASC") or die("Cannot query 252". mysql_error());        
+        while(list($brgy_name) = mysql_fetch_array($q_brgy)){            
             array_push($arr_brgy,$brgy_id);
-        }
+        }*/
+        $str_brgy = 'All Barangay';
     else:
         $arr_brgy = $_SESSION[brgy];
-    endif;
-                                                                  
-    
-    $str_brgy = implode(',',$arr_brgy);
+		
+	for($x=0;$x<count($arr_brgy);$x++){
+	
+        $q_brgy = mysql_query("SELECT barangay_name FROM m_lib_barangay WHERE barangay_id = '$arr_brgy[$x]' ORDER by barangay_id ASC") or die("Cannot query 252". mysql_error());        
+        
+	while(list($brgy) = mysql_fetch_array($q_brgy)){
+		$str_brgy = $str_brgy.'  '.$brgy;
+	}	        
 
+	}                
+    endif;                                                                         
                                                                           
     return $str_brgy;
 }
