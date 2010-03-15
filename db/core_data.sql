@@ -1983,10 +1983,10 @@ CREATE TABLE IF NOT EXISTS `m_lib_barangay` (
 -- Dumping data for table `m_lib_barangay`
 --
 
-INSERT INTO `m_lib_barangay` (`barangay_id`, `barangay_name`, `barangay_population`, `area_code`) VALUES
-(1, 'Brgy 1', 0, 1),
-(2, 'Brgy 2', 0, 2),
-(3, 'Brgy 3', 0, 3);
+---INSERT INTO `m_lib_barangay` (`barangay_id`, `barangay_name`, `barangay_population`, `area_code`) VALUES
+---(1, 'Brgy 1', 0, 1),
+---(2, 'Brgy 2', 0, 2),
+---(3, 'Brgy 3', 0, 3);
 
 -- --------------------------------------------------------
 
