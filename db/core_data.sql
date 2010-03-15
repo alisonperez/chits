@@ -16396,6 +16396,7 @@ CREATE TABLE IF NOT EXISTS `m_patient_fp_obgyn_details` (
     `type_last_delivery` varchar(50) NOT NULL,
     `age_menarch` int(11) NOT NULL,
     `past_menstrual_date` date NOT NULL,
+    `last_menstrual_period` date NOT NULL,
     `duration_bleeding` int(4) NOT NULL,
     `date_encoded` date NOT NULL,
     `user_id` int(11) NOT NULL
@@ -16491,7 +16492,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_fp_methods` (
     PRIMARY KEY (`method_id`)
   ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`, `fhsis_code`, `report_order`, `unit`) VALUES ('PILLS', 'Pills', 'F', 'PILLS', 3, 'set'),('CONDOM', 'Condom', 'M', 'CON', 11, 'pack'),('IUD', 'IUD', 'F', 'IUD', 4, 'set'),('NFPLAM', 'NFP Lactational amenorrhea', 'F', 'NFP-LAM', 8, ''),('DMPA', 'Depo-Medoxy Progesterone Acetate ', 'F', 'DMPA', 5, 'vial'),('NFPBBT', 'NFP Basal Body Temperature', 'F', 'NFP-BBT', 7, ''),('NFPCM', 'NFP Cervical Mucus Method', 'F', 'NFP-CM', 6, ''),('NFPSTM', 'NFP Sympothermal Method', 'F', 'NFP-STM', 10, ''),('NFPSDM', 'NFP Standard Days Method', 'F', 'NFP-SDM', 9, ''),('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F', 'FSTR/BTL', 1, ''),('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2, '');
+INSERT INTO `m_lib_fp_methods` (`method_id`, `method_name`, `method_gender`, `fhsis_code`, `report_order`, `unit`) VALUES ('PILLS', 'Pills', 'F', 'PILLS', 3, 'set'),('CONDOM', 'Condom', 'M', 'CON', 11, 'pack'),('IUD', 'IUD', 'F', 'IUD', 4, 'set'),('NFPLAM', 'NFP Lactational amenorrhea', 'F', 'NFP-LAM', 8, ''),('DMPA', 'Injectables', 'F', 'DMPA', 5, 'vial'),('NFPBBT', 'NFP Basal Body Temperature', 'F', 'NFP-BBT', 7, ''),('NFPCM', 'NFP Cervical Mucus Method', 'F', 'NFP-CM', 6, ''),('NFPSTM', 'NFP Sympothermal Method', 'F', 'NFP-STM', 10, ''),('NFPSDM', 'NFP Standard Days Method', 'F', 'NFP-SDM', 9, ''),('FSTRBTL', 'Female Sterilization /Bilateral Tubal Ligation', 'F', 'FSTR/BTL', 1, ''),('MSV', 'Male Sterilization /Vasectomy', 'M', 'MSTR/Vasec', 2, '');
 
 
 DROP TABLE IF EXISTS `m_lib_fp_history_cat`;
