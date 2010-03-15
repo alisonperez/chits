@@ -183,7 +183,9 @@ class ptgroup extends module {
             return false;
         }
     }
-
+    
+    
+    
     function checkbox_ptgroup() {
         if (func_num_args()) {
             $arg_list = func_get_args();
@@ -209,7 +211,8 @@ class ptgroup extends module {
                             if (ptgroup::is_child($age)) {
                                 print "<input type='checkbox' name='ptgroup[]' value='$id'> $name<br/>";
                             }
-                        }                                                
+                        }
+                                                                     
                     } else {
                         print "<input type='checkbox' name='ptgroup[]' value='$id'> $name<br/>";
                     }

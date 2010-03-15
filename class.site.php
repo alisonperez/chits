@@ -581,9 +581,8 @@ class Site {
                 if ($_SESSION["isadmin"]) {
                     print "<a href='".$_SERVER["PHP_SELF"]."?page=ADMIN' class='topmenu'>ADMIN</a>";
                     print "<a href='".$_SERVER["PHP_SELF"]."?page=MODULES&method=MODDB' class='topmenu'>MODULES</a>";
-                    
-                }
-                print "<a href='../chits_query/' target='new' class='topmenu'>QUERY BROWSER</a>";                
+                    print "<a href='../chits_query/' target='new' class='topmenu'>QUERY BROWSER</a>";                                    
+                }                
             }
             
             print "<a href='".$_SERVER["PHP_SELF"]."?page=HOWTO' class='topmenu'>".MENU_HOWTO."</a>";
@@ -597,6 +596,7 @@ class Site {
             print "<font face='Verdana'>";
             print "<b>".LBL_NAVIGATION." > </b>";
             print "<a href='".$_SERVER["PHP_SELF"]."' class='topmenu'>".LBL_HOME."</a>";
+            print "<a href='../chits_query/' target='new' class='topmenu'>QUERY BROWSER</a>";                                    
             $sql = "select menu_id, menu_cat, module_id, menu_title from module_menu order by menu_rank";
             if ($result = mysql_query($sql)) {
                 if (mysql_num_rows($result)) {
