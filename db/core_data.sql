@@ -15308,6 +15308,7 @@ INSERT INTO `m_lib_ptgroup` (`ptgroup_id`, `ptgroup_name`, `ptgroup_module`, `pt
 ('FP', 'Family Planning', 'family_planning', ''),
 ('HPN', 'Hypertensive', '', ''),
 ('MATERNAL', 'Maternal Care', 'mc', 'is_childbearing_age'),
+('NLCP', 'Leprosy', 'leprosy', ''),
 ('NTP', 'TB Therapy', 'ntp', '');
 
 -- --------------------------------------------------------
