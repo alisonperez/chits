@@ -1,7 +1,7 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-01-21 12:54:13
+// Generated 2010-03-15 13:06:36
 // Module: _module.php
 // Author: Herman Tolentino MD
 //
@@ -256,6 +256,17 @@ if (file_exists('../modules/language/class.language.php')) {
 		$language->init_deps();
 		$language->init_lang();
 		$language->init_help();
+	}
+}
+if (file_exists('../modules/leprosy/class.leprosy.php')) {
+	include '../modules/leprosy/class.leprosy.php';
+	$leprosy = new leprosy;
+	if (!$module->activated('leprosy') && $initmod) {
+		$leprosy->init_sql();
+		$leprosy->init_menu();
+		$leprosy->init_deps();
+		$leprosy->init_lang();
+		$leprosy->init_help();
 	}
 }
 if (file_exists('../modules/mc/class.mc.php')) {

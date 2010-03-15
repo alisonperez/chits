@@ -164,6 +164,7 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 ('injury_report', 'Y', '0.2-2004-05-12', 'CHITS Module - Injury Report', 'Herman Tolentino MD', 'injury_report'),
 ('lab', 'Y', '0.3-2004-05-31', 'CHITS Module - Laboratory', 'Herman Tolentino MD', 'lab'),
 ('language', 'Y', '0.2-2004-04-11', 'CHITS Library - Language', 'Herman Tolentino MD', 'language'),
+('leprosy', 'Y', '0.1-2010-03-15', 'CHITS Module - Leprosy Control Program', 'Jeffrey V. Tolentino', 'leprosy'),
 ('mc', 'Y', '0.91-2004-06-07', 'CHITS Library - Maternal Care', 'Herman Tolentino MD', 'mc'),
 ('mc_report', 'Y', '0.2-2005-09-02', 'CHITS Module - MC Reports', 'Herman Tolentino MD', 'mc_report'),
 ('news', 'Y', '0.3-2004-06-07', 'CHITS Content - News', 'Herman Tolentino MD', 'news'),
@@ -294,6 +295,9 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('lab', 'healthcenter'),
 ('lab', 'module'),
 ('language', 'module'),
+('leprosy', 'healthcenter'),
+('leprosy', 'module'),
+('leprosy', 'patient'),
 ('mc', 'healthcenter'),
 ('mc', 'lab'),
 ('mc', 'module'),
@@ -1983,10 +1987,10 @@ CREATE TABLE IF NOT EXISTS `m_lib_barangay` (
 -- Dumping data for table `m_lib_barangay`
 --
 
----INSERT INTO `m_lib_barangay` (`barangay_id`, `barangay_name`, `barangay_population`, `area_code`) VALUES
----(1, 'Brgy 1', 0, 1),
----(2, 'Brgy 2', 0, 2),
----(3, 'Brgy 3', 0, 3);
+-- INSERT INTO `m_lib_barangay` (`barangay_id`, `barangay_name`, `barangay_population`, `area_code`) VALUES
+-- (1, 'Brgy 1', 0, 1),
+-- (2, 'Brgy 2', 0, 2),
+-- (3, 'Brgy 3', 0, 3);
 
 -- --------------------------------------------------------
 
@@ -17960,7 +17964,43 @@ CREATE TABLE IF NOT EXISTS `m_dental_fhsis` (`record_number` float NOT NULL AUTO
 ) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `m_dental_other_services` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`date_of_service` date NOT NULL,`dentist` float NOT NULL,`supervised_tooth_brushing` char(3) COLLATE swe7_bin NOT NULL,`altraumatic_restorative_treatment` char(3) COLLATE swe7_bin NOT NULL,`out_removal_of_unsavable_teeth` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`out_referral_of_complicates_cases` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`out_treatment_of_post_extraction_complications` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`out_drainage_of_localized_oral_abscess` char(3) COLLATE swe7_bin NOT NULL COMMENT 'Oral Urgent Treatment (OUT)',`education_and_counselling` char(3) COLLATE swe7_bin NOT NULL,`scaling` char(3) COLLATE swe7_bin NOT NULL,`gum_treatment` char(3) COLLATE swe7_bin NOT NULL,PRIMARY KEY (`record_number`)
-) ENGINE=InnoDB  DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1;
+
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_diagnosis` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`patient_age` float NOT NULL,`date_of_diagnosis` date NOT NULL,`patient_case` char(8) COLLATE swe7_bin NOT NULL,`classification` char(4) COLLATE swe7_bin NOT NULL,`mode_of_detection` char(25) COLLATE swe7_bin NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL, PRIMARY KEY (`record_number`)
+)ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1;
+
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_past_treatment`(`record_number` float NOT NULL AUTO_INCREMENT,`patient_id` float NOT NULL,`treatment_received` char(50) COLLATE swe7_bin NOT NULL,`duration_of_treatment` char(50) COLLATE swe7_bin NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL, PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_other_illness` (`record_number` float NOT NULL AUTO_INCREMENT,`patient_id` float NOT NULL,`tb` char(1) COLLATE swe7_bin NOT NULL,`severe_jaundice` char(1) COLLATE swe7_bin NOT NULL,`peptic_ulcer` char(1) COLLATE swe7_bin NOT NULL,`kidney_disease` char(1) COLLATE swe7_bin NOT NULL,`other_illness` char(50) COLLATE swe7_bin NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL, PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1;
+
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_contact_examination` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`contact_patient_id` float NOT NULL,`relationship` char(50) COLLATE swe7_bin NOT NULL,`year_of_birth` char(4) COLLATE swe7_bin NOT NULL,`sex` char(1) COLLATE swe7_bin NOT NULL,`examination_done` char(1) COLLATE swe7_bin NOT NULL,`results` char(1) COLLATE swe7_bin NOT NULL,`date_examined` date NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL, PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1;
+
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_skin_smear` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`skin_smear_done` char(1) COLLATE swe7_bin NOT NULL,`bacillary_index_reading` char(25) COLLATE swe7_bin NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL, PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_drug_collection_chart` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`date_for_the_supervised_dose` date NOT NULL,`treatment` char(3) COLLATE swe7_bin NOT NULL,`given_by` char(5) COLLATE swe7_bin NOT NULL,`remarks` char(25) COLLATE swe7_bin NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL, PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_voluntary_muscle_testing` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`key_movement` char(25) COLLATE swe7_bin NOT NULL,`upon_dx_left` char(1) COLLATE swe7_bin NOT NULL,`upon_dx_right` char(1) COLLATE swe7_bin NOT NULL,`upon_tc_left` char(1) COLLATE swe7_bin NOT NULL,`upon_tc_right` char(1) COLLATE swe7_bin NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL, PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_eye_evaluation` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`indicator` char(30) COLLATE swe7_bin NOT NULL,`upon_dx_right` char(10) COLLATE swe7_bin NOT NULL,`upon_dx_left` char(10) COLLATE swe7_bin NOT NULL,`upon_tc_right` char(10) COLLATE swe7_bin NOT NULL,`upon_tc_left` char(10) COLLATE swe7_bin NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL,PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_who_disability_grade` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`who_disability` char(25) COLLATE swe7_bin NOT NULL,`upon_dx_right` char(1) COLLATE swe7_bin NOT NULL,`upon_dx_left` char(1) COLLATE swe7_bin NOT NULL,`upon_tc_right` char(1) COLLATE swe7_bin NOT NULL,`upon_tc_left` char(1) COLLATE swe7_bin NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL, PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `m_leprosy_post_treatment` (`record_number` float NOT NULL AUTO_INCREMENT,`consult_id` float NOT NULL,`patient_id` float NOT NULL,`upon_dx_physician` char(30) COLLATE swe7_bin NOT NULL,`upon_tc_physician` char(30) COLLATE swe7_bin NOT NULL,`upon_tc_date` date NOT NULL,`patient_cured` char(20) COLLATE swe7_bin NOT NULL,`movement_of_patient` char(10) COLLATE swe7_bin NOT NULL,`date_last_updated` date NOT NULL,`user_id` float NOT NULL, PRIMARY KEY (`record_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=swe7 COLLATE=swe7_bin AUTO_INCREMENT=1 ;
+
 
 
 CREATE TABLE IF NOT EXISTS `m_lib_weekly_calendar` (
@@ -17969,3 +18009,6 @@ CREATE TABLE IF NOT EXISTS `m_lib_weekly_calendar` (
   `start_date` date NOT NULL,
   `end_date` date NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
+
