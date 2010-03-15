@@ -17808,7 +17808,7 @@ CREATE TABLE IF NOT EXISTS `question` (
 --
 
 INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_type`, `visible`) VALUES
-(1, 'Number of Male and Female per barangay', 1, '"SELECT a.patient_lastname, a.patient_firstname, a.patient_gender, b.family_id, c.barangay_id, d.barangay_name\r\nFROM m_patient a, m_family_members b, m_family_address c, m_lib_barangay d\r\nWHERE a.patient_id = b.patient_id \r\nAND b.family_id = c.family_id AND c.barangay_id = d.barangay_id AND a.registration_date >=''$_SESSION[sdate]'' and a.registration_date<=''$_SESSION[edate]'' ORDER by d.barangay_name ASC, a.patient_gender DESC, a.patient_lastname ASC, a.patient_firstname ASC"', 'G', 'Y'),
+(1, 'Number of Male and Female per barangay', 1, '', 'G', 'Y'),
 (2, 'Age and sex distribution', 1, '', 'G', 'Y'),
 (3, 'Top ten causes of morbidity', 7, '', 'G', 'N'),
 (4, 'Number of families who have consulted', 2, '', 'G', 'Y'),
@@ -17817,29 +17817,29 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (7, 'Number of FIC''s (including "OZ''s")', 3, '', 'G', 'N'),
 (8, 'Number of Antigen given', 3, '', 'G', 'N'),
 (9, 'Number of Antigen not given', 3, '', 'G', 'N'),
-(10, 'Number of Missed EPI appointments', 3, '', 'G', 'Y'),
+(10, 'Number of Missed EPI appointments', 3, '', 'G', 'N'),
 (11, 'Pregnant mothers with risk factors', 4, '', 'G', 'N'),
 (12, 'Pregnant mothers under 18 years old', 4, '', 'G', 'Y'),
 (13, 'Mothers given TT, FeSO4, Vit A', 4, '', 'G', 'N'),
 (14, 'Mothers consulting monthly', 4, '', 'G', 'N'),
 (15, 'Mother given T1 to T5', 4, '', 'G', 'N'),
-(16, 'NSD per location per attendant', 4, '', 'G', 'Y'),
-(17, 'Mothers who breastfed her child after birth', 4, '', 'G', 'Y'),
-(18, 'Ferous Sulfate given', 4, '', 'G', 'Y'),
-(19, 'Lactating mother given Vit. A', 4, '', 'G', 'Y'),
+(16, 'NSD per location per attendant', 4, '', 'G', 'N'),
+(17, 'Mothers who breastfed her child after birth', 4, '', 'G', 'N'),
+(18, 'Ferous Sulfate given', 4, '', 'G', 'N'),
+(19, 'Lactating mother given Vit. A', 4, '', 'G', 'N'),
 (20, 'Patient per regimen per barangay', 5, '', 'G', 'N'),
 (21, 'Positive and Negative Per Classification', 5, '', 'G', 'N'),
 (22, 'NTP Patients Undergoing Treatment', 5, '', 'G', 'N'),
 (23, 'Completed NTP treatment per barangay', 5, '', 'G', 'N'),
 (24, 'Defaulters Per Regimen', 5, '', 'G', 'N'),
 (25, 'NTP Relapsed Cases', 5, '', 'G', 'N'),
-(26, 'NTP Patients by age and sex', 5, '', 'G', 'Y'),
+(26, 'NTP Patients by age and sex', 5, '', 'G', 'N'),
 (27, 'Class of weight status according to age and status', 6, '', 'G', 'Y'),
 (28, 'Monthly Weight Distribution', 6, '', 'G', 'N'),
 (29, 'FHSIS Notifiable Disease Report', 7, '', 'G', 'N'),
 (30, 'FHSIS Maternal Care', 4, '', 'G', 'N'),
 (31, 'FHSIS Child Care Report', 8, '', 'G', 'N'),
-(32, 'Antigens Provided for CCDEV', 8, '', 'G', 'Y'),
+(32, 'Antigens Provided for CCDEV', 8, '', 'G', 'N'),
 (33, 'List of Patients Not in Family Folder', 1, '', 'G', 'Y'),
 (34, 'Prenatal Form - Target Client List (TCL)', 4, '', 'G', 'Y'),
 (35, 'Postpartum Form - Target Client List (TCL)', 4, '', 'G', 'Y'),
@@ -17869,7 +17869,9 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (92, 'Tubeculosis Quarterly Report', 5, '', 'Q', 'Y'),
 (93, 'Tuberculosis Monthly Report', 5, '', 'M', 'Y'),
 (94, 'Tuberculosis Summary Table', 5, '', 'S', 'Y'),
-(95, 'TB Register', 5, '', 'G', 'Y');
+(95, 'TB Register', 5, '', 'G', 'Y'),
+(63, 'DHC Target Client List', 12, '', 'G', 'Y'),
+(68, 'Leprosy Target Client List', 13, '', 'G', 'Y');
 
 
 
