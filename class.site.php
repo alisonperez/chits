@@ -581,9 +581,11 @@ class Site {
                 if ($_SESSION["isadmin"]) {
                     print "<a href='".$_SERVER["PHP_SELF"]."?page=ADMIN' class='topmenu'>ADMIN</a>";
                     print "<a href='".$_SERVER["PHP_SELF"]."?page=MODULES&method=MODDB' class='topmenu'>MODULES</a>";
-                    print "<a href='../chits_query/' target='new' class='topmenu'>QUERY BROWSER</a>";
+                    
                 }
+                print "<a href='../chits_query/' target='new' class='topmenu'>QUERY BROWSER</a>";                
             }
+            
             print "<a href='".$_SERVER["PHP_SELF"]."?page=HOWTO' class='topmenu'>".MENU_HOWTO."</a>";
             print "<a href='".$_SERVER["PHP_SELF"]."?page=ABOUT' class='topmenu'>".MENU_ABOUT."</a>";
             print "<a href='".$_SERVER["PHP_SELF"]."?page=CREDITS' class='topmenu'>".MENU_CREDITS."</a>";

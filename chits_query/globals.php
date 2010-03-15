@@ -1,7 +1,7 @@
 <?
   session_start();
   
-  $dbname = 'gerona_core2';
+  $dbname = 'chits';
   #$dbname2 = 'chitsquery';
   $_SESSION["query"] = $dbname;
   $dbuser = $_SESSION["dbuser"];
