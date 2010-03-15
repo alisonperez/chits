@@ -472,11 +472,34 @@
 		
 		
 		function get_target($criteria){
+			/*
 			if($criteria>=0 && $criteria<=2):
 				$perc = '0.027';
 			else:
 				
 			endif;
+			return $perc;
+			*/
+
+			switch($criteria) {
+				case 0: // indicator #1
+					$perc = 0.135 * 0.2;
+					break;
+				case 1: // indicator #2
+                                        $perc = 0.135 * 0.2;
+                                        break;
+				case 2: // indicator #3
+                                        $perc = 0.3 * 0.1;
+                                        break;
+				case 3: // indicator #4
+                                        $perc = 0.035 * 0.25;
+                                        break;
+				case 4: // indicator #5
+                                        $perc = 0.061 * 0.3;
+                                        break;
+				default:
+					break;
+			}
 			return $perc;
 		}
 		

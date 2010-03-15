@@ -136,10 +136,7 @@
 		
 		
 		function Header() {
-			$q_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$_SESSION[year]'") 
-				or die("Cannot query: 123". mysql_error());
-			list($population)= mysql_fetch_array($q_pop);
-			
+			$population = $this->get_brgy_pop();
 			$this->q_report_header($population);
 			$this->Ln(10);
 			
@@ -147,14 +144,8 @@
 			$this->Cell(340,10,'Dental Health Care',1,1,C);
 			
 			$this->SetFont('Arial','B','12');
-			//original value of $w from fp_quarterly
-			//$w = array(75,28,28,26,28,28,28,47,52);
-			//modified $w, to fit only 8 cols
 			$w = array(76,28,28,26,28,28,63,63);
 			$this->SetWidths($w);
-			//original value of $label from fp_quarterly
-			//$label = array('Indicators','Current User (Begin Qtr)','New Acceptors','Others','Dropout','Current User (End Qtr)','CPR'."\n".'(CU/TP) x 14.5% x 85%','Interpretation','Recommendation/Action Taken');
-			//modified value of $label
 			$label = array('Indicators', 
 				'Elig. Pop.', 
 				'Number (Male)', 
@@ -175,57 +166,59 @@
 			$this->Cell(0,5,'PROVINCE: '.$_SESSION[province]."          PROJECTED POPULATION OF THE YEAR: ".$population,0,1,L);
 		}
 		
+	
 		
-		
-		function show_dental_quarterly(){
-			// original value of $arr_method
-			//$arr_method = array('a'=>'FSTRBTL','b'=>'MSV','c'=>'PILLS','d'=>'IUD','e'=>'DMPA','f'=>'NFPCM','g'=>'NFPBBT','h'=>'NFPLAM','i'=>'NFPSDM','j'=>'NFPSTM','k'=>'CONDOM');
-			//new var $arr_indicator
-			$arr_indicator = array('a' => 'Orally Fit Children 12-71 monthds old',
-				'b' => 'Children 12-71 months old provided with BOHC?', 
-				'c' => 'Adolescent & Youth (10-24 years) given BOHC?',
-				'd' => 'Pregnant women provided with BOHC?',
-				'e' => 'Older Person 60 years old & above provided with BOHC?');
-			//$w = array(75,28,28,28,26,28,28,47,52);
+		function show_dental_quarterly() {
 			$w = array(76,28,28,26,28,28,63,63);
-			$str_brgy = $this->get_brgy();    
+			$str_brgy = $this->get_brgy();
 			
-			//echo $_SESSION[sdate2].'/'.$_SESSION[edate2];
-			
-			/*
-			foreach($arr_method as $col_code=>$method_code) {
-				$q_fp = mysql_query("SELECT method_name FROM m_lib_fp_methods WHERE method_id='$method_code'") 
-					or die("Cannot query: 151".mysql_error());    
-				list($method_name) = mysql_fetch_array($q_fp);
-				
-				$cu_prev = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,2);
-				$na_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,3);
-				$other_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,4);
-				$dropout_pres = $this->get_current_users($_SESSION[sdate2],$_SESSION[edate2],$method_code,$str_brgy,5 );
-				$cu_pres = ($cu_prev + $na_pres + $other_pres) - $dropout_pres;
-				$cpr = $this->get_cpr($cu_pres);
-				
-				$fp_contents = array($col_code.'. '.$method_name,$cu_prev,$na_pres,$other_pres,$dropout_pres,$cu_pres,$cpr,'','');
-				
-				
-				for($x=0;$x<count($fp_contents);$x++){
-					$this->Cell($w[$x],6,$fp_contents[$x],'1',0,'L');
-				}
-				
-				$this->Ln();                
-				//        $this->Row($fp_contents);
-			}
-			*/
 			for($indicator_ctr = 1; $indicator_ctr <= 5; $indicator_ctr++) {
-				//$col2;
+				$col2 = $this->get_data($_SESSION[sdate2], $_SESSION[edate2],
+                                        $indicator_ctr, $str_brgy, 2);
 				$col3 = $this->get_data($_SESSION[sdate2], $_SESSION[edate2], 
 					$indicator_ctr, $str_brgy, 3);
 				$col4 = $this->get_data($_SESSION[sdate2], $_SESSION[edate2], 
 					$indicator_ctr, $str_brgy, 4);
 				$col5 = $col3 + $col4;
-				//$col6;
-				//$col7;
-				//$col8;
+
+				switch($indicator_ctr) {
+					// Note: st = Service Target
+					case 1:
+						if($col2 != 0) {
+							$st = $col2 * (20 / 100);
+							$col6 = number_format((($col5 / $st) * 100),2,'.','');
+						}
+						break;
+					case 2:
+						if($col2 != 0) {
+                                                	$st = $col2 * (20 / 100);
+							$col6 = number_format((($col5 / $st) * 100),2,'.','');
+						}
+						break;
+					case 3:
+						if($col2 != 0) {
+                                                	$st = $col2 * (10 / 100);
+							$col6 = number_format((($col5 / $st) * 100),2,'.','');
+						}
+						break;
+					case 4:
+						if($col2 != 0) {
+                                                	$st = $col2 * (25 / 100);
+							$col6 = number_format((($col5 / $st) * 100),2,'.','');
+						}
+						break;
+					case 5:
+						if($col2 != 0) {
+                                                	$st = $col2 * (30 / 100);
+							$col6 = number_format((($col5 / $st) * 100),2,'.','');
+						}
+						break;
+					default:
+						break;
+				}
+
+				//$col7; this column is empty
+				//$col8; this column is empty
 				
 				switch($indicator_ctr) {
 					case 1:
@@ -248,24 +241,13 @@
 					default:
 						break;
 				}
-				$dental_contents = array($indicator,
-					'n/a', $col3, $col4, $col5, 'n/a', '', '');
-				
-				/*
-				//ORIGINAL CODE FOR OUTPUTTING THE CONTENTS OF $dental_contents
-				for($x = 0; $x < count($dental_contents); $x++){
-					$this->Cell($w[$x], 6, $dental_contents[$x], '1', 0, 'L');
-				}
-				$this->Ln();
-				*/
-				
-				// REVISED CODE FOR OUTPUTTING THE CONTENTS OF $dental_contents
+				$dental_contents = array("\n".$indicator."\n\n\n", "\n".round($col2)."\n\n\n", "\n".$col3."\n\n\n", "\n".$col4."\n\n\n", "\n".$col5."\n\n\n", "\n".$col6."\n\n\n", '', '');
 				$this->Row($dental_contents);
 			}
-		}
-		
-		
-		
+		} // end of function
+
+
+
 		function get_brgy(){  //returns the barangay is CSV format. to be used in WHERE clause for determining barangay residence of patient
 			$arr_brgy = array();
 			
@@ -282,8 +264,25 @@
 			$str_brgy = implode(',',$arr_brgy);
 			
 			return $str_brgy;
-        
 		}       
+
+
+
+		function get_brgy_pop() {
+                        list($taon,$buwan,$araw) = explode('-',$_SESSION[edate2]);
+                        if(in_array('all',$_SESSION[brgy])):
+                                $q_brgy_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$taon'") or die("Cannot query: 286");
+                        else:
+                                $str = implode(',',$_SESSION[brgy]);
+                                $q_brgy_pop = mysql_query("SELECT SUM(population) FROM m_lib_population WHERE population_year='$taon' AND barangay_id IN ($str)") or die("Cannot query: 372");
+                        endif;
+
+                        if(mysql_num_rows($q_brgy_pop)!=0):
+                                list($populasyon) = mysql_fetch_array($q_brgy_pop);
+                        endif;
+
+                        return $populasyon;
+                }
 		
 		
 		
@@ -309,29 +308,55 @@
 			// Column 8 = Recommendation/Action Taken
 			switch($col_code) {
 				case '2':
+					$population = $this->get_brgy_pop();
+
+					switch($indicator) {
+						case 1:
+							$ep = $population * (13.5 / 100);
+							break;
+						case 2:
+							$ep = $population * (13.5 / 100);
+							break;
+						case 3:	
+							$ep = $population * (30 / 100);
+                                                        break;
+						case 4:
+							$ep = $population * (3.5 / 100);
+                                                        break;
+						case 5:
+							$ep = $population * (6.1 / 100);
+                                                        break;
+						default:
+							break;
+					}
+					$ep = number_format($ep,2,'.','');
+					return $ep;
 					break;
 				case '3':
-					$query = "SELECT patient_id, date_of_consultation FROM m_dental_fhsis ".
-							"WHERE indicator = $indicator AND ".
-							"indicator_qualified = 'YES' AND ".
-							"gender = 'M' AND ".
-							"(date_of_consultation >= '$start' AND ".
-							"date_of_consultation <= '$end') ";
-						$result = mysql_query($query)
-							or die("Couldn't execute query on case 3. ".mysql_error());
-						
+					$query = "SELECT a.patient_id, a.date_of_consultation ".
+						"FROM m_dental_fhsis a INNER JOIN m_family_members b ON a.patient_id = b.patient_id ".
+						"INNER JOIN m_family_address c ON b.family_id = c.family_id WHERE ".
+						"a.indicator = $indicator AND ".
+                                               	"a.indicator_qualified = 'YES' AND ".
+                                             	"a.gender = 'M' AND ".
+                                             	"(a.date_of_consultation >= '$start' AND ".
+                                         	"a.date_of_consultation <= '$end') AND ".
+						"c.barangay_id IN ($brgy) ";
+                                    	$result = mysql_query($query) or die("Couldn't execute query. ");
 					return mysql_num_rows($result);
 					break;
 				case '4':
-					$query = "SELECT patient_id, date_of_consultation FROM m_dental_fhsis ".
-						"WHERE indicator = $indicator AND ".
-						"indicator_qualified = 'YES' AND ".
-						"gender = 'F' AND ".
-						"(date_of_consultation >= '$start' AND ".
-						"date_of_consultation <= '$end') ";
-					$result = mysql_query($query)
-						or die("Couldn't execute query on case 4. ".mysql_error());
-						
+					$query = "SELECT a.patient_id, a.date_of_consultation ".
+						"FROM m_dental_fhsis a INNER JOIN m_family_members b ON a.patient_id = b.patient_id ".
+						"INNER JOIN m_family_address c ON b.family_id = c.family_id WHERE ".
+						"a.indicator = $indicator AND ".
+                                               	"a.indicator_qualified = 'YES' AND ".
+                                             	"a.gender = 'F' AND ".
+                                             	"(a.date_of_consultation >= '$start' AND ".
+                                         	"a.date_of_consultation <= '$end') AND ".
+						"c.barangay_id IN ($brgy) ";
+                                    	$result = mysql_query($query) or die("Couldn't execute query. ");
+
 					return mysql_num_rows($result);
 					break;
 					
@@ -349,7 +374,7 @@
 						break;
 					
 				}	
-		}
+		} // end of function
 		
 		
 		
@@ -392,7 +417,5 @@
 
 	$pdf->show_dental_quarterly();
 
-	//$pdf->AddPage();
-	//$pdf->show_fp_summary();
 	$pdf->Output();
 ?>

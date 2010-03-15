@@ -281,6 +281,10 @@ class querydb{
 			$this->process_dhc_pho();
 		elseif($quesno==62):
 			$this->process_dhc_summary();
+		elseif($quesno==63):
+			$this->process_dhc_tcl();			
+		elseif($quesno>=66 && $quesno<70):		
+			$this->process_leprosy($quesno);		
 		elseif($quesno>=70 && $quesno<=73):			
 			$this->process_morbidity($quesno);
 		elseif($quesno>=90 && $quesno<=99):
@@ -816,6 +820,12 @@ class querydb{
 		echo "<a href='./pdf_reports/dental_summary.php'>Show Dental Summary Table</a>";
 	}
 	
+	function process_dhc_tcl(){
+		echo "<a href='./pdf_reports/dental_tcl.php'>Show Dental Master List / TCL.</a>";
+	}
+	
+	
+	
 	function process_morbidity($quesno){		
 		$q_morb = mysql_query("SELECT ques_label FROM question WHERE ques_id=$quesno");
 		if(mysql_num_rows($q_morb)!=0):
@@ -864,8 +874,23 @@ class querydb{
 				
 			endif;
 			
-		endif;
-		
+		endif;	
+	}
+	
+	function process_leprosy($queryno){
+		switch($queryno){
+			case 66:
+				echo "<a href='./pdf_reports/leprosy_summary.php'>Show Leprosy Summary Table</a>";				
+				break;
+			case 67:
+				echo "<a href='./pdf_reports/leprosy_quarterly.php'>Show Leprosy Quarterly Table</a>";				
+				break;			
+			case 68:
+				echo "<a href='./pdf_reports/leprosy_quarterly.php'>Show Leprosy Target Client List</a>";				
+				break;							
+			default:			
+				break;		
+		}	
 	}
 
 }
