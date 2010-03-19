@@ -211,10 +211,14 @@ class ptgroup extends module {
                             if (ptgroup::is_child($age)) {
                                 print "<input type='checkbox' name='ptgroup[]' value='$id'> $name<br/>";
                             }
-                        }
-                                                                     
+                        } 
+                                                                                                                     
                     } else {
-                        print "<input type='checkbox' name='ptgroup[]' value='$id'> $name<br/>";
+                        //if($id=='FP'):
+                            print "<input type='checkbox' name='ptgroup[]' value='$id'> $name<br/>";
+                        //else:                        
+                            //print "<input type='checkbox' name='ptgroup[]' value='$id'> $name<br/>";                            
+                        //endif;
                     }
                 }
             }

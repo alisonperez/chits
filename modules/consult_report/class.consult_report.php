@@ -268,7 +268,13 @@ class consult_report extends module {
             //print_r($arg_list);
         }
         list($month, $day, $year) = explode("/", $post_vars["report_date"]);
-        $report_date = $year."-".str_pad($month, 2, "0", STR_PAD_LEFT)."-".str_pad($day, 2, "0", STR_PAD_LEFT);
+        //$report_date = $year."-".str_pad($month, 2, "0", STR_PAD_LEFT)."-".str_pad($day, 2, "0", STR_PAD_LEFT);
+        $report_date = $year.'-'.$month.'-'.$day;
+        
+        list($end_month, $end_day, $end_year) = explode("/", $post_vars["end_report_date"]);
+        //$end_report_date = $end_year."-".str_pad($end_month, 2, "0", STR_PAD_LEFT)."-".str_pad($day, 2, "0", STR_PAD_LEFT);
+        $end_report_date = $end_year.'-'.$end_month.'-'.$end_day;
+        
         
 		// STEP 1. empty report tables for given date
         $sql_delete = "delete from m_consult_report_dailyservice where service_date = '$report_date'";
@@ -282,14 +288,27 @@ class consult_report extends module {
 
         // STEP 2. get all consults for specified report date
         // records are unique for patient_id and service_date
+        /*$sql_patient = "select c.patient_id, c.consult_id, ".
+	               "concat(p.patient_lastname, ', ', p.patient_firstname) patient_name, ".
+                       "round((to_days(c.consult_date)-to_days(p.patient_dob))/365,2) patient_age, ".
+                       "p.patient_gender ".
+                       "from m_consult c, m_patient p ".
+                       "where c.patient_id = p.patient_id ".
+                       "and to_days(c.consult_date) = to_days('$report_date')"; */
+        
+        
         $sql_patient = "select c.patient_id, c.consult_id, ".
 	               "concat(p.patient_lastname, ', ', p.patient_firstname) patient_name, ".
                        "round((to_days(c.consult_date)-to_days(p.patient_dob))/365,2) patient_age, ".
                        "p.patient_gender ".
                        "from m_consult c, m_patient p ".
                        "where c.patient_id = p.patient_id ".
-                       "and to_days(c.consult_date) = to_days('$report_date')";
-        if ($result_patient = mysql_query($sql_patient)) {
+                       "and c.consult_date BETWEEN '$report_date' AND '$end_report_date'";
+        
+        $result_patient = mysql_query($sql_patient) or die("Cannot query: 305 ".mysql_error());
+                        
+        if ($result_patient) {
+          
             if (mysql_num_rows($result_patient)) {
                 while ($patient = mysql_fetch_array($result_patient)) {
                     // get family and address
@@ -403,7 +422,7 @@ class consult_report extends module {
 	//STEP 3. display daily service report
 	print "<br/>";
 	print "<b>DAILY SERVICE REPORT</b><br/>";
-	print "REPORT DATE : <b>".$post_vars["report_date"]."</b><br/><br/>";
+	print "REPORT DATE : <b>".$post_vars["report_date"]." to ".$post_vars["end_report_date"]."</b><br/><br/>";
 	$this->display_consults($report_date,"patient_id"); //pass the report_date and patient_id
 	$this->display_ccdev($report_date);
 	$this->display_mc($report_date);
@@ -426,28 +445,39 @@ class consult_report extends module {
 	$sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
 	       "family_id, philhealth_id, notes_cc, notes_dx, notes_tx ".
 	       "from m_consult_report_dailyservice ".
-	       "where to_days(service_date) = to_days('$report_date') order by patient_name";
-	
-		
+	       "where to_days(service_date) = to_days('$report_date') order by patient_name";	       
+        
+        
+        /*$sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
+	       "family_id, philhealth_id, notes_cc, notes_dx, notes_tx ".
+	       "from m_consult_report_dailyservice ".
+	       "where service_date BETWEEN '$_POST[report_date]' AND '$_POST[end_report_date]' order by patient_name";                
+        */
+        
 	if ($result = mysql_query($sql)) {
 	    if (mysql_num_rows($result)) {
+	        $header = array('PATIENT ID','PATIENT NAME / SEX / AGE','ADDRESS','BRGY','FAMILY ID','PHILHEALTH ID','VITAL SIGNS','COMPLAINTS','DIAGNOSIS','TREATMENT');
+	        $contents = array();
 	          	            		    
 		print "<b><center>CONSULTS</center></b><br/>";
 		print "<table width='900' cellspacing='0' cellpadding='2' style='border: 1px solid #000000'>";
 		print "<tr bgcolor='#FFCC33'>";
-		print "<td class='tinylight' valign='middle' align=center><b>PATIENT ID</b></td>";
-		print "<td class='tinylight' valign='middle' align=center><b>PATIENT NAME / SEX / AGE</b></td>";
-		print "<td class='tinylight' valign='middle' align=center><b>ADDRESS</b></td>";
-		print "<td class='tinylight' valign='middle' align=center><b>BRGY</b></td>";
-		print "<td class='tinylight' valign='middle' align=center><b>FAMILY ID</b></td>";
-		print "<td class='tinylight' valign='middle' align=center><b>PHILHEALTH ID</b></td>";
-		print "<td class='tinylight' valign='middle' align=center><b>VITAL SIGNS</b></td>";
-		print "<td class='tinylight' valign='middle' align=center><b>COMPLAINTS</b></td>";
-		print "<td class='tinylight' valign='middle' align=center><b>DIAGNOSIS</b></td>";
-		print "<td class='tinylight' valign='middle' align=center><b>TREATMENT</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[0]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[1]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[2]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[3]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[4]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[5]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[6]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[7]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[8]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[9]</b></td>";
 		print "</tr>";
 
 		while (list($pid,$pname,$sex,$age,$addr,$bgy,$fid,$phid,$cc,$dx,$tx) = mysql_fetch_array($result)) {
+		    
+		    $inner_record = array();
+		    
 		    $q_brgy = mysql_query("SELECT c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$pid' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 451 ".mysql_error());		    
 		    list($brgy) = mysql_fetch_array($q_brgy);		    		    
 		
@@ -481,8 +511,12 @@ class consult_report extends module {
 		    print "<td class='tinylight' align=center>".$dx."</td>";
 		    print "<td class='tinylight' align=center>".$tx."</td>";
 		    print "</tr>";
+		    xxx
+		    echo $fid;
+		    
+		    //array_push(,array_push());
 		}
-		print "</table>";
+		print "</table>";		                
             }
 	}
     }
@@ -782,10 +816,18 @@ class consult_report extends module {
         print "<b>".FTITLE_REPORT_DATE_FORM."</b><br/><br/>";
         print "</td></tr>";
         print "<tr valign='top'><td>";
-        print "<span class='boxtitle'>".LBL_REPORT_DATE."</span><br> ";
-        print "<input type='text' size='10' class='textbox' name='report_date' value='' style='border: 1px solid #000000'> ";
+        print "<span class='boxtitle'>START DATE</span><br> ";
+        print "<input type='text' size='10' class='textbox' name='report_date' value='' style='border: 1px solid #000000'> ";                
         print "<a href=\"javascript:show_calendar4('document.form_report_date.report_date', document.form_report_date.report_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a><br>";
         print "<small>Click on the calendar icon to select report date. Otherwise use MM/DD/YYYY format.</small><br>";
+        print "</td></tr>";
+        
+        print "<tr valign='top'><td>";
+        print "<span class='boxtitle'>END DATE</span><br> ";
+        print "<input type='text' size='10' class='textbox' name='end_report_date' value='' style='border: 1px solid #000000'> ";                
+        print "<a href=\"javascript:show_calendar4('document.form_report_date.end_report_date', document.form_report_date.end_report_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a><br>";
+        print "<small>Click on the calendar icon to select report date. Otherwise use MM/DD/YYYY format.</small><br>";
+        
         print "</td></tr>";
         print "<tr><td>";
         if ($_SESSION["priv_add"]) {

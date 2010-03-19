@@ -17905,7 +17905,10 @@ INSERT INTO `ques_cat` (`cat_id`, `cat_label`) VALUES
 (9, 'Family  Planning'),
 (10, 'Demographics, Natality, Mortality'),
 (11, 'Environment and Sanitation'),
-(12, 'Dental Health Care');
+(12, 'Dental Health Care'),
+(13, 'Leprosy');
+
+
 
 
 DROP TABLE IF EXISTS `m_lib_mc_delivery_location`;
