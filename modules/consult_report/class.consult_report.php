@@ -269,14 +269,16 @@ class consult_report extends module {
         }
         list($month, $day, $year) = explode("/", $post_vars["report_date"]);
         //$report_date = $year."-".str_pad($month, 2, "0", STR_PAD_LEFT)."-".str_pad($day, 2, "0", STR_PAD_LEFT);
-        $report_date = $year.'-'.$month.'-'.$day;
+        $report_date = $year.'-'.$month.'-'.str_pad($day, 2, "0", STR_PAD_LEFT);
         
         list($end_month, $end_day, $end_year) = explode("/", $post_vars["end_report_date"]);
         //$end_report_date = $end_year."-".str_pad($end_month, 2, "0", STR_PAD_LEFT)."-".str_pad($day, 2, "0", STR_PAD_LEFT);
-        $end_report_date = $end_year.'-'.$end_month.'-'.$end_day;
+        $end_report_date = $end_year.'-'.$end_month.'-'.str_pad($end_day, 2, "0", STR_PAD_LEFT);
         
+        $_SESSION[report_date] = $report_date;
+        $_SESSION[end_report_date] = $end_report_date;
         
-		// STEP 1. empty report tables for given date
+        // STEP 1. empty report tables for given date
         $sql_delete = "delete from m_consult_report_dailyservice where service_date = '$report_date'";
         $result_delete = mysql_query($sql_delete);
 
@@ -379,7 +381,7 @@ class consult_report extends module {
                        "'NAME / SEX / AGE', patient_address 'ADDRESS', patient_bgy 'BRGY', family_id 'FAMILY ID', ".  
                        "philhealth_id 'PHILHEALTH ID', notes_cc 'COMPLAINTS', notes_dx 'DIAGNOSIS', notes_tx 'TREATMENT' ".
                        "from m_consult_report_dailyservice where service_date = '$report_date' order by patient_name ";
-        
+                 
                 $pdf = new PDF('L','pt','A4');
                 $pdf->SetFont('Arial','',12); 
                 $pdf->AliasNbPages();
@@ -423,7 +425,7 @@ class consult_report extends module {
 	print "<br/>";
 	print "<b>DAILY SERVICE REPORT</b><br/>";
 	print "REPORT DATE : <b>".$post_vars["report_date"]." to ".$post_vars["end_report_date"]."</b><br/><br/>";
-	$this->display_consults($report_date,"patient_id"); //pass the report_date and patient_id
+	$this->display_consults($report_date,"patient_id",$end_report_date); //pass the report_date and patient_id
 	$this->display_ccdev($report_date);
 	$this->display_mc($report_date);
         
@@ -440,25 +442,34 @@ class consult_report extends module {
 	    $arg_list = func_get_args();
 	    $report_date = $arg_list[0];
 	    $patient_id = $arg_list[1]; //a handler for the patient ID
+	    $end_report_date = $arg_list[2];
 	}
 		    
-	$sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
+	
+	if($report_date == $end_report_date):
+	
+        $sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
 	       "family_id, philhealth_id, notes_cc, notes_dx, notes_tx ".
 	       "from m_consult_report_dailyservice ".
 	       "where to_days(service_date) = to_days('$report_date') order by patient_name";	       
         
+        else:
         
-        /*$sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
+        $sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
 	       "family_id, philhealth_id, notes_cc, notes_dx, notes_tx ".
 	       "from m_consult_report_dailyservice ".
-	       "where service_date BETWEEN '$_POST[report_date]' AND '$_POST[end_report_date]' order by patient_name";                
-        */
+	       "where service_date BETWEEN '$report_date' AND '$end_report_date' order by patient_name";                
         
-	if ($result = mysql_query($sql)) {
+        endif;
+        $result = mysql_query($sql) or die("Cannot query: 456 ".mysql_error());
+                      
+	if ($result) {
 	    if (mysql_num_rows($result)) {
 	        $header = array('PATIENT ID','PATIENT NAME / SEX / AGE','ADDRESS','BRGY','FAMILY ID','PHILHEALTH ID','VITAL SIGNS','COMPLAINTS','DIAGNOSIS','TREATMENT');
 	        $contents = array();
-	          	            		    
+	        
+	        print "<a href='../chits_query/pdf_reports/dailyservice_report.php'>PRINTER FRIENDLY VERSION</a><br/>"; 
+		
 		print "<b><center>CONSULTS</center></b><br/>";
 		print "<table width='900' cellspacing='0' cellpadding='2' style='border: 1px solid #000000'>";
 		print "<tr bgcolor='#FFCC33'>";
@@ -511,12 +522,20 @@ class consult_report extends module {
 		    print "<td class='tinylight' align=center>".$dx."</td>";
 		    print "<td class='tinylight' align=center>".$tx."</td>";
 		    print "</tr>";
-		    xxx
-		    echo $fid;
 		    
-		    //array_push(,array_push());
+		    
+		    $vitals_sign = "BP: ".$bp.", HR: ".$res_vitals[vitals_heartrate].",RR: ".$res_vitals[vitals_resprate].", Wt: ". $res_vitals[vitals_weight]. "kg, Temp: ".$res_vitals[vitals_temp];
+		    
+		    //array_push($inner_record,array($pid,$pname." / ".$sex." / ".$age,$addr,$resbrgy[barangay_name],$brgy,$fid,$phid,'BP: '.$bp.', '.
+		    //'HR: '.$res_vitals[vitals_heartrate].', RR: '. $res_vitals[vitals_resprate].', Wt:' $res_vitals[vitals_weight] kg.', Temp:'. $res_vitals[vitals_temp],$cc,$dx,$tx));
+
+		    array_push($inner_record,array($pid,$pname." / ".$sex." / ".$age,$addr,$brgy,$fid,$phid,$vitals_sign,$cc,$dx,$tx));
+		    array_push($contents,$inner_record);		    		    
 		}
-		print "</table>";		                
+		print "</table>";		                		
+		$_SESSION[tbl_header] = $header;
+		$_SESSION[daily_service_contents] = $contents;
+		$_SESSION[record_count] = mysql_num_rows($result);
             }
 	}
     }
