@@ -20,6 +20,8 @@ class notes extends module {
         // 0.4 overhaul interface and templates
         // 0.5 added get_complaint_list, get_plan, get_diagnosis_list
         //      for consult_report
+        // 0.6 added ICD codes to the m_lib_dxclass table
+        //     displayed ICD 10 codes table after the diagnosis name
     }
 
     // --------------- STANDARD MODULE FUNCTIONS ------------------
@@ -255,9 +257,10 @@ class notes extends module {
             //print_r($arg_list);
         }
         if (!isset($get_vars["notes"])) {
-            header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&notes=NOTES".($get_vars["notes_id"]?"&notes_id=".$get_vars["notes_id"]:""));
+            header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&notes=NOTES".($get_vars["notes_id"]?"&notes_id=".$get_vars["notes_id"]:"")."#menu");
         }
         print "<table cellpadding='1' cellspacing='1' width='300' bgcolor='#9999FF' style='border: 1px solid black'><tr valign='top'><td nowrap>";
+        print "<a name='menu'></a>";
         print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=NOTES".($get_vars["notes_id"]?"&notes_id=".$get_vars["notes_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["notes"]=="NOTES"?"<b>NOTES</b>":"NOTES"))."</a>";
         if ($get_vars["notes_id"]) {
             print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=CC&notes_id=".$get_vars["notes_id"]."' class='groupmenu'>".strtoupper(($get_vars["notes"]=="CC"?"<b>CC</b>":"CC"))."</a>";
@@ -291,7 +294,7 @@ class notes extends module {
                    "values ('".$get_vars["consult_id"]."', '$patient_id', '".$_SESSION["userid"]."', sysdate())";
             if ($result = mysql_query($sql)) {
                 $insert_id = mysql_insert_id();
-                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=NOTES&notes_id=$insert_id");
+                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=NOTES&notes_id=$insert_id#menu");
             }
             break;
         case "Save Complaint":
@@ -303,7 +306,7 @@ class notes extends module {
                 }                                                
             }
                 $update_complaint_note = mysql_query("UPDATE m_consult_notes SET notes_complaint='$post_vars[complaint_notes]' WHERE consult_id='$get_vars[consult_id]'") or die("Cannot query: 302 ".mysql_error());                                        
-                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=CC&notes_id=".$get_vars["notes_id"]);                
+                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=CC&notes_id=".$get_vars["notes_id"]."#menu");                
             break;
             
         case "Save History":
@@ -312,7 +315,7 @@ class notes extends module {
                        "notes_history = '".addslashes($post_vars["history_text"])."' ".
                        "where notes_id = '".$get_vars["notes_id"]."'";
                 if ($result = mysql_query($sql)) {
-                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=HX&notes_id=".$get_vars["notes_id"]);
+                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=HX&notes_id=".$get_vars["notes_id"]."#menu");
                 }
             }
             break;
@@ -322,7 +325,7 @@ class notes extends module {
                        "notes_physicalexam = '".addslashes($post_vars["pe_text"])."' ".
                        "where notes_id = '".$get_vars["notes_id"]."'";
                 if ($result = mysql_query($sql)) {
-                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=PE&notes_id=".$get_vars["notes_id"]);
+                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=PE&notes_id=".$get_vars["notes_id"]."#menu");
                 }
             }
             break;
@@ -334,7 +337,7 @@ class notes extends module {
                            "values ('".$get_vars["notes_id"]."', '".$get_vars["consult_id"]."', '$patient_id', '$value', '$consult_date', '".$_SESSION["userid"]."', sysdate())";
                     $result = mysql_query($sql) or die(mysql_error());
                 }
-                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=DX&notes_id=".$get_vars["notes_id"]);
+                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=DX&notes_id=".$get_vars["notes_id"]."#menu");
             }
 
             break;
@@ -344,7 +347,7 @@ class notes extends module {
                        "notes_plan = '".addslashes($post_vars["plan_text"])."' ".
                        "where notes_id = '".$get_vars["notes_id"]."'";
                 if ($result = mysql_query($sql)) {
-                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=TX&notes_id=".$get_vars["notes_id"]);
+                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=TX&notes_id=".$get_vars["notes_id"]."#menu");
                 }
             }
             break;
@@ -718,23 +721,20 @@ class notes extends module {
         if ($result_list = mysql_query($sql_list)) {
             if (mysql_num_rows($result_list)) {
                 while (list($id, $ts) = mysql_fetch_array($result_list)) {
-					echo "<form method='post' name='form_consult_date'>";
+                    echo "<form method='post' name='form_consult_date'>";
                     print "<img src='../images/arrow_redwhite.gif' border='0'/> ";
-                    print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&notes_id=$id'>$ts</a>";					
+                    print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&notes_id=$id'>$ts</a>";
 
-					if($_SESSION["priv_update"]):
-						echo "&nbsp;&nbsp;<input type='submit' name='submitdetail' value='Edit Date' class='tinylight' style='border: 1px solid black'></input><br>";
-						
-						$this->process_consultation_dates($menu_id, $post_vars, $get_vars);
-					endif;
-					echo "</form>";
-
+                    if($_SESSION["priv_update"]):
+                        echo "&nbsp;&nbsp;<input type='submit' name='submitdetail' value='Edit Date' class='tinylight' style='border: 1px solid black'></input><br>";
+                        $this->process_consultation_dates($menu_id, $post_vars, $get_vars);
+                    endif;
+                    
+                    echo "</form>";
 
                     if ($get_vars["notes_id"]==$id) {
                         notes::display_consult_notes_detail($menu_id, $post_vars, $get_vars);
-                    }
-					
-
+                    }					
                 }
             } else {
                 print "<font color='red'>No recorded notes for this consult.</font><br/>";
@@ -848,7 +848,7 @@ class notes extends module {
                 }
                 print "</span>";
                 
-				print "</td></tr></table><br>";
+                print "</td></tr></table><br>";
                 print "</form>";
             }
         }
@@ -1333,15 +1333,26 @@ class notes extends module {
 			if(strlen($post_vars["txt_diagnosis"])<0):
 				echo "<font color='red'>Keyword should be at least 1 character/s</font>";
 			else:
-				$q_diagnosis = mysql_query("SELECT class_id,class_name FROM m_lib_notes_dxclass WHERE class_name LIKE '%$post_vars[txt_diagnosis]%' ORDER by class_name ASC") or die("Cannot query: 1286");
-
+				//$q_diagnosis = mysql_query("SELECT class_id,class_name FROM m_lib_notes_dxclass WHERE class_name LIKE '%$post_vars[txt_diagnosis]%' ORDER by class_name ASC") or die("Cannot query: 1286");
+				
+				$q_diagnosis = mysql_query("SELECT class_id,class_name,icd10,notifiable FROM m_lib_notes_dxclass WHERE class_name LIKE '%$post_vars[txt_diagnosis]%' ORDER by class_name ASC, icd10 ASC") or die("Cannot query: 1338".mysql_error());
+				
 				if(mysql_num_rows($q_diagnosis)>0):
 					echo "<form method='post' name='form_select_diagnosis'>";
-					
-					while(list($classid,$classname)=mysql_fetch_array($q_diagnosis)){
-						echo "<span class='tinylight'><input type='checkbox' name='dxclass[]' value='$classid'>$classname</input></span><br>";
+				        echo "<table>";
+				        echo "<tr align='center'><td class='boxtitle'>DIAGNOSIS</td><td class='boxtitle'>ICD 10</td></tr>";
+				        
+					while(list($classid,$classname,$icd,$notifiable)=mysql_fetch_array($q_diagnosis)){
+					        echo "<tr><td valign='top'>";
+						echo "<span class='tinylight'><input type='checkbox' name='dxclass[]' value='$classid'>$classname</input></span>";
+						echo "</td>";
+						echo "<td class='tinylight'>$icd</td>";						
+						echo "</tr>";
+						
 					}
-					echo "<br><input type='submit' name='submitnotes' value='Save Diagnosis Class' class='textbox' style='border: 1px solid black'/>";
+					echo "<tr><td align='center' colspan='2'><input type='submit' name='submitnotes' value='Save Diagnosis Class' class='textbox' style='border: 1px solid black'/></td></tr>";
+					
+					echo "</table>";
 					
 					echo "</form>";
 				else:

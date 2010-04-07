@@ -219,16 +219,43 @@ function show_morbidity(){
     $arr_diag = array();
     
     $str_brgy = $this->get_brgy();    
+
+    $q_diagnosis = mysql_query("SELECT a.class_id,COUNT(a.class_id) as 'bilang',e.class_name,a.patient_id,e.icd10,COUNT(e.icd10) as 'icd_count' FROM m_consult_notes_dxclass a, m_patient b, m_family_members c, m_family_address d,m_lib_notes_dxclass e WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.patient_id=b.patient_id AND b.patient_id=c.patient_id AND c.family_id=d.family_id AND d.barangay_id IN ($str_brgy) AND a.class_id=e.class_id GROUP by e.icd10 ORDER by icd_count DESC,a.class_id ASC") or die("Cannot query 158: ".mysql_error());
     
-    $q_diagnosis = mysql_query("SELECT a.class_id,COUNT(a.class_id) as 'bilang',e.class_name FROM m_consult_notes_dxclass a, m_patient b, m_family_members c, m_family_address d,m_lib_notes_dxclass e WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.patient_id=b.patient_id AND b.patient_id=c.patient_id AND c.family_id=d.family_id AND d.barangay_id IN ($str_brgy) AND a.class_id=e.class_id GROUP by class_id ORDER by bilang DESC,a.class_id ASC") or die("Cannot query 158: ".mysql_error());
-            
+    //$q_diagnosis = mysql_query("SELECT a.class_id,COUNT(a.class_id) as 'bilang',e.class_name,a.patient_id,e.icd10 FROM m_consult_notes_dxclass a, m_patient b, m_family_members c, m_family_address d,m_lib_notes_dxclass e WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.patient_id=b.patient_id AND b.patient_id=c.patient_id AND c.family_id=d.family_id AND d.barangay_id IN ($str_brgy) AND a.class_id=e.class_id GROUP by a.class_id ORDER by bilang DESC,a.class_id ASC") or die("Cannot query 158: ".mysql_error());
+    
+    //$q_diagnosis = mysql_query("SELECT a.class_id,COUNT(a.class_id) as 'bilang',e.class_name,a.patient_id,e.icd10 FROM m_consult_notes_dxclass a, m_patient b, m_family_members c, m_family_address d,m_lib_notes_dxclass e WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.patient_id=b.patient_id AND b.patient_id=c.patient_id AND c.family_id=d.family_id AND d.barangay_id IN ($str_brgy) AND a.class_id=e.class_id AND e.notifiable='Y' GROUP by class_id ORDER by bilang DESC,a.class_id ASC") or die("Cannot query 158: ".mysql_error());
+    
+    //$q_icd10 = mysql_query("SELECT class_id,class_name,icd10 FROM m_lib_notes_dxclass WHERE notifiable='Y'") or die("Cannot query: 226".mysql_error());        
+    
     //echo mysql_num_rows($q_diagnosis);
+    
     if(mysql_num_rows($q_diagnosis)!=0):
     $bilang = 0;              
-    while(list($diag_id, $count, $diag_name, $pxid) = mysql_fetch_array($q_diagnosis)){
-        //echo $diag_id.'/'.$count.'/'.$diag_name.'<br>';
+    while(list($diag_id, $count, $diag_name, $pxid, $icd10,$icd_count) = mysql_fetch_array($q_diagnosis)){
         
+        
+        if(strstr($icd10,'.')):
+            list($icd10) = explode('.',$icd10);
+        elseif(strstr($icd10,'-')):
+            list($icd10) = explode('-',$icd10);
+        elseif(strstr($icd10,'and') || strstr($icd10,'AND')):
+            list($icd10) = explode(' ',$icd10);
+        elseif(strstr($icd10,'***')):    
+            $icd10 = "";
+        elseif(strstr($icd10,',')):
+            list($icd10) = explode(',',$icd10);
+        else:
+        
+        endif;
+        
+        //echo $icd10.'/'.$icd_count."<br>";
+        
+        //echo $diag_id.'/'.$count.'/'.$diag_name.'<br>';
+        //echo $diag_name.' '.$icd10.'<br>';            
+            
         //initialize arr_age_group and arr_age for every diagnosis iteration
+        
         $arr_age_group = array('<0'=>array('M'=>0,'F'=>0),'1-4'=>array('M'=>0,'F'=>0),'5-9'=>array('M'=>0,'F'=>0),'10-14'=>array('M'=>0,'F'=>0),'15-19'=>array('M'=>0,'F'=>0),'20-24'=>array('M'=>0,'F'=>0),'25-29'=>array('M'=>0,'F'=>0),'30-34'=>array('M'=>0,'F'=>0),'35-39'=>array('M'=>0,'F'=>0),
                     '40-44'=>array('M'=>0,'F'=>0),'45-49'=>array('M'=>0,'F'=>0),'50-54'=>array('M'=>0,'F'=>0),'55-59'=>array('M'=>0,'F'=>0),'60-64'=>array('M'=>0,'F'=>0),'>65'=>array('M'=>0,'F'=>0));
         $arr_age = array();
@@ -238,8 +265,10 @@ function show_morbidity(){
 
         foreach($arr_gender as $gender_key=>$gender){
             //echo $gender;
-            $q_px_id = mysql_query("SELECT a.patient_id,round((to_days(a.diagnosis_date)-to_days(b.patient_dob))/365,0) as computed_age FROM m_consult_notes_dxclass a, m_patient b WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' AND a.class_id='$diag_id' AND a.patient_id=b.patient_id AND b.patient_gender='$gender'") or die("Cannot query 164 ".mysql_error());
-        
+            //$q_px_id = mysql_query("SELECT a.patient_id,round((to_days(a.diagnosis_date)-to_days(b.patient_dob))/365,0) as computed_age FROM m_consult_notes_dxclass a, m_patient b WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' AND a.class_id='$diag_id' AND a.patient_id=b.patient_id AND b.patient_gender='$gender'") or die("Cannot query 164 ".mysql_error());
+            
+            $q_px_id = mysql_query("SELECT a.patient_id,round((to_days(a.diagnosis_date)-to_days(b.patient_dob))/365,0) as computed_age FROM m_consult_notes_dxclass a, m_patient b, m_lib_notes_dxclass c WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' AND a.class_id=c.class_id AND c.icd10 LIKE '%$icd10%' AND c.notifiable='Y' AND a.patient_id=b.patient_id AND b.patient_gender='$gender'") or die("Cannot query 164 ".mysql_error());
+            
             while(list($pxid,$computed_age) = mysql_fetch_array($q_px_id)){
                 if($this->get_px_brgy($pxid,$str_brgy)):
                     if($computed_age >= 1):
@@ -273,7 +302,7 @@ function show_morbidity(){
                 elseif($edad>=35 && $edad<=39):
                     $arr_age_group['35-39'][$gender] += $arr_age[$edad][$gender];                                        
                 elseif($edad>=40 && $edad<=44):
-                    $arr_age_group['40-44'][$gender] += $arr_age[$edad][$gender];                    
+                    $arr_age_group['40-44'][$gender] += $arr_age[$edad][$gender];
                 elseif($edad>=45 && $edad<=49):
                     $arr_age_group['45-49'][$gender] += $arr_age[$edad][$gender];                                                            
                 elseif($edad>=50 && $edad<=54):
@@ -292,22 +321,24 @@ function show_morbidity(){
         } 
         //after this foreach loop, arr_age_group will contain count per age group, per gender. array size is 32 (0-31)
       
-      array_push($arr_row,$diag_name,' ');
+      //array_push($arr_row,$diag_name,' ');
+      array_push($arr_row,$diag_name.' / '.$icd10,' ');
         
       //print_r($arr_age_group);
       
       foreach($arr_age_group as $age_group=>$arr_sex){
           foreach($arr_sex as $kasarian=>$kasarian_count){
               array_push($arr_row,$kasarian_count);
+              
               if($kasarian=='M'):
                   $total_male += $kasarian_count;
               else:
                   $total_female += $kasarian_count;
               endif;
-          }      
+          }
       }
 
-          array_push($arr_row,$total_male,$total_female);                    
+          array_push($arr_row,$total_male,$total_female);
           $this->SetFont('Arial','','7');          
           
           for($x=0;$x<count($arr_row);$x++){
@@ -323,12 +354,13 @@ function show_morbidity(){
           
           //$this->Row($arr_row);
      }
-    
+            
     else:
           $this->SetWidths(array('340'));
           $this->SetFont('Arial','','10');          
           $this->Row(array('No recorded morbidity and notifiable disease for this period'));
-    endif;                        
+    endif;                   
+            
 }
 
 function get_brgy(){  //returns the barangay is CSV format. to be used in WHERE clause for determining barangay residence of patient
