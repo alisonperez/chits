@@ -42,7 +42,7 @@ function Row($data)
     for($i=0;$i<count($data);$i++)
     {
         $w=$this->widths[$i];
-        $a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'C'; //sets the alignment of text inside the cell
+        $a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'L'; //sets the alignment of text inside the cell
         //Save the current position
         $x=$this->GetX();
         $y=$this->GetY();
@@ -228,32 +228,33 @@ function show_morbidity(){
     
     //$q_icd10 = mysql_query("SELECT class_id,class_name,icd10 FROM m_lib_notes_dxclass WHERE notifiable='Y'") or die("Cannot query: 226".mysql_error());        
     
-    //echo mysql_num_rows($q_diagnosis);
+    //echo mysql_num_rows($q_diagnosis).'<br>';
     
     if(mysql_num_rows($q_diagnosis)!=0):
     $bilang = 0;              
-    while(list($diag_id, $count, $diag_name, $pxid, $icd10,$icd_count) = mysql_fetch_array($q_diagnosis)){
-        
-        
-        if(strstr($icd10,'.')):
-            list($icd10) = explode('.',$icd10);
-        elseif(strstr($icd10,'-')):
-            list($icd10) = explode('-',$icd10);
-        elseif(strstr($icd10,'and') || strstr($icd10,'AND')):
-            list($icd10) = explode(' ',$icd10);
-        elseif(strstr($icd10,'***')):    
+    $arr_icd = array(); //this will contain the distinct instances of ICD-10 codes in the 1st array, arr_row. To be used for final counting and display
+    $arr_main = array();
+    
+    while(list($diag_id, $count, $diag_name, $pxid, $icd10_orig,$icd_count) = mysql_fetch_array($q_diagnosis)){                
+            
+        if(strstr($icd10_orig,'.')):
+            list($icd10) = explode('.',$icd10_orig);
+        elseif(strstr($icd10_orig,'-')):
+            list($icd10) = explode('-',$icd10_orig);
+        elseif(strstr($icd10_orig,'and') || strstr($icd10_orig,'AND')):
+            list($icd10) = explode(' ',$icd10_orig);
+        elseif(strstr($icd10_orig,'***')):    
             $icd10 = "";
-        elseif(strstr($icd10,',')):
-            list($icd10) = explode(',',$icd10);
+        elseif(strstr($icd10_orig,',')):
+            list($icd10) = explode(',',$icd10_orig);
         else:
-        
+            $icd10 = $icd10_orig;
         endif;
         
-        //echo $icd10.'/'.$icd_count."<br>";
-        
+        //echo $diag_id.'/'.$diag_name.'/'.$icd10.'/'.$icd_count."<br>";
         //echo $diag_id.'/'.$count.'/'.$diag_name.'<br>';
         //echo $diag_name.' '.$icd10.'<br>';            
-            
+                    
         //initialize arr_age_group and arr_age for every diagnosis iteration
         
         $arr_age_group = array('<0'=>array('M'=>0,'F'=>0),'1-4'=>array('M'=>0,'F'=>0),'5-9'=>array('M'=>0,'F'=>0),'10-14'=>array('M'=>0,'F'=>0),'15-19'=>array('M'=>0,'F'=>0),'20-24'=>array('M'=>0,'F'=>0),'25-29'=>array('M'=>0,'F'=>0),'30-34'=>array('M'=>0,'F'=>0),'35-39'=>array('M'=>0,'F'=>0),
@@ -265,9 +266,10 @@ function show_morbidity(){
 
         foreach($arr_gender as $gender_key=>$gender){
             //echo $gender;
+            
             //$q_px_id = mysql_query("SELECT a.patient_id,round((to_days(a.diagnosis_date)-to_days(b.patient_dob))/365,0) as computed_age FROM m_consult_notes_dxclass a, m_patient b WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' AND a.class_id='$diag_id' AND a.patient_id=b.patient_id AND b.patient_gender='$gender'") or die("Cannot query 164 ".mysql_error());
             
-            $q_px_id = mysql_query("SELECT a.patient_id,round((to_days(a.diagnosis_date)-to_days(b.patient_dob))/365,0) as computed_age FROM m_consult_notes_dxclass a, m_patient b, m_lib_notes_dxclass c WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' AND a.class_id=c.class_id AND c.icd10 LIKE '%$icd10%' AND c.notifiable='Y' AND a.patient_id=b.patient_id AND b.patient_gender='$gender'") or die("Cannot query 164 ".mysql_error());
+            $q_px_id = mysql_query("SELECT a.patient_id,round((to_days(a.diagnosis_date)-to_days(b.patient_dob))/365,0) as computed_age FROM m_consult_notes_dxclass a, m_patient b, m_lib_notes_dxclass c WHERE a.diagnosis_date BETWEEN '$_SESSION[sdate]' AND '$_SESSION[edate]' AND a.class_id=c.class_id AND c.icd10 LIKE '%$icd10_orig%' AND c.morbidity='Y' AND a.patient_id=b.patient_id AND b.patient_gender='$gender'") or die("Cannot query 164 ".mysql_error());
             
             while(list($pxid,$computed_age) = mysql_fetch_array($q_px_id)){
                 if($this->get_px_brgy($pxid,$str_brgy)):
@@ -279,6 +281,7 @@ function show_morbidity(){
                 endif;
                 //echo $pxid.'/'.$computed_age.'<br>';
             }
+            
             //after the execution of this while loop, arr_age will contain count per age per gender (i.e. arr_age[20][M],arr_age[20][F])
             
             
@@ -318,31 +321,43 @@ function show_morbidity(){
                 endif;     
             }            
             
+        
+            
         } 
         //after this foreach loop, arr_age_group will contain count per age group, per gender. array size is 32 (0-31)
       
-      //array_push($arr_row,$diag_name,' ');
-      array_push($arr_row,$diag_name.' / '.$icd10,' ');
-        
-      //print_r($arr_age_group);
-      
-      foreach($arr_age_group as $age_group=>$arr_sex){
-          foreach($arr_sex as $kasarian=>$kasarian_count){
-              array_push($arr_row,$kasarian_count);
+        //array_push($arr_row,$diag_name,' ');
+          
+          $q_icd = mysql_query("SELECT class_id FROM m_lib_notes_dxclass WHERE class_id='$diag_id' AND icd10 LIKE '%$icd10%' AND morbidity='Y'") or die("Cannot query 328 ".mysql_error());
+          
+          if(mysql_num_rows($q_icd)!=0):
+              //array_push($arr_row,$diag_name.' / '.$icd10,$icd10);
               
-              if($kasarian=='M'):
-                  $total_male += $kasarian_count;
-              else:
-                  $total_female += $kasarian_count;
-              endif;
+              array_push($arr_row,$diag_name.'/'.$icd10_orig,$icd10);
+         
+              array_push($arr_icd,$icd10);
+              
+              
+              //print_r($arr_age_group);
+      
+          foreach($arr_age_group as $age_group=>$arr_sex){
+              foreach($arr_sex as $kasarian=>$kasarian_count){
+                  array_push($arr_row,$kasarian_count);
+              
+                  if($kasarian=='M'):
+                      $total_male += $kasarian_count;
+                  else:
+                      $total_female += $kasarian_count;
+                  endif;
+              }
           }
-      }
 
           array_push($arr_row,$total_male,$total_female);
           $this->SetFont('Arial','','7');          
           
-          for($x=0;$x<count($arr_row);$x++){
-              
+          //print_r($arr_row).'<br>';
+          
+          /*for($x=0;$x<count($arr_row);$x++){              
               if($x==0):
                   $this->Cell($w[$x],6,$bilang.'. '.$arr_row[$x],'1',0,'L');
               else:
@@ -350,17 +365,90 @@ function show_morbidity(){
               endif;              
           }
           
-          $this->Ln();
+          $this->Ln();*/
+          
+          
+          endif;
           
           //$this->Row($arr_row);
+          
+          array_push($arr_main,$arr_row);
+     
      }
-            
+     
+     $arr_icd = array_unique($arr_icd);          
+     //print_r($arr_icd);     
+     
+     //this foreach loop will going to merge diagnosis with similar ICD-10 code header (i.e. A09, A09.1)
+     foreach($arr_icd as $icd_index=>$icd_value){         
+         foreach($arr_main as $main_index=>$main_arr){
+            if($main_arr[1]==$icd_value):
+                for($j=2;$j<34;$j++){
+                    $final_arr[$icd_value][$j] = $final_arr[$icd_value][$j] + $main_arr[$j];
+                }
+            endif;
+         }
+     }
+    
+     //print_r($arr_main).'<br>';
+     
+     //print_r($final_arr);
+     
+     $arr_sorted_icd = $this->sort_icd($final_arr);
+     
+     //print_r($arr_sorted_icd);
+     
+     $final_arr2 = array(); 
+     $bilang = 1;
+     foreach($arr_sorted_icd as $key_icd=>$value_icd){
+         foreach($final_arr as $key_icd2=>$value_icd2){             
+             if($key_icd==$key_icd2):  
+                 //get icd label from the icd10 library 
+                 $icdcode = $key_icd2.'.-';
+                 $q_icd_lib = mysql_query("SELECT description FROM m_lib_icd10_en WHERE diagnosis_code='$icdcode'") or die("Cannot query 407".mysql_error());
+                 if(mysql_num_rows($q_icd_lib)!=0):
+                     list($value_icd2[0]) = mysql_fetch_array($q_icd_lib);
+                 else:                     
+                     $q_dxclass = mysql_query("SELECT class_name from m_lib_notes_dxclass WHERE icd10 LIKE '%$key_icd2%' AND morbidity='Y'") or die("Cannot query 412".mysql_error());
+                     list($value_icd2[0]) = mysql_fetch_array($q_dxclass);
+                 endif;
+                 
+                 $value_icd2[0] = $bilang.'. '.$value_icd2[0];
+                 
+                 $bilang++;
+                 $value_icd2[1] = $key_icd2;
+                 
+                 //$final_arr2 = $value_icd2;               
+                 array_push($final_arr2,$value_icd2);
+             endif;
+         }
+     }
+     
+     //print_r($final_arr2);
+     foreach($final_arr2 as $key_final=>$value_final){         
+          $this->SetWidths($w);          
+          $this->Row($value_final);          
+     }
+          
+
     else:
           $this->SetWidths(array('340'));
-          $this->SetFont('Arial','','10');          
+          $this->SetFont('Arial','','10');     
           $this->Row(array('No recorded morbidity and notifiable disease for this period'));
     endif;                   
             
+}
+
+function sort_icd($arr){
+
+    foreach($arr as $key=>$value){
+        $a[$key] = $value[32] + $value[33]; //get the GT of each ICD-10 diagnosis        
+    }
+                    
+    //asort($a);            
+                
+    return $a; // variable 'a' will going to contain sorted ICD-10 diagnosis from most to least number of cases. pass as value to the calling function
+    
 }
 
 function get_brgy(){  //returns the barangay is CSV format. to be used in WHERE clause for determining barangay residence of patient
