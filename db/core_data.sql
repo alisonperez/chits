@@ -18103,5 +18103,24 @@ CREATE TABLE IF NOT EXISTS `m_lib_weekly_calendar` (
   `end_date` date NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `m_consult_lab_fecalysis` (
+  `consult_id` float NOT NULL,
+  `request_id` float NOT NULL,
+  `patient_id` float NOT NULL,
+  `date_lab_exam` date NOT NULL,
+  `fecal_color` text NOT NULL,
+  `fecal_consistency` text NOT NULL,
+  `fecal_occultblood` text NOT NULL,
+  `fecal_ova` text NOT NULL,
+  `fecal_wbc` text NOT NULL,
+  `fecal_rbc` text NOT NULL,
+  `fecal_bacteria` text NOT NULL,
+  `fecal_fat` text NOT NULL,
+  `fecal_starch` text NOT NULL,
+  `fecal_others` text NOT NULL,
+  `release_flag` text NOT NULL,
+  `release_date` datetime NOT NULL,
+  `user_id` float NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 

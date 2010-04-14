@@ -51,7 +51,6 @@ class sputum extends module {
         module::set_lang("LBL_DATE_PROCESSED", "english", "DATE PROCESSED", "Y");
         module::set_lang("LBL_PROCESSED_BY", "english", "PROCESSED BY", "Y");
         module::set_lang("LBL_SPUTUM_PERIOD", "english", "PERIOD OF SPUTUM EXAM", "Y");
-
     }
 
     function init_stats() {
@@ -261,10 +260,7 @@ class sputum extends module {
         print "</td></tr>";
         print "<tr valign='top'><td>";
         print "<span class='boxtitle'>".LBL_LAB_REQUEST_DETAILS."</span><br> ";
-        $sql = "select lab_id, consult_id, date_format(request_timestamp, '%a %d %b %Y, %h:%i%p') request_timestamp, request_user_id, request_done, ".
-               "date_format(done_timestamp, '%a %d %b %Y, %h:%i%p') done_timestamp, done_user_id ".
-               "from m_consult_lab ".
-               "where request_id = '".$get_vars["request_id"]."'";
+        $sql = "select lab_id, consult_id, date_format(request_timestamp, '%a %d %b %Y, %h:%i%p') request_timestamp, request_user_id, request_done, "."date_format(done_timestamp, '%a %d %b %Y, %h:%i%p') done_timestamp, done_user_id "."from m_consult_lab "."where request_id = '".$get_vars["request_id"]."'";
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
                 $lab = mysql_fetch_array($result);
