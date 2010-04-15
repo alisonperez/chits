@@ -118,7 +118,7 @@ small { font-family: verdana, sans serif}
 .ptmenu:hover { font-family: verdana, arial, sans serif; font-size: 10pt; text-decoration: none; background-color: #FFFF33; border: 1px solid black; padding-left: 2px; padding-right: 2px;}
 .boxtitle { font-family: verdana, arial, sans serif; font-size: 8pt; font-weight: bold;}
 .tiny { font-family: arial, sans serif; font-size: 7pt; font-weight: bold; color: black; }
-.tinylight { font-family: verdana, arial, sans serif; font-size: 7pt; font-weight: normal; color: black; }
+.tinylight { font-family: verdana, arial, sans serif; font-size: 8pt; font-weight: normal; color: black; }
 .copyright { font-family: verdana, arial, sans serif; font-size: 7pt; font-weight: normal; color: black; }
 .admin { font-family: verdana, arial, sans serif; font-size: 14pt; font-weight: bold; color: #FF3300; }
 .module { font-family: verdana, arial, sans serif; font-size: 14pt; font-weight: bold; color: #9999FF; }

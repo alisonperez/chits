@@ -96,7 +96,7 @@
       $f = new fecalysis;
       
       if($_POST["submitlab"]):
-        print_r($_POST);
+        //print_r($_POST);
         
         $q_request = mysql_query("SELECT request_id FROM m_consult_lab_fecalysis WHERE request_id='$_POST[request_id]'") or die("Cannot query 101 ".mysql_error());
         
@@ -124,7 +124,7 @@
         
         if($update_fecal || $insert_fecal):
           echo "<script language='Javascript'>";          
-          echo "window.alert('Fecalysis data was successfully been saved.')";
+          echo "window.alert('Fecalysis data was successfully been saved.')";          
           echo "</script>";
         endif;
         
@@ -155,45 +155,45 @@
         $date_lab_exam = date('m/d/Y');      
       endif;
       
-      
-      echo "<form action='$_SERVER[PHP_SELF]?page=$get_vars[page]&menu_id=$get_vars[menu_id]&consult_id=$get_vars[consult_id]&module=fecalysis&request_id=$get_vars[request_id]&lab_id=FEC&ptmenu=LABS' name='form_lab' method='post'>";
-      echo "<table border='1'>";
+      echo "<a name='fecalysis'></a>";
+      echo "<form action='$_SERVER[PHP_SELF]?page=$get_vars[page]&menu_id=$get_vars[menu_id]&consult_id=$get_vars[consult_id]&module=fecalysis&request_id=$get_vars[request_id]&lab_id=FEC&ptmenu=LABS#fecalysis' name='form_lab' method='post'>";
+      echo "<table style='border: 1px dotted black'>";
                                     
-      echo "<tr><td colspan='2'>DATE EXAMINED &nbsp; <input type='text' name='fecal_date' size='8' maxlength='10' value='$date_lab_exam'></input>&nbsp;";
+      echo "<tr><td colspan='2' class='boxtitle'>DATE EXAMINED &nbsp; <input type='text' name='fecal_date' size='8' maxlength='10' value='$date_lab_exam' class='tinylight'></input>&nbsp;";
       
       echo "<a href=\"javascript:show_calendar4('document.form_lab.fecal_date', document.form_lab.fecal_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a> ";
       echo "</td></tr>";
-      echo "<tr><td colspan='2'>MACROSCOPIC</td></tr>";            
-      echo "<tr><td colspan='2'>PHYSICAL</td></tr>";
-      echo "<tr valign='top'><td>COLOR</td><td><input name='fecal_color' type='text' size='9' value='$color'></input></td></tr>";
-      echo "<tr><td>CONSISTENCY</td><td><input name='fecal_consistency' type='text' size='9' value='$consistency'></input></td></tr>";
+      echo "<tr><td colspan='2' align='center' class='boxtitle'>MACROSCOPIC</td></tr>";            
+      echo "<tr><td colspan='2' class='boxtitle' align='center'>PHYSICAL</td></tr>";
+      echo "<tr valign='top' class='tinylight'><td class='boxtitle'>COLOR</td><td><input name='fecal_color' type='text' size='9' value='$color' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>CONSISTENCY</td><td><input name='fecal_consistency' type='text' size='9' value='$consistency' class='tinylight'></input></td></tr>";
       
-      echo "<tr><td colspan='2'>CHEMICAL</td></tr>";
-      echo "<tr><td>OCCULT BLOOD</td><td><textarea name='fecal_blood' rows='2' cols='20'>$blood</textarea></td></tr>";
+      echo "<tr><td colspan='2' class='boxtitle' align='center'>CHEMICAL</td></tr>";
+      echo "<tr><td class='boxtitle'>OCCULT BLOOD</td><td><textarea name='fecal_blood' rows='2' cols='20' class='tinylight'>$blood</textarea></td></tr>";
       
       echo "<tr><td colspan='2'>&nbsp;</td></tr>";
       
-      echo "<tr><td colspan='2'>MICROSCOPIC</td></tr>";
-      echo "<tr valign='top'><td>OVA OR PARASITE</td>";      
-      echo "<td><textarea name='fecal_ova' rows='2' cols='20'>$ova</textarea></td></tr>";      
+      echo "<tr><td colspan='2' class='boxtitle' align='center'>MICROSCOPIC</td></tr>";
+      echo "<tr valign='top'><td class='boxtitle'>OVA OR PARASITE</td>";      
+      echo "<td><textarea name='fecal_ova' rows='2' cols='20' class='tinylight'>$ova</textarea></td></tr>";      
       
-      echo "<tr valign='top'><td>WBC</td>";
-      echo "<td><input name='fecal_wbc' type='text' size='5' value='$wbc'></input>/hpf</td></tr>";
+      echo "<tr valign='top'><td class='boxtitle'>WBC</td>";
+      echo "<td><input name='fecal_wbc' type='text' size='9' value='$wbc' class='tinylight'></input> /hpf</td></tr>";
       
-      echo "<tr valign='top'><td>RBC</td>";
-      echo "<td><input name='fecal_rbc' type='text' size='5' value='$rbc'></input>/hpf</td></tr>";
+      echo "<tr valign='top'><td class='boxtitle'>RBC</td>";
+      echo "<td><input name='fecal_rbc' type='text' size='9' value='$rbc' class='tinylight'></input> /hpf</td></tr>";
       
-      echo "<tr valign='top'><td>Bacteria</td>";
-      echo "<td><input name='fecal_bacteria' type='text' size='5' value='$bacteria'></input></td></tr>";
+      echo "<tr valign='top'><td class='boxtitle'>BACTERIA</td>";
+      echo "<td><input name='fecal_bacteria' type='text' size='9' value='$bacteria' class='tinylight'></input></td></tr>";
       
-      echo "<tr valign='top'><td>Fat Globules</td>";
-      echo "<td><input name='fecal_fat' type='text' size='5' value='$fat'></input></td></tr>";
+      echo "<tr valign='top'><td class='boxtitle'>FAT GLOBULES</td>";
+      echo "<td><input name='fecal_fat' type='text' size='9' value='$fat' class='tinylight'></input></td></tr>";
       
-      echo "<tr valign='top'><td>Starch Globules</td>";
-      echo "<td><input name='fecal_starch' type='text' size='5' value='$starch'></input></td></tr>";
+      echo "<tr valign='top'><td class='boxtitle'>STARCH GLOBULES</td>";
+      echo "<td><input name='fecal_starch' type='text' size='9' value='$starch' class='tinylight'></input></td></tr>";
       
-      echo "<tr valign='top'><td>OTHERS</td>";
-      echo "<td><textarea name='fecal_others' rows='2' cols='20'>$others</textarea></td></tr>";
+      echo "<tr valign='top'><td class='boxtitle'>OTHERS</td>";
+      echo "<td><textarea name='fecal_others' rows='2' cols='20' class='tinylight'>$others</textarea></td></tr>";
       
       echo "<tr valign='top'><td colspan='2'>";
       echo "<span class='boxtitle'>".LBL_RELEASE_FLAG."</span><br>";

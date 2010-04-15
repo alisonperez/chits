@@ -251,7 +251,7 @@ class sputum extends module {
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
-        echo "<a name='sputum_form'></a>";
+        echo "<a name='sputum'></a>";
         
         print "<table width='300'>";
         print "<form action = '".$_SERVER["SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=sputum&request_id=".$get_vars["request_id"]."&lab_id=SPT". "&ptmenu=LABS' name='form_lab' method='post'>";
@@ -482,11 +482,11 @@ class sputum extends module {
                     if ($result_update = mysql_query($sql_update)) {                        
                         mysql_query("COMMIT;") or die(mysql_error());
                         mysql_query("SET autocommit=1;") or die(mysql_error());
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum_form");
+                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum");
                     } else {
                         mysql_query("ROLLBACK;") or die(mysql_error());
                         mysql_query("SET autocommit=1;") or die(mysql_error());
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum_form");
+                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum");
                     }
                 }                
                 

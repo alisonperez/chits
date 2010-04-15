@@ -267,7 +267,7 @@ class lab extends module {
                 print "<table width='300'><tr><td>";
                 while (list($id, $name, $mod, $ts1, $ts2) = mysql_fetch_array($result)) {
                     print "<img src='../images/arrow_redwhite.gif' align='bottom' border='0'/> ";
-                    print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=$mod&request_id=$id#sputum_form' title='".INSTR_CLICK_VIEW_RESULTS."'>$name</a> ";
+                    print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=$mod&request_id=$id#$mod' title='".INSTR_CLICK_VIEW_RESULTS."'>$name</a> ";
                     if ($_SESSION["priv_delete"]) {
                         print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&delete_id=$id'><img src='../images/delete.png' border='0'/></a>";
                     }
