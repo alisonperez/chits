@@ -104,7 +104,7 @@
           $release = 'Y';
           $release_date = date('Y-m-d H:i:s');
           
-          $q_update_lab = mysql_query("UPDATE m_consult_lab SET request_done='$release',done_timestamp='$release_date' WHERE request_id='$_POST[request_id]' AND lab_id='$_GET[lab_id]'") or die("Cannot query 107 ".mysql_error());
+          $q_update_lab = mysql_query("UPDATE m_consult_lab SET request_done='$release',done_timestamp='$release_date',done_user_id='$_SESSION[userid]' WHERE request_id='$_POST[request_id]' AND lab_id='$_GET[lab_id]'") or die("Cannot query 107 ".mysql_error());
           
         else:
           $release = 'N';
@@ -136,6 +136,49 @@
       $f->form_consult_lab_fecalysis($menu_id,$post_vars,$get_vars);
     }
     
+    function _consult_lab_fecalysis_results(){
+      $q_fecalysis = mysql_query("SELECT date_format(date_lab_exam,'%m/%d/%Y') as 'date_lab_exam',fecal_color,fecal_consistency,fecal_occultblood,fecal_ova,fecal_wbc,fecal_rbc,fecal_bacteria,fecal_fat,fecal_starch,fecal_others,user_id,patient_id FROM m_consult_lab_fecalysis WHERE request_id='$_GET[request_id]' AND release_flag='Y'") or die("Cannot query 150".mysql_error());
+      $q_lab_details = mysql_query("SELECT patient_id,date_format(request_timestamp,'%a %d %b %Y, %h %i %p') as 'date_requested', request_user_id, date_format(done_timestamp,'%a %d %b %Y, %h %i %p') as 'date_done', request_done, done_user_id FROM m_consult_lab WHERE request_id='$_GET[request_id]' AND request_done='Y'") or die("Cannot query 151:".mysql_error());
+      
+      list($pxid,$date_request,$request_user_id,$date_done,$request_done,$done_user_id) = mysql_fetch_array($q_lab_details);    
+      list($date_lab_exam,$color,$consistency,$blood,$ova,$wbc,$rbc,$bacteria,$fat,$starch,$others,$userid,$pxid)  = mysql_fetch_row($q_fecalysis);      
+      
+      echo "<a name='fecalysis_result'></a>";
+      
+      
+      echo "<table style='border: 1px dotted black'><tr><td>";
+      print "<span class='tinylight'>";
+      print "<b>FECALYSIS RESULTS FOR ".strtoupper(patient::get_name($pxid))."</b><br/>";
+      print "REQUEST ID: <font color='red'>".module::pad_zero($_GET["request_id"],7)."</font><br/>";
+      print "DATE REQUESTED: ".$date_request."<br/>";
+      print "REQUESTED BY: ".user::get_username($request_user_id)."<br/>";
+      print "DATE COMPLETED: ".$date_done."<br/>";
+      print "PROCESSED BY: ".($done_user_id?user::get_username($done_user_id):"NA")."<br/>";      
+      print "RELEASED: ".$request_done."<br/>";
+      
+      print "<hr size='1'/>";
+      print "<b>FECALYSIS EXAM DATE: </b>".$date_lab_exam."<br/> ";      
+      print "<b>MACROSCOPIC</b><br/><b>PHYSICAL</b><br/>";
+      print "<b>COLOR: </b>".$color."<br/>";
+      print "<b>CONSISTENCY: </b>".$consistency."<br/>";
+      print "<b>CHEMICAL</b><br/>";
+      print "<b>OCCULT BLOOD: </b>".$blood."<br/>";
+      
+      print "<hr size='1'/>";
+      print "<b>MICROSCOPIC </b><br/>";
+      print "<b>OVA OR PARASITE: </b>".$ova."<br/>";
+      print "<b>WBC: </b>".$wbc."<br/>";
+      print "<b>RBC: </b>".$rbc."<br/>";      
+      print "<b>BACTERIA: </b>".$bacteria."<br/>";
+      print "<b>FAT GLOBULES: </b>".$fat."<br/>";
+      print "<b>STARCH GLOBULES: </b>".$starch."<br/>";
+      print "<b>OTHERS: </b>".$others."<br/>";      
+      print "</span>";      
+                
+      echo "</td></tr></table>";
+    }    
+    
+    
     
     function form_consult_lab_fecalysis(){
       if(func_num_args()>0):
@@ -147,17 +190,35 @@
         $isadmin = $arg_list[4];      
       endif;      
         
-      $q_fecalysis = mysql_query("SELECT date_format(date_lab_exam,'%m/%d/%Y') as 'date_lab_exam',fecal_color,fecal_consistency,fecal_occultblood,fecal_ova,fecal_wbc,fecal_rbc,fecal_bacteria,fecal_fat,fecal_starch,fecal_others,user_id FROM m_consult_lab_fecalysis WHERE request_id='$_GET[request_id]'") or die("Cannot query 150".mysql_error());
+      $q_fecalysis = mysql_query("SELECT date_format(date_lab_exam,'%m/%d/%Y') as 'date_lab_exam',fecal_color,fecal_consistency,fecal_occultblood,fecal_ova,fecal_wbc,fecal_rbc,fecal_bacteria,fecal_fat,fecal_starch,fecal_others,user_id,patient_id FROM m_consult_lab_fecalysis WHERE request_id='$_GET[request_id]'") or die("Cannot query 150".mysql_error());
+      $q_lab_details = mysql_query("SELECT patient_id,date_format(request_timestamp,'%a %d %b %Y, %h %i %p') as 'date_requested', request_user_id, date_format(done_timestamp,'%a %d %b %Y, %h %i %p') as 'date_done', request_done, done_user_id FROM m_consult_lab WHERE request_id='$_GET[request_id]'") or die("Cannot query 151:".mysql_error());
+      
+      list($pxid,$date_request,$request_user_id,$date_done,$request_done,$done_user_id) = mysql_fetch_array($q_lab_details);
       
       if(mysql_num_rows($q_fecalysis)!=0):
-        list($date_lab_exam,$color,$consistency,$blood,$ova,$wbc,$rbc,$bacteria,$fat,$starch,$others,$userid)  = mysql_fetch_row($q_fecalysis);
+        list($date_lab_exam,$color,$consistency,$blood,$ova,$wbc,$rbc,$bacteria,$fat,$starch,$others,$userid,$pxid)  = mysql_fetch_row($q_fecalysis);
       else:
         $date_lab_exam = date('m/d/Y');      
       endif;
       
       echo "<a name='fecalysis'></a>";
       echo "<form action='$_SERVER[PHP_SELF]?page=$get_vars[page]&menu_id=$get_vars[menu_id]&consult_id=$get_vars[consult_id]&module=fecalysis&request_id=$get_vars[request_id]&lab_id=FEC&ptmenu=LABS#fecalysis' name='form_lab' method='post'>";
-      echo "<table style='border: 1px dotted black'>";
+      
+      echo "<span class='tinylight'>";      
+      echo "<b>LAB REQUEST DETAILS</b><br/>";
+      echo "<table width='250' bgcolor='#ffff99' style='border: 1px solid black'>";      
+      //echo "<tr><td class='tinylight'><b>REQUEST ID: </b><font color='red'>".module::pad_zero($_GET["request_id"],7)."</font><br/>";
+      echo "<tr><td class='tinylight'><b>LAB EXAM: </b>FECALYSIS<br/>";
+      echo "<b>DATE REQUESTED: </b>".$date_request."<br/>";
+      echo "<b>REQUESTED BY: </b>".user::get_username($request_user_id)."<br/>";
+      echo "<b>DATE COMPLETED: </b>".$date_done."<br/>";
+      echo "<b>PROCESSED BY: </b>".($done_user_id?user::get_username($done_user_id):"NA")."<br/>";      
+      echo "<b>RELEASED: </b>".$request_done."<br/></td></tr>";
+      echo "</table>";
+      
+      echo "<hr size='1'/>";
+      
+      echo "<table style='border: 1px dotted black'>";                                                                                                                                                            
                                     
       echo "<tr><td colspan='2' class='boxtitle'>DATE EXAMINED &nbsp; <input type='text' name='fecal_date' size='8' maxlength='10' value='$date_lab_exam' class='tinylight'></input>&nbsp;";
       

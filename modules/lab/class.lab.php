@@ -299,7 +299,7 @@ class lab extends module {
                 print "<table><tr><td>";
                 while (list($id, $name, $mod, $ts1, $ts2) = mysql_fetch_array($result)) {
                     print "<img src='../images/arrow_redwhite.gif' align='left' border='0'/> ";
-                    print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=$mod&request_id=$id#sputum_result' title='".INSTR_CLICK_VIEW_RESULTS."'>$name</a> ";
+                    print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=$mod&request_id=$id#$mod"."_result"."' title='".INSTR_CLICK_VIEW_RESULTS."'>$name</a> ";
                     print "<br/>&nbsp;&nbsp;&nbsp;$ts1<br/>";
                     if ($get_vars["request_id"]==$id && $get_vars["module"]==$mod) {
                         // access result API for lab exam
