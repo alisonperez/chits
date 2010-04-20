@@ -468,7 +468,8 @@ class healthcenter extends module{
         }
         
         mysql_query("ALTER TABLE `m_consult` DROP PRIMARY KEY , ADD PRIMARY KEY (`consult_id`)");
-        
+        mysql_query("ALTER TABLE `m_consult_notes` DROP PRIMARY KEY , ADD PRIMARY KEY (`notes_id`)");
+                
         
         if (func_num_args()>0) {
             $arg_list = func_get_args();
