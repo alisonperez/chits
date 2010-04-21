@@ -89,7 +89,38 @@
       $u = new urinalysis;
       
       if($_POST["submitlab"]):
-                    
+        print_r($_POST);
+        //print_r($_GET);
+        $q_request = mysql_query("SELECT request_id FROM m_consult_lab_fecalysis WHERE request_id='$_POST[request_id]'") or die("Cannot query 94:".mysql_error());
+      
+      if($_POST["release_flag"]==1):
+        $release = 'Y';
+        $release_date = date('Y-m-d H:i:s');
+        $q_update_lab = mysql_query("UPDATE m_consult_lab SET request_done='$release',done_timestamp='$release_date',done_user_id='$_SESSION[userid]' WHERE request_id='$_POST[request_id]' AND lab_id='$_GET[lab_id]'") or die("Cannot query 99".mysql_error());
+                                                            
+      else:
+        $release = 'N';
+        $release_date = '';
+                
+        //$q_update_lab = mysql_query("") or die("Cannot query 106".mysql_error()); //insert into the db the contents of urinalysis form
+      endif;
+      
+        $pxid = healthcenter::get_patient_id($_GET[consult_id]);
+        list($m,$d,$y) = explode('/',$_POST[fecal_date]);
+                      
+        $date_lab_exam = $y.'-'.$m.'-'.$d;
+                                
+        if(mysql_num_rows($q_request)!=0):
+          $update_urinalysis = mysql_query("UPDATE m_consult_lab_urinalysis SET consult_id='$_GET[consult_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',physical_color='$_POST[sel_color]',physical_reaction='$_POST[sel_reaction]',sel_transparency='$_POST[sel_transparency]',physical_gravity='$_POST[sel_gravity]',physical_ph='$_POST[sel_ph]',chem_albumin='$_POST[sel_albumin]',chem_sugar='$_POST[sel_sugar]',chem_pregnancy='$_POST[sel_pregnancy]',sediments_rbc='$_POST[txt_red]',sediments_pus='$_POST[txt_pus]',sediments_epithelial='$_POST[txt_epithelial]',sediments_urates='$_POST[txt_amorphous]',sediments_calcium='$_POST[txt_calcium_oxelates]',sediments_fat='$_POST[txt_fat]',sediments_phosphate='$_POST[txt_triple]',sediments_uric='$_POST[txt_uric]',sediments_amorphous='$_POST[txt_amorphouse_phosphate]',sediments_carbonates='$_POST[txt_calcium_carb]',sediments_bacteria='$_POST[txt_bacteria]',sediments_mucus='$_POST[txt_mucus]',cast_coarsely='$_POST[txt_granular]',cast_pus='$_POST[txt_pus_cast]',cast_hyaline='$_POST[txt_hyaline]',cast_finely='$_POST[txt_finely_cast]',cast_redcell='$_POST[txt_red_cell]',cast_waxy='$_POST[txt_wax]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]' WHERE request_id='$_POST[request_id]'") or die("Cannot query 114".mysql_error()); //update the db contents of urinalysis form
+        else:        
+          $update_urinalysis = mysql_query("INSERT INTO m_consult_lab_urinalysis SET consult_id='$_GET[consult_id]',request_id='$_POST[request_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',physical_color='$_POST[sel_color]',physical_reaction='$_POST[sel_reaction]',sel_transparency='$_POST[sel_transparency]',physical_gravity='$_POST[sel_gravity]',physical_ph='$_POST[sel_ph]',chem_albumin='$_POST[sel_albumin]',chem_sugar='$_POST[sel_sugar]',chem_pregnancy='$_POST[sel_pregnancy]',sediments_rbc='$_POST[txt_red]',sediments_pus='$_POST[txt_pus]',sediments_epithelial='$_POST[txt_epithelial]',sediments_urates='$_POST[txt_amorphous]',sediments_calcium='$_POST[txt_calcium_oxelates]',sediments_fat='$_POST[txt_fat]',sediments_phosphate='$_POST[txt_triple]',sediments_uric='$_POST[txt_uric]',sediments_amorphous='$_POST[txt_amorphouse_phosphate]',sediments_carbonates='$_POST[txt_calcium_carb]',sediments_bacteria='$_POST[txt_bacteria]',sediments_mucus='$_POST[txt_mucus]',cast_coarsely='$_POST[txt_granular]',cast_pus='$_POST[txt_pus_cast]',cast_hyaline='$_POST[txt_hyaline]',cast_finely='$_POST[txt_finely_cast]',cast_redcell='$_POST[txt_red_cell]',cast_waxy='$_POST[txt_wax]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]'") or die("Cannot query 116".mysql_error()); //insert into the db the contents of urinalysis form          
+        endif;
+      
+      
+        if($update_urinalysis):
+          //echo "" xxx
+        endif;
+        
       endif;
       
       $u->form_consult_lab_urinalysis($menu_id,$post_vars,$get_vars);
@@ -112,7 +143,7 @@
         $isadmin = $arg_list[4];  
       endif;
       
-      echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&request_id=$_GET[request_id]#$_GET'.'_form' method='POST' name='form_lab'>";
+      echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&lab_id=URN&ptmenu=$_GET[ptmenu]&module=$_GET[module]&request_id=$_GET[request_id]#$_GET'.'_form' method='POST' name='form_lab'>";
       echo "<a name='urinalysis'></a>";
       echo "<table border='1' width='550'>";
       echo "<tr><td colspan='2'>URINALYSIS</td></tr>";
@@ -195,7 +226,7 @@
       echo "<tr><td class='boxtitle'>PUS CELLS</td><td><input type='text' name='txt_pus' size='5'></input></td></tr>";
       echo "<tr><td class='boxtitle'>EPHITHELIAL CELLS</td><td><input type='text' name='txt_epithelial' size='5'></input></td></tr>";      
       echo "<tr><td class='boxtitle'>AMORPHOUS URATES</td><td><input type='text' name='txt_amorphous' size='5'></input></td></tr>";            
-      echo "<tr><td class='boxtitle'>CALCIUM OXELATES</td><td><input type='text' name='txt_calcium' size='5'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>CALCIUM OXELATES</td><td><input type='text' name='txt_calcium_oxelates' size='5'></input></td></tr>";
       echo "<tr><td class='boxtitle'>FAT GLOBULES</td><td><input type='text' name='txt_fat' size='5'></input></td></tr>";
       echo "</table>";
       echo "</td>";
@@ -205,9 +236,9 @@
       echo "<tr><td class='boxtitle'>TRIPLE PHOSPHATES</td><td><input type='text' name='txt_triple' size='5'></input></td></tr>";
       echo "<tr><td class='boxtitle'>URIC ACID CRYSTALS</td><td><input type='text' name='txt_uric' size='5'></input></td></tr>";
       echo "<tr><td class='boxtitle'>AMORPHOUS PHOSPATES</td><td><input type='text' name='txt_amorphouse_phosphate' size='5'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>CALCIUM CARBONATES</td><td><input type='text' name='txt_calcium' size='5'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>CALCIUM CARBONATES</td><td><input type='text' name='txt_calcium_carb' size='5'></input></td></tr>";
       echo "<tr><td class='boxtitle'>BACTERIA</td><td><input type='text' name='txt_bacteria' size='5'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>MUCUS THREADS</td><td><input type='text' name='txt_bacteria' size='5'></input></td></tr>";   
+      echo "<tr><td class='boxtitle'>MUCUS THREADS</td><td><input type='text' name='txt_mucus' size='5'></input></td></tr>";   
       echo "</table>";
       echo "</td>";
       
@@ -220,7 +251,7 @@
       echo "<td valign='top' class='boxtitle'>";
       echo "<table>";    
       echo "<tr><td class='boxtitle'>COARSELY GRANULAR CAST</td><td><input type='text' name='txt_granular' size='5'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>PUS CELLS CAST</td><td><input type='text' name='txt_pus' size='5'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>PUS CELLS CAST</td><td><input type='text' name='txt_pus_cast' size='5'></input></td></tr>";
       echo "<tr><td class='boxtitle'>HYALINE CAST</td><td><input type='text' name='txt_hyaline' size='5'></input></td></tr>";            
       echo "</table>";
       echo "</td>";
