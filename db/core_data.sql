@@ -18124,3 +18124,38 @@ CREATE TABLE IF NOT EXISTS `m_consult_lab_fecalysis` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
+CREATE TABLE IF NOT EXISTS `m_consult_lab_urinalysis` (
+  `consult_id` float NOT NULL,
+  `request_id` float NOT NULL,
+  `patient_id` float NOT NULL,
+  `date_lab_exam` date NOT NULL,
+  `physical_color` text NOT NULL,
+  `physical_reaction` text NOT NULL,
+  `physical_transparency` text NOT NULL,
+  `physical_gravity` text NOT NULL,
+  `physical_ph` text NOT NULL,
+  `chem_albumin` varchar(10) NOT NULL,
+  `chem_sugar` varchar(10) NOT NULL,
+  `chem_pregnancy` varchar(10) NOT NULL,
+  `sediments_rbc` text NOT NULL,
+  `sediments_pus` text NOT NULL,
+  `sediments_epithelial` text NOT NULL,
+  `sediments_urates` text NOT NULL,
+  `sediments_calcium` text NOT NULL,
+  `sediments_fat` text NOT NULL,
+  `sediments_phosphate` text NOT NULL,
+  `sediments_uric` text NOT NULL,
+  `sediments_amorphous` text NOT NULL,
+  `sediments_carbonates` text NOT NULL,
+  `sediments_bacteria` text NOT NULL,
+  `sediments_mucus` text NOT NULL,
+  `cast_coarsely` text NOT NULL,
+  `cast_pus` text NOT NULL,
+  `cast_hyaline` text NOT NULL,
+  `cast_finely` text NOT NULL,
+  `cast_redcell` text NOT NULL,
+  `cast_waxy` text NOT NULL,
+  `release_flag` text NOT NULL,
+  `release_date` date NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
