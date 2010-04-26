@@ -12473,6 +12473,7 @@ INSERT INTO `m_lib_laboratory` (`lab_id`, `lab_module`, `lab_name`) VALUES
 ('FEC', 'fecalysis', 'Fecalysis'),
 ('HGB', 'hematology', 'Hgb/Hct'),
 ('SPT', 'sputum', 'NTP Sputum Exam'),
+('HEM', 'hematology', 'Hematology'),
 ('URN', 'urinalysis', 'Urinalysis');
 
 -- --------------------------------------------------------
