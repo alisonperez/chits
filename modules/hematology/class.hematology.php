@@ -74,15 +74,17 @@ class hematology extends module{
       return print($exitinfo);
     endif;
     
+    //print_r($);
+      
     $h = new hematology;
     
     if($_POST["submitlab"]):                
-      $q_request = mysql_query("SELECT request_id FROM m_consult_lab_urinalysis WHERE request_id='$_POST[request_id]'") or die("Cannot query 94:".mysql_error());
+      $q_request = mysql_query("SELECT request_id FROM m_consult_lab_hematology WHERE request_id='$_POST[request_id]'") or die("Cannot query 94:".mysql_error());
               
       if($_POST["release_flag"]==1):
         $release = 'Y';
         $release_date = date('Y-m-d H:i:s');
-        $q_update_lab = mysql_query("UPDATE m_consult_lab SET request_done='$release',done_timestamp='$release_date',done_user_id='$_SESSION[userid]' WHERE request_id='$_POST[request_id]' AND lab_id='$_GET[lab_id]'") or die("Cannot query 99".mysql_error());
+        $q_update_lab = mysql_query("UPDATE m_consult_lab SET request_done='$release',done_timestamp='$release_date',done_user_id='$_SESSION[userid]' WHERE request_id='$_POST[request_id]'") or die("Cannot query 99".mysql_error());
                                                                                                         
       else:
         $release = 'N';
@@ -95,15 +97,23 @@ class hematology extends module{
       
       $date_lab_exam = $y.'-'.$m.'-'.$d;
       
+      
+            
       if(mysql_num_rows($q_request)!=0):
-        
-      else:
-      
-        $update_urinalysis = mysql_query("INSERT INTO m_consult_lab_hematology SET consult_id='$_GET[consult_id]',request_id='$_POST[request_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',hemoglobin='$_POST[txt_hemoglobin]',hematocrit='$_POST[txt_hemocrit]',rbc='$_POST[txt_rbc]',rbc_mcv='$_POST[txt_rbc]',rbc_mchc='$_POST[mchc]',wbc='$_POST[wbc]',wbc_polys='$_POST[txt_polys]',wbc_lympho='$_POST[txt_lympho]',wbc_mxd='$_POST[txt_mxd]',wbc_mono='$_POST[txt_mono]'") or die("Cannot query 102: ".mysql_error());
-      
+          $update_hematology = mysql_query("UPDATE m_consult_lab_hematology SET consult_id='$_GET[consult_id]',request_id='$_POST[request_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',hemoglobin='$_POST[txt_hemoglobin]',hematocrit='$_POST[txt_hemocrit]',rbc='$_POST[txt_rbc]',rbc_mcv='$_POST[txt_mcv]',rbc_mchc='$_POST[txt_mchc]',rbc_mch='$_POST[txt_mch]',wbc='$_POST[txt_wbc]',wbc_polys='$_POST[txt_polys]',wbc_lympho='$_POST[txt_lympho]',wbc_mxd='$_POST[txt_mxd]',wbc_mono='$_POST[txt_mono]',wbc_eosin='$_POST[txt_eosin]',wbc_baso='$_POST[txt_baso]',platelet='$_POST[txt_platelet]',reticulocytes='$_POST[txt_reticulocytes]',esr='$_POST[txt_esr]',clotting_time='$_POST[txt_clot]',bleeding_time='$_POST[txt_bleeding]',malaria='$_POST[txt_malaria]',slit_smear='$_POST[txt_slit_smear]',fbs='$_POST[txt_fbs]',blood_type='$_POST[sel_bloodtype]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]'") or die("Cannot query 99: ".mysql_error());
+      else:      
+          $update_hematology = mysql_query("INSERT INTO m_consult_lab_hematology SET consult_id='$_GET[consult_id]',request_id='$_POST[request_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',hemoglobin='$_POST[txt_hemoglobin]',hematocrit='$_POST[txt_hemocrit]',rbc='$_POST[txt_rbc]',rbc_mcv='$_POST[txt_mcv]',rbc_mchc='$_POST[txt_mchc]',rbc_mch='$_POST[txt_mch]',wbc='$_POST[txt_wbc]',wbc_polys='$_POST[txt_polys]',wbc_lympho='$_POST[txt_lympho]',wbc_mxd='$_POST[txt_mxd]',wbc_mono='$_POST[txt_mono]',wbc_eosin='$_POST[txt_eosin]',wbc_baso='$_POST[txt_baso]',platelet='$_POST[txt_platelet]',reticulocytes='$_POST[txt_reticulocytes]',esr='$_POST[txt_esr]',clotting_time='$_POST[txt_clot]',bleeding_time='$_POST[txt_bleeding]',malaria='$_POST[txt_malaria]',slit_smear='$_POST[txt_slit_smear]',fbs='$_POST[txt_fbs]',blood_type='$_POST[sel_bloodtype]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]'") or die("Cannot query 102: ".mysql_error());
       endif;
                                                                                                                                                                                               
-      print_r($_POST);
+      //print_r($_POST);
+      
+      if($update_hematology):
+        echo "<script language='Javascript'>";
+        echo "window.alert('Hematology data was successfully been saved.')";
+        echo "</script>";
+      endif;
+      
+        
     endif;
     
     $h->form_consult_lab_hematology($menu_id,$post_vars,$get_vars);
@@ -119,7 +129,19 @@ class hematology extends module{
       $isadmin = $arg_list[4];
     endif;
 
-    $arr_blood_type = array("---","A","B","O","AB+");
+    $arr_blood_type = array("0"=>"---","A"=>"A","B"=>"B","O"=>"O","AB"=>"AB");
+    
+    
+    $q_hema = mysql_query("SELECT date_format(date_lab_exam,'%m/%d/%Y') as 'date_lab_exam',hemoglobin,hematocrit,rbc,rbc_mcv,rbc_mchc,rbc_mch,wbc,wbc_polys,wbc_lympho,wbc_mxd,wbc_mono,wbc_eosin,wbc_baso,platelet,reticulocytes,esr,clotting_time,bleeding_time,malaria,slit_smear,fbs,blood_type,user_id,patient_id FROM m_consult_lab_hematology WHERE request_id='$_GET[request_id]'") or die("Cannot query: 131".mysql_error());
+    $q_lab = mysql_query("SELECT patient_id,date_format(request_timestamp,'%a %d %Y,%h %i %p') as 'date_requested',request_user_id,date_format(done_timestamp,'%a %d %b %Y, %h %i %p') as 'date_done',request_done,done_user_id FROM m_consult_lab WHERE request_id='$_GET[request_id]'") or die("Cannot query 132".mysql_error());
+    
+    if(mysql_num_rows($q_hema)!=0):
+      list($date_lab_exam,$hemo,$hema,$rbc,$mcv,$mchc,$mch,$wbc,$polys,$lympho,$mxd,$mono,$eosin,$baso,$platelet,$reticulocytes,$esr,$clotting_time,$bleeding_time,$malaria,$slit_smear,$fbs,$blood_type,$user_id,$patient_id) = mysql_fetch_array($q_hema);
+    else:
+      $date_lab_exam = date('m/d/Y');
+    endif;    
+    
+    list($pxid,$date_request,$request_user_id,$date_done,$request_done,$done_user_id) = mysql_fetch_array($q_lab);        
     
     echo "<a name='hematology'>";
     echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=hematology&request_id=$_GET[request_id]&lab_id=HEM#hematology' method='POST' name='form_lab'>";
@@ -131,29 +153,33 @@ class hematology extends module{
     echo "</td></tr>";
                       
     echo "<tr><td>TEST</td><td>RESULT</td><td>TEST</td><td>RESULT</td></tr>";
-    echo "<tr><td>HEMOGLOBIN</td><td><input type='text' name='txt_hemoglobin' size='9'></input></td><td>PLATELET</td><td><input type='text' name='txt_platelet' size='9'></input></td></tr>";
-    echo "<tr><td>HEMOCRIT</td><td><input type='text' name='txt_hemocrit' size='9'></input></td><td>RETICULOCYTES</td><td><input type='text' name='txt_reticulocytes' size='9'></input></td></tr>";
-    echo "<tr><td>RBC</td><td><input type='text' name='txt_rbc' size='9'></input></td><td>ESR</td><td><input type='text' name='txt_esr' size='9'></input></td></tr>";
-    echo "<tr><td>MCV</td><td><input type='text' name='txt_mcv' size='9'></input></td><td>CLOTING TIME</td><td><input type='text' name='txt_clot' size='9'></input></td></tr>";
-    echo "<tr><td>MCHC</td><td><input type='text' name='txt_mchc' size='9'></input></td><td>BLEEDING TIME</td><td><input type='text' name='txt_bleeding' size='9'></input></td></tr>";
-    echo "<tr><td>MCH</td><td><input type='text' name='txt_mch' size='9'></input></td><td>MALARIA</td><td><input type='text' name='txt_malaria' size='9'></input></td></tr>";
-    echo "<tr><td>WBC</td><td><input type='text' name='txt_wbc' size='9'></input></td><td>SLIT SMEAR</td><td><input type='text' name='txt_slitsmear' size='9'></input></td></tr>";
-    echo "<tr><td>POLYS</td><td><input type='text' name='txt_polys' size='9'></input></td><td>FBS</td><td><input type='text' name='txt_fbs' size='9'></input></td></tr>";
-    echo "<tr><td>LYMPHO</td><td><input type='text' name='txt_lympho' size='9'></input></td><td>";
+    echo "<tr><td>HEMOGLOBIN</td><td><input type='text' name='txt_hemoglobin' size='9' value='$hemo'></input></td><td>PLATELET</td><td><input type='text' name='txt_platelet' size='9' value='$platelet'></input></td></tr>";
+    echo "<tr><td>HEMATOCRIT</td><td><input type='text' name='txt_hemocrit' size='9' value='$hema'></input></td><td>RETICULOCYTES</td><td><input type='text' name='txt_reticulocytes' size='9' value='$reticulocytes'></input></td></tr>";
+    echo "<tr><td>RBC</td><td><input type='text' name='txt_rbc' size='9' value='$rbc'></input></td><td>ESR</td><td><input type='text' name='txt_esr' size='9' value='$esr'></input></td></tr>";
+    echo "<tr><td>MCV</td><td><input type='text' name='txt_mcv' size='9' value='$mcv'></input></td><td>CLOTING TIME</td><td><input type='text' name='txt_clot' size='9' value='$clotting_time'></input></td></tr>";
+    echo "<tr><td>MCHC</td><td><input type='text' name='txt_mchc' size='9' value='$mchc'></input></td><td>BLEEDING TIME</td><td><input type='text' name='txt_bleeding' size='9' value='$bleeding_time'></input></td></tr>";
+    echo "<tr><td>MCH</td><td><input type='text' name='txt_mch' size='9' value='$mch'></input></td><td>MALARIA</td><td><input type='text' name='txt_malaria' size='9' value='$malaria'></input></td></tr>";
+    echo "<tr><td>WBC</td><td><input type='text' name='txt_wbc' size='9' value='$wbc'></input></td><td>SLIT SMEAR</td><td><input type='text' name='txt_slit_smear' size='9' value='$slit_smear'></input></td></tr>";
+    echo "<tr><td>POLYS</td><td><input type='text' name='txt_polys' size='9' value='$polys'></input></td><td>FBS</td><td><input type='text' name='txt_fbs' size='9' value='$fbs'></input></td></tr>";
+    echo "<tr><td>LYMPHO</td><td><input type='text' name='txt_lympho' size='9' value='$lympho'></input></td><td>";
     
     echo "BLOOD TYPE";    
     echo "</td><td>";
     echo "<select name='sel_bloodtype' size='1'>";
     
     foreach($arr_blood_type as $key_type=>$label_type){
-      echo "<option value='$key_type'>$label_type</option>";
+      if($blood_type==$key_type):
+        echo "<option value='$key_type' SELECTED>$label_type</option>";
+      else:
+        echo "<option value='$key_type'>$label_type</option>";
+      endif;
     }
     
     echo "</select></td></tr>";
-    echo "<tr><td>MXD</td><td><input type='text' name='txt_mxd' size='9'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td>MONO</td><td><input type='text' name='txt_mono' size='9'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td>EOSIN</td><td><input type='text' name='txt_eosin' size='9'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td>BASO</td><td><input type='text' name='txt_baso' size='9'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td>MXD</td><td><input type='text' name='txt_mxd' size='9' value='$mxd'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td>MONO</td><td><input type='text' name='txt_mono' size='9' value='$mono'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td>EOSIN</td><td><input type='text' name='txt_eosin' size='9' value='$eosin'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td>BASO</td><td><input type='text' name='txt_baso' size='9' value='$baso'></input></td><td colspan='2'>&nbsp;</td></tr>";
     
     echo "<tr valign='top'><td colspan='4'>";
     echo "<span class='boxtitle'>".LBL_RELEASE_FLAG."</span><br>";
@@ -179,10 +205,99 @@ class hematology extends module{
     echo "</form>";  
   }
 
+  
+  function _consult_lab_hematology_results(){
+    if(func_num_args()>0):
+      $arg_list = func_get_args();
+      $menu_id = $arg_list[0];
+      $post_vars = $arg_list[1];
+      $get_vars = $arg_list[2];
+      $validuser = $arg_list[3];
+      $isadmin = $arg_list[4];
+    endif;
+    
+    $q_hema = mysql_query("SELECT date_format(date_lab_exam,'%m/%d/%Y') as 'date_lab_exam',hemoglobin,hematocrit,rbc,rbc_mcv,rbc_mchc,rbc_mch,wbc,wbc_polys,wbc_lympho,wbc_mxd,wbc_mono,wbc_eosin,wbc_baso,platelet,reticulocytes,esr,clotting_time,bleeding_time,malaria,slit_smear,fbs,blood_type,user_id,patient_id FROM m_consult_lab_hematology WHERE request_id='$_GET[request_id]'") or die("Cannot query: 131".mysql_error());
+    $q_lab = mysql_query("SELECT patient_id,date_format(request_timestamp,'%a %d %Y,%h %i %p') as 'date_requested',request_user_id,date_format(done_timestamp,'%a %d %b %Y, %h %i %p') as 'date_done',request_done,done_user_id FROM m_consult_lab WHERE request_id='$_GET[request_id]'") or die("Cannot query 132".mysql_error());    
 
+    if(mysql_num_rows($q_hema)!=0):
+      list($date_lab_exam,$hemo,$hema,$rbc,$mcv,$mchc,$mch,$wbc,$polys,$lympho,$mxd,$mono,$eosin,$baso,$platelet,$reticulocytes,$esr,$clotting_time,$bleeding_time,$malaria,$slit_smear,$fbs,$blood_type,$user_id,$patient_id) = mysql_fetch_array($q_hema);
+    else:
+      $date_lab_exam = date('m/d/Y');
+    endif;    
+    
+    list($pxid,$date_request,$request_user_id,$date_done,$request_done,$done_user_id) = mysql_fetch_array($q_lab);            
+    
+    echo "<a name='hematology_result'></a>";
+    echo "<table style='border: 1px dotted black' width='400'><tr><td colspan='2'>";
+    echo "<span class='tinylight'>";
+    echo "<b>URINALYSIS RESULTS FOR ".strtoupper(patient::get_name($pxid))."</b><br/>";
+    echo "REQUEST ID: <font color='red'>".module::pad_zero($_GET["request_id"],7)."</font><br/>";
+    echo "DATE REQUESTED: ".$date_request."<br/>";
+    echo "REQUESTED BY: ".user::get_username($request_user_id)."<br/>";
+    echo "DATE COMPLETED: ".$date_done."<br/>";
+    echo "PROCESSED BY: ".($done_user_id?user::get_username($done_user_id):"NA")."<br/>";      
+    echo "RELEASED: ".$request_done."<br/>";    
+
+    
+    echo "<tr><td colspan='4'>HEMATOLOGY</td></tr>";
+    echo "<tr><td colspan='4' class='boxtitle'>DATE EXAMINED &nbsp; $date_lab_exam";
+    
+    echo "</td></tr>";
+                      
+    echo "<tr><td>TEST</td><td>RESULT</td><td>TEST</td><td>RESULT</td></tr>";
+    echo "<tr><td>HEMOGLOBIN</td><td><input type='text' name='txt_hemoglobin' size='9' value='$hemo'></input></td><td>PLATELET</td><td><input type='text' name='txt_platelet' size='9' value='$platelet'></input></td></tr>";
+    echo "<tr><td>HEMATOCRIT</td><td><input type='text' name='txt_hemocrit' size='9' value='$hema'></input></td><td>RETICULOCYTES</td><td><input type='text' name='txt_reticulocytes' size='9' value='$reticulocytes'></input></td></tr>";
+    echo "<tr><td>RBC</td><td><input type='text' name='txt_rbc' size='9' value='$rbc'></input></td><td>ESR</td><td><input type='text' name='txt_esr' size='9' value='$esr'></input></td></tr>";
+    echo "<tr><td>MCV</td><td><input type='text' name='txt_mcv' size='9' value='$mcv'></input></td><td>CLOTING TIME</td><td><input type='text' name='txt_clot' size='9' value='$clotting_time'></input></td></tr>";
+    echo "<tr><td>MCHC</td><td><input type='text' name='txt_mchc' size='9' value='$mchc'></input></td><td>BLEEDING TIME</td><td><input type='text' name='txt_bleeding' size='9' value='$bleeding_time'></input></td></tr>";
+    echo "<tr><td>MCH</td><td><input type='text' name='txt_mch' size='9' value='$mch'></input></td><td>MALARIA</td><td><input type='text' name='txt_malaria' size='9' value='$malaria'></input></td></tr>";
+    echo "<tr><td>WBC</td><td><input type='text' name='txt_wbc' size='9' value='$wbc'></input></td><td>SLIT SMEAR</td><td><input type='text' name='txt_slit_smear' size='9' value='$slit_smear'></input></td></tr>";
+    echo "<tr><td>POLYS</td><td><input type='text' name='txt_polys' size='9' value='$polys'></input></td><td>FBS</td><td><input type='text' name='txt_fbs' size='9' value='$fbs'></input></td></tr>";
+    echo "<tr><td>LYMPHO</td><td><input type='text' name='txt_lympho' size='9' value='$lympho'></input></td><td>";
+    
+    echo "BLOOD TYPE";    
+    echo "</td><td>";
+    echo "<select name='sel_bloodtype' size='1'>";
+    
+    foreach($arr_blood_type as $key_type=>$label_type){
+      if($blood_type==$key_type):
+        echo "<option value='$key_type' SELECTED>$label_type</option>";
+      else:
+        echo "<option value='$key_type'>$label_type</option>";
+      endif;
+    }
+    
+    echo "</select></td></tr>";
+    echo "<tr><td>MXD</td><td><input type='text' name='txt_mxd' size='9' value='$mxd'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td>MONO</td><td><input type='text' name='txt_mono' size='9' value='$mono'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td>EOSIN</td><td><input type='text' name='txt_eosin' size='9' value='$eosin'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td>BASO</td><td><input type='text' name='txt_baso' size='9' value='$baso'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    
+    echo "<tr valign='top'><td colspan='4'>";
+    echo "<span class='boxtitle'>".LBL_RELEASE_FLAG."</span><br>";
+            
+    echo "<input type='checkbox' name='release_flag' value='1'/> ".INSTR_RELEASE_FLAG."<br />";
+    echo "</td></tr>";      
+    echo "<tr><td colspan='4' align='center'>";
+    
+    if ($get_vars["request_id"]) {                                                      
+      print "<input type='hidden' name='request_id' value='".$get_vars["request_id"]."'>";
+      
+      if ($_SESSION["priv_update"]) {
+        print "<input type='submit' value = 'Update Lab Exam' class='textbox' name='submitlab' style='border: 1px solid #000000'>&nbsp; ";
+      }           
+
+      print "<input type='reset' value = 'Clear Lab Exam' class='textbox' name='submitlab' style='border: 1px solid #000000'> ";   
+    }      
+
+    echo "</td></tr>";            
+
+
+    echo "</table>";    
+      
+  }
 
 
 }
-
 
 ?>
