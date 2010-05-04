@@ -276,7 +276,7 @@
       echo "<hr size='1'/>";      
       
       echo "<table width='550' style='border: 1px solid black'>";      
-      echo "<tr><td colspan='2'>URINALYSIS</td></tr>";
+      echo "<tr class='boxtitle' align='center'><td colspan='2'>URINALYSIS</td></tr>";
       
       echo "<tr><td colspan='2' class='boxtitle'>DATE EXAMINED &nbsp; <input type='text' name='urinalysis_date' size='8' maxlength='10' value='$date_lab_exam' class='tinylight'></input>&nbsp;";
       echo "<a href=\"javascript:show_calendar4('document.form_lab.urinalysis_date', document.form_lab.urinalysis_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a> ";
@@ -390,23 +390,23 @@
       
       echo "<tr><td valign='top'>";
       echo "<table>";
-      echo "<tr><td class='boxtitle'>RED BLOOD CELLS</td><td><input type='text' name='txt_red' size='5' value='$rbc'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>PUS CELLS</td><td><input type='text' name='txt_pus' size='5' value='$pus'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>EPHITHELIAL CELLS</td><td><input type='text' name='txt_epithelial' size='5' value='$epithelial' value=''></input></td></tr>";      
-      echo "<tr><td class='boxtitle'>AMORPHOUS URATES</td><td><input type='text' name='txt_amorphous' size='5' value='$urates'></input></td></tr>";            
-      echo "<tr><td class='boxtitle'>CALCIUM OXELATES</td><td><input type='text' name='txt_calcium_oxelates' size='5' value='$calcium'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>FAT GLOBULES</td><td><input type='text' name='txt_fat' size='5' value='$fat'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>RED BLOOD CELLS</td><td><input type='text' name='txt_red' size='5' value='$rbc' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>PUS CELLS</td><td><input type='text' name='txt_pus' size='5' value='$pus' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>EPHITHELIAL CELLS</td><td><input type='text' name='txt_epithelial' size='5' value='$epithelial' class='tinylight'></input></td></tr>";      
+      echo "<tr><td class='boxtitle'>AMORPHOUS URATES</td><td><input type='text' name='txt_amorphous' size='5' value='$urates' class='tinylight'></input></td></tr>";            
+      echo "<tr><td class='boxtitle'>CALCIUM OXELATES</td><td><input type='text' name='txt_calcium_oxelates' size='5' value='$calcium' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>FAT GLOBULES</td><td><input type='text' name='txt_fat' size='5' value='$fat' class='tinylight'></input></td></tr>";
       echo "</table>";
       echo "</td>";
       
       echo "<td class='boxtitle'>";
       echo "<table>";
-      echo "<tr><td class='boxtitle'>TRIPLE PHOSPHATES</td><td><input type='text' name='txt_triple' size='5' value='$phosphate'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>URIC ACID CRYSTALS</td><td><input type='text' name='txt_uric' size='5' value='$uric'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>AMORPHOUS PHOSPATES</td><td><input type='text' name='txt_amorphouse_phosphate' size='5' value='$amorphous'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>CALCIUM CARBONATES</td><td><input type='text' name='txt_calcium_carb' size='5' value='$carbonates'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>BACTERIA</td><td><input type='text' name='txt_bacteria' size='5' value='$bacteria'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>MUCUS THREADS</td><td><input type='text' name='txt_mucus' size='5' value='$mucus'></input></td></tr>";   
+      echo "<tr><td class='boxtitle'>TRIPLE PHOSPHATES</td><td><input type='text' name='txt_triple' size='5' value='$phosphate' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>URIC ACID CRYSTALS</td><td><input type='text' name='txt_uric' size='5' value='$uric' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>AMORPHOUS PHOSPATES</td><td><input type='text' name='txt_amorphouse_phosphate' size='5' value='$amorphous' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>CALCIUM CARBONATES</td><td><input type='text' name='txt_calcium_carb' size='5' value='$carbonates' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>BACTERIA</td><td><input type='text' name='txt_bacteria' size='5' value='$bacteria' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>MUCUS THREADS</td><td><input type='text' name='txt_mucus' size='5' value='$mucus' class='tinylight'></input></td></tr>";   
       echo "</table>";
       echo "</td>";
       
@@ -418,17 +418,17 @@
       echo "<tr>";      
       echo "<td valign='top' class='boxtitle'>";
       echo "<table>";    
-      echo "<tr><td class='boxtitle'>COARSELY GRANULAR CAST</td><td><input type='text' name='txt_granular' size='5' value='$cast_coarsely'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>PUS CELLS CAST</td><td><input type='text' name='txt_pus_cast' size='5' value='$cast_pus'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>HYALINE CAST</td><td><input type='text' name='txt_hyaline' size='5' value='$cast_hyaline'></input></td></tr>";            
+      echo "<tr><td class='boxtitle'>COARSELY GRANULAR CAST</td><td><input type='text' name='txt_granular' size='5' value='$cast_coarsely' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>PUS CELLS CAST</td><td><input type='text' name='txt_pus_cast' size='5' value='$cast_pus' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>HYALINE CAST</td><td><input type='text' name='txt_hyaline' size='5' value='$cast_hyaline' class='tinylight'></input></td></tr>";            
       echo "</table>";
       echo "</td>";
       
       echo "<td class='boxtitle'>";
       echo "<table>";    
-      echo "<tr><td class='boxtitle'>FINELY GRANULAR CAST</td><td><input type='text' name='txt_finely_cast' size='5' value='$cast_finely'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>RED CELL CAST</td><td><input type='text' name='txt_red_cell' size='5' value='$cast_redcell'></input></td></tr>";
-      echo "<tr><td class='boxtitle'>WAXY CAST</td><td><input type='text' name='txt_wax' size='5' value='$cast_waxy'></input></td></tr>";      
+      echo "<tr><td class='boxtitle'>FINELY GRANULAR CAST</td><td><input type='text' name='txt_finely_cast' size='5' value='$cast_finely' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>RED CELL CAST</td><td><input type='text' name='txt_red_cell' size='5' value='$cast_redcell' class='tinylight'></input></td></tr>";
+      echo "<tr><td class='boxtitle'>WAXY CAST</td><td><input type='text' name='txt_wax' size='5' value='$cast_waxy' class='tinylight'></input></td></tr>";      
       echo "</table>";
       
       echo "</td>";

@@ -160,21 +160,21 @@ class hematology extends module{
     echo "<hr size='1'/>";  
     
     echo "<table width='470' style='border: 1px solid black'>";
-    echo "<tr><td colspan='4'>HEMATOLOGY</td></tr>";
+    echo "<tr align='center' class='boxtitle'><td colspan='4'>HEMATOLOGY</td></tr>";
     echo "<tr><td colspan='4' class='boxtitle' class='boxtitle'>DATE EXAMINED &nbsp; <input type='text' name='hematology_date' size='8' maxlength='10' value='$date_lab_exam' class='tinylight'></input>&nbsp;";
     echo "<a href=\"javascript:show_calendar4('document.form_lab.hematology_date', document.form_lab.hematology_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a> ";
     echo "</td></tr>";
                       
-    echo "<tr><td>TEST</td><td>RESULT</td><td>TEST</td><td>RESULT</td></tr>";
-    echo "<tr><td class='boxtitle'>HEMOGLOBIN</td><td><input type='text' name='txt_hemoglobin' size='9' value='$hemo'></input></td><td class='boxtitle'>PLATELET</td><td><input type='text' name='txt_platelet' size='9' value='$platelet'></input></td></tr>";
-    echo "<tr><td class='boxtitle'>HEMATOCRIT</td><td><input type='text' name='txt_hemocrit' size='9' value='$hema'></input></td><td class='boxtitle'>RETICULOCYTES</td><td><input type='text' name='txt_reticulocytes' size='9' value='$reticulocytes'></input></td></tr>";
-    echo "<tr><td class='boxtitle'>RBC</td><td><input type='text' name='txt_rbc' size='9' value='$rbc'></input></td><td class='boxtitle'>ESR</td><td><input type='text' name='txt_esr' size='9' value='$esr'></input></td></tr>";
-    echo "<tr><td class='boxtitle'>MCV</td><td><input type='text' name='txt_mcv' size='9' value='$mcv'></input></td><td class='boxtitle'>CLOTING TIME</td><td><input type='text' name='txt_clot' size='9' value='$clotting_time'></input></td></tr>";
-    echo "<tr><td class='boxtitle'>MCHC</td><td><input type='text' name='txt_mchc' size='9' value='$mchc'></input></td><td class='boxtitle'>BLEEDING TIME</td><td><input type='text' name='txt_bleeding' size='9' value='$bleeding_time'></input></td></tr>";
-    echo "<tr><td class='boxtitle'>MCH</td><td><input type='text' name='txt_mch' size='9' value='$mch'></input></td><td class='boxtitle'>MALARIA</td><td><input type='text' name='txt_malaria' size='9' value='$malaria'></input></td></tr>";
-    echo "<tr><td class='boxtitle'>WBC</td><td><input type='text' name='txt_wbc' size='9' value='$wbc'></input></td><td class='boxtitle'>SLIT SMEAR</td><td class='boxtitle'><input type='text' name='txt_slit_smear' size='9' value='$slit_smear'></input></td></tr>";
-    echo "<tr><td class='boxtitle'>POLYS</td><td><input type='text' name='txt_polys' size='9' value='$polys'></input></td><td class='boxtitle'>FBS</td><td class='boxtitle'><input type='text' name='txt_fbs' size='9' value='$fbs'></input></td></tr>";
-    echo "<tr><td class='boxtitle'>LYMPHO</td><td><input type='text' name='txt_lympho' size='9' value='$lympho'></input></td><td class='boxtitle'>";
+    echo "<tr align='center' class='boxtitle'><td>TEST</td><td>RESULT</td><td>TEST</td><td>RESULT</td></tr>";
+    echo "<tr><td class='boxtitle'>HEMOGLOBIN</td><td><input type='text' name='txt_hemoglobin' size='9' value='$hemo' class='tinylight'></input></td><td class='boxtitle'>PLATELET</td><td><input type='text' name='txt_platelet' size='9' value='$platelet' class='tinylight'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>HEMATOCRIT</td><td><input type='text' name='txt_hemocrit' size='9' value='$hema' class='tinylight'></input></td><td class='boxtitle'>RETICULOCYTES</td><td><input type='text' name='txt_reticulocytes' size='9' value='$reticulocytes' class='tinylight'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>RBC</td><td><input type='text' name='txt_rbc' size='9' value='$rbc' class='tinylight'></input></td><td class='boxtitle'>ESR</td><td><input type='text' name='txt_esr' size='9' value='$esr' class='tinylight'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>MCV</td><td><input type='text' name='txt_mcv' size='9' value='$mcv' class='tinylight'></input></td><td class='boxtitle'>CLOTING TIME</td><td><input type='text' name='txt_clot' size='9' value='$clotting_time' class='tinylight'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>MCHC</td><td><input type='text' name='txt_mchc' size='9' value='$mchc' class='tinylight'></input></td><td class='boxtitle'>BLEEDING TIME</td><td><input type='text' name='txt_bleeding' size='9' value='$bleeding_time' class='tinylight'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>MCH</td><td><input type='text' name='txt_mch' size='9' value='$mch' class='tinylight'></input></td><td class='boxtitle'>MALARIA</td><td><input type='text' name='txt_malaria' size='9' value='$malaria' class='tinylight'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>WBC</td><td><input type='text' name='txt_wbc' size='9' value='$wbc' class='tinylight'></input></td><td class='boxtitle'>SLIT SMEAR</td><td class='boxtitle'><input type='text' name='txt_slit_smear' size='9' value='$slit_smear' class='tinylight'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>POLYS</td><td><input type='text' name='txt_polys' size='9' value='$polys' class='tinylight'></input></td><td class='boxtitle'>FBS</td><td class='boxtitle'><input type='text' name='txt_fbs' size='9' value='$fbs' class='tinylight'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>LYMPHO</td><td><input type='text' name='txt_lympho' size='9' value='$lympho' class='tinylight'></input></td><td class='boxtitle'>";
     
     echo "BLOOD TYPE";    
     echo "</td><td>";
@@ -189,10 +189,10 @@ class hematology extends module{
     }
     
     echo "</select></td></tr>";
-    echo "<tr><td class='boxtitle'>MXD</td><td><input type='text' name='txt_mxd' size='9' value='$mxd'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td class='boxtitle'>MONO</td><td><input type='text' name='txt_mono' size='9' value='$mono'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td class='boxtitle'>EOSIN</td><td><input type='text' name='txt_eosin' size='9' value='$eosin'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td class='boxtitle'>BASO</td><td><input type='text' name='txt_baso' size='9' value='$baso'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>MXD</td><td><input type='text' name='txt_mxd' size='9' value='$mxd' class='tinylight'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>MONO</td><td><input type='text' name='txt_mono' size='9' value='$mono' class='tinylight'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>EOSIN</td><td><input type='text' name='txt_eosin' size='9' value='$eosin' class='tinylight'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>BASO</td><td><input type='text' name='txt_baso' size='9' value='$baso' class='tinylight'></input></td><td colspan='2'>&nbsp;</td></tr>";
     
     echo "<tr valign='top'><td colspan='4'><hr size='1'/>";
     echo "<span class='boxtitle'>".LBL_RELEASE_FLAG."</span><br>";
