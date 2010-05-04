@@ -145,29 +145,42 @@ class hematology extends module{
     
     echo "<a name='hematology'>";
     echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=LABS&module=hematology&request_id=$_GET[request_id]&lab_id=HEM#hematology' method='POST' name='form_lab'>";
+
+     echo "<span class='tinylight'>";
+     echo "<b>LAB REQUEST DETAILS</b><br/>";
+     echo "<table width='470' bgcolor='#ffff99' style='border: 1px solid black'>";
+     echo "<tr><td class='tinylight'><b>LAB EXAM: </b>HEMATOLOGY<br/>";
+     echo "<b>DATE REQUESTED: </b>".$date_request."<br/>";
+     echo "<b>REQUESTED BY: </b>".user::get_username($request_user_id)."<br/>";
+     echo "<b>DATE COMPLETED: </b>".$date_done."<br/>";
+     echo "<b>PROCESSED BY: </b>".($done_user_id?user::get_username($done_user_id):"NA")."<br/>";
+     echo "<b>RELEASED: </b>".$request_done."<br/></td></tr>";
+     echo "</table>";
+                                                       
+    echo "<hr size='1'/>";  
     
-    echo "<table border='1'>";
+    echo "<table width='470' style='border: 1px solid black'>";
     echo "<tr><td colspan='4'>HEMATOLOGY</td></tr>";
-    echo "<tr><td colspan='4' class='boxtitle'>DATE EXAMINED &nbsp; <input type='text' name='hematology_date' size='8' maxlength='10' value='$date_lab_exam' class='tinylight'></input>&nbsp;";
+    echo "<tr><td colspan='4' class='boxtitle' class='boxtitle'>DATE EXAMINED &nbsp; <input type='text' name='hematology_date' size='8' maxlength='10' value='$date_lab_exam' class='tinylight'></input>&nbsp;";
     echo "<a href=\"javascript:show_calendar4('document.form_lab.hematology_date', document.form_lab.hematology_date.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a> ";
     echo "</td></tr>";
                       
     echo "<tr><td>TEST</td><td>RESULT</td><td>TEST</td><td>RESULT</td></tr>";
-    echo "<tr><td>HEMOGLOBIN</td><td><input type='text' name='txt_hemoglobin' size='9' value='$hemo'></input></td><td>PLATELET</td><td><input type='text' name='txt_platelet' size='9' value='$platelet'></input></td></tr>";
-    echo "<tr><td>HEMATOCRIT</td><td><input type='text' name='txt_hemocrit' size='9' value='$hema'></input></td><td>RETICULOCYTES</td><td><input type='text' name='txt_reticulocytes' size='9' value='$reticulocytes'></input></td></tr>";
-    echo "<tr><td>RBC</td><td><input type='text' name='txt_rbc' size='9' value='$rbc'></input></td><td>ESR</td><td><input type='text' name='txt_esr' size='9' value='$esr'></input></td></tr>";
-    echo "<tr><td>MCV</td><td><input type='text' name='txt_mcv' size='9' value='$mcv'></input></td><td>CLOTING TIME</td><td><input type='text' name='txt_clot' size='9' value='$clotting_time'></input></td></tr>";
-    echo "<tr><td>MCHC</td><td><input type='text' name='txt_mchc' size='9' value='$mchc'></input></td><td>BLEEDING TIME</td><td><input type='text' name='txt_bleeding' size='9' value='$bleeding_time'></input></td></tr>";
-    echo "<tr><td>MCH</td><td><input type='text' name='txt_mch' size='9' value='$mch'></input></td><td>MALARIA</td><td><input type='text' name='txt_malaria' size='9' value='$malaria'></input></td></tr>";
-    echo "<tr><td>WBC</td><td><input type='text' name='txt_wbc' size='9' value='$wbc'></input></td><td>SLIT SMEAR</td><td><input type='text' name='txt_slit_smear' size='9' value='$slit_smear'></input></td></tr>";
-    echo "<tr><td>POLYS</td><td><input type='text' name='txt_polys' size='9' value='$polys'></input></td><td>FBS</td><td><input type='text' name='txt_fbs' size='9' value='$fbs'></input></td></tr>";
-    echo "<tr><td>LYMPHO</td><td><input type='text' name='txt_lympho' size='9' value='$lympho'></input></td><td>";
+    echo "<tr><td class='boxtitle'>HEMOGLOBIN</td><td><input type='text' name='txt_hemoglobin' size='9' value='$hemo'></input></td><td class='boxtitle'>PLATELET</td><td><input type='text' name='txt_platelet' size='9' value='$platelet'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>HEMATOCRIT</td><td><input type='text' name='txt_hemocrit' size='9' value='$hema'></input></td><td class='boxtitle'>RETICULOCYTES</td><td><input type='text' name='txt_reticulocytes' size='9' value='$reticulocytes'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>RBC</td><td><input type='text' name='txt_rbc' size='9' value='$rbc'></input></td><td class='boxtitle'>ESR</td><td><input type='text' name='txt_esr' size='9' value='$esr'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>MCV</td><td><input type='text' name='txt_mcv' size='9' value='$mcv'></input></td><td class='boxtitle'>CLOTING TIME</td><td><input type='text' name='txt_clot' size='9' value='$clotting_time'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>MCHC</td><td><input type='text' name='txt_mchc' size='9' value='$mchc'></input></td><td class='boxtitle'>BLEEDING TIME</td><td><input type='text' name='txt_bleeding' size='9' value='$bleeding_time'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>MCH</td><td><input type='text' name='txt_mch' size='9' value='$mch'></input></td><td class='boxtitle'>MALARIA</td><td><input type='text' name='txt_malaria' size='9' value='$malaria'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>WBC</td><td><input type='text' name='txt_wbc' size='9' value='$wbc'></input></td><td class='boxtitle'>SLIT SMEAR</td><td class='boxtitle'><input type='text' name='txt_slit_smear' size='9' value='$slit_smear'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>POLYS</td><td><input type='text' name='txt_polys' size='9' value='$polys'></input></td><td class='boxtitle'>FBS</td><td class='boxtitle'><input type='text' name='txt_fbs' size='9' value='$fbs'></input></td></tr>";
+    echo "<tr><td class='boxtitle'>LYMPHO</td><td><input type='text' name='txt_lympho' size='9' value='$lympho'></input></td><td class='boxtitle'>";
     
     echo "BLOOD TYPE";    
     echo "</td><td>";
     echo "<select name='sel_bloodtype' size='1'>";
     
-    foreach($arr_blood_type as $key_type=>$label_type){
+      foreach($arr_blood_type as $key_type=>$label_type){
       if($blood_type==$key_type):
         echo "<option value='$key_type' SELECTED>$label_type</option>";
       else:
@@ -176,12 +189,12 @@ class hematology extends module{
     }
     
     echo "</select></td></tr>";
-    echo "<tr><td>MXD</td><td><input type='text' name='txt_mxd' size='9' value='$mxd'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td>MONO</td><td><input type='text' name='txt_mono' size='9' value='$mono'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td>EOSIN</td><td><input type='text' name='txt_eosin' size='9' value='$eosin'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td>BASO</td><td><input type='text' name='txt_baso' size='9' value='$baso'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>MXD</td><td><input type='text' name='txt_mxd' size='9' value='$mxd'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>MONO</td><td><input type='text' name='txt_mono' size='9' value='$mono'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>EOSIN</td><td><input type='text' name='txt_eosin' size='9' value='$eosin'></input></td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>BASO</td><td><input type='text' name='txt_baso' size='9' value='$baso'></input></td><td colspan='2'>&nbsp;</td></tr>";
     
-    echo "<tr valign='top'><td colspan='4'>";
+    echo "<tr valign='top'><td colspan='4'><hr size='1'/>";
     echo "<span class='boxtitle'>".LBL_RELEASE_FLAG."</span><br>";
             
     echo "<input type='checkbox' name='release_flag' value='1'/> ".INSTR_RELEASE_FLAG."<br />";
@@ -228,9 +241,9 @@ class hematology extends module{
     list($pxid,$date_request,$request_user_id,$date_done,$request_done,$done_user_id) = mysql_fetch_array($q_lab);            
     
     echo "<a name='hematology_result'></a>";
-    echo "<table style='border: 1px dotted black' width='400'><tr><td colspan='2'>";
+    echo "<table style='border: 1px dotted black' width='400'><tr><td colspan='4'>";
     echo "<span class='tinylight'>";
-    echo "<b>URINALYSIS RESULTS FOR ".strtoupper(patient::get_name($pxid))."</b><br/>";
+    echo "<b>HEMATOLOGY RESULTS FOR ".strtoupper(patient::get_name($pxid))."</b><br/>";
     echo "REQUEST ID: <font color='red'>".module::pad_zero($_GET["request_id"],7)."</font><br/>";
     echo "DATE REQUESTED: ".$date_request."<br/>";
     echo "REQUESTED BY: ".user::get_username($request_user_id)."<br/>";
@@ -238,61 +251,31 @@ class hematology extends module{
     echo "PROCESSED BY: ".($done_user_id?user::get_username($done_user_id):"NA")."<br/>";      
     echo "RELEASED: ".$request_done."<br/>";    
 
-    
-    echo "<tr><td colspan='4'>HEMATOLOGY</td></tr>";
+    echo "<hr size='1'></td></tr>";
+
     echo "<tr><td colspan='4' class='boxtitle'>DATE EXAMINED &nbsp; $date_lab_exam";
     
     echo "</td></tr>";
                       
     echo "<tr><td>TEST</td><td>RESULT</td><td>TEST</td><td>RESULT</td></tr>";
-    echo "<tr><td>HEMOGLOBIN</td><td><input type='text' name='txt_hemoglobin' size='9' value='$hemo'></input></td><td>PLATELET</td><td><input type='text' name='txt_platelet' size='9' value='$platelet'></input></td></tr>";
-    echo "<tr><td>HEMATOCRIT</td><td><input type='text' name='txt_hemocrit' size='9' value='$hema'></input></td><td>RETICULOCYTES</td><td><input type='text' name='txt_reticulocytes' size='9' value='$reticulocytes'></input></td></tr>";
-    echo "<tr><td>RBC</td><td><input type='text' name='txt_rbc' size='9' value='$rbc'></input></td><td>ESR</td><td><input type='text' name='txt_esr' size='9' value='$esr'></input></td></tr>";
-    echo "<tr><td>MCV</td><td><input type='text' name='txt_mcv' size='9' value='$mcv'></input></td><td>CLOTING TIME</td><td><input type='text' name='txt_clot' size='9' value='$clotting_time'></input></td></tr>";
-    echo "<tr><td>MCHC</td><td><input type='text' name='txt_mchc' size='9' value='$mchc'></input></td><td>BLEEDING TIME</td><td><input type='text' name='txt_bleeding' size='9' value='$bleeding_time'></input></td></tr>";
-    echo "<tr><td>MCH</td><td><input type='text' name='txt_mch' size='9' value='$mch'></input></td><td>MALARIA</td><td><input type='text' name='txt_malaria' size='9' value='$malaria'></input></td></tr>";
-    echo "<tr><td>WBC</td><td><input type='text' name='txt_wbc' size='9' value='$wbc'></input></td><td>SLIT SMEAR</td><td><input type='text' name='txt_slit_smear' size='9' value='$slit_smear'></input></td></tr>";
-    echo "<tr><td>POLYS</td><td><input type='text' name='txt_polys' size='9' value='$polys'></input></td><td>FBS</td><td><input type='text' name='txt_fbs' size='9' value='$fbs'></input></td></tr>";
-    echo "<tr><td>LYMPHO</td><td><input type='text' name='txt_lympho' size='9' value='$lympho'></input></td><td>";
+    echo "<tr><td class='boxtitle'>HEMOGLOBIN</td><td class='tinylight'>$hemo</td><td class='boxtitle'>PLATELET</td><td class='tinylight'>$platelet</td></tr>";
+    echo "<tr><td class='boxtitle'>HEMATOCRIT</td><td class='tinylight'>$hema</td><td class='boxtitle'>RETICULOCYTES</td><td class='tinylight'>$reticulocytes</td></tr>";
+    echo "<tr><td class='boxtitle'>RBC</td><td class='tinylight'>$rbc</td><td class='boxtitle'>ESR</td><td class='tinylight'>$esr</td></tr>";
+    echo "<tr><td class='boxtitle'>MCV</td><td class='tinylight'>$mcv</td><td class='boxtitle'>CLOTING TIME</td><td class='tinylight'>$clotting_time</td></tr>";
+    echo "<tr><td class='boxtitle'>MCHC</td><td class='tinylight'>$mchc</td><td class='boxtitle'>BLEEDING TIME</td><td class='tinylight'>$bleeding_time</td></tr>";
+    echo "<tr><td class='boxtitle'>MCH</td><td class='tinylight'>$mch</td><td class='boxtitle'>MALARIA</td><td class='tinylight'>$malaria</td></tr>";
+    echo "<tr><td class='boxtitle'>WBC</td><td class='tinylight'>$wbc</td><td class='boxtitle'>SLIT SMEAR</td><td class='tinylight'>$slit_smear</td></tr>";
+    echo "<tr><td class='boxtitle'>POLYS</td><td class='tinylight'>$polys</td><td class='boxtitle'>FBS</td><td class='tinylight'>$fbs</td></tr>";
+    echo "<tr><td class='boxtitle'>LYMPHO</td><td class='tinylight'>$lympho</td><td class='boxtitle'>";
     
     echo "BLOOD TYPE";    
-    echo "</td><td>";
-    echo "<select name='sel_bloodtype' size='1'>";
+    echo "</td><td class='tinylight'>$blood_type";
+    echo "</td></tr>";
+    echo "<tr><td class='boxtitle'>MXD</td><td class='tinylight'>$mxd</td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>MONO</td><td class='tinylight'>$mono</td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>EOSIN</td><td class='tinylight'>$eosin</td><td colspan='2'>&nbsp;</td></tr>";
+    echo "<tr><td class='boxtitle'>BASO</td><td class='tinylight'>$baso</td><td colspan='2'>&nbsp;</td></tr>";        
     
-    foreach($arr_blood_type as $key_type=>$label_type){
-      if($blood_type==$key_type):
-        echo "<option value='$key_type' SELECTED>$label_type</option>";
-      else:
-        echo "<option value='$key_type'>$label_type</option>";
-      endif;
-    }
-    
-    echo "</select></td></tr>";
-    echo "<tr><td>MXD</td><td><input type='text' name='txt_mxd' size='9' value='$mxd'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td>MONO</td><td><input type='text' name='txt_mono' size='9' value='$mono'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td>EOSIN</td><td><input type='text' name='txt_eosin' size='9' value='$eosin'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td>BASO</td><td><input type='text' name='txt_baso' size='9' value='$baso'></input></td><td colspan='2'>&nbsp;</td></tr>";
-    
-    echo "<tr valign='top'><td colspan='4'>";
-    echo "<span class='boxtitle'>".LBL_RELEASE_FLAG."</span><br>";
-            
-    echo "<input type='checkbox' name='release_flag' value='1'/> ".INSTR_RELEASE_FLAG."<br />";
-    echo "</td></tr>";      
-    echo "<tr><td colspan='4' align='center'>";
-    
-    if ($get_vars["request_id"]) {                                                      
-      print "<input type='hidden' name='request_id' value='".$get_vars["request_id"]."'>";
-      
-      if ($_SESSION["priv_update"]) {
-        print "<input type='submit' value = 'Update Lab Exam' class='textbox' name='submitlab' style='border: 1px solid #000000'>&nbsp; ";
-      }           
-
-      print "<input type='reset' value = 'Clear Lab Exam' class='textbox' name='submitlab' style='border: 1px solid #000000'> ";   
-    }      
-
-    echo "</td></tr>";            
-
-
     echo "</table>";    
       
   }

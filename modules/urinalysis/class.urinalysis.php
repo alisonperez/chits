@@ -264,7 +264,7 @@
       
       echo "<span class='tinylight'>";      
       echo "<b>LAB REQUEST DETAILS</b><br/>";
-      echo "<table width='400' bgcolor='#ffff99' style='border: 1px solid black'>";      
+      echo "<table width='550' bgcolor='#ffff99' style='border: 1px solid black'>";      
       echo "<tr><td class='tinylight'><b>LAB EXAM: </b>FECALYSIS<br/>";
       echo "<b>DATE REQUESTED: </b>".$date_request."<br/>";
       echo "<b>REQUESTED BY: </b>".user::get_username($request_user_id)."<br/>";
@@ -273,9 +273,9 @@
       echo "<b>RELEASED: </b>".$request_done."<br/></td></tr>";
       echo "</table>";
       
-      echo "<hr size='1'/>";
+      echo "<hr size='1'/>";      
       
-      echo "<table border='1' width='550'>";
+      echo "<table width='550' style='border: 1px solid black'>";      
       echo "<tr><td colspan='2'>URINALYSIS</td></tr>";
       
       echo "<tr><td colspan='2' class='boxtitle'>DATE EXAMINED &nbsp; <input type='text' name='urinalysis_date' size='8' maxlength='10' value='$date_lab_exam' class='tinylight'></input>&nbsp;";
