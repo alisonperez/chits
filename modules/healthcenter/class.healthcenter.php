@@ -1221,9 +1221,29 @@ class healthcenter extends module{
                 // wherever this is shown
                 $consult_menu_id = module::get_menu_id("_consult");
                 while (list($cid, $pid, $plast, $pfirst, $see_doctor) = mysql_fetch_array($result)) {
+
+                    $q_lab = mysql_query("SELECT request_id,request_done FROM m_consult_lab WHERE patient_id='$pid' AND consult_id='$cid'") or die("Cannot query 1224".mysql_error());
+                    
+                    if(mysql_num_rows($q_lab)!=0):
+                        $arr_done = array();
+                        $arr_id = array();
+                        while(list($req_id,$done_status) = mysql_fetch_array($q_lab)){
+                            array_push($arr_id,$req_id);
+                            array_push($arr_done,$done_status);                                                    
+                        }
+                        
+                        $done = (in_array("N",$arr_done)?"N":"Y");
+                        $request_id = $arr_id[0];                        
+                        $url = "page=CONSULTS&menu_id=1327&consult_id=$cid&ptmenu=LABS";
+                    else:
+                        $request_id = $done = "";
+                    endif;
+                                                            
+                    
                     $visits = healthcenter::get_total_visits($pid);
                     $consult_array[$i] = "<a href='".$_SERVER["PHP_SELF"]."?page=CONSULTS&menu_id=$consult_menu_id&consult_id=$cid&ptmenu=DETAILS' title='".INSTR_CLICK_TO_VIEW_RECORD."' ".($see_doctor=="Y"?"style='background-color: #FFFF33'":"").">".
-                                         "<b>$plast, $pfirst</b></a> [$visits] ".($see_doctor=="Y"?"<img src='../images/star.gif' border='0'/>":"");
+                                         "<b>$plast, $pfirst</b></a> [$visits] ".($see_doctor=="Y"?"<img src='../images/star.gif' border='0'/>":"").(($request_id!="")?(($done=="Y")?"<a href='$_SERVER[PHP_SELF]?$url' alt='lab completed'><img src='../images/lab.png' width='15px' height='15px' border='0' alt='lab completed' /></a>":"<a href='$_SERVER[PHP_SELF]?$url' alt='lab pending'><img src='../images/lab_untested.png' width='15px' height='15px' border='0' alt='lab pending' /></a>"):"");
+                                         
                     $i++;
                 }
                 // pass on patient list to be columnized
