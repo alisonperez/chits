@@ -149,7 +149,7 @@ class graph extends module {
     // --------------- CUSTOM MODULE FUNCTIONS ------------------
 
     function graph_menu() {
-        if (func_num_args()>0) {
+       if (func_num_args()>0) {
             $arg_list = func_get_args();
             $menu_id = $arg_list[0];
             $post_vars = $arg_list[1];

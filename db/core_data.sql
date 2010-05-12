@@ -18160,3 +18160,35 @@ CREATE TABLE IF NOT EXISTS `m_consult_lab_urinalysis` (
   `release_date` date NOT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `m_consult_lab_hematology` (
+  `consult_id` bigint(20) NOT NULL,
+  `request_id` float NOT NULL,
+  `patient_id` float NOT NULL,
+  `date_lab_exam` date NOT NULL,
+  `hemoglobin` text NOT NULL,
+  `hematocrit` text NOT NULL,
+  `rbc` text NOT NULL,
+  `rbc_mcv` text NOT NULL,
+  `rbc_mchc` text NOT NULL,
+  `rbc_mch` text NOT NULL,
+  `wbc` text NOT NULL,
+  `wbc_polys` text NOT NULL,
+  `wbc_lympho` text NOT NULL,
+  `wbc_mxd` text NOT NULL,
+  `wbc_mono` text NOT NULL,
+  `wbc_eosin` text NOT NULL,
+  `wbc_baso` text NOT NULL,
+  `platelet` text NOT NULL,
+  `reticulocytes` text NOT NULL,
+  `esr` text NOT NULL,
+  `clotting_time` text NOT NULL,
+  `bleeding_time` text NOT NULL,
+  `malaria` text NOT NULL,
+  `slit_smear` text NOT NULL,
+  `fbs` text NOT NULL,
+  `blood_type` char(2) NOT NULL,
+  `release_flag` text NOT NULL,
+  `release_date` date NOT NULL,
+  `user_id` float NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
