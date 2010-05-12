@@ -191,7 +191,7 @@
       echo "<tr><td class='boxtitle'>PUS CELLS:</td><td class='tinylight'>$pus</td></tr>";
       echo "<tr><td class='boxtitle'>EPHITHELIAL CELLS:</td><td class='tinylight'>$epithelial</td></tr>";      
       echo "<tr><td class='boxtitle'>AMORPHOUS URATES:</td><td class='tinylight'>$urates</td></tr>";            
-      echo "<tr><td class='boxtitle'>CALCIUM OXELATES:</td><td class='tinylight'>$calcium</td></tr>";
+      echo "<tr><td class='boxtitle'>CALCIUM OXALATES:</td><td class='tinylight'>$calcium</td></tr>";
       echo "<tr><td class='boxtitle'>FAT GLOBULES:</td><td class='tinylight'>$fat</td></tr>";
       echo "</table>";
       echo "</td>";

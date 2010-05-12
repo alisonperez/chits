@@ -1223,6 +1223,7 @@ class healthcenter extends module{
                 while (list($cid, $pid, $plast, $pfirst, $see_doctor) = mysql_fetch_array($result)) {
 
                     $q_lab = mysql_query("SELECT request_id,request_done FROM m_consult_lab WHERE patient_id='$pid' AND consult_id='$cid'") or die("Cannot query 1224".mysql_error());
+                                        
                     
                     if(mysql_num_rows($q_lab)!=0):
                         $arr_done = array();

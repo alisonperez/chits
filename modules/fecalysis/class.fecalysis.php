@@ -171,7 +171,7 @@
       print "<b>RBC: </b>".$rbc."<br/>";      
       print "<b>BACTERIA: </b>".$bacteria."<br/>";
       print "<b>FAT GLOBULES: </b>".$fat."<br/>";
-      print "<b>STARCH GLOBULES: </b>".$starch."<br/>";
+      print "<b>STARCH GRANULES: </b>".$starch."<br/>";
       print "<b>OTHERS: </b>".$others."<br/>";      
       print "</span>";      
                 
