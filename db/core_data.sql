@@ -124,15 +124,14 @@ INSERT INTO `location` (`location_id`, `location_name`) VALUES
 -- Table structure for table `modules`
 --
 
-DROP TABLE IF EXISTS `modules`;
 CREATE TABLE IF NOT EXISTS `modules` (
-  `module_id` varchar(25) NOT NULL default '',
-  `module_init` char(1) NOT NULL default 'N',
-  `module_version` varchar(25) default '',
+  `module_id` varchar(25) NOT NULL DEFAULT '',
+  `module_init` char(1) NOT NULL DEFAULT 'N',
+  `module_version` varchar(25) DEFAULT '',
   `module_desc` text NOT NULL,
-  `module_author` varchar(50) NOT NULL default '',
-  `module_name` varchar(100) NOT NULL default '',
-  PRIMARY KEY  (`module_id`),
+  `module_author` varchar(50) NOT NULL DEFAULT '',
+  `module_name` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`module_id`),
   UNIQUE KEY `ukey_modules` (`module_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -156,8 +155,10 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 ('epi_report', 'Y', '0.2-2005-01-07', 'CHITS Module - EPI Weekly Report', 'Herman Tolentino MD', 'epi_report'),
 ('family', 'Y', '0.8-2004-06-14', 'CHITS Module - Family', 'Herman Tolentino MD', 'family'),
 ('family_planning', 'Y', '0.15-2009-11-26', 'CHITS Module - Family Planning', 'darth_ali', 'family_planning'),
+('fecalysis', 'Y', '0.12010-04-12', 'CHITS Module - Fecalysis Examination', 'darth_ali', 'fecalysis'),
 ('graph', 'Y', '0.4-2004-05-18', 'CHITS Module - Graph Abstraction', 'Herman Tolentino MD', 'graph'),
 ('healthcenter', 'Y', '0.95-2004-06-04', 'CHITS Module - Health Center', 'Herman Tolentino MD', 'healthcenter'),
+('hematology', 'Y', '0.1-2010-04-26', 'CHITS Module - Hematology Lab Examination', 'darth_ali', 'hematology'),
 ('icd10', 'Y', '0.5-2004-06-14', 'CHITS Module - ICD10 Codes', 'Herman Tolentino MD', 'icd10'),
 ('imci', 'Y', '0.2-2004-05-12', 'CHITS Module - IMCI', 'Herman Tolentino MD', 'imci'),
 ('injury', 'Y', '0.3-2004-06-07', 'CHITS Module - Injury', 'Herman Tolentino MD', 'injury'),
@@ -184,6 +185,7 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 ('sputum', 'Y', '0.3-2004-06-01', 'CHITS Module - Sputum Microscopy', 'Herman Tolentino MD', 'sputum'),
 ('tcl', 'Y', '0.2-2004-05-19', 'CHITS Module - Target Client List', 'Herman Tolentino MD', 'tcl'),
 ('template', 'Y', '0.2-2004-05-02', 'CHITS Library - Template', 'Herman Tolentino MD', 'template'),
+('urinalysis', 'Y', '0.1-2010-04-17', 'CHITS Module - Urinalysis Examination', 'darth_ali', 'urinalysis'),
 ('vaccine', 'Y', '0.4-2004-05-21', 'CHITS Module - Vaccine', 'Herman Tolentino MD', 'vaccine'),
 ('weekly_calendar', 'Y', '0.3-2010-01-21', 'CHITS Library - Weekly Calendar', 'darth_ali', 'weekly_calendar'),
 ('wtforage', 'Y', '0.1-2004-05-10', 'CHITS Library - Weight for Age', 'Ariel Betan/Herman Tolentino', 'wtforage');
@@ -194,11 +196,10 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 -- Table structure for table `module_dependencies`
 --
 
-DROP TABLE IF EXISTS `module_dependencies`;
 CREATE TABLE IF NOT EXISTS `module_dependencies` (
-  `module_id` varchar(25) NOT NULL default '',
-  `req_module` varchar(25) NOT NULL default '',
-  PRIMARY KEY  (`module_id`,`req_module`)
+  `module_id` varchar(25) NOT NULL DEFAULT '',
+  `req_module` varchar(25) NOT NULL DEFAULT '',
+  PRIMARY KEY (`module_id`,`req_module`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -263,6 +264,8 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('family_planning', 'healthcenter'),
 ('family_planning', 'module'),
 ('family_planning', 'patient'),
+('fecalysis', 'lab'),
+('fecalysis', 'module'),
 ('fp', 'healthcenter'),
 ('fp', 'module'),
 ('fp', 'patient'),
@@ -277,6 +280,8 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('healthcenter', 'notes'),
 ('healthcenter', 'patient'),
 ('healthcenter', 'ptgroup'),
+('hematology', 'lab'),
+('hematology', 'module'),
 ('icd10', 'healthcenter'),
 ('icd10', 'module'),
 ('imci', 'ccdev'),
@@ -358,6 +363,8 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('sputum', 'ntp'),
 ('tcl', 'module'),
 ('template', 'module'),
+('urinalysis', 'lab'),
+('urinalysis', 'module'),
 ('vaccine', 'healthcenter'),
 ('vaccine', 'module'),
 ('vaccine', 'patient'),
@@ -366,6 +373,7 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('wtforage', 'healthcenter'),
 ('wtforage', 'module'),
 ('wtforage', 'patient');
+
 
 
 -- --------------------------------------------------------
