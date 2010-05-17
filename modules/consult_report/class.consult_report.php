@@ -267,6 +267,8 @@ class consult_report extends module {
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
+                
+        
         list($month, $day, $year) = explode("/", $post_vars["report_date"]);
         //$report_date = $year."-".str_pad($month, 2, "0", STR_PAD_LEFT)."-".str_pad($day, 2, "0", STR_PAD_LEFT);
         $report_date = $year.'-'.$month.'-'.str_pad($day, 2, "0", STR_PAD_LEFT);
@@ -277,6 +279,7 @@ class consult_report extends module {
         
         $_SESSION[report_date] = $report_date;
         $_SESSION[end_report_date] = $end_report_date;
+        
         
         // STEP 1. empty report tables for given date
         $sql_delete = "delete from m_consult_report_dailyservice where service_date = '$report_date'";
@@ -307,8 +310,8 @@ class consult_report extends module {
                        "where c.patient_id = p.patient_id ".
                        "and c.consult_date BETWEEN '$report_date' AND '$end_report_date'";
         
-        $result_patient = mysql_query($sql_patient) or die("Cannot query: 305 ".mysql_error());
-                        
+        $result_patient = mysql_query($sql_patient) or die("Cannot query: 305 ".mysql_error());                
+        
         if ($result_patient) {
           
             if (mysql_num_rows($result_patient)) {
@@ -385,7 +388,7 @@ class consult_report extends module {
                 $pdf = new PDF('L','pt','A4');
                 $pdf->SetFont('Arial','',12); 
                 $pdf->AliasNbPages();
-                $pdf->connect('localhost','root','kambing','game');
+                $pdf->connect('localhost','$_SESSION[dbuser]','$_SESSION[dbpass]','$_SESSION[dbname]');
                 $attr=array('titleFontSize'=>14,'titleText'=>'DAILY SERVICE REGISTER - CONSULTS');
 		$pdf->mysql_report($sql,false,$attr,"../modules/_uploads/consult_reg.pdf");
 		header("location:".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&report_menu=SUMMARY");
@@ -398,7 +401,7 @@ class consult_report extends module {
                 //$pdf = new PDF('L','pt','A4');
                 //$pdf->SetFont('Arial','',12); 
                 //$pdf->AliasNbPages();
-                //$pdf->connect('localhost','root','kambing','game');
+                //$pdf->connect('localhost','$_SESSION[dbuser]','$_SESSION[dbpass]','$_SESSION[dbname]');
                 //$attr=array('titleFontSize'=>14,'titleText'=>'DAILY SERVICE REGISTER - CHILD CARE SERVICES');
 		//$pdf->mysql_report($sql,false,$attr,"../modules/_uploads/consult_ccdev_reg.pdf");
 		//header("location:".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&report_menu=SUMMARY");
@@ -413,7 +416,7 @@ class consult_report extends module {
                 $pdf = new PDF('L','pt','A4');
                 $pdf->SetFont('Arial','',12); 
                 $pdf->AliasNbPages();
-                $pdf->connect('localhost','root','kambing','game');
+                $pdf->connect('localhost','$_SESSION[dbuser]','$_SESSION[dbpass]','$_SESSION[dbname]');
                 $attr=array('titleFontSize'=>14,'titleText'=>'DAILY SERVICE REGISTER - MATERNAL CARE SERVICES');
 		$pdf->mysql_report($sql,false,$attr,"../modules/_uploads/consult_mc_reg.pdf");
 		header("location:".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&report_menu=SUMMARY");
@@ -443,28 +446,23 @@ class consult_report extends module {
 	    $report_date = $arg_list[0];
 	    $patient_id = $arg_list[1]; //a handler for the patient ID
 	    $end_report_date = $arg_list[2];
-	}
-		    
+	}		
 	
-	if($report_date == $end_report_date):
 	
-        $sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
-	       "family_id, philhealth_id, notes_cc, notes_dx, notes_tx ".
-	       "from m_consult_report_dailyservice ".
-	       "where to_days(service_date) = to_days('$report_date') order by patient_name";	       
         
-        else:
+        $sql = "select c.patient_id, c.consult_id, ".
+	               "concat(p.patient_lastname, ', ', p.patient_firstname) patient_name, ".
+                       "round((to_days(c.consult_date)-to_days(p.patient_dob))/365,1) patient_age, ".
+                       "p.patient_gender,date_format(c.consult_date,'%Y-%m-%d') as consult_date ".
+                       "from m_consult c, m_patient p ".
+                       "where c.patient_id = p.patient_id ".
+                       "and c.consult_date BETWEEN '$report_date 00:00:00' AND '$end_report_date 23:59:00' ORDER by c.consult_date ASC";
         
-        $sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
-	       "family_id, philhealth_id, notes_cc, notes_dx, notes_tx ".
-	       "from m_consult_report_dailyservice ".
-	       "where service_date BETWEEN '$report_date' AND '$end_report_date' order by patient_name";                
+        	                        
+        $result = mysql_query($sql) or die("Cannot query: 456 ".mysql_error());        
         
-        endif;
-        $result = mysql_query($sql) or die("Cannot query: 456 ".mysql_error());
-                      
 	if ($result) {
-	    if (mysql_num_rows($result)) {
+	    if (mysql_num_rows($result)) {	    
 	        $header = array('PATIENT ID','PATIENT NAME / SEX / AGE','ADDRESS','BRGY','FAMILY ID','PHILHEALTH ID','VITAL SIGNS','COMPLAINTS','DIAGNOSIS','TREATMENT');
 	        $contents = array();
 	        
@@ -485,11 +483,27 @@ class consult_report extends module {
 		print "<td class='tinylight' valign='middle' align=center><b>$header[9]</b></td>";
 		print "</tr>";
 
-		while (list($pid,$pname,$sex,$age,$addr,$bgy,$fid,$phid,$cc,$dx,$tx) = mysql_fetch_array($result)) {
-		    
+		while (list($pid,$consult_id,$pname,$age,$sex,$consult_date) = mysql_fetch_array($result)) {
+                
 		    $inner_record = array();
 		    
-		    $q_brgy = mysql_query("SELECT c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$pid' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 451 ".mysql_error());		    
+                    if ($fid = family::get_family_id($pid)) {
+                        $addr = family::get_family_address($fid);
+                        $barangay_id = family::barangay_id($family_id);
+                    } else {
+                        $fid = 0;
+                        $barangay_id = 0;
+                        $addr = family::get_family_address($fid);                        
+                    }
+
+                    $phid = philhealth::get_philhealth_id($pid);                    		    
+
+                    $cc = notes::get_complaints($pid, $consult_date);
+		    $dx = notes::get_diagnosis_list($pid, $consult_date);
+   		    $tx = notes::get_plan($pid, $consult_date);                    
+                                      
+     		    
+     		    $q_brgy = mysql_query("SELECT c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$pid' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 451 ".mysql_error());		    
 		    list($brgy) = mysql_fetch_array($q_brgy);		    		    
 		
 		    //for displaying the vitals signs
