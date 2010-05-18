@@ -18200,3 +18200,30 @@ CREATE TABLE IF NOT EXISTS `m_consult_lab_hematology` (
   `release_date` date NOT NULL,
   `user_id` float NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `m_lib_demographic_profile` (
+  `demographic_id` int(3) NOT NULL AUTO_INCREMENT,
+  `year` year(4) NOT NULL,
+  `barangay` int(10) NOT NULL,
+  `bhs` int(11) NOT NULL,
+  `doctors_male` int(3) NOT NULL,
+  `doctors_female` int(3) NOT NULL,
+  `dentist_male` int(3) NOT NULL,
+  `dentist_female` int(3) NOT NULL,
+  `nurse_male` int(3) NOT NULL,
+  `nurse_female` int(3) NOT NULL,
+  `midwife_male` int(3) NOT NULL,
+  `midwife_female` int(3) NOT NULL,
+  `nutritionist_male` int(3) NOT NULL,
+  `nutritionist_female` int(3) NOT NULL,
+  `medtech_male` int(3) NOT NULL,
+  `medtech_female` int(3) NOT NULL,
+  `se_male` int(3) NOT NULL,
+  `se_female` int(3) NOT NULL,
+  `si_male` int(3) NOT NULL,
+  `si_female` int(3) NOT NULL,
+  `bhw_male` int(3) NOT NULL,
+  `bhw_female` int(3) NOT NULL,
+  PRIMARY KEY (`demographic_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+

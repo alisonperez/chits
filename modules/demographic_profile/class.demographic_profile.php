@@ -47,7 +47,7 @@
     
     function init_sql(){
       module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_demographic_profile` (
-        `demographic_id` int(3) NOT NULL,`year` year(4) NOT NULL,`barangay` int(10) NOT NULL,`bhs` int(11) NOT NULL,`doctors_male` int(3) NOT NULL,
+        `demographic_id` int(3) NOT NULL AUTO_INCREMENT,`year` year(4) NOT NULL,`barangay` int(10) NOT NULL,`bhs` int(11) NOT NULL,`doctors_male` int(3) NOT NULL,
         `doctors_female` int(3) NOT NULL,`dentist_male` int(3) NOT NULL,`dentist_female` int(3) NOT NULL,`nurse_male` int(3) NOT NULL,
         `nurse_female` int(3) NOT NULL,`midwife_male` int(3) NOT NULL,`midwife_female` int(3) NOT NULL,`nutritionist_male` int(3) NOT NULL,
         `nutritionist_female` int(3) NOT NULL,`medtech_male` int(3) NOT NULL,`medtech_female` int(3) NOT NULL,`se_male` int(3) NOT NULL,
@@ -72,7 +72,7 @@
         $isadmin = $arg_list[4];
       }
 
-      //display dependecy error
+      //display dependency error
       
       if($exitinfo = $this->missing_dependencies('demographic_profile')):
         return print($exitinfo);
@@ -80,6 +80,16 @@
       
       if($_POST["submitdemo"]):
         print_r($_POST);
+        
+        $q_demog = mysql_query("SELECT demographic_id FROM m_lib_demographic_profile WHERE year='$_POST[sel_year]'") or die("Cannot query 84 ".mysql_error());
+        
+        if(mysql_num_rows($q_demog)==0): //insert demographic record if year does not exist yet
+          $insert_demog = mysql_query("INSERT INTO m_lib_demographic_profile SET ") or die("Cannot query 87".mysql_error());
+        
+        else:  //otherwise, update the existing demographic record for the year
+        
+        endif;
+        
       endif;
       
       $this->form_demographic_profile();                                                                                                                                                                                                      
