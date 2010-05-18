@@ -1,7 +1,7 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-04-26 09:17:00
+// Generated 2010-05-18 10:13:45
 // Module: _module.php
 // Author: Herman Tolentino MD
 //
@@ -102,6 +102,17 @@ if (file_exists('../modules/database/class.database.php')) {
 		$database->init_deps();
 		$database->init_lang();
 		$database->init_help();
+	}
+}
+if (file_exists('../modules/demographic_profile/class.demographic_profile.php')) {
+	include '../modules/demographic_profile/class.demographic_profile.php';
+	$demographic_profile = new demographic_profile;
+	if (!$module->activated('demographic_profile') && $initmod) {
+		$demographic_profile->init_sql();
+		$demographic_profile->init_menu();
+		$demographic_profile->init_deps();
+		$demographic_profile->init_lang();
+		$demographic_profile->init_help();
 	}
 }
 if (file_exists('../modules/dental/class.dental.php')) {
