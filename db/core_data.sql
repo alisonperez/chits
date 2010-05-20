@@ -18210,6 +18210,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_demographic_profile` (
   `year` year(4) NOT NULL,
   `barangay` int(10) NOT NULL,
   `bhs` int(11) NOT NULL,
+  `household` int(10) NOT NULL,
   `doctors_male` int(3) NOT NULL,
   `doctors_female` int(3) NOT NULL,
   `dentist_male` int(3) NOT NULL,

@@ -47,7 +47,7 @@
     
     function init_sql(){
       module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_demographic_profile` (
-        `demographic_id` int(3) NOT NULL AUTO_INCREMENT,`year` year(4) NOT NULL,`barangay` int(10) NOT NULL,`bhs` int(11) NOT NULL,`doctors_male` int(3) NOT NULL,
+        `demographic_id` int(3) NOT NULL AUTO_INCREMENT,`year` year(4) NOT NULL,`barangay` int(10) NOT NULL,`bhs` int(11) NOT NULL,`household` int(10) NOT NULL,`doctors_male` int(3) NOT NULL,
         `doctors_female` int(3) NOT NULL,`dentist_male` int(3) NOT NULL,`dentist_female` int(3) NOT NULL,`nurse_male` int(3) NOT NULL,
         `nurse_female` int(3) NOT NULL,`midwife_male` int(3) NOT NULL,`midwife_female` int(3) NOT NULL,`nutritionist_male` int(3) NOT NULL,
         `nutritionist_female` int(3) NOT NULL,`medtech_male` int(3) NOT NULL,`medtech_female` int(3) NOT NULL,`se_male` int(3) NOT NULL,
@@ -145,6 +145,7 @@
       echo "<tr align='center'><td><b>INDICATORS</b></td><td><b>MALE</b></td><td><b>FEMALE</b></td><td><b>TOTAL</b></td></tr>";
       echo "<tr><td class='boxtitle'>BARANGAY</td><td></td><td></td><td><input type='text' name='txt_brgy_total' size='2' maxlength='3' value='$brgy' /></td></tr>";
       echo "<tr><td class='boxtitle'>BARANGAY HEALTH STATIONS</td><td></td><td></td><td><input type='text' name='txt_bhs_total' size='2' maxlength='3' value='$bhs' /></td></tr>";
+      //echo "<tr><td class='boxtitle'>HOUSEHOLDS</td><td></td><td></td><td><input type='text' name='txt_bhs_total' size='2' maxlength='3' value='$bhs' /></td></tr>";
       echo "<tr><td class='boxtitle'>DOCTORS</td><td><input type='text' name='txt_doctor_m' size='2' maxlength='3' value='$md_m' /></td><td><input type='text' name='txt_doctor_f' size='2' maxlength='3' value='$md_f' /></td><td>";
       echo $md_m + $md_f;
       echo "</td></tr>";

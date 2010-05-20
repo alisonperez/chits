@@ -288,7 +288,9 @@ class querydb{
 		elseif($quesno>=70 && $quesno<=73):			
 			$this->process_morbidity($quesno);
 		elseif($quesno>=90 && $quesno<=99):
-			$this->process_tb($quesno);		
+			$this->process_tb($quesno);	
+		elseif($quesno==100):
+			$this->process_demographic($quesno);	
 		else:
 			echo "No available query for this indicator.";
 		endif;
@@ -891,6 +893,16 @@ class querydb{
 			default:			
 				break;		
 		}	
+	}
+	
+	function process_demographic($queryno){	
+		$q_demographic = mysql_query("SELECT demographic_id FROM m_lib_demographic_profile WHERE year='$_POST[year]'") or die("Cannot query 899 ".mysql_error());
+		
+		if(mysql_num_rows($q_demographic)!=0):
+			echo "<a href='./pdf_reports/demographic_profile.php'>Show Demographic Profile Report (A1-RHU)</a>";
+		else:
+			echo "<font color='red'>No result/s found.</font>";
+		endif;		
 	}
 
 }
