@@ -149,6 +149,7 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 ('complaint', 'Y', '0.2-2004-05-02', 'CHITS Library - Chief Complaint', 'Herman Tolentino MD', 'complaint'),
 ('consult_report', 'Y', '0.2-2004-08-27', 'CHITS Module - Consult Report', 'Herman Tolentino MD', 'consult_report'),
 ('database', 'Y', '0.3-2004-06-07', 'CHITS Module - Database Support', 'Herman Tolentino MD', 'database'),
+('demographic_profile', 'Y', '0.1-2010-05-18', 'CHITS Module - Demographics profile', 'darth_ali', 'demographic_profile'),
 ('dental', 'Y', '0.1-2010-01-13', 'CHITS Module - Dental Health Care Program', 'Jeffrey V. Tolentino', 'dental'),
 ('drug', 'Y', '0.2-2004-05-31', 'CHITS Module - Drug Inventory', 'Herman Tolentino MD', 'drug'),
 ('education', 'Y', '0.2-2004-05-03', 'CHITS Module - Education', 'Herman Tolentino MD', 'education'),
@@ -246,6 +247,7 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('consult_report', 'notes'),
 ('consult_report', 'patient'),
 ('database', 'module'),
+('demographic_profile', 'module'),
 ('dental', 'healthcenter'),
 ('dental', 'module'),
 ('dental', 'patient'),
@@ -473,7 +475,8 @@ INSERT INTO `module_menu` (`menu_id`, `module_id`, `menu_cat`, `menu_title`, `me
 (1348, 'fp', 'LIBRARIES', 'FP Methods', 1348, 'Y', '_fp_methods'),
 (1349, 'population', 'LIBRARIES', 'Population', 1349, 'Y', '_population'),
 (1350, 'computebmi', 'PATIENTS', 'Compute BMI', 1350, 'Y', '_computebmi'),
-(1352, 'weekly_calendar', 'LIBRARIES', 'Weekly Calendar', 1352, 'Y', '_weekly_calendar');
+(1352, 'weekly_calendar', 'LIBRARIES', 'Weekly Calendar', 1352, 'Y', '_weekly_calendar'),
+(1359, 'demographic_profile', 'LIBRARIES', 'Demographic Profile', 1359, 'Y', '_demographic_profile');
 -- --------------------------------------------------------
 
 --
@@ -561,6 +564,7 @@ INSERT INTO `module_permissions` (`module_id`, `user_id`) VALUES
 ('computebmi', 1),
 ('consult_report', 1),
 ('database', 1),
+('demographic_profile', 1),
 ('drug', 1),
 ('education', 1),
 ('epi_report', 1),
