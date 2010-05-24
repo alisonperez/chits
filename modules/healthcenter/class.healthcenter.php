@@ -44,7 +44,7 @@ class healthcenter extends module{
         module::set_dep($this->module, "notes");
         module::set_dep($this->module, "appointment");
         module::set_dep($this->module, "drug");
-
+        module::set_dep($this->module, "consult_graph");
     }
 
     function init_lang() {
@@ -485,6 +485,7 @@ class healthcenter extends module{
             $notes = new notes;
             $lab = new lab;
             $drug = new drug;
+            $graph = new consult_graph;
         }
         if ($get_vars["patient_id"] && $get_vars["consult_id"]) {
             print "<table>";
@@ -553,6 +554,9 @@ class healthcenter extends module{
                     break;
                 case "NOTES":
                     $notes->_consult_notes($menu_id, $post_vars, $get_vars);
+                    break;
+                case GRAPH:
+                    $graph->_graph_form($menu_id,$post_vars,$get_vars);
                     break;
                 case "DRUGS":
                     $drug->_consult_drug($menu_id, $post_vars, $get_vars);
@@ -956,13 +960,14 @@ class healthcenter extends module{
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
-        print "<table width='600' cellpadding='2' bgcolor='#CCCC99' cellspacing='1' style='border: 2px solid black'><tr>";
+        print "<table width='650' cellpadding='2' bgcolor='#CCCC99' cellspacing='1' style='border: 2px solid black'><tr>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=DETAILS' class='ptmenu'>".($get_vars["ptmenu"]=="DETAILS"?"<b>".MENU_VISIT_DETAILS."</b>":MENU_VISIT_DETAILS)."</a></td>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=APPTS' class='ptmenu'>".($get_vars["ptmenu"]=="APPTS"?"<b>".MENU_APPTS."</b>":MENU_APPTS)."</a></td>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=VITALS' class='ptmenu'>".($get_vars["ptmenu"]=="VITALS"?"<b>".MENU_VITAL_SIGNS."</b>":MENU_VITAL_SIGNS)."</td>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=LABS' class='ptmenu'>".($get_vars["ptmenu"]=="LABS"?"<b>".MENU_LABS."</b>":MENU_LABS)."</td>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES' class='ptmenu'>".($get_vars["ptmenu"]=="NOTES"?"<b>".MENU_NOTES."</b>":MENU_NOTES)."</td>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=DRUGS' class='ptmenu'>".($get_vars["ptmenu"]=="DRUGS"?"<b>".MENU_DRUGS."</b>":MENU_DRUGS)."</td>";
+        print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=GRAPH' class='ptmenu'>".($get_vars["ptmenu"]=="GRAPHS"?"<b>GRAPHS</b>":"GRAPHS")."</td>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=CONSULT' class='ptmenu'>".($get_vars["ptmenu"]=="CONSULT"?"<b>".MENU_CONSULT."</b>":MENU_CONSULT)."</td>";
         print "</tr></table>";
     }
@@ -990,7 +995,7 @@ class healthcenter extends module{
                 }
             }
         }
-        print "<table width='600' cellpadding='2' cellspacing='0' style='border: 2px solid black'>";
+        print "<table width='650' cellpadding='2' cellspacing='0' style='border: 2px solid black'>";
         print "<tr><td colspan='2' bgcolor='#FFFFCC'>";
         print "<span class='library'>".strtoupper($ptinfo["patient_lastname"].", ".$ptinfo["patient_firstname"])."</span> <br/>";
         print LBL_FAMILY_NUMBER." <b>".family::search_family($ptinfo["patient_id"])."</b>&nbsp;&nbsp;&nbsp;"."AGE: <b>".($ptinfo["computed_age"]<1?($ptinfo["computed_age"]*12)."M":$ptinfo["computed_age"]."Y")."/".$ptinfo["patient_gender"]."</b>&nbsp;&nbsp;&nbsp; BIRTHDATE: <b>".$ptinfo["patient_dob"]."</b><br/>";
