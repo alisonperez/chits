@@ -967,7 +967,7 @@ class healthcenter extends module{
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=LABS' class='ptmenu'>".($get_vars["ptmenu"]=="LABS"?"<b>".MENU_LABS."</b>":MENU_LABS)."</td>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES' class='ptmenu'>".($get_vars["ptmenu"]=="NOTES"?"<b>".MENU_NOTES."</b>":MENU_NOTES)."</td>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=DRUGS' class='ptmenu'>".($get_vars["ptmenu"]=="DRUGS"?"<b>".MENU_DRUGS."</b>":MENU_DRUGS)."</td>";
-        print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=GRAPH' class='ptmenu'>".($get_vars["ptmenu"]=="GRAPHS"?"<b>GRAPHS</b>":"GRAPHS")."</td>";
+        print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=GRAPH#graph' class='ptmenu'>".($get_vars["ptmenu"]=="GRAPHS"?"<b>GRAPHS</b>":"GRAPHS")."</td>";
         print "<td><a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=CONSULT' class='ptmenu'>".($get_vars["ptmenu"]=="CONSULT"?"<b>".MENU_CONSULT."</b>":MENU_CONSULT)."</td>";
         print "</tr></table>";
     }
