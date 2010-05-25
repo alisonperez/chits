@@ -1,5 +1,5 @@
 <?php
-
+   session_start();
 /*  require_once("../jpgraph/current/src/jpgraph.php");
   require_once("../jpgraph/current/src/jpgraph_pie.php");
   require_once("../jpgraph/current/src/jpgraph_pie3.php");
@@ -53,6 +53,12 @@
     function _graph_form(){
 	$pxid = healthcenter::get_patient_id($_GET["consult_id"]);
     	$this->form_graph();
+
+	if($_POST["submit_graph"]):
+		$_SESSION["graph_details"] = $this->arr_graph[$_POST["sel_graph"]];
+		$this->process_graph($_POST["sel_graph"],$pxid);
+		echo "<img src='../site/draw_graph.php'></img>";
+	endif;
 	
     }
 
@@ -63,7 +69,7 @@
 	echo "<tr><td>SELECT TYPE OF GRAPH AND PRESS VIEW TO DISPLAY</td></tr>";
 	echo "<tr><td>";
 	echo "<select name='sel_graph' value='1'>";
-	echo "<option value=''>------</option>";
+	echo "<option value=''>Select graph to view</option>";
 	foreach($this->arr_graph as $key=>$value){
 		echo "<option value='$key'>$value[0]</option>";
 	}
@@ -74,6 +80,49 @@
 	echo "</form>";
     }
 
+    function process_graph($graph_type,$pxid){
+	switch($graph_type){
+		
+		case 'BMI':
+			
+			$_SESSION["ydata"] = $this->get_bmi($pxid);
+			
+			break;
+		
+		case 'BP':
+		
+			break;
+		case 'WT':
+
+			break;
+
+		default:
+
+			break;
+
+
+	}
+    }
+
+
+    function get_bmi($pxid){
+
+	$arr_bmi = array();
+
+	$q_bmi = mysql_query("SELECT a.vitals_height,a.vitals_weight,date_format(b.consult_date,'%m/%d/%Y') as 'consult_date' FROM m_consult_vitals a, m_consult b WHERE vitals_height!=0 AND vitals_weight!=0 AND a.patient_id='$pxid' AND a.consult_id=b.consult_id ORDER by b.consult_date ASC") or die("Cannot query 106".mysql_error());
+
+	array_push($arr_bmi,0);
+	if(mysql_num_rows($q_bmi)!=0):
+			
+		while(list($ht,$wt,$consult_date)=mysql_fetch_array($q_bmi)){
+			$bmi = round($wt / pow(($ht/100),2),2);
+			array_push($arr_bmi,$bmi);
+		}
+	
+	endif;
+
+	return $arr_bmi;
+    }
   }
 
 ?>
