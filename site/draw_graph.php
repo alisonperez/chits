@@ -43,13 +43,15 @@
 		$graph = new Graph($w,$h);
 		$graph->SetScale('intlin',0,50);
 		
-		$graph->SetMargin(40,40,40,40);
+		$graph->SetMargin(40,40,40,60);
 		$graph->title->Set($graph_details[0].' of '.get_px_name());
 
 		$graph->xaxis->title->Set($graph_details[1]);
 		$graph->yaxis->title->Set($graph_details[2]);
 
 		$graph->xaxis->SetTickLabels($arr_xlabel);
+		 
+		
 
 		$lineplot=new LinePlot($actual);
 		$lineplot->SetColor( 'blue' );
@@ -70,8 +72,14 @@
 		$bmi_over->SetColor('red');
 		$bmi_over->SetWeight( 3 );				
 		
+		$lineplot->SetLegend('Actual BMI');
+		$bmi_under->SetLegend('Normal');
+		$bmi_normal->SetLegend('Overweight');
+		$bmi_over->SetLegend('Obese');
 
-		
+		$graph->legend->SetLayout(LEGEND_HOR);
+		$graph->legend->Pos(0.5,.99,'center','bottom');	
+
 		$graph->Add($bmi_under);
 		$graph->Add($bmi_normal);
 		$graph->Add($bmi_over);
