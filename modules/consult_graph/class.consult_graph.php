@@ -56,8 +56,11 @@
 
 	if($_POST["submit_graph"]):
 		$_SESSION["graph_details"] = $this->arr_graph[$_POST["sel_graph"]];
+		$_SESSION["indicator"] = $_POST["sel_graph"];
 		$this->process_graph($_POST["sel_graph"],$pxid);
-		echo "<img src='../site/draw_graph.php'></img>";
+
+
+		echo "<img src='../site/draw_graph.php?consult_id=$_GET[consult_id]'></img>";
 	endif;
 	
     }
@@ -108,19 +111,23 @@
     function get_bmi($pxid){
 
 	$arr_bmi = array();
-
+	$arr_date = array();
 	$q_bmi = mysql_query("SELECT a.vitals_height,a.vitals_weight,date_format(b.consult_date,'%m/%d/%Y') as 'consult_date' FROM m_consult_vitals a, m_consult b WHERE vitals_height!=0 AND vitals_weight!=0 AND a.patient_id='$pxid' AND a.consult_id=b.consult_id ORDER by b.consult_date ASC") or die("Cannot query 106".mysql_error());
 
 	array_push($arr_bmi,0);
+	array_push($arr_date,0);
+	
 	if(mysql_num_rows($q_bmi)!=0):
 			
 		while(list($ht,$wt,$consult_date)=mysql_fetch_array($q_bmi)){
 			$bmi = round($wt / pow(($ht/100),2),2);
+			array_push($arr_date,$consult_date);
 			array_push($arr_bmi,$bmi);
 		}
 	
 	endif;
-
+	
+	$_SESSION["consult_date"] = $arr_date;
 	return $arr_bmi;
     }
   }
