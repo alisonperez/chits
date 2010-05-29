@@ -771,7 +771,7 @@ Class Module {
                               "// Module: _menu.php\n".
                               "// Author: Herman Tolentino MD\n".
                               "//\n";
-                $modswitch .= "if (\$HTTP_GET_VARS[\"menu_id\"]) {\n";
+                $modswitch .= "if (\$HTTP_GET_VARS[\"menu_id\"] && $_SESSION["validuser"]) {\n";
                 $modswitch .= "\tswitch (\$HTTP_GET_VARS[\"menu_id\"]) {\n";
 
                 $modphp .= "<?\n";

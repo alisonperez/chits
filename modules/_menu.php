@@ -5,7 +5,7 @@
 // Module: _menu.php
 // Author: Herman Tolentino MD
 //
-if ($HTTP_GET_VARS["menu_id"]) {
+if ($HTTP_GET_VARS["menu_id"] && $_SESSION["validuser"]) {
 	switch ($HTTP_GET_VARS["menu_id"]) {
 	case 1329:
 		$appointment->_appointments($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
