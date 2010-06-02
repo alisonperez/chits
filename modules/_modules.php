@@ -1,7 +1,7 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-05-24 13:37:00
+// Generated 2010-06-01 11:31:14
 // Module: _module.php
 // Author: Herman Tolentino MD
 //
@@ -201,6 +201,17 @@ if (file_exists('../modules/fecalysis/class.fecalysis.php')) {
 		$fecalysis->init_deps();
 		$fecalysis->init_lang();
 		$fecalysis->init_help();
+	}
+}
+if (file_exists('../modules/graph/class.graph.php')) {
+	include '../modules/graph/class.graph.php';
+	$graph = new graph;
+	if (!$module->activated('graph') && $initmod) {
+		$graph->init_sql();
+		$graph->init_menu();
+		$graph->init_deps();
+		$graph->init_lang();
+		$graph->init_help();
 	}
 }
 if (file_exists('../modules/healthcenter/class.healthcenter.php')) {

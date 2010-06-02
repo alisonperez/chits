@@ -60,7 +60,7 @@
 		$this->process_graph($_POST["sel_graph"],$pxid);
 
 
-		echo "<img src='../site/draw_graph.php?consult_id=$_GET[consult_id]'></img>";
+		echo "<img src='../site/draw_graph.php?consult_id=$_GET[consult_id]' alt=''></img>";
 	endif;
 	
     }
@@ -93,10 +93,11 @@
 			break;
 		
 		case 'BP':
-		
+			
 			break;
 		case 'WT':
-
+			$_SESSION["ydata"] = $this->get_weight($pxid);
+			
 			break;
 
 		default:
@@ -129,6 +130,28 @@
 	
 	$_SESSION["consult_date"] = $arr_date;
 	return $arr_bmi;
+    }
+
+    function get_weight($pxid){
+	$arr_date = array();
+	$arr_wt = array();
+
+	$q_wt = mysql_query("SELECT a.vitals_weight, date_format(b.consult_date,'%m/%d/%Y') as 'consult_date' FROM m_consult_vitals a, m_consult b WHERE vitals_height!=0 AND vitals_weight!=0 AND a.patient_id='$pxid' AND a.consult_id=b.consult_id ORDER by b.consult_date ASC") or die("Cannot query 136 ".mysql_error());
+
+	
+            array_push($arr_date,0);
+            array_push($arr_wt,0);
+            
+	while(list($wt,$consult_date)=mysql_fetch_array($q_wt)){	
+		array_push($arr_date,$consult_date);
+		array_push($arr_wt,$wt);
+	}
+	
+	$_SESSION["consult_date"] = $arr_date;
+
+	return $arr_wt;
+
+
     }
   }
 

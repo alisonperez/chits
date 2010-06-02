@@ -17,6 +17,8 @@
 		
 		if($_SESSION["indicator"]=='BMI'):			
 			draw_bmi($ydata,$graph_details);
+		elseif($_SESSION["indicator"]=='WT'):
+			draw_weight($ydata,$graph_details);
 		else:
 
 		endif;
@@ -88,6 +90,41 @@
 
 	}
 	
+	function draw_weight($actual,$graph_details){
+
+		$arr_pound = array();
+		$arr_xlabel = $_SESSION["consult_date"];
+
+		for($i=0;$i<count($actual);$i++){
+			$pound = $actual[$i] ^ 2.2;
+			array_push($arr_pound,$pound);
+		}
+	
+		$w = 400;
+		$h = 400;
+
+		$graph = new Graph($w,$h);
+		
+		$graph->SetScale('intlin');
+		$graph->SetMargin(40,40,40,60);
+
+		$graph->title->Set($graph_details[0].' of '.get_px_name());
+
+		$graph->xaxis->title->Set($graph_details[1]);
+		$graph->yaxis->title->Set($graph_details[2]);
+
+		$graph->xaxis->SetTickLabels($arr_xlabel);
+
+		$lineplot=new LinePlot($actual);
+		$lineplot->SetColor( 'blue' );
+		$lineplot->SetWeight( 2 );
+
+		$lineplot->value->Show();
+		$graph->Add($lineplot);
+		$graph->Stroke();
+
+	}
+	
 	function get_bmi_bound(){
 		
 		$arr_bound = array('Underweight'=>array(),'Normal'=>array(),'Overweight'=>array(),'Obese'=>array()); 		
@@ -134,13 +171,10 @@
 	}
 
 	function get_px_name(){
-	
 		$q_patient = mysql_query("SELECT a.patient_lastname, a.patient_firstname FROM m_patient a, m_consult b WHERE b.consult_id='$_GET[consult_id]' AND a.patient_id=b.patient_id") or die("Cannot query 126".mysql_error());
-		
+
 		list($lname,$fname) = mysql_fetch_array($q_patient);
-		
+
 		return $fname.' '.$lname;
-
 	}
-
 ?>
