@@ -1368,7 +1368,7 @@ class healthcenter extends module{
             $diastolic = $arg_list[1];
             $edad = $arg_list[2];
         }
-		
+	
 		if($edad >= 18):
         
 			if ($systolic >=160 || $diastolic >=100) {

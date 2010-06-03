@@ -13,7 +13,7 @@
       $this->version = "0.1-".date("Y-m-d");
       $this->module = "consult_graph";
       $this->description = "CHITS - Patient-Consult Level Graphs";
-      $this->arr_graph = array('BMI'=>array("Body Mass Index","Consults","BMI","line"),'BP'=>array("Blood Pressure","Consults","BP","line"),'WT'=>array("Weight","Consults","Weight","line"));
+      $this->arr_graph = array('BMI'=>array("Body Mass Index","Consults","BMI","line"),'BP'=>array("Blood Pressure","Consults","BP","line"),'WT'=>array("Weight","Consults","Weight (kg)","line","Weight (lb)"));
     } 
     
     function init_deps(){
@@ -86,10 +86,8 @@
     function process_graph($graph_type,$pxid){
 	switch($graph_type){
 		
-		case 'BMI':
-			
+		case 'BMI':			
 			$_SESSION["ydata"] = $this->get_bmi($pxid);
-			
 			break;
 		
 		case 'BP':
@@ -97,14 +95,10 @@
 			break;
 		case 'WT':
 			$_SESSION["ydata"] = $this->get_weight($pxid);
-			
 			break;
 
 		default:
-
 			break;
-
-
 	}
     }
 

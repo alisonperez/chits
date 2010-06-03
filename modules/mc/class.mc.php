@@ -2340,7 +2340,7 @@ class mc extends module {
                     print "&nbsp;SYS BP: ".($systolic?$systolic:"NA")."<br/>";
                     print "&nbsp;DIAS BP: ".($diastolic?$diastolic:"NA")."<br/>";
                     if ($systolic && $diastolic) {
-                        print "&nbsp;STAGE: ".healthcenter::hypertension_stage($systolic, $diastolic)."<br/>";
+                        print "&nbsp;STAGE: ".healthcenter::hypertension_stage($systolic, $diastolic,$patient_age)."<br/>";
                     }
                     print "</span>";
                     print "</td></tr></table>";

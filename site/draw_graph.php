@@ -8,6 +8,7 @@
 	
 
 	if($_SESSION[userid]):
+
 		$dbconn = mysql_connect('localhost',$_SESSION["dbuser"],$_SESSION["dbpass"]) or die("Cannot query 4 ".mysql_error());
     		
 		mysql_select_db($_SESSION["dbname"],$dbconn) or die("cannot select db");		
@@ -17,7 +18,7 @@
 		
 		if($_SESSION["indicator"]=='BMI'):			
 			draw_bmi($ydata,$graph_details);
-		elseif($_SESSION["indicator"]=='WT'):
+		elseif($_SESSION["indicator"]=='WT'):		
 			draw_weight($ydata,$graph_details);
 		else:
 
@@ -96,31 +97,43 @@
 		$arr_xlabel = $_SESSION["consult_date"];
 
 		for($i=0;$i<count($actual);$i++){
-			$pound = $actual[$i] ^ 2.2;
+			$pound = $actual[$i] * 2.2;
 			array_push($arr_pound,$pound);
 		}
 	
-		$w = 400;
+		$w = 500;
 		$h = 400;
-
+//		print_r($arr_pound);
 		$graph = new Graph($w,$h);
 		
-		$graph->SetScale('intlin');
-		$graph->SetMargin(40,40,40,60);
+		$graph->SetScale('intlin',0,100);
+		$graph->SetY2Scale('lin');
+
+		$graph->SetMargin(40,70,40,60);
 
 		$graph->title->Set($graph_details[0].' of '.get_px_name());
 
 		$graph->xaxis->title->Set($graph_details[1]);
 		$graph->yaxis->title->Set($graph_details[2]);
+		$graph->y2axis->title->Set($graph_details[4]);
 
 		$graph->xaxis->SetTickLabels($arr_xlabel);
 
 		$lineplot=new LinePlot($actual);
+		$lineplot2=new LinePlot($arr_pound);
+
 		$lineplot->SetColor( 'blue' );
 		$lineplot->SetWeight( 2 );
 
+		$lineplot2->SetColor( 'red' );
+		$lineplot2->SetWeight( 2 );
+
 		$lineplot->value->Show();
+		$lineplot2->value->Show();
+
 		$graph->Add($lineplot);
+		$graph->AddY2($lineplot2);
+
 		$graph->Stroke();
 
 	}
