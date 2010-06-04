@@ -755,7 +755,10 @@ class healthcenter extends module{
                 print "Height: $ht cms<br/>";
                 print "</td></tr>";
                 print "<tr><td colspan='2'>";
-                print "HPN STAGE: ".healthcenter::hypertension_stage($syst, $diast, $edad)."<br/>";
+                //print "HPN STAGE: ".healthcenter::hypertension_stage($syst, $diast, $edad)."<br/>";
+		print "HPN STAGE: ";
+		healthcenter::hypertension_stage($syst, $diast, $edad);
+		print "<br/>";
 		print healthcenter::compute_bmi($ht,$wt);
                 print "</td></tr>";
                 print "<tr><td colspan='2'>";
@@ -1372,20 +1375,56 @@ class healthcenter extends module{
 		if($edad >= 18):
         
 			if ($systolic >=160 || $diastolic >=100) {
-				return "<font color='red'>$systolic/$diastolic <b>HPN STAGE 2</b></font>";
+				echo "<font color='red'>$systolic/$diastolic <b>HPN STAGE 2</b></font>";
+				return 'HPN2';
 			} elseif (($systolic >=140 && $systolic <=159) || ($diastolic>=90 && $diastolic<=99)) {
-				return "<font color='red'>$systolic/$diastolic <b>HPN STAGE 1</b></font>";
+				echo "<font color='red'>$systolic/$diastolic <b>HPN STAGE 1</b></font>";
+				return 'HPN1';
 			} elseif (($systolic >=120 && $systolic <=139) || ($diastolic>=80 && $diastolic<=89)) {
-				return "<font color='red'>$systolic/$diastolic PRE-HPN</font>";
+				echo "<font color='red'>$systolic/$diastolic PRE-HPN</font>";
+				return 'PREHPN';
 			} elseif ($systolic<120 && $diastolic<80) {
-				return "<font color='blue'>$systolic/$diastolic NORMAL</font>";
+				echo "<font color='blue'>$systolic/$diastolic NORMAL</font>";
+				return 'NORMAL';
 			} elseif(!$systolic && !$diastolic) {
+				echo "NA";
 				return "NA";
 			}
 			else{}
 
 		else:
 			return "<font color='red' size='2'>BP not applicable for <18YO.</font>";
+		endif;
+  }
+
+function hypertension_code() {
+    //
+    // returns systolic pressure with stage
+    //
+        if (func_num_args()>0) {
+            $arg_list = func_get_args();
+            $systolic = $arg_list[0];
+            $diastolic = $arg_list[1];
+            $edad = $arg_list[2];
+        }
+	
+		if($edad >= 18):
+        
+			if ($systolic >=160 || $diastolic >=100) {
+				return 'HPN2';
+			} elseif (($systolic >=140 && $systolic <=159) || ($diastolic>=90 && $diastolic<=99)) {
+				return 'HPN1';
+			} elseif (($systolic >=120 && $systolic <=139) || ($diastolic>=80 && $diastolic<=89)) {
+				return 'PREHPN';
+			} elseif ($systolic<120 && $diastolic<80) {
+				return 'NORMAL';
+			} elseif(!$systolic && !$diastolic) {
+				return "NA";
+			}
+			else{}
+
+		else:
+			return "NA";
 		endif;
   }
 

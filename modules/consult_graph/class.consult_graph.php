@@ -91,7 +91,7 @@
 			break;
 		
 		case 'BP':
-			
+			$_SESSION["ydata"] = $this->get_bp($pxid);
 			break;
 		case 'WT':
 			$_SESSION["ydata"] = $this->get_weight($pxid);
@@ -146,6 +146,24 @@
 	return $arr_wt;
 
 
+    }
+
+    function get_bp($pxid){
+	$arr_bp = array();
+
+	$q_bp = mysql_query("SELECT a.vitals_systolic, a.vitals_diastolic,date_format(b.consult_date,'%m/%d/%Y') as 'consult_date',a.consult_id FROM m_consult_vitals a, m_consult b WHERE a.vitals_systolic!=0 AND a.vitals_diastolic!=0 AND a.consult_id = b.consult_id ORDER by b.consult_date ASC") or die("Cannot query 154 ".mysql_error());
+
+	if(mysql_num_rows($q_bp)!=0):
+		while(list($systolic,$diastolic,$consult_date,$consult_id)=mysql_fetch_array($q_bp)){
+			$arr_bp_details = array();
+			$edad = healthcenter::get_patient_age($consult_id);
+			$bp_stage = healthcenter::hypertension_code($systolic,$diastolic,$edad);
+			array_push($arr_bp_details,$consult_date,$systolic,$diastolic,$bp_stage);
+			array_push($arr_bp,$arr_bp_details);
+		}
+		
+	endif;
+	return $arr_bp;
     }
   }
 

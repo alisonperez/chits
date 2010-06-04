@@ -20,6 +20,9 @@
 			draw_bmi($ydata,$graph_details);
 		elseif($_SESSION["indicator"]=='WT'):		
 			draw_weight($ydata,$graph_details);
+
+		elseif($_SESSION["indicator"]==''):
+			draw_bp($ydata,$graph_details);
 		else:
 
 		endif;
@@ -137,6 +140,14 @@
 		$graph->Stroke();
 
 	}
+
+	function draw_bp(){
+		
+		$w = 500;
+		$h = 500;
+
+		
+	}
 	
 	function get_bmi_bound(){
 		
@@ -182,6 +193,7 @@
 
 		return $arr_bound;
 	}
+
 
 	function get_px_name(){
 		$q_patient = mysql_query("SELECT a.patient_lastname, a.patient_firstname FROM m_patient a, m_consult b WHERE b.consult_id='$_GET[consult_id]' AND a.patient_id=b.patient_id") or die("Cannot query 126".mysql_error());
