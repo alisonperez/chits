@@ -57,10 +57,11 @@
 	if($_POST["submit_graph"]):
 		$_SESSION["graph_details"] = $this->arr_graph[$_POST["sel_graph"]];
 		$_SESSION["indicator"] = $_POST["sel_graph"];
+		unset($_SESSION["ydata"]);
 		$this->process_graph($_POST["sel_graph"],$pxid);
 
 
-		echo "<img src='../site/draw_graph.php?consult_id=$_GET[consult_id]' alt=''></img>";
+		echo "<img src='../site/draw_graph.php?consult_id=$_GET[consult_id]' alt=''></img><br>";
 	endif;
 	
     }
@@ -151,7 +152,7 @@
     function get_bp($pxid){
 	$arr_bp = array();
 
-	$q_bp = mysql_query("SELECT a.vitals_systolic, a.vitals_diastolic,date_format(b.consult_date,'%m/%d/%Y') as 'consult_date',a.consult_id FROM m_consult_vitals a, m_consult b WHERE a.vitals_systolic!=0 AND a.vitals_diastolic!=0 AND a.consult_id = b.consult_id ORDER by b.consult_date ASC") or die("Cannot query 154 ".mysql_error());
+	$q_bp = mysql_query("SELECT a.vitals_systolic, a.vitals_diastolic,date_format(b.consult_date,'%m/%d/%Y') as 'consult_date',a.consult_id FROM m_consult_vitals a, m_consult b WHERE a.vitals_systolic!=0 AND a.vitals_diastolic!=0 AND a.consult_id = b.consult_id AND a.patient_id='$pxid' ORDER by b.consult_date ASC") or die("Cannot query 154 ".mysql_error());
 
 			array_push($arr_bp,array(0,0,0,0));
 	if(mysql_num_rows($q_bp)!=0):
