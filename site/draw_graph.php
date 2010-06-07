@@ -21,7 +21,7 @@
 		elseif($_SESSION["indicator"]=='WT'):		
 			draw_weight($ydata,$graph_details);
 
-		elseif($_SESSION["indicator"]==''):
+		elseif($_SESSION["indicator"]=='BP'):
 			draw_bp($ydata,$graph_details);
 		else:
 
@@ -135,17 +135,67 @@
 		$lineplot2->value->Show();
 
 		$graph->Add($lineplot);
-		$graph->AddY2($lineplot2);
+		$graph->AddY2($lineplot2);		
 
 		$graph->Stroke();
 
 	}
 
-	function draw_bp(){
+	function draw_bp($actual,$graph_details){
 		
-		$w = 500;
-		$h = 500;
+		$w = 700;
+		$h = 450;
+		$arr_xlabel = array();
+		$arr_diastolic = array();
+		$arr_systolic = array();
+		$arr_status = array();
+		
+		//print_r($actual);
 
+		foreach($actual as $key=>$value){
+			array_push($arr_xlabel,$value[0]);
+			array_push($arr_diastolic,$value[1]);
+			array_push($arr_systolic,$value[2]);
+			array_push($arr_status,$value[3]);
+		}
+
+		$graph = new Graph($w,$h);
+		$graph->SetScale('intlin');
+		$graph->SetY2Scale('int',0,200);
+
+		$graph->SetMargin(40,70,40,60);
+		
+		$graph->title->Set($graph_details[0].' of '.get_px_name());
+
+		$graph->xaxis->title->Set($graph_details[1]);
+		$graph->yaxis->title->Set($graph_details[2]);
+
+		$graph->xaxis->SetTickLabels($arr_xlabel);
+
+		$lineplot=new LinePlot($arr_diastolic);
+		$lineplot2=new LinePlot($arr_systolic);
+
+		$lineplot->SetColor( 'blue' );
+		$lineplot->SetWeight( 2 );
+
+		$lineplot2->SetColor( 'red' );
+		$lineplot2->SetWeight( 2 );
+
+		$lineplot->value->Show();
+		$lineplot2->value->Show();
+
+		$graph->Add($lineplot);
+		$graph->AddY2($lineplot2);
+
+		$lineplot->SetLegend('Diastolic');
+		$lineplot2->SetLegend('Systolic');
+
+		$graph->legend->SetLayout(LEGEND_HOR);
+		$graph->legend->Pos(0.5,.99,'center','bottom');	
+
+		$graph->Stroke();
+		
+		
 		
 	}
 	

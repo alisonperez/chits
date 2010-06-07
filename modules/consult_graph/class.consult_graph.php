@@ -13,7 +13,7 @@
       $this->version = "0.1-".date("Y-m-d");
       $this->module = "consult_graph";
       $this->description = "CHITS - Patient-Consult Level Graphs";
-      $this->arr_graph = array('BMI'=>array("Body Mass Index","Consults","BMI","line"),'BP'=>array("Blood Pressure","Consults","BP","line"),'WT'=>array("Weight","Consults","Weight (kg)","line","Weight (lb)"));
+      $this->arr_graph = array('BMI'=>array("Body Mass Index","Consults","BMI","line"),'BP'=>array("Blood Pressure","Consults","Blood Pressure","line"),'WT'=>array("Weight","Consults","Weight (kg)","line","Weight (lb)"));
     } 
     
     function init_deps(){
@@ -153,6 +153,7 @@
 
 	$q_bp = mysql_query("SELECT a.vitals_systolic, a.vitals_diastolic,date_format(b.consult_date,'%m/%d/%Y') as 'consult_date',a.consult_id FROM m_consult_vitals a, m_consult b WHERE a.vitals_systolic!=0 AND a.vitals_diastolic!=0 AND a.consult_id = b.consult_id ORDER by b.consult_date ASC") or die("Cannot query 154 ".mysql_error());
 
+			array_push($arr_bp,array(0,0,0,0));
 	if(mysql_num_rows($q_bp)!=0):
 		while(list($systolic,$diastolic,$consult_date,$consult_id)=mysql_fetch_array($q_bp)){
 			$arr_bp_details = array();
