@@ -197,7 +197,7 @@ function show_mc_summary(){
 	
 
 
-	$criteria = array('Pregnant Women with 4 or more prenatal visits','Pregnant Women given 2 doses of TT','Pregnant Women given TT2 plus','Pregnant given complete iron with folic acid','Postpartum women with at least 2 PPV','Postpartum women given complete iron','Postpartum women given Vit. A','Postpartum women initiated breastfeeding');			
+	$criteria = array('Pregnant Women with 4 or more prenatal visits','Pregnant Women given 2 doses of TT','Pregnant Women given TT2 plus','Pregnant given complete iron with folic acid','Pregnant given Vit. A','Postpartum women with at least 2 PPV','Postpartum women given complete iron','Postpartum women given Vit. A','Postpartum women initiated breastfeeding');			
     
 	for($i=0;$i<count($criteria);$i++){
 	
@@ -439,8 +439,36 @@ function compute_indicator($crit){
 			endif;
 
 			break;
-		
-		case 5:
+
+
+		case 5: // pregnant given vitamin A
+
+			if(in_array('all',$_SESSION[brgy])):
+				$get_vita = mysql_query("SELECT distinct mc_id,patient_id FROM m_consult_mc_services WHERE service_id='VITA' ORDER by mc_id ASC, actual_service_date ASC") or die("Cannot query: 358");
+			else:
+				$get_vita = mysql_query("SELECT distinct a.mc_id,a.patient_id FROM m_consult_mc_services a,m_family_members b,m_family_address c WHERE a.service_id='VITA' AND a.patient_id=b.patient_id AND b.family_id=c.family_id AND c.barangay_id IN ($brgy_array) ORDER by a.mc_id ASC, a.actual_service_date ASC") or die("Cannot query: 358");	
+			endif;
+
+			if(mysql_num_rows($get_vita)!=0):
+				while(list($mcid,$pxid)=mysql_fetch_array($get_vita)){
+					$vit_total = 0;
+					$target_reach = 0;
+						$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='VITA' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date <= b.patient_edc ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
+
+					while(list($qty,$serv_date)=mysql_fetch_array($q_mc)){						
+						$vita_total+=$qty;
+
+						if($vita_total >= 200000 && $target_reach==0):							
+							$target_reach = 1;
+							$month_stat[$this->get_max_month($serv_date)]+=1;
+							//echo $max_date.'<br>'.$mcid;
+						endif;
+					}
+				}			
+			endif;
+
+			break;
+		case 6:
 			
 			if(in_array('all',$_SESSION[brgy])):
 				$q_post = mysql_query("SELECT a.mc_id,a.postpartum_date,b.delivery_date,a.patient_id FROM m_consult_mc_postpartum a, m_patient_mc b WHERE a.mc_id=b.mc_id AND (TO_DAYS(a.postpartum_date)-TO_DAYS(b.delivery_date))<=1") or die("Cannot query: 297"); // get mc_id of patients who visited 24 hours after giving birth			
@@ -465,7 +493,7 @@ function compute_indicator($crit){
 
 			break; 
 
-		case 6: //postpartum mothers wih complete iron w/ folic acid intake
+		case 7://postpartum mothers wih complete iron w/ folic acid intake
 			if(in_array('all',$_SESSION[brgy])):
 				$get_iron_mc = mysql_query("SELECT distinct mc_id,patient_id FROM m_consult_mc_services WHERE service_id='IRON' ORDER by mc_id ASC, actual_service_date ASC") or die("Cannot query: 316");
 			else:
@@ -479,7 +507,7 @@ function compute_indicator($crit){
 					$iron_total = 0;
 					$target_reach = 0;
 
-					$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='IRON' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date BETWEEN b.delivery_date AND b.postpartum_date ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
+					$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='IRON' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date BETWEEN b.patient_edc AND b.postpartum_date ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
 					
 					
 					while(list($qty,$serv_date)=mysql_fetch_array($q_mc)){
@@ -496,7 +524,7 @@ function compute_indicator($crit){
 
 			break;
 
-		case 7: // postpartum women given vitamin A supplementation
+		case 8: // postpartum women given vitamin A supplementation
 			if(in_array('all',$_SESSION[brgy])):
 				$get_vita = mysql_query("SELECT distinct mc_id,patient_id FROM m_consult_mc_services WHERE service_id='VITA' ORDER by mc_id ASC, actual_service_date ASC") or die("Cannot query: 358");
 			else:
@@ -507,7 +535,7 @@ function compute_indicator($crit){
 				while(list($mcid,$pxid)=mysql_fetch_array($get_vita)){
 					$vit_total = 0;
 					$target_reach = 0;
-						$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='VITA' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date BETWEEN b.delivery_date AND b.postpartum_date ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
+						$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='VITA' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date BETWEEN b.patient_edc AND b.postpartum_date ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
 
 					while(list($qty,$serv_date)=mysql_fetch_array($q_mc)){						
 						$vita_total+=$qty;
@@ -523,7 +551,7 @@ function compute_indicator($crit){
 
 			break;
 
-		case 8: //postpartum women initiated breadstfeeding after giving birth
+		case 9: //postpartum women initiated breadstfeeding after giving birth
 			if(in_array('all',$_SESSION[brgy])):
 				$get_post_bfeed = mysql_query("SELECT mc_id, delivery_date, patient_id FROM m_patient_mc WHERE breastfeeding_asap='Y' AND delivery_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' ORDER by delivery_date") or die("cannot query: 350");
 			else:
