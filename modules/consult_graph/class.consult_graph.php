@@ -136,7 +136,7 @@
 	
             array_push($arr_date,0);
             array_push($arr_wt,0);
-            
+
 	while(list($wt,$consult_date)=mysql_fetch_array($q_wt)){	
 		array_push($arr_date,$consult_date);
 		array_push($arr_wt,$wt);

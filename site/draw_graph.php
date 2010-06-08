@@ -194,10 +194,8 @@
 		$graph->legend->Pos(0.5,.99,'center','bottom');	
 
 		$graph->Stroke();
-		
-		
-		
 	}
+
 	
 	function get_bmi_bound(){
 		
