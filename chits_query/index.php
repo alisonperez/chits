@@ -57,7 +57,7 @@ if($_SESSION["userid"]!=""):
       $db_conn = mysql_connect(localhost,$_SESSION["dbuser"],$_SESSION["dbpass"]) or mysql_error();
       mysql_select_db($_SESSION["dbname"],$db_conn) or mysql_error();
 
-      echo "<table><tr valign=\"top\"><td rowspan=\"2\">";
+      echo "<table style=\"font-family: arial\"><tr valign=\"top\"><td rowspan=\"2\">";
       //container of questions
 
       $widconn->query_class($dbname2,$_SESSION[cat],$_SESSION[ques]);

@@ -228,13 +228,13 @@ function show_mc_summary(){
                     $w = array(30,18,18,18,18,15,18,18,18,15,18,18,18,15,18,18,18,15,18); //340
                     $this->SetWidths($w);                		
                     $this->Row(array($criteria[$i],$target,$mstat[1],$mstat[2],$mstat[3],$q_array[1],$mstat[4],$mstat[5],$mstat[6],$q_array[2],$mstat[7],$mstat[8],$mstat[9],$q_array[3],$mstat[10],$mstat[11],$mstat[12],$q_array[4],$gt));
-                elseif($_SESSION[ques]==80):                    
-                    $w = array(200,40); //340 //monthly report                   
+                elseif($_SESSION[ques]==80):
+                    $w = array(200,40); //340 //monthly report
                     $this->SetWidths($w);
                     $arr_disp = array();
                     $this->SetFont('Arial','',13);
-                    array_push($arr_disp,$criteria[$i],$mstat[$_SESSION[smonth]]);                    
-                    
+                    array_push($arr_disp,$criteria[$i],$mstat[$_SESSION[smonth]]);
+
                     for($x=0;$x<count($arr_disp);$x++){
                         if($x==0):
                             $this->Cell($w[$x],6,($i+1).'. '.$arr_disp[$x],'1',0,'1');
@@ -242,17 +242,17 @@ function show_mc_summary(){
                             $this->Cell($w[$x],6,$arr_disp[$x],'1',0,'1');
                         endif;
                     }
-                    
+
                     $this->Ln();
-                                        
+
                 elseif($_SESSION[ques]==81): //quarterly report
                     $w = array(161,30,25,25,50,45);
                     $this->SetWidths($w);
                     $arr_disp = array();
-                    $this->SetFont('Arial','',13);                                                            
-                    
+                    $this->SetFont('Arial','',13);
+
                     array_push($arr_disp,$criteria[$i],$target,$q_array[$_SESSION[quarter]],$this->compute_mc_rate($target,$q_array[$_SESSION[quarter]]).'%',' ',' ');
-                    
+
                     for($x=0;$x<count($arr_disp);$x++){
                         if($x==0):
                             $this->Cell($w[$x],6,($i+1).'. '.$arr_disp[$x],'1',0,'1');
@@ -260,12 +260,12 @@ function show_mc_summary(){
                             $this->Cell($w[$x],6,$arr_disp[$x],'1',0,'1');
                         endif;
                     }
-                    
+
                     $this->Ln();
                 else:
-                
+
                 endif;
-                		
+	
 		//$this->Row(array($criteria[$i],$target,$array_target[1],$array_target[2],$array_target[3],$q_array[1],$array_target[4],$array_target[5],$array_target[6],$q_array[2],$array_target[7],$array_target[8],$array_target[9],$q_array[3],$array_target[10],$array_target[11],$array_target[12],$q_array[4],$gt));
 
 	}
@@ -617,7 +617,7 @@ function get_brgy_pop(){
 }
 
 function get_target($criteria){
-	if($criteria>=1 && $criteria<=4):
+	if($criteria>=1 && $criteria<=5):
 		$perc = '.035';
 	else:
 		$perc = '.03';
