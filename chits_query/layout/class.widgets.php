@@ -106,10 +106,10 @@
                 echo "<td><input name=\"edate\" type=\"text\" size=\"12\" maxlength=\"10\" value=\"$pedate\" readonly>";
 		echo "<a href=\"javascript:show_calendar4('document.form_query.edate', document.form_query.edate.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a>";		
 		echo "</td></tr>";
-		echo "<tr><td>Barangay</td>";
+		echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Barangay</td>";
 
 		if(mysql_num_rows($query_brgy)!=0):        
-		        echo "<td style=\"background-color: #666666;color: #FFFF66;text-align: center;\"><select name=\"sel_brgy\" size=\"1\">";
+		        echo "<td><select name=\"sel_brgy\" size=\"1\">";
                         echo "<option value=\"all\">All Barangay</option>";
                                 while($res_brgy=mysql_fetch_array($query_brgy)){                  
                                         if($pbrgy==$res_brgy[barangay_id]):
@@ -316,7 +316,7 @@
 	
 
 	function show_year(){
-	        echo "<tr><td>Year</td>";
+	        echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Year</td>";
 		
 		echo "<td><select name='year' size='1'>";
 

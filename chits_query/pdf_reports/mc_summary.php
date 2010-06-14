@@ -195,10 +195,12 @@ function Header()
 
 function show_mc_summary(){
 	
-
-
+	$arr_csv = array();
+	
 	$criteria = array('Pregnant Women with 4 or more prenatal visits','Pregnant Women given 2 doses of TT','Pregnant Women given TT2 plus','Pregnant given complete iron with folic acid','Pregnant given Vit. A','Postpartum women with at least 2 PPV','Postpartum women given complete iron','Postpartum women given Vit. A','Postpartum women initiated breastfeeding');			
-    
+    	
+	array_push($arr_csv,$_SESSION["datanode"]["code"],$_SESSION["edate_orig"]);
+
 	for($i=0;$i<count($criteria);$i++){
 	
 		$array_target = array();
@@ -223,7 +225,9 @@ function show_mc_summary(){
 
 		$q_array = $this->get_quarterly_total($mstat,$target);
 		$gt = array_sum($mstat);
-                
+
+		array_push($arr_csv,$q_array[$_SESSION["quarter"]]);
+
                 if($_SESSION[ques]==36):
                     $w = array(30,18,18,18,18,15,18,18,18,15,18,18,18,15,18,18,18,15,18); //340
                     $this->SetWidths($w);                		
@@ -269,6 +273,8 @@ function show_mc_summary(){
 		//$this->Row(array($criteria[$i],$target,$array_target[1],$array_target[2],$array_target[3],$q_array[1],$array_target[4],$array_target[5],$array_target[6],$q_array[2],$array_target[7],$array_target[8],$array_target[9],$q_array[3],$array_target[10],$array_target[11],$array_target[12],$q_array[4],$gt));
 
 	}
+
+	return $arr_csv;
  }
 
 function compute_indicator($crit){
@@ -690,13 +696,27 @@ function Footer(){
 
 }
 
+
 $pdf = new PDF('L','mm','Legal');
 $pdf->AliasNbPages();
 $pdf->SetFont('Arial','',10);
 $pdf->AddPage();
 
-$pdf->show_mc_summary();
+ini_set("include_path", "/var/www/html/chits/site/Csv/");
 
-$pdf->Output();
+
+$arr_csv = $pdf->show_mc_summary();
+
+if($_GET["form"]=='csv'):
+
+	
+
+	foreach($csv_reader as $row){
+		print_r($row);
+		print "<br>";
+	}
+else:
+	$pdf->Output();
+endif;
 
 ?>

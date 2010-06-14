@@ -16,6 +16,7 @@
  * @version 	$Id: Reader.php 81 2010-04-22 02:24:16Z luke.visinoni $
  */
 class Csv_Reader extends Csv_Reader_Abstract {
+
 	
     /**
      * Path to csv file
