@@ -147,6 +147,7 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 ('ccdev', 'Y', '0.7-2004-06-04', 'CHITS Module - Child Care Dev', 'Herman Tolentino MD', 'ccdev'),
 ('ccdev_report', 'Y', '0.2-2004-05-16', 'CHITS Module - CCDEV Report', 'Herman Tolentino MD', 'ccdev_report'),
 ('complaint', 'Y', '0.2-2004-05-02', 'CHITS Library - Chief Complaint', 'Herman Tolentino MD', 'complaint'),
+('consult_graph', 'Y', '0.1-2010-05-24', 'CHITS - Patient-Consult Level Graphs', 'darth_ali', 'consult_graph'),
 ('consult_report', 'Y', '0.2-2004-08-27', 'CHITS Module - Consult Report', 'Herman Tolentino MD', 'consult_report'),
 ('database', 'Y', '0.3-2004-06-07', 'CHITS Module - Database Support', 'Herman Tolentino MD', 'database'),
 ('demographic_profile', 'Y', '0.1-2010-05-18', 'CHITS Module - Demographics profile', 'darth_ali', 'demographic_profile'),
@@ -190,6 +191,7 @@ INSERT INTO `modules` (`module_id`, `module_init`, `module_version`, `module_des
 ('vaccine', 'Y', '0.4-2004-05-21', 'CHITS Module - Vaccine', 'Herman Tolentino MD', 'vaccine'),
 ('weekly_calendar', 'Y', '0.3-2010-01-21', 'CHITS Library - Weekly Calendar', 'darth_ali', 'weekly_calendar'),
 ('wtforage', 'Y', '0.1-2004-05-10', 'CHITS Library - Weight for Age', 'Ariel Betan/Herman Tolentino', 'wtforage');
+
 
 -- --------------------------------------------------------
 
@@ -238,6 +240,12 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('complaint', 'healthcenter'),
 ('complaint', 'module'),
 ('computebmi', 'module'),
+('consult_graph', 'healthcenter'),
+('consult_graph', 'module'),
+('consult_graph', 'patient'),
+('consult_graphs', 'healthcenter'),
+('consult_graphs', 'module'),
+('consult_graphs', 'patient'),
 ('consult_report', 'barangay'),
 ('consult_report', 'family'),
 ('consult_report', 'fpdf'),
@@ -247,6 +255,7 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('consult_report', 'notes'),
 ('consult_report', 'patient'),
 ('database', 'module'),
+('demographics_profile', 'module'),
 ('demographic_profile', 'module'),
 ('dental', 'healthcenter'),
 ('dental', 'module'),
@@ -375,6 +384,7 @@ INSERT INTO `module_dependencies` (`module_id`, `req_module`) VALUES
 ('wtforage', 'healthcenter'),
 ('wtforage', 'module'),
 ('wtforage', 'patient');
+
 
 
 
