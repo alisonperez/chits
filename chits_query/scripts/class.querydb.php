@@ -679,7 +679,11 @@ class querydb{
 		}
 		
 		echo "<a href='./pdf_reports/mc_summary.php' target='new'>Show Maternal Care $report_name</a><br>";
-		echo "<a href='./pdf_reports/mc_summary.php?form=csv' target='new'>Export Maternal Care $report_name in CSV</a>";
+		
+		if($_SESSION["ques"]==81):
+			echo "<a href='./pdf_reports/mc_summary.php?form=csv' target='new'>Export Maternal Care $report_name in CSV</a>";
+		endif;
+		
 	}
 
 	function process_underone(){

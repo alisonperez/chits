@@ -199,7 +199,10 @@ function show_mc_summary(){
 	
 	$criteria = array('Pregnant Women with 4 or more prenatal visits','Pregnant Women given 2 doses of TT','Pregnant Women given TT2 plus','Pregnant given complete iron with folic acid','Pregnant given Vit. A','Postpartum women with at least 2 PPV','Postpartum women given complete iron','Postpartum women given Vit. A','Postpartum women initiated breastfeeding');			
     	
-	array_push($arr_csv,$_SESSION["datanode"]["code"],$_SESSION["edate_orig"]);
+	$q_brgy = mysql_query("SELECT barangay_name from m_lib_barangay LIMIT 1") or die("Cannot query: 202");
+	list($csv_brgy) = mysql_fetch_array($q_brgy);
+
+	array_push($arr_csv,strtoupper($csv_brgy),$_SESSION["edate_orig"]);
 
 	for($i=0;$i<count($criteria);$i++){
 	
@@ -709,12 +712,43 @@ $arr_csv = $pdf->show_mc_summary();
 
 if($_GET["form"]=='csv'):
 
+	$fhsis_csv = fopen("../../site/data_field_efhsis.csv","r");
+	
+	if($fhsis_csv):
+
+	while(!feof($fhsis_csv)){
+		$line = fgets($fhsis_csv,4096);	
+		$arr_line = explode(',',$line);
+		if($arr_line[0]=='MATERNAL CARE'):
+			for($i=1;$i<count($arr_line);$i++){
+				if($i==(count($arr_line)-1)):
+				$header_csv .= $arr_line[$i];
+				else:
+					$header_csv .= $arr_line[$i].',';
+				endif;
+				
+				
+			}
+		endif;
+	}
+
+	endif;		
+
+	$mch_csv = implode($arr_csv,',');
+	
+	$filename = '../../site/csv_dir/'.ereg_replace(' +','',$_SESSION["lgu"]).'_MCH_'.$_SESSION["quarter"].'Q'.$_SESSION["year"].'.csv';
+	$filehandle = fopen($filename,'w') or die("file cannot be opened");
+
+	fwrite($filehandle,$header_csv);
+	fwrite($filehandle,$mch_csv);
+	
+	fclose($filehandle);
+	
+	header("location: ".$filename);
+	
+//	print_r($_SESSION);
 	
 
-	foreach($csv_reader as $row){
-		print_r($row);
-		print "<br>";
-	}
 else:
 	$pdf->Output();
 endif;
