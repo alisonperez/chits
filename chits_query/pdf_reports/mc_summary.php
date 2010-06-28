@@ -710,7 +710,7 @@ ini_set("include_path", "/var/www/html/chits/site/Csv/");
 
 $arr_csv = $pdf->show_mc_summary();
 
-if($_GET["form"]=='csv'):
+if($_GET["form"]=='csv' || $_GET["form"]=='email'):
 
 	$fhsis_csv = fopen("../../site/data_field_efhsis.csv","r");
 	
@@ -744,7 +744,28 @@ if($_GET["form"]=='csv'):
 	
 	fclose($filehandle);
 	
-	header("location: ".$filename);
+	if($_GET["form"]=='csv'):
+		header("location: ".$filename);
+	else:
+		/*$subj = $_SESSION["lgu"].' Maternal Care Quarterly Report'.' - '.$_SESSION["quarter"].'Q '.$_SESSION["year"];
+		$headers = "From: moncadarhu1@gmail.com\r\nReply-To: moncadarhu1@gmail.com";
+		$attachment = chunk_split(base64_encode(file_get_contents($filename)));
+		$message = "Attached is the ".$_SESSION["lgu"]." health center maternal care report for ".$_SESSION["quarter"]. "of ".$_SESSION["year"];
+
+		$email_list = fopen("../../site/email_list.txt","r");
+		
+		while(!feof($email_list)){
+			$email_receiver = fgets($email_list,4096);
+			$message = ob_get_clean();
+			
+			$sent_mail = mail($email_receiver,$subj,$message,$headers);
+		}
+
+		echo $sent_mail?"Mail sent!":"Mail failed"; */
+
+		
+		
+	endif;
 	
 //	print_r($_SESSION);
 	

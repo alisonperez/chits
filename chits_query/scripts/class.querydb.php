@@ -665,24 +665,35 @@ class querydb{
 		switch($_SESSION[ques]){
 			
 			case 36:
-				$report_name = 'Summary Table';
+				$report_name = 'Maternal Care Summary Table';
 				break;
 			case 80:
-				$report_name = 'Monthly Report';
+				$report_name = 'Maternal Care Monthly Report';
 				break;
 			case 81:
-				$report_name = 'Quarterly Report';
+				$report_name = 'Maternal Care Quarterly Report';
 				break;
 			default:
 				$report_name = '';
 				break;						
 		}
+		echo "<table align='center' style=\"color: black;text-align: center;font-family: arial;\">";
+
+		echo "<tr align='center'><td><a href='./pdf_reports/mc_summary.php' target='new' alt=''><img src='../images/pdf_icon.jpg' width='80' height='80'>";
 		
-		echo "<a href='./pdf_reports/mc_summary.php' target='new'>Show Maternal Care $report_name</a><br>";
-		
+		echo "</img></a><br>&nbsp;&nbsp;Export ".$report_name."<br> as PDF&nbsp;&nbsp;</td>";
+
 		if($_SESSION["ques"]==81):
-			echo "<a href='./pdf_reports/mc_summary.php?form=csv' target='new'>Export Maternal Care $report_name in CSV</a>";
+
+			echo "<td><a href='./pdf_reports/mc_summary.php?form=csv' target='new'><img src='../images/doc_csv_icon.png' width='80' height='80'></img></a><br>&nbsp;&nbsp;Export ".$report_name."<br> as CSV (for E-FHSIS)&nbsp;&nbsp;</td>";
+			
+			//echo "<td><a href='./pdf_reports/mc_summary.php?form=email' target='new'><img src='../images/email_icon.png' width='80' height='80'></img></a><br>&nbsp;&nbsp;Generate and Email Report&nbsp;&nbsp;</td>";
+
+			echo "<td><a href='mailto: alison_perez@yahoo.com' target='new'><img src='../images/email_icon.png' width='80' height='80'></img></a><br>&nbsp;&nbsp;Generate and Email <br>".$report_name."&nbsp;&nbsp;</td>";
+
 		endif;
+
+		echo "</center>";
 		
 	}
 
@@ -704,7 +715,9 @@ class querydb{
 			$_SESSION[ccdev_id]	= $r_ccdev_id;
 			$_SESSION[ccdev_pxid] = $r_pxid;
 			
+			
 			echo "Show Child Care Under 1 TCL:&nbsp;<a href='./pdf_reports/ccdev_underone.php?page=1'>Page 1</a>&nbsp;&nbsp;<a href='./pdf_reports/ccdev_underone.php?page=2'>Page 2</a>";
+			
 		else:
 			echo "<font class='red'>No result/s found.</font>";
 		endif;
@@ -746,28 +759,54 @@ class querydb{
 			array_multisort($r_dates,SORT_ASC,$r_consultid); //pang-sort ng consultation dates
 
 			$_SESSION[ccdev_consultid] = $r_consultid;
-
+			
+									
 			echo "Show Child Care Sick Child TCL:&nbsp;<a href='./pdf_reports/ccdev_sick.php?page=1'>Page 1</a>&nbsp;&nbsp;<a href='./pdf_reports/ccdev_sick.php?page=2'>Page 2</a>";
-
+		
 		else:
 			echo "<font color='red'>No result/s found.</font>";
 		endif;
 	}	
 
 	function process_ccdev_summary(){
+
+		echo "<table align='center' style=\"color: black;text-align: center;font-family: arial;\">";	
+		echo "<tr>";
+		
 		switch($_SESSION[ques]){		
+
 			case 39:
-				echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Summary Table</a>";
+				$link_label = "Child Care Summary Table";
+				//echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Summary Table</a>";
 				break;
 			case 50:
-				echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Monthly Report</a>";
+				$link_label = "Child Care Monthly Report";
+				//echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Monthly Report</a>";
 				break;
 			case 51:
-				echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Quarterly Report</a>";
+				$link_label = "Child Care Quarterly Report";
+				//echo "<a href='./pdf_reports/ccdev_summary.php'>Show Child Care Quarterly Report</a>";
 				break;
 			default:			
 				break;		
 		}
+		
+		echo "<td><a href='./pdf_reports/ccdev_summary.php'><img src='../images/pdf_icon.jpg' width='80' height='80'>";
+		echo "</img></a><br>&nbsp;&nbsp;Export ".$link_label."<br> as PDF&nbsp;&nbsp;";
+		echo "</td>";
+
+		if($_SESSION["ques"]=='51'): //for quarterly child care reports, generate csv and email
+		
+			echo "<td><a href='./pdf_reports/ccdev_summary.php?form=csv'><img src='../images/doc_csv_icon.png' width='80' height='80'>";
+			echo "</img></a><br>&nbsp;&nbsp;Export ".$link_label."<br> as CSV&nbsp;&nbsp;";
+			echo "</td>";
+			
+			echo "<td><a href='mailto: alison_perez@yahoo.com' target='new'><img src='../images/email_icon.png' width='80' height='80'></img></a><br>&nbsp;&nbsp;Generate and Email <br>".$link_label."&nbsp;&nbsp;</td>";
+		endif;
+		
+
+		echo "</tr>";
+		echo "</table>";
 	}
 	
 	function process_fp_tcl(){
