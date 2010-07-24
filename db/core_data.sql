@@ -2024,6 +2024,7 @@ DROP TABLE IF EXISTS `m_lib_ccdev_services`;
 CREATE TABLE IF NOT EXISTS `m_lib_ccdev_services` (
   `service_id` varchar(10) NOT NULL default '',
   `service_name` varchar(50) NOT NULL default '',
+  `order_seq` int(11) NOT NULL,
   PRIMARY KEY  (`service_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -2031,11 +2032,12 @@ CREATE TABLE IF NOT EXISTS `m_lib_ccdev_services` (
 -- Dumping data for table `m_lib_ccdev_services`
 --
 
-INSERT INTO `m_lib_ccdev_services` (`service_id`, `service_name`) VALUES
-('DENT', 'Dental Checkup'),
-('NBS', 'Newborn Screening'),
-('VITA', 'Vitamin A'),
-('WORM', 'Deworming');
+INSERT INTO `m_lib_ccdev_services` (`service_id`, `service_name`, `order_seq`) VALUES
+('DENT', 'Dental Checkup', 4),
+('NBS', 'Newborn Screening', 1),
+('VITA', 'Vitamin A', 2),
+('WORM', 'Deworming', 3);
+
 
 -- --------------------------------------------------------
 
