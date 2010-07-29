@@ -284,7 +284,7 @@ class notes extends module {
             $get_vars = $arg_list[2];
             $validuser = $arg_list[3];
             $isadmin = $arg_list[4];
-            print_r($arg_list);
+            //print_r($arg_list);
         }
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
         $consult_date = healthcenter::get_consult_date($get_vars["consult_id"]);
