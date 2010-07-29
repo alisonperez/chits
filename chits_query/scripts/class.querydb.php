@@ -948,6 +948,6 @@ class querydb{
 			echo "<font color='red'>No result/s found.</font>";
 		endif;		
 	}
-
+	
 }
 ?>

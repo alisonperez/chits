@@ -1707,7 +1707,7 @@ class mc extends module {
                         print "<input type='hidden' name='trimester' value='$trimester' />";
                         print "<input type='hidden' name='visit_sequence' value='$visit_sequence' />";
                     }
-                    print "<br><input type='submit' value = 'Save Prenatal Data' class='textbox' name='submitmc' style='border: 1px solid #000000'><br>";
+                    print "<input type='submit' value = 'Save Prenatal Data' class='textbox' name='submitmc' style='border: 1px solid #000000'><br>";
                 }
             }
             print "</td></tr>";
