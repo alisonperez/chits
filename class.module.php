@@ -523,9 +523,9 @@ Class Module {
             
                 echo 'Module uploaded is in correct format';
             
-                if (move_uploaded_file($_FILES["module_file"]["tmp_name"], $uploadfile)) {
+                if (move_uploaded_file($_FILES["module_file"]["tmp_name"], $uploadfile)):
                     return $this->uncompress($uploadfile);
-                }            
+                endif;            
                 
             else:
                 echo "<font color='red'>NOTE:</font> The GAME module parser will only accept modules that are in class.modulename.php.gz format.";                
