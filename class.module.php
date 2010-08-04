@@ -506,15 +506,32 @@ Class Module {
     //
     // process module submissions
     //
-        if (func_num_args()) {
+        
+        if (func_num_args()>0) {
             $arg_list = func_get_args();
             $post_vars = $arg_list[0];
             $post_files = $arg_list[1];
             //print_r($post_files);
-            $uploadfile = "../modules/_uploads/".$_FILES["module_file"]["name"];
-            if (move_uploaded_file($_FILES["module_file"]["tmp_name"], $uploadfile)) {
-                return $this->uncompress($uploadfile);
-            }
+
+            if(isset($_FILES)):
+            
+            $arr_file = explode('.',$_FILES["module_file"]["name"]);
+            
+            
+            if($arr_file[2]=='php' && $arr_file[3]=='gz'):
+                $uploadfile = "../modules/_uploads/".$_FILES["module_file"]["name"];
+            
+                echo 'Module uploaded is in correct format';
+            
+                if (move_uploaded_file($_FILES["module_file"]["tmp_name"], $uploadfile)) {
+                    return $this->uncompress($uploadfile);
+                }            
+                
+            else:
+                echo "<font color='red'>NOTE:</font> The GAME module parser will only accept modules that are in class.modulename.php.gz format.";                
+            endif;
+            
+            endif;
         }
     }
 
