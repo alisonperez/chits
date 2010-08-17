@@ -268,19 +268,16 @@ class hematology extends module{
     echo "<tr><td class='boxtitle'>POLYS</td><td class='tinylight'>$polys</td><td class='boxtitle'>FBS</td><td class='tinylight'>$fbs</td></tr>";
     echo "<tr><td class='boxtitle'>LYMPHO</td><td class='tinylight'>$lympho</td><td class='boxtitle'>";
     
-    echo "BLOOD TYPE";    
+    echo "BLOOD TYPE";
     echo "</td><td class='tinylight'>$blood_type";
     echo "</td></tr>";
     echo "<tr><td class='boxtitle'>MXD</td><td class='tinylight'>$mxd</td><td colspan='2'>&nbsp;</td></tr>";
     echo "<tr><td class='boxtitle'>MONO</td><td class='tinylight'>$mono</td><td colspan='2'>&nbsp;</td></tr>";
     echo "<tr><td class='boxtitle'>EOSIN</td><td class='tinylight'>$eosin</td><td colspan='2'>&nbsp;</td></tr>";
-    echo "<tr><td class='boxtitle'>BASO</td><td class='tinylight'>$baso</td><td colspan='2'>&nbsp;</td></tr>";        
-    
-    echo "</table>";    
-      
+    echo "<tr><td class='boxtitle'>BASO</td><td class='tinylight'>$baso</td><td colspan='2'>&nbsp;</td></tr>";
+
+    echo "</table>";
+
   }
-
-
 }
-
 ?>

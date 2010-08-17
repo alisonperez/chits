@@ -280,6 +280,7 @@ class lab extends module {
                         if (class_exists($mod)) {                        
                             //echo $eval_string;    
                             eval("$eval_string");
+			    
                         } else {
                             print "<b><font color='red'>WARNING:</font> $mod missing.</b><br/>";
                         }
@@ -309,6 +310,14 @@ class lab extends module {
                             //echo $eval_string;                            
                             //sputum::_consult_lab_sputum($_GET["menu_id"],$_POST,$_GET);
                             eval("$eval_string");
+			    
+			    print "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&request_id=$_GET[request_id]' method='POST'>";
+			    
+			    print "<input type='submit' value = 'Update Lab Exam' class='textbox' name='submitlab' style='border: 1px solid #000000'>&nbsp;&nbsp;";
+    			    print "<input type='submit' value = 'Delete Lab Exam' class='textbox' name='submitlab' style='border: 1px solid #000000'> ";
+			    
+			    echo '</form>';
+
                         } else {
                             print "<b><font color='red'>WARNING:</font> $mod missing.</b><br/>";
                         }
@@ -347,6 +356,14 @@ class lab extends module {
             break;
         case "Print Referral":
             break;
+
+	case "Delete Lab Exam":
+	    	echo 'alsion';
+	    	break;
+		xxx .. SQL for changing the done_status from Y to N to allow edit
+	default:
+		
+		break;
         }
     }
 

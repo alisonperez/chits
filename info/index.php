@@ -144,9 +144,12 @@ small { font-family: verdana, sans serif}
 ?>
 
 <br/>
-<table border="0" cellspacing="0" bgcolor="#000000" style="border: 4px solid black" width="100%" cellpadding="0">
-  <tr bgcolor="#FF0000">
-    <td valign="top"><img src="../images/chitsbanner.png" border="0"></td>
+<!-- <table border="0" cellspacing="0" bgcolor="#000000" style="border: 4px solid black" width="100%" cellpadding="0"> -->
+<table border="0" cellspacing="0" style="border: 4px solid black" width="100%" cellpadding="0">
+  <tr bgcolor="#006600">
+  <tr>
+  <tr>
+    <td valign="top"><img src="../images/chitsbanner.png" border="0" width="100%" height="50%"></td>
   </tr>
   <tr>
     <td>
