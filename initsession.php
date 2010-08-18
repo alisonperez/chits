@@ -47,5 +47,9 @@ if (!isset($datanode)) {
 if (!isset($user_role)) {
     session_register("user_role");
 }
-
+if (!isset($banner)) {
+    session_register("banner");
+    $arr_banner = array('0','1','2','3','4','5');
+    $_SESSION["banner"] = 'banner.'.array_rand($arr_banner).'.png';
+}
 ?>

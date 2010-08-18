@@ -93,7 +93,7 @@ class Site {
             site::process_content($menu_id, $post_vars, $get_vars);
         }
         site::form_content($menu_id, $post_vars, $get_vars);
-        site::display_content($menu_id, $post_vars, $get_vars);
+        site::display_content($menu_id, $post_vars, $get_vars);        
     }
 
     function form_content() {

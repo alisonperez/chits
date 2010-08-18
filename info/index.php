@@ -55,11 +55,10 @@ $module = new Module;
 include "../lang.php";
 
 // check if any users exist
-if ($user->check_users()) {
+if ($user->check_users()) {    
     // redirect to welcome page
     header("location: ".$_SERVER["PHP_SELF"]."?page=WELCOME");
 }
-
 
 
 
@@ -149,7 +148,8 @@ small { font-family: verdana, sans serif}
   <tr bgcolor="#006600">
   <tr>
   <tr>
-    <td valign="top"><img src="../images/chitsbanner.png" border="0" width="100%" height="50%"></td>
+    <td valign="top"><img src="../images/<?php echo $_SESSION["banner"] ?>" border="0" width="100%" height="50%"></td>
+    
   </tr>
   <tr>
     <td>

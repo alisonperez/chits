@@ -360,7 +360,7 @@ class lab extends module {
 	case "Delete Lab Exam":
 	    	echo 'alsion';
 	    	break;
-		xxx .. SQL for changing the done_status from Y to N to allow edit
+		//xxx .. SQL for changing the done_status from Y to N to allow edit
 	default:
 		
 		break;
