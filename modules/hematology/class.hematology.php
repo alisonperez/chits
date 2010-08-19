@@ -78,7 +78,7 @@ class hematology extends module{
       
     $h = new hematology;
     
-    if($_POST["submitlab"]):                
+    if($_POST["submitlab"]=='Update Lab Exam'):                
       $q_request = mysql_query("SELECT request_id FROM m_consult_lab_hematology WHERE request_id='$_POST[request_id]'") or die("Cannot query 94:".mysql_error());
               
       if($_POST["release_flag"]==1):
@@ -100,7 +100,7 @@ class hematology extends module{
       
             
       if(mysql_num_rows($q_request)!=0):
-          $update_hematology = mysql_query("UPDATE m_consult_lab_hematology SET consult_id='$_GET[consult_id]',request_id='$_POST[request_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',hemoglobin='$_POST[txt_hemoglobin]',hematocrit='$_POST[txt_hemocrit]',rbc='$_POST[txt_rbc]',rbc_mcv='$_POST[txt_mcv]',rbc_mchc='$_POST[txt_mchc]',rbc_mch='$_POST[txt_mch]',wbc='$_POST[txt_wbc]',wbc_polys='$_POST[txt_polys]',wbc_lympho='$_POST[txt_lympho]',wbc_mxd='$_POST[txt_mxd]',wbc_mono='$_POST[txt_mono]',wbc_eosin='$_POST[txt_eosin]',wbc_baso='$_POST[txt_baso]',platelet='$_POST[txt_platelet]',reticulocytes='$_POST[txt_reticulocytes]',esr='$_POST[txt_esr]',clotting_time='$_POST[txt_clot]',bleeding_time='$_POST[txt_bleeding]',malaria='$_POST[txt_malaria]',slit_smear='$_POST[txt_slit_smear]',fbs='$_POST[txt_fbs]',blood_type='$_POST[sel_bloodtype]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]'") or die("Cannot query 99: ".mysql_error());
+          $update_hematology = mysql_query("UPDATE m_consult_lab_hematology SET consult_id='$_GET[consult_id]',request_id='$_POST[request_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',hemoglobin='$_POST[txt_hemoglobin]',hematocrit='$_POST[txt_hemocrit]',rbc='$_POST[txt_rbc]',rbc_mcv='$_POST[txt_mcv]',rbc_mchc='$_POST[txt_mchc]',rbc_mch='$_POST[txt_mch]',wbc='$_POST[txt_wbc]',wbc_polys='$_POST[txt_polys]',wbc_lympho='$_POST[txt_lympho]',wbc_mxd='$_POST[txt_mxd]',wbc_mono='$_POST[txt_mono]',wbc_eosin='$_POST[txt_eosin]',wbc_baso='$_POST[txt_baso]',platelet='$_POST[txt_platelet]',reticulocytes='$_POST[txt_reticulocytes]',esr='$_POST[txt_esr]',clotting_time='$_POST[txt_clot]',bleeding_time='$_POST[txt_bleeding]',malaria='$_POST[txt_malaria]',slit_smear='$_POST[txt_slit_smear]',fbs='$_POST[txt_fbs]',blood_type='$_POST[sel_bloodtype]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]' WHERE request_id='$_GET[request_id]'") or die("Cannot query 99: ".mysql_error());
       else:      
           $update_hematology = mysql_query("INSERT INTO m_consult_lab_hematology SET consult_id='$_GET[consult_id]',request_id='$_POST[request_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',hemoglobin='$_POST[txt_hemoglobin]',hematocrit='$_POST[txt_hemocrit]',rbc='$_POST[txt_rbc]',rbc_mcv='$_POST[txt_mcv]',rbc_mchc='$_POST[txt_mchc]',rbc_mch='$_POST[txt_mch]',wbc='$_POST[txt_wbc]',wbc_polys='$_POST[txt_polys]',wbc_lympho='$_POST[txt_lympho]',wbc_mxd='$_POST[txt_mxd]',wbc_mono='$_POST[txt_mono]',wbc_eosin='$_POST[txt_eosin]',wbc_baso='$_POST[txt_baso]',platelet='$_POST[txt_platelet]',reticulocytes='$_POST[txt_reticulocytes]',esr='$_POST[txt_esr]',clotting_time='$_POST[txt_clot]',bleeding_time='$_POST[txt_bleeding]',malaria='$_POST[txt_malaria]',slit_smear='$_POST[txt_slit_smear]',fbs='$_POST[txt_fbs]',blood_type='$_POST[sel_bloodtype]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]'") or die("Cannot query 102: ".mysql_error());
       endif;

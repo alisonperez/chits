@@ -95,7 +95,7 @@
       
       $f = new fecalysis;
       
-      if($_POST["submitlab"]):
+      if($_POST["submitlab"]=='Update Lab Exam'):
         //print_r($_POST);
         
         $q_request = mysql_query("SELECT request_id FROM m_consult_lab_fecalysis WHERE request_id='$_POST[request_id]'") or die("Cannot query 101 ".mysql_error());
@@ -117,7 +117,7 @@
           $date_lab_exam = $y.'-'.$m.'-'.$d;        
                 
         if(mysql_num_rows($q_request)!=0):
-          $update_fecal = mysql_query("UPDATE m_consult_lab_fecalysis SET date_lab_exam='$date_lab_exam',fecal_color='$_POST[fecal_color]',fecal_consistency='$_POST[fecal_consistency]',fecal_occultblood='$_POST[fecal_blood]',fecal_ova='$_POST[fecal_ova]',fecal_wbc='$_POST[fecal_wbc]',fecal_rbc='$_POST[fecal_rbc]',fecal_bacteria='$_POST[fecal_bacteria]',fecal_fat='$_POST[fecal_fat]',fecal_starch='$_POST[fecal_starch]',fecal_others='$_POST[fecal_others]',release_flag='$release',release_date='$release_date'") or die("Cannot query 120 ".mysql_error());
+          $update_fecal = mysql_query("UPDATE m_consult_lab_fecalysis SET date_lab_exam='$date_lab_exam',fecal_color='$_POST[fecal_color]',fecal_consistency='$_POST[fecal_consistency]',fecal_occultblood='$_POST[fecal_blood]',fecal_ova='$_POST[fecal_ova]',fecal_wbc='$_POST[fecal_wbc]',fecal_rbc='$_POST[fecal_rbc]',fecal_bacteria='$_POST[fecal_bacteria]',fecal_fat='$_POST[fecal_fat]',fecal_starch='$_POST[fecal_starch]',fecal_others='$_POST[fecal_others]',release_flag='$release',release_date='$release_date' WHERE request_id='$_GET[request_id]'") or die("Cannot query 120 ".mysql_error());
         else:                    
           $insert_fecal = mysql_query("INSERT INTO m_consult_lab_fecalysis SET consult_id='$_GET[consult_id]', request_id='$_POST[request_id]', patient_id='$pxid', date_lab_exam='$date_lab_exam', fecal_color='$_POST[fecal_color]', fecal_consistency='$_POST[fecal_consistency]', fecal_occultblood='$_POST[fecal_blood]',fecal_ova='$_POST[fecal_ova]',fecal_wbc='$_POST[fecal_wbc]',fecal_rbc='$_POST[fecal_rbc]',fecal_bacteria='$_POST[fecal_bacteria]', fecal_fat='$_POST[fecal_fat]',fecal_starch='$_POST[fecal_starch]',fecal_others='$_POST[fecal_others]',user_id='$_SESSION[userid]',release_flag='$release',release_date='$release_date'") or die("Cannot query 106".mysql_error());                                      
         endif;
@@ -277,14 +277,6 @@
       echo "</table>";
       
       echo "</form>";
-    }
-    
-    
-    
-  
-  
-  
-  
-  
+    }  
   }
 ?>

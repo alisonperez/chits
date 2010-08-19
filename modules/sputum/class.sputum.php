@@ -459,7 +459,9 @@ class sputum extends module {
                     mysql_query("COMMIT;") or die(mysql_error());
                     mysql_query("SET autocommit=1;") or die(mysql_error());
                     //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&request_id=".$get_vars["request_id"]."&lab_id=".$get_vars["lab_id"]."&ptmenu=LABS");
-                } else {
+                } else {                                        
+                    $update_lab = mysql_query("UPDATE m_consult_lab SET request_done='$release_flag',done_timestamp=NOW() WHERE request_id='$post_vars[request_id]'") or die("Cannot query: 463 ".mysql_error());
+                    
                     $sql_update = "update m_consult_lab_sputum set ".
                                   "lab_timestamp = sysdate(), ".
                                   "sp1_collection_date = '$sp1_collection_date', ".
@@ -482,11 +484,11 @@ class sputum extends module {
                     if ($result_update = mysql_query($sql_update)) {                        
                         mysql_query("COMMIT;") or die(mysql_error());
                         mysql_query("SET autocommit=1;") or die(mysql_error());
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum");
+                        //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum");
                     } else {
                         mysql_query("ROLLBACK;") or die(mysql_error());
                         mysql_query("SET autocommit=1;") or die(mysql_error());
-                        header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum");
+                        //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&module=".$get_vars["module"]."&ptmenu=LABS"."&module=sputum"."&request_id=".$get_vars["request_id"]."#sputum");
                     }
                 }                
                 
