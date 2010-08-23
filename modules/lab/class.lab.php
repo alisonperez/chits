@@ -357,8 +357,7 @@ class lab extends module {
         case "Print Referral":
             break;
 
-	case "Edit Lab Exam":	    	
-	        //echo 'alsion';
+	case "Edit Lab Exam":	        
 	    	$q_lab = mysql_query("UPDATE m_consult_lab SET request_done='N' WHERE request_id='$_GET[request_id]'") or die("Cannot query: 362 ".mysql_error());
 	    	break;
 	default:
