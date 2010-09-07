@@ -18244,3 +18244,16 @@ CREATE TABLE IF NOT EXISTS `m_lib_demographic_profile` (
   PRIMARY KEY (`demographic_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+
+CREATE TABLE IF NOT EXISTS `m_lib_alert_type` (
+  `alert_id` int(11) NOT NULL AUTO_INCREMENT,
+  `module_id` varchar(50) NOT NULL,
+  `label` text NOT NULL,
+  `date_pre` date NOT NULL,
+  `date_until` date NOT NULL,
+  `alert_message` text NOT NULL,
+  `alert_action` text NOT NULL,
+  `date_basis` varchar(50) NOT NULL,
+  `alert_url_redirect` date NOT NULL,
+  PRIMARY KEY (`alert_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

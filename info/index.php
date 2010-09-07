@@ -137,7 +137,7 @@ small { font-family: verdana, sans serif}
 
 
 <body text="black" bgcolor="#FFFFCC" link="black" vlink="black">
-<? 
+<?php        
 	//echo "Print page module: ";
 	//print_r($_GET);	
 ?>
