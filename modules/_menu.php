@@ -1,12 +1,18 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-06-01 11:31:14
+// Generated 2010-09-08 13:27:53
 // Module: _menu.php
 // Author: Herman Tolentino MD
 //
 if ($HTTP_GET_VARS["menu_id"]) {
 	switch ($HTTP_GET_VARS["menu_id"]) {
+	case 1361:
+		$alert->_alert($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
+		break;
+	case 1360:
+		$alert->_alert_type($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
+		break;
 	case 1329:
 		$appointment->_appointments($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
 		break;

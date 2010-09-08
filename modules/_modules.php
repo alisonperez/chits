@@ -1,10 +1,21 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-06-01 11:31:14
+// Generated 2010-09-08 13:27:53
 // Module: _module.php
 // Author: Herman Tolentino MD
 //
+if (file_exists('../modules/alert/class.alert.php')) {
+	include '../modules/alert/class.alert.php';
+	$alert = new alert;
+	if (!$module->activated('alert') && $initmod) {
+		$alert->init_sql();
+		$alert->init_menu();
+		$alert->init_deps();
+		$alert->init_lang();
+		$alert->init_help();
+	}
+}
 if (file_exists('../modules/appointment/class.appointment.php')) {
 	include '../modules/appointment/class.appointment.php';
 	$appointment = new appointment;
