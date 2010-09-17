@@ -8,7 +8,7 @@ class alert extends module{
 		$this->authod = "darth_ali";
 		$this->module = "alert";
 		
-		$this->mods = array('mc'=>array("Maternal Care"),'ccdev'=>array("Expanded Program for Immunization"),'fp'=>array("Birth Spacing / Family Planning"));
+		$this->mods = array('mc'=>array("Maternal Care"),'epi'=>array("Expanded Program for Immunization"),'fp'=>array("Birth Spacing / Family Planning"),'notifiable'=>array("Notifiable Diseases"));
 	}
 
 
@@ -43,7 +43,7 @@ class alert extends module{
 		module::set_menu($this->module,"Alert Types","LIBRARIES","_alert_type");
 		module::set_menu($this->module,"Alerts","CONSULTS","_alert");
 		module::set_detail($this->description,$this->version,$this->author,$this->module);
-			
+	
 	}
 	
 	function init_sql(){
@@ -69,31 +69,60 @@ class alert extends module{
 	
 	function _alert_type(){
 		echo "this is the container for the alert and reminder adminstration interface.";
+				
+		$q_indicator = mysql_query("SELECT alert_indicator_id,main_indicator,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$_POST[sel_mods]' ORDER by sub_indicator ASC") or die("Cannot query: 94 ".mysql_error());
+		
+		echo $_POST[sel_mods];
+
+		echo "<form name='form_alert_lib' method='POST' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]'>";
+		
+		echo "<input type='hidden' name='tbl_name' value=''>";
 		echo "<table border='1'>";
 		echo "<tr><td width='65%'>";
 		
 		echo "<table>";
 		echo "<thead colspan='2'>REMINDER & ALERT ADMINISTRATION</thead>";
-		
-		echo "<tr>";		
-		echo "<td>Reminder/Alert Label</td>";
-		echo "<td>";
-		echo "<input type='text' name='txt_label' size='25'></input>";
-		echo "</td>";								
-		echo "</tr>";
-		
+
 		echo "<tr>";
-		echo "<td>Health Program</td>";		
+		echo "<td>Health Program</td>";
 		echo "<td>";
-		echo "<select name='sel_mods' size='1'>";
+		echo "<select name='sel_mods' size='1' onchange=\"autoSubmit();\">";
+		
+		echo "<option value='0'>---- SELECT PROGRAM ----</option>";
+		
 		foreach($this->mods as $key=>$value){
 			foreach($value as $key2=>$value2){
-				echo "<option value='$key'>$value2</option>";
+				if($key==$_POST[sel_mods]):
+					echo "<option value='$key' SELECTED>$value2</option>";
+				else:
+					echo "<option value='$key'>$value2</option>";
+				endif;
 				
 			}
 		}
+
 		echo "</select>";
 		echo "</td>";
+		echo "</tr>";
+		
+		echo "<tr>";
+		
+		echo "<td>Reminder/Alert Label</td>";
+		echo "<td>";
+				
+		echo "<select name='sel_alert_indicators' size='1'>";
+		
+		if(mysql_num_rows($q_indicator)!=0):
+			while(list($ind_id,$main_ind,$sub_ind)=mysql_fetch_array($q_indicator)){
+				echo "<option value='$ind_id'>$sub_ind</option>";
+			}
+		else:
+			echo "<option value='$ind_id' disabled>$sub_ind</option>";
+		endif;
+
+		echo "</select>";
+
+		echo "</td>";	
 		echo "</tr>";
 
 		echo "<tr>";
@@ -121,7 +150,7 @@ class alert extends module{
 			echo "<option value='$i'>$i</option>";
 		}
 		
-		echo "</select>";		
+		echo "</select>";
 		echo "&nbsp;&nbsp;days</td>";
 		echo "</tr>";
 
@@ -133,7 +162,7 @@ class alert extends module{
 		for($i=0;$i<=100;$i++){
 			echo "<option value='$i'>$i</option>";
 		}
-		echo "</select>";		
+		echo "</select>";
 		echo "&nbsp;&nbsp;days</td>";
 		echo "</tr>";
 
@@ -155,8 +184,8 @@ class alert extends module{
 		echo "<td>URL for data entry</td>";
 		echo "<td>";
 		echo "<input type='text' name='txt_label' size='25'></input>";
-		echo "</td>";
-		echo "</tr>";
+		echo "</td>";x
+		echo "</tr>";x
 
 		echo "</table>";
 
@@ -170,12 +199,14 @@ class alert extends module{
 		echo "<td>";
 		
 		echo "<table>";
-		echo "<thead>LIST of REMINDERS & ALERTS</thead>";
+		echo "<thead colspan='2' valign='top'>LIST of REMINDERS & ALERTS</thead>";
 		echo "</table>";
 		
 		echo "</td>";
 
 		echo "</table>";
+
+		echo "</form>";
 	}
 
 	function _alert(){
