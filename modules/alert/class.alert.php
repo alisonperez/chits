@@ -51,12 +51,30 @@ class alert extends module{
 		//create m_lib_alert_table. this table will contain user-defined alerts and reminders
 		module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_alert_type` (
 			`alert_id` int(11) NOT NULL AUTO_INCREMENT,
-  			`module_id` varchar(50) NOT NULL,`label` text NOT NULL,
+  			`module_id` varchar(50) NOT NULL, `alert_indicator_id` int(2) NOT NULL,,
   			`date_pre` date NOT NULL,`date_until` date NOT NULL,
   			`alert_message` text NOT NULL,`alert_action` text NOT NULL,
   			`date_basis` varchar(50) NOT NULL,`alert_url_redirect` date NOT NULL,
   			PRIMARY KEY (`alert_id`)
-			) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;");				
+			) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;");
+			
+		module::execsql("CREATE TABLE IF NOT EXISTS `m_lib_alert_indicators` (
+		  	`alert_indicator_id` int(11) NOT NULL AUTO_INCREMENT,`main_indicator` varchar(10) NOT NULL,
+		  	`sub_indicator` text NOT NULL,`efhsis_code` varchar(25) NOT NULL,
+		         PRIMARY KEY (`alert_indicator_id`)
+		        ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;");
+		        
+		module::execsql("INSERT INTO `m_lib_alert_indicators` (`alert_indicator_id`, `main_indicator`, `sub_indicator`, `efhsis_code`) VALUES
+		(1, 'mc', 'Quality Prenatal Visit', ''),(2, 'mc', 'Expected Date of Delivery', ''),(3, 'mc', 'Postpartum Visit', ''),(4, 'mc', 'Tetanus Toxoid Intake (CPAB)', ''),
+		(5, 'mc', 'Vitamin A Intake (20,000 unit)', ''),(6, 'mc', 'Iron with Folic Acid Intake', ''),(7, 'epi', 'BCG Immunization', ''),(8, 'epi', 'DPT 1 Immunization', ''),
+		(9, 'epi', 'DPT 2 Immunization', ''),(10, 'epi', 'DPT 3 Immunization', ''),(11, 'epi', 'OPV 1 Immunization', ''),(12, 'epi', 'OPV 2 Immunization', ''),
+		(13, 'epi', 'OPV 3 Immunization', ''),(14, 'epi', 'Hepa B1 Immunization', ''),(15, 'epi', 'Hepa B2 Immunization', ''),(16, 'epi', 'Hepa B3 Immunization', ''),
+		(17, 'epi', 'Measles Immunization', ''),(18, 'epi', 'Fully Immunized Child', ''),(19, 'epi', 'Completely Immunized Child', ''),(20, 'notifiable', 'Vitamin A Supplementation', ''),
+		(21, 'notifiable', 'Diarrhea Case for 6-11 and 12-72', ''),(22, 'fp', 'Pill Intake Follow-Up', ''),(23, 'fp', 'Condom Replenishment Follow-Up', ''),
+		(24, 'fp', 'IUD Follow-Up', ''),(25, 'fp', 'Injectables Follow-Up', ''),(26, 'fp', 'Pills Dropout Alert', ''),
+		(27, 'fp', 'Condom Dropout Alert', ''),(28, 'fp', 'IUD Dropout Alert', ''),(29, 'fp', 'Injectables Dropout Alert', ''),
+		(30, 'fp', 'Female Sterilization Dropout Alert', ''),(31, 'fp', 'Male Sterilization Dropout Alert', ''),(32, 'fp', 'NFP LAM Dropout Alert', '');");
+		
 	}
 
 	function drop_tables(){
@@ -71,7 +89,8 @@ class alert extends module{
 		echo "this is the container for the alert and reminder adminstration interface.";
 		
 		if($_POST[submit_alert]):
-			$q_alert = mysql_query() or die("Cannot query 74 ".mysql_error());
+			print_r($_POST);
+			$q_alert = mysql_query("SELECT ") or die("Cannot query 74 ".mysql_error());
 		endif;
 		
 		echo $_POST[sel_mods];		

@@ -18248,7 +18248,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_demographic_profile` (
 CREATE TABLE IF NOT EXISTS `m_lib_alert_type` (
   `alert_id` int(11) NOT NULL AUTO_INCREMENT,
   `module_id` varchar(50) NOT NULL,
-  `label` text NOT NULL,
+  `alert_indicator_id` int(2) NOT NULL,
   `date_pre` date NOT NULL,
   `date_until` date NOT NULL,
   `alert_message` text NOT NULL,
