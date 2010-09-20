@@ -69,14 +69,24 @@ class alert extends module{
 	
 	function _alert_type(){
 		echo "this is the container for the alert and reminder adminstration interface.";
-				
+		
+		if($_POST[submit_alert]):
+			$q_alert = mysql_query() or die("Cannot query 74 ".mysql_error());
+		endif;
+		
+		echo $_POST[sel_mods];		
+		
 		$q_indicator = mysql_query("SELECT alert_indicator_id,main_indicator,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$_POST[sel_mods]' ORDER by sub_indicator ASC") or die("Cannot query: 94 ".mysql_error());
 		
-		echo $_POST[sel_mods];
+		
 
-		echo "<form name='form_alert_lib' method='POST' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]'>";
+		echo "<form name='form_alert_lib' method='POST' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#alert'>";
+		
 		
 		echo "<input type='hidden' name='tbl_name' value=''>";
+		
+		echo "<a name='alert'></a>";
+		
 		echo "<table border='1'>";
 		echo "<tr><td width='65%'>";
 		
@@ -107,7 +117,7 @@ class alert extends module{
 		
 		echo "<tr>";
 		
-		echo "<td>Reminder/Alert Label</td>";
+		echo "<td>Reminder/Alert Event</td>";
 		echo "<td>";
 				
 		echo "<select name='sel_alert_indicators' size='1'>";
@@ -151,7 +161,7 @@ class alert extends module{
 		}
 		
 		echo "</select>";
-		echo "&nbsp;&nbsp;days</td>";
+		echo "&nbsp;&nbsp;days (setting to 0 means actual date)</td>";
 		echo "</tr>";
 
 		echo "<tr>";
@@ -163,14 +173,14 @@ class alert extends module{
 			echo "<option value='$i'>$i</option>";
 		}
 		echo "</select>";
-		echo "&nbsp;&nbsp;days</td>";
+		echo "&nbsp;&nbsp;days (setting to 0 means actual date)</td>";
 		echo "</tr>";
 
 		echo "<tr>";
 		echo "<td></td>";
 		echo "</tr>";
 
-		echo "<tr>";
+		/*echo "<tr>";
 		echo "<td>Base Date for Reminder/Alert</td>";
 		echo "<td>";
 		echo "<select name='sel_base_date' size='1'>";  //list will display date fields based on selected health program
@@ -179,14 +189,23 @@ class alert extends module{
 		echo "</select>";
 		echo "</td>";
 		echo "</tr>";
+		*/
 
 		echo "<tr>";
 		echo "<td>URL for data entry</td>";
 		echo "<td>";
 		echo "<input type='text' name='txt_label' size='25'></input>";
-		echo "</td>";x
-		echo "</tr>";x
-
+		echo "</td>";
+		echo "</tr>";
+		
+		
+		echo "<tr align='center'>";
+		echo "<td colspan='2'>";
+		echo "<input type='submit' name='submit_alert' value='Save Reminder / Alert'></input>&nbsp;&nbsp;";
+		echo "<input type='reset' name='clear' value='Clear'></input>";
+		echo "</td>";
+		echo "</tr>";
+		
 		echo "</table>";
 
 		echo "</td>";
