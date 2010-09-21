@@ -118,12 +118,14 @@ class alert extends module{
 			endif;
 		endif;
 		
-	
+		$vals_update = $this->set_vals_update($_GET);
+		print_r($vals_update);
 		
-		$q_indicator = mysql_query("SELECT alert_indicator_id,main_indicator,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$_POST[sel_mods]' ORDER by sub_indicator ASC") or die("Cannot query: 94 ".mysql_error());
-		
+		$main_indicator = (!empty($_POST[sel_mods]))?($_POST[sel_mods]):($vals_update["module_id"]);
 		
 
+		$q_indicator = mysql_query("SELECT alert_indicator_id,main_indicator,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$main_indicator' ORDER by sub_indicator ASC") or die("Cannot query: 94 ".mysql_error());
+		
 		echo "<form name='form_alert_lib' method='POST' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#alert'>";
 		
 		
@@ -148,10 +150,11 @@ class alert extends module{
 			foreach($value as $key2=>$value2){
 				if($key==$_POST[sel_mods]):
 					echo "<option value='$key' SELECTED>$value2</option>";
+				elseif($key==$vals_update["module_id"]):
+					echo "<option value='$key' SELECTED>$value2</option>";
 				else:
 					echo "<option value='$key'>$value2</option>";
 				endif;
-				
 			}
 		}
 
@@ -168,7 +171,12 @@ class alert extends module{
 		
 		if(mysql_num_rows($q_indicator)!=0):
 			while(list($ind_id,$main_ind,$sub_ind)=mysql_fetch_array($q_indicator)){
-				echo "<option value='$ind_id'>$sub_ind</option>";
+				if($ind_id==$vals_update["alert_indicator_id"]):
+					echo "<option value='$ind_id' SELECTED>$sub_ind</option>";				
+				else:
+					echo "<option value='$ind_id'>$sub_ind</option>";				
+				endif;
+				
 			}
 		else:
 			echo "<option value='$ind_id' disabled>$sub_ind</option>";
@@ -272,8 +280,6 @@ class alert extends module{
 
 		echo "</table>";
 
-		$this->list_alert();
-
 		echo "</form>";
 	}
 
@@ -298,6 +304,20 @@ class alert extends module{
 				echo "</tr>";
 			endif;
 		}
+	}
+
+	function set_vals_update($get_arr){
+
+		if($get_arr["action"]=='update'):
+			
+			$q_indicator = mysql_query("SELECT a.alert_id,a.module_id,a.alert_indicator_id,a.date_pre,a.date_until,a.alert_message,a.alert_action,a.date_basis,a.alert_url_redirect,b.sub_indicator FROM m_lib_alert_type a, m_lib_alert_indicators b WHERE a.alert_indicator_id='$get_arr[indicator_id]' AND a.alert_indicator_id=b.alert_indicator_id") or die("Cannot query 306 ".mysql_error());
+
+			if(mysql_num_rows($q_indicator)!=0):
+				$indicator_arr = mysql_fetch_array($q_indicator);
+			endif;
+		endif;
+		
+		return $indicator_arr;
 	}
 
 }
