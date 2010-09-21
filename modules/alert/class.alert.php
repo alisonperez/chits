@@ -79,6 +79,7 @@ class alert extends module{
 
 	function drop_tables(){
 		module::execsql("DROP TABLE `m_lib_alert_type`;");
+		module::execsql("DROP TABLE `m_lib_alert_indicators`;");
 	}
 
 
@@ -90,10 +91,34 @@ class alert extends module{
 		
 		if($_POST[submit_alert]):
 			print_r($_POST);
-			$q_alert = mysql_query("SELECT ") or die("Cannot query 74 ".mysql_error());
+			$q_alert = mysql_query("SELECT alert_id,alert_indicator_id FROM m_lib_alert_type WHERE alert_indicator_id='$_POST[sel_alert_indicators]'") or die("Cannot query 74 ".mysql_error());
+			
+			if(mysql_num_rows($q_alert)!=0):				
+				echo "<script language='javascript'>";
+				echo "window.alert('There is already a definition for this alert. To update click the alert link on the right side panel.')";
+				echo "</script>";				
+			else:				
+				
+				if(empty($_POST[txt_msg]) || empty($_POST[txt_action])):
+					
+					echo "<script language='javascript'>";
+					echo "window.alert('Please supply entriend for reminder / alert message or actions.')";
+					echo "</script>";
+					
+				else:
+					$alert_insert = mysql_query("INSERT INTO m_lib_alert_type SET module_id='$_POST[sel_mods]',alert_indicator_id='$_POST[sel_alert_indicators]',date_pre='$_POST[sel_days_before]',date_until='$_POST[sel_days_after]',alert_message='$_POST[txt_msg]',alert_action='$_POST[txt_action]'") or die("Cannot query: 107");
+					
+					if($alert_insert):
+						echo "<script language='javascript'>";
+						echo "window.alert('Alert was successfully been saved. To edit, click the alert link on the right side panel.')";
+						echo "</script>";
+					endif;
+								
+				endif;
+			endif;
 		endif;
 		
-		echo $_POST[sel_mods];		
+	
 		
 		$q_indicator = mysql_query("SELECT alert_indicator_id,main_indicator,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$_POST[sel_mods]' ORDER by sub_indicator ASC") or die("Cannot query: 94 ".mysql_error());
 		
@@ -165,7 +190,7 @@ class alert extends module{
 		echo "<tr>";
 		echo "<td valign='top'>Recommended Actions</td>";
 		echo "<td>";
-		echo "<textarea name='txt_msg' cols='25' rows='3'>";
+		echo "<textarea name='txt_action' cols='25' rows='3'>";
 		echo "</textarea>";
 		echo "</td>";
 		echo "</tr>";
@@ -213,7 +238,7 @@ class alert extends module{
 		echo "<tr>";
 		echo "<td>URL for data entry</td>";
 		echo "<td>";
-		echo "<input type='text' name='txt_label' size='25'></input>";
+		echo "<input type='text' name='txt_url' size='25'></input>";
 		echo "</td>";
 		echo "</tr>";
 		
@@ -234,21 +259,45 @@ class alert extends module{
 		echo "</td>";
 
 
-		echo "<td>";
+		echo "<td valign='top'>";
 		
-		echo "<table>";
+		echo "<table border='1'>";
 		echo "<thead colspan='2' valign='top'>LIST of REMINDERS & ALERTS</thead>";
+		
+		$this->list_alert();
+
 		echo "</table>";
 		
 		echo "</td>";
 
 		echo "</table>";
 
+		$this->list_alert();
+
 		echo "</form>";
 	}
 
 	function _alert(){
 		echo "this is the container for the alert and reminder master list";
+	}
+
+	function list_alert(){
+		echo "<tr><td>Program</td><td>Indicators</td></tr>";
+		foreach($this->mods as $key=>$value){
+			$q_mods = mysql_query("SELECT a.alert_id,a.module_id,a.alert_indicator_id,a.date_pre,a.date_until,a.alert_message,a.alert_action,a.date_basis,a.alert_url_redirect,b.sub_indicator FROM m_lib_alert_type a, m_lib_alert_indicators b WHERE a.module_id='$key' AND a.alert_indicator_id=b.alert_indicator_id ORDER by b.sub_indicator ASC") or die("Cannot query 285 ".mysql_error());
+			
+			$rec_num = mysql_num_rows($q_mods);
+			if(mysql_num_rows($q_mods)!=0):
+				echo "<tr>";
+				echo "<td valign='top'>$value[0]</td>";
+				echo "<td>";
+				while($r_ind = mysql_fetch_array($q_mods)){
+					echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&indicator_id=$r_ind[alert_indicator_id]&action=update#alert'>$r_ind[sub_indicator]</a><br>";
+				}
+				echo "</td>";
+				echo "</tr>";
+			endif;
+		}
 	}
 
 }
