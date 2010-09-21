@@ -89,33 +89,14 @@ class alert extends module{
 	function _alert_type(){
 		echo "this is the container for the alert and reminder adminstration interface.";
 		
-		if($_POST[submit_alert]):
-			print_r($_POST);
-			$q_alert = mysql_query("SELECT alert_id,alert_indicator_id FROM m_lib_alert_type WHERE alert_indicator_id='$_POST[sel_alert_indicators]'") or die("Cannot query 74 ".mysql_error());
+		if($_POST[submit_alert]=='Save Reminder/Alert'):		
+			$this->verify_form($_POST);
+		elseif($_POST[submit_alert]=='Update Reminder/Alert'):
+
+		elseif($_POST[submit_alert]=='Save Reminder/Alert'):
+
+		else:
 			
-			if(mysql_num_rows($q_alert)!=0):				
-				echo "<script language='javascript'>";
-				echo "window.alert('There is already a definition for this alert. To update click the alert link on the right side panel.')";
-				echo "</script>";				
-			else:				
-				
-				if(empty($_POST[txt_msg]) || empty($_POST[txt_action])):
-					
-					echo "<script language='javascript'>";
-					echo "window.alert('Please supply entriend for reminder / alert message or actions.')";
-					echo "</script>";
-					
-				else:
-					$alert_insert = mysql_query("INSERT INTO m_lib_alert_type SET module_id='$_POST[sel_mods]',alert_indicator_id='$_POST[sel_alert_indicators]',date_pre='$_POST[sel_days_before]',date_until='$_POST[sel_days_after]',alert_message='$_POST[txt_msg]',alert_action='$_POST[txt_action]'") or die("Cannot query: 107");
-					
-					if($alert_insert):
-						echo "<script language='javascript'>";
-						echo "window.alert('Alert was successfully been saved. To edit, click the alert link on the right side panel.')";
-						echo "</script>";
-					endif;
-								
-				endif;
-			endif;
 		endif;
 		
 		$vals_update = $this->set_vals_update($_GET);
@@ -254,14 +235,20 @@ class alert extends module{
 		echo "<tr>";
 		echo "<td>URL for data entry</td>";
 		echo "<td>";
-		echo "<input type='text' name='txt_url' size='25'></input>";
+		echo "<input type='text' name='txt_url' size='25' value='$vals_update[alert_url_redirect]'></input>";
 		echo "</td>";
 		echo "</tr>";
 		
 		
 		echo "<tr align='center'>";
 		echo "<td colspan='2'>";
-		echo "<input type='submit' name='submit_alert' value='Save Reminder / Alert'></input>&nbsp;&nbsp;";
+
+		if(!isset($vals_update)):
+			echo "<input type='submit' name='submit_alert' value='Save Reminder/Alert'></input>&nbsp;&nbsp;";
+		else:
+			echo "<input type='submit' name='submit_alert' value='Update Reminder/Alert'></input>&nbsp;&nbsp;";
+			echo "<input type='submit' name='submit_alert' value='Delete Reminder/Alert'></input>&nbsp;&nbsp;";
+		endif;
 		echo "<input type='reset' name='clear' value='Clear'></input>";
 		echo "</td>";
 		echo "</tr>";
@@ -326,6 +313,35 @@ class alert extends module{
 		endif;
 		
 		return $indicator_arr;
+	}
+
+	function verify_form($post_arr){
+		$q_alert = mysql_query("SELECT alert_id,alert_indicator_id FROM m_lib_alert_type WHERE alert_indicator_id='$post_arr[sel_alert_indicators]'") or die("Cannot query 74 ".mysql_error());
+			
+			if(mysql_num_rows($q_alert)!=0):				
+				echo "<script language='javascript'>";
+				echo "window.alert('There is already a definition for this alert. To update click the alert link on the right side panel.')";
+				echo "</script>";				
+			else:				
+				
+				if(empty($post_arr[txt_msg]) || empty($post_arr[txt_action])):
+					
+					echo "<script language='javascript'>";
+					echo "window.alert('Please supply entriend for reminder / alert message or actions.')";
+					echo "</script>";
+					
+				else:
+					$alert_insert = mysql_query("INSERT INTO m_lib_alert_type SET module_id='$post_arr[sel_mods]',alert_indicator_id='$post_arr[sel_alert_indicators]',date_pre='$post_arr[sel_days_before]',date_until='$post_arr[sel_days_after]',alert_message='$post_arr[txt_msg]',alert_action='$post_arr[txt_action]'") or die("Cannot query: 107");
+					
+					if($alert_insert):
+						echo "<script language='javascript'>";
+						echo "window.alert('Alert was successfully been saved. To edit, click the alert link on the right side panel.')";
+						echo "</script>";
+					endif;
+								
+				endif;
+			endif;
+
 	}
 
 }
