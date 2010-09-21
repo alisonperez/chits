@@ -54,7 +54,7 @@ class alert extends module{
   			`module_id` varchar(50) NOT NULL, `alert_indicator_id` int(2) NOT NULL,,
   			`date_pre` date NOT NULL,`date_until` date NOT NULL,
   			`alert_message` text NOT NULL,`alert_action` text NOT NULL,
-  			`date_basis` varchar(50) NOT NULL,`alert_url_redirect` date NOT NULL,
+  			`date_basis` varchar(50) NOT NULL,`alert_url_redirect` text NOT NULL,
   			PRIMARY KEY (`alert_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;");
 			
@@ -190,7 +190,7 @@ class alert extends module{
 		echo "<tr>";
 		echo "<td valign='top'>Reminder/Alert Message</td>";
 		echo "<td>";
-		echo "<textarea name='txt_msg' cols='25' rows='3'>";
+		echo "<textarea name='txt_msg' cols='25' rows='3'>$vals_update[alert_message]";
 		echo "</textarea>";
 		echo "</td>";
 		echo "</tr>";
@@ -198,7 +198,7 @@ class alert extends module{
 		echo "<tr>";
 		echo "<td valign='top'>Recommended Actions</td>";
 		echo "<td>";
-		echo "<textarea name='txt_action' cols='25' rows='3'>";
+		echo "<textarea name='txt_action' cols='25' rows='3'>$vals_update[alert_action]";
 		echo "</textarea>";
 		echo "</td>";
 		echo "</tr>";
@@ -209,7 +209,11 @@ class alert extends module{
 		echo "<select name='sel_days_before' size='1'>";
 		
 		for($i=0;$i<=100;$i++){
-			echo "<option value='$i'>$i</option>";
+			if($i==$vals_update[date_pre]):
+				echo "<option value='$i' SELECTED>$i</option>";
+			else:
+				echo "<option value='$i'>$i</option>";
+			endif;
 		}
 		
 		echo "</select>";
@@ -222,7 +226,11 @@ class alert extends module{
 		echo "<select name='sel_days_after' size='1'>";
 		
 		for($i=0;$i<=100;$i++){
-			echo "<option value='$i'>$i</option>";
+			if($i==$vals_update[date_until]):
+				echo "<option value='$i' SELECTED>$i</option>";
+			else:
+				echo "<option value='$i'>$i</option>";
+			endif;
 		}
 		echo "</select>";
 		echo "&nbsp;&nbsp;days (setting to 0 means actual date)</td>";

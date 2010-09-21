@@ -18254,7 +18254,7 @@ CREATE TABLE IF NOT EXISTS `m_lib_alert_type` (
   `alert_message` text NOT NULL,
   `alert_action` text NOT NULL,
   `date_basis` varchar(50) NOT NULL,
-  `alert_url_redirect` date NOT NULL,
+  `alert_url_redirect` text NOT NULL,
   PRIMARY KEY (`alert_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
