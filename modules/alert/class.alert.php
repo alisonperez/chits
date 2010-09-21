@@ -92,9 +92,9 @@ class alert extends module{
 		if($_POST[submit_alert]=='Save Reminder/Alert'):		
 			$this->verify_form($_POST);
 		elseif($_POST[submit_alert]=='Update Reminder/Alert'):
-
-		elseif($_POST[submit_alert]=='Save Reminder/Alert'):
-
+			$this->verify_form($_POST);
+		elseif($_POST[submit_alert]=='Delete Reminder/Alert'):
+			$this->verify_form($_POST);
 		else:
 			
 		endif;
@@ -110,7 +110,8 @@ class alert extends module{
 		echo "<form name='form_alert_lib' method='POST' action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#alert'>";
 		
 		
-		echo "<input type='hidden' name='tbl_name' value=''>";
+		echo "<input type='hidden' name='confirm_delete' value='0'>";
+
 		
 		echo "<a name='alert'></a>";
 		
@@ -316,13 +317,24 @@ class alert extends module{
 	}
 
 	function verify_form($post_arr){
+		print_r($post_arr);
 		$q_alert = mysql_query("SELECT alert_id,alert_indicator_id FROM m_lib_alert_type WHERE alert_indicator_id='$post_arr[sel_alert_indicators]'") or die("Cannot query 74 ".mysql_error());
 			
-			if(mysql_num_rows($q_alert)!=0):				
+			if(mysql_num_rows($q_alert)!=0 && $post_arr[submit_alert]=='Save Reminder/Alert'):				
 				echo "<script language='javascript'>";
 				echo "window.alert('There is already a definition for this alert. To update click the alert link on the right side panel.')";
-				echo "</script>";				
-			else:				
+				echo "</script>";	
+			elseif($post_arr[submit_alert]=='Delete Reminder/Alert'):
+				$q_delete = mysql_query("DELETE FROM m_lib_alert_type WHERE alert_indicator_id='$post_arr[sel_alert_indicators]'") or die("Cannot query 327 ".mysql_error());
+
+
+				if($alert_transact):
+					echo "<script language='javascript'>";
+					echo "window.alert('Alert was successfully been deleted.')";
+					echo "</script>";
+				endif;
+
+			else:
 				
 				if(empty($post_arr[txt_msg]) || empty($post_arr[txt_action])):
 					
@@ -331,9 +343,17 @@ class alert extends module{
 					echo "</script>";
 					
 				else:
-					$alert_insert = mysql_query("INSERT INTO m_lib_alert_type SET module_id='$post_arr[sel_mods]',alert_indicator_id='$post_arr[sel_alert_indicators]',date_pre='$post_arr[sel_days_before]',date_until='$post_arr[sel_days_after]',alert_message='$post_arr[txt_msg]',alert_action='$post_arr[txt_action]'") or die("Cannot query: 107");
+					if($post_arr[submit_alert]=='Save Reminder/Alert'):
 					
-					if($alert_insert):
+					$alert_transact = mysql_query("INSERT INTO m_lib_alert_type SET module_id='$post_arr[sel_mods]',alert_indicator_id='$post_arr[sel_alert_indicators]',date_pre='$post_arr[sel_days_before]',date_until='$post_arr[sel_days_after]',alert_message='$post_arr[txt_msg]',alert_action='$post_arr[txt_action]'") or die("Cannot query: 107");
+
+					elseif($post_arr[submit_alert]=='Update Reminder/Alert'):
+					$alert_transact = mysql_query("UPDATE m_lib_alert_type SET module_id='$post_arr[sel_mods]',alert_indicator_id='$post_arr[sel_alert_indicators]',date_pre='$post_arr[sel_days_before]',date_until='$post_arr[sel_days_after]',alert_message='$post_arr[txt_msg]',alert_action='$post_arr[txt_action]' WHERE alert_indicator_id='$post_arr[sel_alert_indicators]'") or die("Cannot query: 341");
+
+					else:
+					endif;
+					
+					if($alert_transact):
 						echo "<script language='javascript'>";
 						echo "window.alert('Alert was successfully been saved. To edit, click the alert link on the right side panel.')";
 						echo "</script>";
