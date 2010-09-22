@@ -9,6 +9,8 @@ class alert extends module{
 		$this->module = "alert";
 		
 		$this->mods = array('mc'=>array("Maternal Care"),'epi'=>array("Expanded Program for Immunization"),'fp'=>array("Birth Spacing / Family Planning"),'notifiable'=>array("Notifiable Diseases"));
+		$this->year = date('Y');
+		$this->morb_wk = $this->get_wk_num();
 	}
 
 
@@ -221,18 +223,6 @@ class alert extends module{
 		echo "<tr>";
 		echo "<td></td>";
 		echo "</tr>";
-
-		/*echo "<tr>";
-		echo "<td>Base Date for Reminder/Alert</td>";
-		echo "<td>";
-		echo "<select name='sel_base_date' size='1'>";  //list will display date fields based on selected health program
-		
-		echo "<option value='test'>test date</option>";
-		echo "</select>";
-		echo "</td>";
-		echo "</tr>";
-		*/
-
 		echo "<tr>";
 		echo "<td>URL for data entry</td>";
 		echo "<td>";
@@ -281,6 +271,20 @@ class alert extends module{
 
 	function _alert(){
 		echo "this is the container for the alert and reminder master list";
+
+		echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]'>";
+		echo "<table border='1'>";
+		echo "<tr><td colspan='2'>REMINDER and ALERT MONITORING WINDOW</td></tr>";
+		echo "<tr>";
+		echo "<td>Year ";
+		echo $this->show_current_yr();
+		echo "</td>";
+		echo "<td>Week ";
+		echo $this->show_current_wk();
+		echo "</td>";
+		echo "</tr>";
+		echo "</table>";
+		echo "</form>";
 	}
 
 	function list_alert(){
@@ -364,6 +368,40 @@ class alert extends module{
 
 	}
 
+	function get_wk_num(){
+		$d1 = mktime(0,0,0,1,1,date('Y'));
+		$d2 = mktime(0,0,0,date('m'),date('d'),date('Y'));
+		
+		$wk_num = floor((floor(($d2-$d1)/86400))/7);
+
+		return $wk_num;
+	} 
+
+	function show_current_yr(){
+		$index = 10;
+
+		echo "<select name='sel_year' size='1'>";
+		for($i=(date('Y')-$index);$i<(date('Y')+$index);$i++){			
+			if($i==date('Y')):
+				echo "<option value='$i' SELECTED>$i</option>";
+			else:
+				echo "<option value='$i'>$i</option>";
+			endif;
+		}
+		echo "</select>";
+	}
+
+	function show_current_wk(){
+		echo "<select name='sel_wk' size='1'>";
+		for($i=1;$i<=52;$i++){
+			if($i==$this->morb_wk):
+				echo "<option value='$i' SELECTED>$i</option>";
+			else:
+				echo "<option value='$i'>$i</option>";
+			endif;
+		}
+		echo "</select>";
+	}
 }
 	
 	
