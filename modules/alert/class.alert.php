@@ -8,7 +8,7 @@ class alert extends module{
 		$this->authod = "darth_ali";
 		$this->module = "alert";
 		
-		$this->mods = array('mc'=>array("Maternal Care"),'epi'=>array("Expanded Program for Immunization"),'fp'=>array("Birth Spacing / Family Planning"),'notifiable'=>array("Notifiable Diseases"));
+		$this->mods = array('mc'=>array("Maternal Care"),'sick'=>array("Sick Childre Under 5"),'epi'=>array("Expanded Program for Immunization"),'fp'=>array("Birth Spacing / Family Planning"),'notifiable'=>array("Notifiable Diseases"));
 		$this->year = date('Y');
 		$this->morb_wk = $this->get_wk_num();
 	}
@@ -71,8 +71,8 @@ class alert extends module{
 		(5, 'mc', 'Vitamin A Intake (20,000 unit)', ''),(6, 'mc', 'Iron with Folic Acid Intake', ''),(7, 'epi', 'BCG Immunization', ''),(8, 'epi', 'DPT 1 Immunization', ''),
 		(9, 'epi', 'DPT 2 Immunization', ''),(10, 'epi', 'DPT 3 Immunization', ''),(11, 'epi', 'OPV 1 Immunization', ''),(12, 'epi', 'OPV 2 Immunization', ''),
 		(13, 'epi', 'OPV 3 Immunization', ''),(14, 'epi', 'Hepa B1 Immunization', ''),(15, 'epi', 'Hepa B2 Immunization', ''),(16, 'epi', 'Hepa B3 Immunization', ''),
-		(17, 'epi', 'Measles Immunization', ''),(18, 'epi', 'Fully Immunized Child', ''),(19, 'epi', 'Completely Immunized Child', ''),(20, 'notifiable', 'Vitamin A Supplementation', ''),
-		(21, 'notifiable', 'Diarrhea Case for 6-11 and 12-72', ''),(22, 'fp', 'Pill Intake Follow-Up', ''),(23, 'fp', 'Condom Replenishment Follow-Up', ''),
+		(17, 'epi', 'Measles Immunization', ''),(18, 'epi', 'Fully Immunized Child', ''),(19, 'epi', 'Completely Immunized Child', ''),(20, 'sick', 'Vitamin A Supplementation', ''),
+		(21, 'sick', 'Diarrhea Case for 6-11 and 12-72', ''),(22, 'fp', 'Pill Intake Follow-Up', ''),(23, 'fp', 'Condom Replenishment Follow-Up', ''),
 		(24, 'fp', 'IUD Follow-Up', ''),(25, 'fp', 'Injectables Follow-Up', ''),(26, 'fp', 'Pills Dropout Alert', ''),
 		(27, 'fp', 'Condom Dropout Alert', ''),(28, 'fp', 'IUD Dropout Alert', ''),(29, 'fp', 'Injectables Dropout Alert', ''),
 		(30, 'fp', 'Female Sterilization Dropout Alert', ''),(31, 'fp', 'Male Sterilization Dropout Alert', ''),(32, 'fp', 'NFP LAM Dropout Alert', '');");
@@ -327,6 +327,11 @@ class alert extends module{
 			if(mysql_num_rows($q_alert)!=0 && $post_arr[submit_alert]=='Save Reminder/Alert'):				
 				echo "<script language='javascript'>";
 				echo "window.alert('There is already a definition for this alert. To update click the alert link on the right side panel.')";
+				echo "</script>";	
+
+			elseif(empty($post_arr[sel_alert_indicators])):
+				echo "<script language='javascript'>";
+				echo "window.alert('No indicator was selected. Please select one.')";
 				echo "</script>";	
 			elseif($post_arr[submit_alert]=='Delete Reminder/Alert'):
 				$q_delete = mysql_query("DELETE FROM m_lib_alert_type WHERE alert_indicator_id='$post_arr[sel_alert_indicators]'") or die("Cannot query 327 ".mysql_error());
