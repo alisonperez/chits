@@ -399,7 +399,7 @@ class patient extends module{
 
 					if ($result) {
 						echo "<script language=\"Javascript\">";
-						echo "alert('Patient $post_vars[patient_firstname], $post_vars[patient_lastname] was successfully been added!')";
+						echo "alert('Patient $post_vars[patient_firstname], $post_vars[patient_lastname] was successfully added!')";
 						//header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]);  
 						echo "</script>";
                     }
