@@ -276,19 +276,21 @@ class alert extends module{
 		echo "<table border='1'>";
 		echo "<tr><td colspan='".(count($this->mods)+1)."'>REMINDER and ALERT MONITORING WINDOW</td></tr>";
 		echo "<tr>";
-		echo "<td>Year ";
-		echo $this->show_current_yr();
-		echo "</td>";
-		echo "<td>Week ";
+		echo "<td colspan='".(count($this->mods)+1)."'>Year ";
+		echo $this->show_current_yr();		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Week ";
 		echo $this->show_current_wk();
 		echo "</td>";
 		echo "</tr>";
 		
 		echo "<tr>";
-		echo "<td>Demographics</td>";
+		echo "<td>Barangay / Household</td>";
 		$this->show_categories();
 		echo "</tr>";
+		
+		$this->show_brgy_hh();
 
+		
 		echo "</table>";
 		echo "</form>";
 	}
@@ -418,6 +420,41 @@ class alert extends module{
 		foreach($this->mods as $key=>$value){
 			echo "<td>$value[0]</td>";
 		}
+	}
+
+	function show_brgy_hh(){
+		//$q_brgy_hh = mysql_query("SELECT a.barangay_id,a.barangay_name,b.family_id,b.patient_id,c.address,d.patient_lastname FROM m_lib_barangay a, m_family_members b, m_family_address c, m_patient d WHERE a.barangay_id=c.barangay_id AND b.family_id=c.family_id AND b.patient_id=d.patient_id GROUP BY a.barangay_name ORDER by a.barangay_name ASC, d.patient_lastname ASC") or die("Cannot query: 426 ".mysql_error()); //select barangay id, household's, houhsehold name
+
+		//$q_brgy_hh = mysql_query("SELECT a.barangay_id,a.barangay_name,b.family_id,b.patient_id,c.address,d.patient_lastname FROM m_lib_barangay a, m_family_members b, m_family_address c, m_patient d WHERE a.barangay_id=c.barangay_id AND b.family_id=c.family_id AND b.patient_id=d.patient_id ORDER by a.barangay_name ASC, d.patient_lastname ASC") or die("Cannot query: 426 ".mysql_error()); //select barangay id, household's, houhsehold name
+		
+		//while($r_brgy_hh = mysql_fetch_array($q_brgy_hh)){
+		//	count($q_brgy_hh);
+		//	print_r($r_brgy_hh).'<br>';
+		//}
+
+		$q_brgy = mysql_query("SELECT a.barangay_id,a.barangay_name FROM m_lib_barangay a ORDER by a.barangay_name ASC") or die("Cannot query 435 ".mysql_query());
+		
+		while($r_brgy = mysql_fetch_array($q_brgy)){
+			echo "<tr><td>".$r_brgy["barangay_name"]."</td>";
+			
+			for($i=0;$i<(count($this->mods));$i++){
+				echo "<td>".count($this->mods)."</td>";
+			}
+
+			echo "</tr>";
+
+			$q_hh = mysql_query("SELECT a.family_id,a.patient_id,b.address,c.patient_lastname FROM m_family_members a, m_family_address b, m_patient c WHERE b.barangay_id='$r_brgy[barangay_id]' AND a.family_id=b.family_id AND a.patient_id=c.patient_id ORDER by c.patient_lastname ASC") or die("Cannot query 438 ".mysql_error());
+
+			while(list($fam_id,$px_id,$address,$px_lastname) = mysql_fetch_array($q_hh)){
+				echo "<tr>";
+				echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;$px_lastname</td>";
+				for($i=0;$i<(count($this->mods));$i++){
+					echo "<td>".count($this->mods)."</td>";
+				}				
+				echo "</tr>";
+			}
+		}
+
 	}
 }
 	
