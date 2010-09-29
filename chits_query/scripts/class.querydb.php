@@ -291,6 +291,8 @@ class querydb{
 			$this->process_tb($quesno);	
 		elseif($quesno==100):
 			$this->process_demographic($quesno);	
+		elseif($quesno==110):
+			$this->process_philhealth_list($quesno);
 		else:
 			echo "No available query for this indicator.";
 		endif;
@@ -947,6 +949,23 @@ class querydb{
 		else:
 			echo "<font color='red'>No result/s found.</font>";
 		endif;		
+	}
+
+	function process_philhealth_list($quesno){
+		
+		list($sm,$sd,$sy) = explode('/',$_POST[sdate]);
+		list($em,$ed,$ey) = explode('/',$_POST[edate]);
+
+		$sdate = $sy.'-'.$sm.'-'.$sd;
+		$edate = $ey.'-'.$em.'-'.$ed;
+		
+		$q_philhealth = mysql_query("SELECT a.philhealth_id FROM m_patient_philhealth a, m_family_address b, m_family_members c WHERE a.expiry_date BETWEEN '$sdate' AND '$edate' AND a.patient_id=c.patient_id AND c.family_id=b.family_id AND b.barangay_id='$_POST[sel_brgy]'") or die("Cannot query 955 ".mysql_error());
+
+		if(mysql_num_rows($q_philhealth)):
+			echo "<a href='./pdf_reports/philhealth.php'>Show PhilHealth Enrollment Masterlist</a>";
+		else:
+			echo "<font color='red'>No result/s found.</font>";
+		endif;
 	}
 	
 }
