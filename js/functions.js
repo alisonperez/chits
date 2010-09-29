@@ -157,7 +157,7 @@ function set_var_dropdown(){
 	
 }
 
-function autoSubmit()
+function autoSubmit_alert()
 {
 	var formObject = document.forms['form_alert_lib'];
 	if(formObject!=0){

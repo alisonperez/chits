@@ -126,7 +126,7 @@ class alert extends module{
 		echo "<tr>";
 		echo "<td>Health Program</td>";
 		echo "<td>";
-		echo "<select name='sel_mods' size='1' onchange=\"autoSubmit();\">";
+		echo "<select name='sel_mods' size='1' onchange=\"autoSubmit_alert();\">";
 		
 		echo "<option value='0'>---- SELECT PROGRAM ----</option>";
 		
@@ -450,7 +450,7 @@ class alert extends module{
 				echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;$px_lastname</td>";
 				for($i=0;$i<(count($this->mods));$i++){
 					echo "<td>".count($this->mods)."</td>";
-				}				
+				}
 				echo "</tr>";
 			}
 		}
