@@ -17985,7 +17985,8 @@ INSERT INTO `question` (`ques_id`, `ques_label`, `cat_id`, `sql_code`, `report_t
 (95, 'TB Register', 5, '', 'G', 'Y'),
 (63, 'DHC Target Client List', 12, '', 'G', 'Y'),
 (68, 'Leprosy Target Client List', 13, '', 'G', 'Y');
-
+(100, 'Demographic Profile (A1 RHU)', 10, '', 'A', 'Y'),
+(110, 'PhilHealth Enrollment Masterlist', 14, '', 'G', 'Y');
 
 
 -- --------------------------------------------------------
@@ -18018,7 +18019,8 @@ INSERT INTO `ques_cat` (`cat_id`, `cat_label`) VALUES
 (10, 'Demographics, Natality, Mortality'),
 (11, 'Environment and Sanitation'),
 (12, 'Dental Health Care'),
-(13, 'Leprosy');
+(13, 'Leprosy'),
+(14, 'PhilHealth'),;
 
 
 
