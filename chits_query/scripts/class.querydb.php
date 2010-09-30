@@ -958,8 +958,14 @@ class querydb{
 
 		$sdate = $sy.'-'.$sm.'-'.$sd;
 		$edate = $ey.'-'.$em.'-'.$ed;
+
+		if($_POST["sel_brgy"]!='all'):
 		
-		$q_philhealth = mysql_query("SELECT a.philhealth_id FROM m_patient_philhealth a, m_family_address b, m_family_members c WHERE a.expiry_date BETWEEN '$sdate' AND '$edate' AND a.patient_id=c.patient_id AND c.family_id=b.family_id AND b.barangay_id='$_POST[sel_brgy]'") or die("Cannot query 955 ".mysql_error());
+			$q_philhealth = mysql_query("SELECT a.philhealth_id FROM m_patient_philhealth a, m_family_address b, m_family_members c WHERE a.expiry_date BETWEEN '$sdate' AND '$edate' AND a.patient_id=c.patient_id AND c.family_id=b.family_id AND b.barangay_id='$_POST[sel_brgy]'") or die("Cannot query 955 ".mysql_error());
+
+		else:
+			$q_philhealth = mysql_query("SELECT a.philhealth_id FROM m_patient_philhealth a, m_family_address b, m_family_members c WHERE a.philhealth_timestamp BETWEEN '$sdate' AND '$edate' AND a.patient_id=c.patient_id AND c.family_id=b.family_id") or die("Cannot query 955 ".mysql_error());
+		endif;
 
 		if(mysql_num_rows($q_philhealth)):
 			echo "<a href='./pdf_reports/philhealth.php'>Show PhilHealth Enrollment Masterlist</a>";
@@ -967,6 +973,5 @@ class querydb{
 			echo "<font color='red'>No result/s found.</font>";
 		endif;
 	}
-	
 }
 ?>
