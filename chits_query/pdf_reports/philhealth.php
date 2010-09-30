@@ -139,7 +139,34 @@ function Header()
 
 
 function show_philhealth_list(){ 
-	
+	//print_r($_SESSION["philhealth_id"]);
+	$arr_px =  $_SESSION["px_id"];
+	//print_r($arr_px);
+
+	for($i=0;$i<count($arr_px);$i++){
+		$q_px = mysql_query("SELECT patient_lastname, patient_firstname, date_format(patient_dob,'%m-%d-%Y') as patient_dob FROM m_patient WHERE patient_id='$arr_px[$i]'") or die("Cannot query 147 ".mysql_error("Cannot query 147" .mysql_error()));
+
+		list($px_lastname,$px_firstname,$px_dob) = mysql_fetch_array($q_px);
+
+		//echo $px_lastname.' '.$px_firstname.' '.$px_dob;
+		
+		$q_demo = mysql_query("SELECT a.barangay_name,b.address,b.family_id FROM m_lib_barangay a, m_family_address b,m_family_members c WHERE c.patient_id='$arr_px[$i]' AND a.barangay_id=b.barangay_id AND b.family_id=c.family_id") or die("Cannot query 149 ".mysql_error());
+
+		list($brgy_name,$address,$family_id) = mysql_fetch_array($q_demo);
+
+		//echo '<br>'.$family_id.' '.$brgy_name.' '.$address;
+
+		$q_hh = mysql_query("SELECT a.patient_id,b.patient_lastname,b.patient_firstname,round((to_days(now())-to_days(b.patient_dob))/365 , 1) computed_age FROM m_family_members a, m_patient b WHERE a.patient_id!='$arr_px[$i]' AND a.patient_id=b.patient_id AND a.family_id='$family_id'") or die("Cannot query 159 ".mysql_error());
+
+		while(list($pxid,$px_lname,$px_fname,$age) = mysql_fetch_array($q_hh)){
+			$relatives = $px_fname.' '.$px_lname.','.$age;
+		}
+
+		$q_philhealth = mysql_query("SELECT philhealth_id,date_format(expiry_date,'%m-%d-%Y') as expiration_date FROM m_patient_philhealth WHERE patient_id='$arr_px[$i]'") or die("Cannot query 165". mysql_error());
+		list($philhealth_id,$expiration) = mysql_fetch_array($q_philhealth);
+		
+		$this->Row(array($px_lastname.', '.$px_firstname,$address,$brgy_name,$px_dob,$philhealth_id,$expiration,$relatives));
+	}
 }
     
 function Footer(){
@@ -159,7 +186,7 @@ $pdf->AliasNbPages();
 $pdf->SetFont('Arial','',10);
 $pdf->AddPage();
 
-$pdf->show_philhealth();
+$pdf->show_philhealth_list();
 
 $pdf->Output();
 
