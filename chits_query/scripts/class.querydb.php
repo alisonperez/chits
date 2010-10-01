@@ -961,10 +961,10 @@ class querydb{
 
 		if($_POST["sel_brgy"]!='all'):
 		
-			$q_philhealth = mysql_query("SELECT a.patient_id FROM m_patient_philhealth a, m_family_address b, m_family_members c,m_lib_barangay d, m_patient e WHERE a.expiry_date BETWEEN '$sdate' AND '$edate' AND a.patient_id=c.patient_id AND c.family_id=b.family_id AND b.barangay_id=d.barangay_id AND a.patient_id=e.patient_id AND b.barangay_id='$_POST[sel_brgy]' ORDER by d.barangay_name ASC, e.patient_lastname ASC") or die("Cannot query 955 ".mysql_error());
+			$q_philhealth = mysql_query("SELECT a.patient_id FROM m_patient_philhealth a, m_family_address b, m_family_members c,m_lib_barangay d, m_patient e WHERE a.expiry_date BETWEEN '$sdate' AND '$edate' AND a.patient_id=c.patient_id AND c.family_id=b.family_id AND b.barangay_id=d.barangay_id AND a.patient_id=e.patient_id AND b.barangay_id='$_POST[sel_brgy]' ORDER by d.barangay_name ASC, e.patient_lastname ASC,a.expiry_date ASC") or die("Cannot query 955 ".mysql_error());
 
 		else:
-			$q_philhealth = mysql_query("SELECT a.patient_id FROM m_patient_philhealth a, m_family_address b, m_family_members c,m_lib_barangay d, m_patient e WHERE a.expiry_date BETWEEN '$sdate' AND '$edate' AND a.patient_id=c.patient_id AND c.family_id=b.family_id AND b.barangay_id=d.barangay_id AND a.patient_id=e.patient_id ORDER by d.barangay_name ASC, e.patient_lastname ASC") or die("Cannot query 955 ".mysql_error());
+			$q_philhealth = mysql_query("SELECT DISTINCT(a.patient_id) FROM m_patient_philhealth a, m_family_address b, m_family_members c,m_lib_barangay d, m_patient e WHERE a.expiry_date BETWEEN '$sdate' AND '$edate' AND a.patient_id=c.patient_id AND c.family_id=b.family_id AND b.barangay_id=d.barangay_id AND a.patient_id=e.patient_id ORDER by d.barangay_name ASC, e.patient_lastname ASC,a.expiry_date ASC") or die("Cannot query 955 ".mysql_error());
 		endif;
 
 		if(mysql_num_rows($q_philhealth)):
@@ -974,7 +974,7 @@ class querydb{
 			}
 			
 			$_SESSION["px_id"] = $arr_px;
-
+			
 			echo "<a href='./pdf_reports/philhealth.php'>Show PhilHealth Enrollment Masterlist</a>";
 		else:
 			echo "<font color='red'>No result/s found.</font>";

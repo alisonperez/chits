@@ -162,7 +162,7 @@ function show_philhealth_list(){
 			$relatives = $px_fname.' '.$px_lname.','.$age;
 		}
 
-		$q_philhealth = mysql_query("SELECT philhealth_id,date_format(expiry_date,'%m-%d-%Y') as expiration_date FROM m_patient_philhealth WHERE patient_id='$arr_px[$i]'") or die("Cannot query 165". mysql_error());
+		$q_philhealth = mysql_query("SELECT philhealth_id,date_format(expiry_date,'%m-%d-%Y') as expiration_date FROM m_patient_philhealth WHERE patient_id='$arr_px[$i]' ORDER by expiry_date ASC") or die("Cannot query 165". mysql_error());
 		list($philhealth_id,$expiration) = mysql_fetch_array($q_philhealth);
 		
 		$this->Row(array($px_lastname.', '.$px_firstname,$address,$brgy_name,$px_dob,$philhealth_id,$expiration,$relatives));

@@ -1675,7 +1675,7 @@ function hypertension_code() {
 	}
 
 	function get_philhealth_id($pxid){
-		$q_philhealth_id = mysql_query("SELECT philhealth_id FROM m_patient_philhealth WHERE patient_id='$pxid'") or die("Cannot query 1675 ".mysql_error());
+		$q_philhealth_id = mysql_query("SELECT philhealth_id FROM m_patient_philhealth WHERE patient_id='$pxid' ORDER by expiry_date DESC") or die("Cannot query 1675 ".mysql_error());
 		
 		if(mysql_num_rows($q_philhealth_id)!=0):
 			list($philhealth_id) = mysql_fetch_array($q_philhealth_id);
@@ -1687,7 +1687,7 @@ function hypertension_code() {
 	}
 
 	function get_expiration_date($pxid){
-		$q_expiration = mysql_query("SELECT expiry_date FROM m_patient_philhealth WHERE patient_id='$pxid'") or die("CAnnot query 1686: ".mysql_error());
+		$q_expiration = mysql_query("SELECT expiry_date FROM m_patient_philhealth WHERE patient_id='$pxid' ORDER by expiry_date DESC") or die("CAnnot query 1686: ".mysql_error());
 		
 		if(mysql_num_rows($q_expiration)!=0):
 			list($expiry_date) = mysql_fetch_array($q_expiration);
@@ -1700,8 +1700,6 @@ function hypertension_code() {
 		else:
 			echo $expiry_date;
 		endif;
-		
-		
 	}	
 
 // end of class
