@@ -1004,8 +1004,15 @@ class healthcenter extends module{
         print LBL_FAMILY_NUMBER." <b>".family::search_family($ptinfo["patient_id"])."</b>&nbsp;&nbsp;&nbsp;"."AGE: <b>".($ptinfo["computed_age"]<1?($ptinfo["computed_age"]*12)."M":$ptinfo["computed_age"]."Y")."/".$ptinfo["patient_gender"]."</b>&nbsp;&nbsp;&nbsp; BIRTHDATE: <b>".$ptinfo["patient_dob"]."</b><br/>";
         print "</td></tr>";
         print "<tr valign='top' bgcolor='#FFFF99'><td>";
-        print LBL_PATIENT_ID.": <b>".module::pad_zero($ptinfo["patient_id"],7)."</b><br/>";
-        print LBL_TOTAL_VISITS.": <b>".$this->get_totalvisits($ptinfo["patient_id"])."</b>&nbsp;&nbsp;&nbsp;".LBL_LAST_VISIT." <b>".$this->get_lastvisit($ptinfo["patient_id"])."</b><br/>";
+        print LBL_PATIENT_ID.": <b>".module::pad_zero($ptinfo["patient_id"],7)."</b><br />";	
+	print "PHILHEALTH ID NUMBER: <b>".$this->get_philhealth_id($ptinfo["patient_id"])."</b>&nbsp;&nbsp;&nbsp;";	
+	print "EXPIRATION DATE: <b>";
+	
+	$this->get_expiration_date($ptinfo["patient_id"]);
+	
+	print "</b><br />";
+        
+	print LBL_TOTAL_VISITS.": <b>".$this->get_totalvisits($ptinfo["patient_id"])."</b>&nbsp;&nbsp;&nbsp;".LBL_LAST_VISIT." <b>".$this->get_lastvisit($ptinfo["patient_id"])."</b><br/>";
         print "</td><td>&nbsp;";
         print "</td></tr>";
         print "<tr><td colspan='2' bgcolor='#FFFF66'>";
@@ -1666,6 +1673,36 @@ function hypertension_code() {
 
 		return $edad;		
 	}
+
+	function get_philhealth_id($pxid){
+		$q_philhealth_id = mysql_query("SELECT philhealth_id FROM m_patient_philhealth WHERE patient_id='$pxid'") or die("Cannot query 1675 ".mysql_error());
+		
+		if(mysql_num_rows($q_philhealth_id)!=0):
+			list($philhealth_id) = mysql_fetch_array($q_philhealth_id);
+		else:
+			$philhealth_id = '-';
+		endif;
+
+		return $philhealth_id;
+	}
+
+	function get_expiration_date($pxid){
+		$q_expiration = mysql_query("SELECT expiry_date FROM m_patient_philhealth WHERE patient_id='$pxid'") or die("CAnnot query 1686: ".mysql_error());
+		
+		if(mysql_num_rows($q_expiration)!=0):
+			list($expiry_date) = mysql_fetch_array($q_expiration);
+		else:
+			$expiry_date = '-';
+		endif;
+
+		if(date('Y-m-d') > $expiry_date && $expiry_date!='-'):
+			echo "<font color='red'>".$expiry_date."</font>";
+		else:
+			echo $expiry_date;
+		endif;
+		
+		
+	}	
 
 // end of class
 }
