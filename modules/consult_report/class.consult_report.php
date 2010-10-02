@@ -300,8 +300,7 @@ class consult_report extends module {
                        "from m_consult c, m_patient p ".
                        "where c.patient_id = p.patient_id ".
                        "and to_days(c.consult_date) = to_days('$report_date')"; */
-        
-        
+
         $sql_patient = "select c.patient_id, c.consult_id, ".
 	               "concat(p.patient_lastname, ', ', p.patient_firstname) patient_name, ".
                        "round((to_days(c.consult_date)-to_days(p.patient_dob))/365,2) patient_age, ".
@@ -309,11 +308,11 @@ class consult_report extends module {
                        "from m_consult c, m_patient p ".
                        "where c.patient_id = p.patient_id ".
                        "and c.consult_date BETWEEN '$report_date' AND '$end_report_date'";
-        
-        $result_patient = mysql_query($sql_patient) or die("Cannot query: 305 ".mysql_error());                
-        
-        if ($result_patient) {
-          
+
+        $result_patient = mysql_query($sql_patient) or die("Cannot query: 305 ".mysql_error());
+
+	if ($result_patient) {
+
             if (mysql_num_rows($result_patient)) {
                 while ($patient = mysql_fetch_array($result_patient)) {
                     // get family and address
@@ -339,6 +338,8 @@ class consult_report extends module {
 		    $visit_seq = healthcenter::get_total_visits($patient["patient_id"]);
 		    $philhealth_id = philhealth::get_philhealth_id($patient["patient_id"]);
 		
+		    
+
 		    if ($mc_id = mc::registry_record_exists($patient["patient_id"])) {
 			$pp_weeks = mc::get_pp_weeks($mc_id, $patient["consult_id"]);
                 	//$visit_sequence = mc::get_ppvisit_sequence($mc_id, $patient["consult_id"]);
@@ -356,7 +357,7 @@ class consult_report extends module {
 		    }
 
                     if ($vaccines != '' || $services != '') {
-			if ($ptgroup == 'CHILD') {                
+			if ($ptgroup == 'CHILD') {
 			    $sql_insert = "insert into m_consult_ccdev_report_dailyservice (patient_id, ".
 					  "patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
 					  "family_id, philhealth_id, service_given, vaccine_given, service_date) values ".
@@ -367,7 +368,7 @@ class consult_report extends module {
 			    $result_insert = mysql_query($sql_insert);
 			}
 			
-			if ($ptgroup == 'MATERNAL') {                
+			if ($ptgroup == 'MATERNAL') {
 			    $sql_insert = "insert into m_consult_mc_report_dailyservice (patient_id, ".
 					  "patient_name, patient_gender, patient_age, aog_weeks, postpartum_weeks, patient_address, ".
 					  "patient_bgy, family_id, philhealth_id, visit_sequence, service_given, vaccine_given, ".  
@@ -429,8 +430,8 @@ class consult_report extends module {
 	print "<b>DAILY SERVICE REPORT</b><br/>";
 	print "REPORT DATE : <b>".$post_vars["report_date"]." to ".$post_vars["end_report_date"]."</b><br/><br/>";
 	$this->display_consults($report_date,"patient_id",$end_report_date); //pass the report_date and patient_id
-	$this->display_ccdev($report_date);
-	$this->display_mc($report_date);
+	$this->display_ccdev($report_date,$end_report_date);
+	$this->display_mc($report_date,$end_report_date);
         
 	$sql = "select count(distinct(patient_id)) from m_consult where ".
 	       "to_days(consult_date) = to_days('$report_date') and patient_id != '0'";
@@ -558,16 +559,16 @@ class consult_report extends module {
         if (func_num_args()>0) {
 	    $arg_list = func_get_args();
 	    $report_date = $arg_list[0];
-	    $patient_id = $arg_list[1];
+	    $end_date = $arg_list[1];
 	}
 
 	$sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
 	       "family_id, philhealth_id,vaccine_given, service_given ".
 	       "from m_consult_ccdev_report_dailyservice ".
    	       "where to_days(service_date) = to_days('$report_date') order by patient_name";
-        
-        
 
+	//$sql = mysql_query("SELECT a.patient_id,a.patient_lastname,a.patient_firstname,a.patient_gender,date_format(a.patient_dob,'%m-%d-%Y') as patient_dob,b.address,c.barangay_name,b.family_id FROM m_patient a,m_family_address b,m_lib_barangay c,m_consult d, WHERE d.consult_date BETWEEN '$report_date' AND '$end_date' AND a.patient_id=b.patient_id AND b.barangay_id=c.barangay_id ORDER by c.barangay_name ASC, a.patient_lastname ASC") or die("Cannot query 571 ".mysql_error());
+	
 	if ($result = mysql_query($sql)) {
 	    if (mysql_num_rows($result)) {
 		print "<br/>";
@@ -702,7 +703,9 @@ class consult_report extends module {
 	    $patient_id = $arg_list[0];
 	    $consult_date = $arg_list[1];
 	}
-	    
+	
+	echo $consult_date;
+
 	$sql = "select l.vaccine_id ".
 	       "from m_lib_vaccine l, m_consult_vaccine v ".
 	       "where l.vaccine_id = v.vaccine_id and ".
@@ -710,6 +713,7 @@ class consult_report extends module {
 	       "to_days(v.actual_vaccine_date) = to_days('$consult_date')";
 	
 	if ($result = mysql_query($sql)) {
+		
 	    if (mysql_num_rows($result)) {
 	        while (list($vaccine_name) = mysql_fetch_array($result)) {
 		    $vaccines .= $vaccine_name.", ";
@@ -772,10 +776,12 @@ class consult_report extends module {
 	       "from m_lib_ptgroup l, m_consult_ptgroup c ".
 	       "where l.ptgroup_id = c.ptgroup_id and c.consult_id = '$consult_id' and ".
 	       "to_days(c.ptgroup_timestamp) = to_days('$consult_date')";
-
+	
 	if ($result = mysql_query($sql)) {
+		
 	    if (mysql_num_rows($result)) {
 		list($ptgroup) = mysql_fetch_array($result);
+		
 		return $ptgroup;
 	    }
 	}

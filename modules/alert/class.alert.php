@@ -273,11 +273,11 @@ class alert extends module{
 		echo "this is the container for the alert and reminder master list";
 		
 		echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]'>";
-		echo "<table border='1'>";
+		echo "<table border='1' id='alert_table'>";
 		echo "<tr><td colspan='".(count($this->mods)+1)."'>REMINDER and ALERT MONITORING WINDOW</td></tr>";
 		echo "<tr>";
 		echo "<td colspan='".(count($this->mods)+1)."'>Year ";
-		echo $this->show_current_yr();		
+		echo $this->show_current_yr();
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Week ";
 		echo $this->show_current_wk();
 		echo "</td>";
@@ -287,10 +287,9 @@ class alert extends module{
 		echo "<td>Barangay / Household</td>";
 		$this->show_categories();
 		echo "</tr>";
-		
+
 		$this->show_brgy_hh();
 
-		
 		echo "</table>";
 		echo "</form>";
 	}
