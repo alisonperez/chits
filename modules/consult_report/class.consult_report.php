@@ -778,10 +778,9 @@ class consult_report extends module {
 	       "to_days(c.ptgroup_timestamp) = to_days('$consult_date')";
 	
 	if ($result = mysql_query($sql)) {
-		
 	    if (mysql_num_rows($result)) {
 		list($ptgroup) = mysql_fetch_array($result);
-		
+		echo $ptgroup;
 		return $ptgroup;
 	    }
 	}
