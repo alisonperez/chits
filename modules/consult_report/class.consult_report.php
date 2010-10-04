@@ -432,16 +432,14 @@ class consult_report extends module {
 	print "<br/>";
 	print "<b>DAILY SERVICE REPORT</b><br/>";
 	print "REPORT DATE : <b>".$post_vars["report_date"]." to ".$post_vars["end_report_date"]."</b><br/><br/>";
-
-	$_SESSION["arr_consult"] = $this->display_consults($report_date,"patient_id",$end_report_date); //pass the report_date and patient_id
-	$_SESSION["arr_ccdev"] = $this->display_ccdev($report_date,$end_report_date);
-	$_SESSION["arr_mc"] = $this->display_mc($report_date,$end_report_date);
 	
 	print "PRINTER FRIENDLY VERSION: <a href='../chits_query/pdf_reports/dailyservice_report.php?arr=consult' target='new'>CONSULTS</a>&nbsp;&nbsp;&nbsp;";
 	print "<a href='../chits_query/pdf_reports/dailyservice_report.php?arr=ccdev' target='new'>CHILD CARE</a>&nbsp;&nbsp;&nbsp;";
-	print "<a href='../chits_query/pdf_reports/dailyservice_report.php?arr=mc' target='new'>MATERNAL CARE</a>";
+	print "<a href='../chits_query/pdf_reports/dailyservice_report.php?arr=mc' target='new'>MATERNAL CARE</a><br />";
 
-	 
+	$_SESSION["arr_consult"] = $this->display_consults($report_date,"patient_id",$end_report_date); //pass the report_date and patient_id
+	$_SESSION["arr_ccdev"] = $this->display_ccdev($report_date,$end_report_date);
+	$_SESSION["arr_mc"] = $this->display_mc($report_date,$end_report_date);	 
 
 	$sql = "select count(distinct(patient_id)) from m_consult where ".
 	       "to_days(consult_date) = to_days('$report_date') and patient_id != '0'";

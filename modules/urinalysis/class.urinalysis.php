@@ -16,8 +16,13 @@
       $this->gravity = array('---','1:000','1:005','1:010','1:015','1:020','1:025','1:030');
       $this->ph = array('---','5.0','6.0','6.5','7.0','7.5','8.0');
       
-      $this->albumin = array('---','Negative','Positive','+','++','+++','++++');
-      $this->sugar = array('---','Negative','Positive','+','++','+++','++++');      
+      //$this->albumin = array('---','Negative','Positive','+','++','+++','++++');
+      //$this->sugar = array('---','Negative','Positive','+','++','+++','++++');      
+
+      $this->albumin = array('Trace','+','++','+++','++++');
+      $this->sugar = array('Trace','+','++','+++','++++');
+
+      
       $this->pregnancy = array('---','Negative','Positive','Doubtful');      
     }
     
@@ -61,7 +66,7 @@
 	  `sediments_mucus` text NOT NULL,`cast_coarsely` text NOT NULL,`cast_pus` text NOT NULL,`cast_hyaline` text NOT NULL,
 	  `cast_finely` text NOT NULL,`cast_redcell` text NOT NULL,`cast_waxy` text NOT NULL,`release_flag` text NOT NULL,
 	  `release_date` date NOT NULL,`user_id` int(11) NOT NULL
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1");    
+	) ENGINE=MyISAM DEFAULT CHARSET=latin1");
     }
     
     function drop_tables(){
