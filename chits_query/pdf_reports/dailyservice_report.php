@@ -109,7 +109,7 @@
           $municipality_label = $_SESSION[datanode][name];
           
           $this->SetFont('Arial','B','15');
-          $this->Cell(0,5,'D A I L Y   S E R V I C E    R E P O R T'.' - '.$municipality_label,0,1,'C');
+          $this->Cell(0,5,'D A I L Y   S E R V I C E    R E P O R T ( '.$_SESSION["subtitle"].' ) - '.$municipality_label,0,1,'C');
           $this->Ln();
           
           if($_SESSION[report_date]==$_SESSION[end_report_date]):
@@ -129,17 +129,17 @@
       }    
       
       
-      function ShowTable($header,$contents){                
+      function ShowTable($header,$contents){
         $w = $_SESSION["col_width"];
       
 	//$this->SetWidths($w);
-	//$this->Row($header);        
+	//$this->Row($header);
         //$this->Ln();
         $this->SetFont('Arial','',9);
-	foreach($contents as $key=>$value){	    
-	    foreach($value as $key2=>$value2){	        	    
+	foreach($contents as $key=>$value){
+	    foreach($value as $key2=>$value2){
 	       $this->SetWidths($w);
-	       $this->Row($value2);     	    
+	       $this->Row($value2);
 	    }
 	}
       
@@ -165,16 +165,19 @@
     		//print_r($_SESSION["arr_consult"]);
 		$arr_report = $_SESSION["arr_consult"];
 		$w = array(34,34,34,34,34,34,34,34,34,34);
+		$subtitle = 'GENERAL CONSULTS';
 		break;
 	case 'ccdev':
 		//print_r($_SESSION["arr_ccdev"]);
 		$arr_report = $_SESSION["arr_ccdev"];
 		$w = array(38,45,38,30,38,38,38,38,38);
+		$subtitle = 'CHILD CARE';
 		break;
 	case 'mc':
 		//print_r($_SESSION["arr_mc"]);
 		$arr_report = $_SESSION["arr_mc"];
 		$w = array(28,40,28,28,28,25,28,31,28,20,28,30);
+		$subtitle = 'MATERNAL CARE';
 		break;
 	default:
 		print "<font color='red'>Cannot produce report. Parameter is not accepted.</font>";
@@ -185,8 +188,7 @@
     $contents = $arr_report[1];
     $_SESSION["record_count"] = $arr_report[2];
     $_SESSION["col_width"] = $w;
-
-//	print_r($_SESSION["col_width"]);
+    $_SESSION["subtitle"] = $subtitle;
 
     $pdf->SetFont('Arial','',13);
     $pdf->AddPage();
