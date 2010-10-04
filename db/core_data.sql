@@ -18182,6 +18182,8 @@ CREATE TABLE IF NOT EXISTS `m_consult_lab_urinalysis` (
   `cast_finely` text NOT NULL,
   `cast_redcell` text NOT NULL,
   `cast_waxy` text NOT NULL,
+  `gravindex` text NOT NULL,
+  `others` text NOT NULL,
   `release_flag` text NOT NULL,
   `release_date` date NOT NULL,
   `user_id` int(11) NOT NULL
