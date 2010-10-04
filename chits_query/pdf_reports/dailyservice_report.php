@@ -182,7 +182,6 @@
     $contents = $arr_report[1];
     $_SESSION["record_count"] = $arr_report[2];
 
-
     $pdf->SetFont('Arial','',13);
     $pdf->AddPage();
     $pdf->ShowTable($header,$contents);

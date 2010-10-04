@@ -644,7 +644,7 @@ class consult_report extends module {
 		
 		$vitals_sign = "BP: ".$bp.", HR: ".$res_vitals[vitals_heartrate].",RR: ".$res_vitals[vitals_resprate].", Wt: ". $res_vitals[vitals_weight]. "kg, Temp: ".$res_vitals[vitals_temp];
 	
-		array_push($inner_record,$pid,$pname.'/'.$sex.'/'.$age,$addr,$brgy,$fid,$phid,$vitals_sign,$vaccine,$srvc);
+		array_push($inner_record,array($pid,$pname.'/'.$sex.'/'.$age,$addr,$brgy,$fid,$phid,$vitals_sign,$vaccine,$srvc));
 		array_push($content,$inner_record);
 
 		}
@@ -732,7 +732,7 @@ class consult_report extends module {
 		    
 		    $vitals_sign = "BP: ".$bp.", HR: ".$res_vitals[vitals_heartrate].",RR: ".$res_vitals[vitals_resprate].", Wt: ". $res_vitals[vitals_weight]. "kg, Temp: ".$res_vitals[vitals_temp];
 
-		    array_push($inner_record,$pid,$pname.'/'.$sex.'/'.$age,$aog,$addr,$brgy,$fid,$phid,$vitals_sign,$visit,$vaccine,$srvc);
+		    array_push($inner_record,array($pid,$pname.'/'.$sex.'/'.$age,$aog,$addr,$brgy,$fid,$phid,$vitals_sign,$visit,$vaccine,$srvc));
 		    array_push($content,$inner_record);
 		}
 		//print "<tr>";
