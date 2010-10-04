@@ -565,7 +565,7 @@ class consult_report extends module {
 		$_SESSION[daily_service_contents] = $contents;
 		$_SESSION[record_count] = mysql_num_rows($result);
 
-		array_push($arr_contents,$header,$contents,$result);
+		array_push($arr_contents,$header,$contents,mysql_num_rows($result));
             }
 	}
 	return $arr_contents;
@@ -670,7 +670,7 @@ class consult_report extends module {
 
 	$result = mysql_query("SELECT * FROM m_consult_mc_report_dailyservice WHERE service_date BETWEEN '$report_date' AND '$end_date' ORDER by patient_name ASC") or die("Cannot query 663 ".mysql_error());
 	
-	$header = array("PATIENT ID","PATIENT NAME/SEX/AGE","AOG (wks)","POSTPARTUM WK","ADDRESS","BRGY","FAMILY ID","PHILHEALTH ID","VITAL SIGNS","VISIT SEQ.","VACCINE(S) GIVEN");
+	$header = array("PATIENT ID","PATIENT NAME/SEX/AGE","AOG (wks)","POSTPARTUM WK","ADDRESS","BRGY","FAMILY ID","PHILHEALTH ID","VITAL SIGNS","VISIT SEQ.","VACCINE/S GIVEN","SERVICE/S GIVEN");
 	$content = array();
 	$arr_content = array();
 
@@ -732,7 +732,7 @@ class consult_report extends module {
 		    
 		    $vitals_sign = "BP: ".$bp.", HR: ".$res_vitals[vitals_heartrate].",RR: ".$res_vitals[vitals_resprate].", Wt: ". $res_vitals[vitals_weight]. "kg, Temp: ".$res_vitals[vitals_temp];
 
-		    array_push($inner_record,array($pid,$pname.'/'.$sex.'/'.$age,$aog,$addr,$brgy,$fid,$phid,$vitals_sign,$visit,$vaccine,$srvc));
+		    array_push($inner_record,array($pid,$pname.'/'.$sex.'/'.$age,$aog,$pp_wk,$addr,$brgy,$fid,$phid,$vitals_sign,$visit,$vaccine,$srvc));
 		    array_push($content,$inner_record);
 		}
 		//print "<tr>";

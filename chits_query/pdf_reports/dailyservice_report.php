@@ -123,14 +123,14 @@
         $this->Cell(0,5,'Total Number of Records: '.$_SESSION[record_count],0,1,'L');          
         
         $this->SetFont('Arial','',13);        
-        $w = array(34,34,34,34,34,34,34,34,34,34);      
+        $w = $_SESSION["col_width"];
 	$this->SetWidths($w);
 	$this->Row($_SESSION[tbl_header]);		
       }    
       
       
       function ShowTable($header,$contents){                
-        $w = array(34,34,34,34,34,34,34,34,34,34);
+        $w = $_SESSION["col_width"];
       
 	//$this->SetWidths($w);
 	//$this->Row($header);        
@@ -164,14 +164,17 @@
 	case 'consult':
     		//print_r($_SESSION["arr_consult"]);
 		$arr_report = $_SESSION["arr_consult"];
+		$w = array(34,34,34,34,34,34,34,34,34,34);
 		break;
 	case 'ccdev':
 		//print_r($_SESSION["arr_ccdev"]);
 		$arr_report = $_SESSION["arr_ccdev"];
+		$w = array(38,45,38,30,38,38,38,38,38);
 		break;
 	case 'mc':
 		//print_r($_SESSION["arr_mc"]);
 		$arr_report = $_SESSION["arr_mc"];
+		$w = array(28,40,28,28,28,25,28,31,28,20,28,30);
 		break;
 	default:
 		print "<font color='red'>Cannot produce report. Parameter is not accepted.</font>";
@@ -181,6 +184,9 @@
     $header = $_SESSION["tbl_header"] = $arr_report[0];
     $contents = $arr_report[1];
     $_SESSION["record_count"] = $arr_report[2];
+    $_SESSION["col_width"] = $w;
+
+//	print_r($_SESSION["col_width"]);
 
     $pdf->SetFont('Arial','',13);
     $pdf->AddPage();
@@ -191,5 +197,4 @@
     $pdf->FancyTable($header,$data);
     */
     $pdf->Output();
-    
 ?>
