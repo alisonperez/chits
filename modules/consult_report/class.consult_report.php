@@ -9,9 +9,11 @@ class consult_report extends module {
         // do not forget to update version
         //
         $this->author = 'Herman Tolentino MD';
-        $this->version = "0.2-".date("Y-m-d");
+        $this->version = "0.3-".date("Y-m-d");
         $this->module = "consult_report";
         $this->description = "CHITS Module - Consult Report";
+
+	//0.3 added printer-friendly PDF versions
     }
 
     // --------------- STANDARD MODULE FUNCTIONS ------------------
@@ -334,7 +336,7 @@ class consult_report extends module {
 		    $vaccines = $this->get_vaccines($patient["patient_id"], $report_date,$end_report_date);
 		    $services = $this->get_services($patient["consult_id"], $patient["patient_id"], $report_date,$end_report_date);
 		    $ptgroup = $this->get_ptgroup($patient["consult_id"], $report_date,$end_report_date);
-		    $aog = $this->get_aog($patient["patient_id"], $report_date);
+		    $aog = $this->get_aog($patient["patient_id"], $report_date,$end_report_date);
 		    $visit_seq = healthcenter::get_total_visits($patient["patient_id"]);
 		    $philhealth_id = philhealth::get_philhealth_id($patient["patient_id"]);
 
@@ -431,11 +433,15 @@ class consult_report extends module {
 	print "<b>DAILY SERVICE REPORT</b><br/>";
 	print "REPORT DATE : <b>".$post_vars["report_date"]." to ".$post_vars["end_report_date"]."</b><br/><br/>";
 
-	$arr_conn = $this->display_consults($report_date,"patient_id",$end_report_date); //pass the report_date and patient_id
-	$arr_ccdev = $this->display_ccdev($report_date,$end_report_date);
-	$arr_mc = $this->display_mc($report_date,$end_report_date);
+	$_SESSION["arr_consult"] = $this->display_consults($report_date,"patient_id",$end_report_date); //pass the report_date and patient_id
+	$_SESSION["arr_ccdev"] = $this->display_ccdev($report_date,$end_report_date);
+	$_SESSION["arr_mc"] = $this->display_mc($report_date,$end_report_date);
 	
-        //print_r($arr_conn);
+	print "PRINTER FRIENDLY VERSION: <a href='../chits_query/pdf_reports/dailyservice_report.php?arr=consult' target='new'>CONSULTS</a>&nbsp;&nbsp;&nbsp;";
+	print "<a href='../chits_query/pdf_reports/dailyservice_report.php?arr=ccdev' target='new'>CHILD CARE</a>&nbsp;&nbsp;&nbsp;";
+	print "<a href='../chits_query/pdf_reports/dailyservice_report.php?arr=mc' target='new'>MATERNAL CARE</a>";
+
+	 
 
 	$sql = "select count(distinct(patient_id)) from m_consult where ".
 	       "to_days(consult_date) = to_days('$report_date') and patient_id != '0'";
@@ -473,7 +479,7 @@ class consult_report extends module {
 	        $header = array('PATIENT ID','PATIENT NAME / SEX / AGE','ADDRESS','BRGY','FAMILY ID','PHILHEALTH ID','VITAL SIGNS','COMPLAINTS','DIAGNOSIS','TREATMENT');
 	        $contents = array();
 	        
-	        print "<a href='../chits_query/pdf_reports/dailyservice_report.php'>PRINTER FRIENDLY VERSION</a><br/>"; 
+	        //print "<a href='../chits_query/pdf_reports/dailyservice_report.php'>PRINTER FRIENDLY VERSION</a><br/>"; 
 		
 		print "<b><center>CONSULTS</center></b><br/>";
 		print "<table width='900' cellspacing='0' cellpadding='2' style='border: 1px solid #000000'>";
@@ -523,7 +529,7 @@ class consult_report extends module {
 		    		    
 		    $res_vitals = mysql_fetch_array($selvitals);
 		    $bp = (empty($res_vitals[vitals_systolic]) && empty($res_vitals[vitals_diastolic]))?'-':$res_vitals[vitals_systolic].'/'.$res_vitals[vitals_diastolic];
-		    $count = mysql_num_rows($selvitals);		    
+		    $count = mysql_num_rows($selvitals);
 		    
 		    $bgcolor=($bgcolor=="#FFFF99"?"white":"#FFFF99");
 		    print "<tr bgcolor='$bgcolor'>";
@@ -854,13 +860,16 @@ class consult_report extends module {
 	    $arg_list = func_get_args();
 	    $patient_id = $arg_list[0];
 	    $consult_date = $arg_list[1];
+	    $end_date = $arg_list[2];
 	}
 		
-	$sql = "select aog_weeks from m_consult_mc_prenatal m ".
+	/*$sql = "select aog_weeks from m_consult_mc_prenatal m ".
 	       "where patient_id = '$patient_id' and ".
 	       "to_days(prenatal_date) = to_days('$consult_date')";
-
-	if ($result = mysql_query($sql)) {
+	*/ 
+	$result = mysql_query("SELECT aog_weeks FROM m_consult_mc_prenatal m WHERE patient_id='$patient_id' AND prenatal_date BETWEEN '$consult_date' AND '$end_date'") or die("Cannot query 870 ".mysql_error());
+ 	
+	if ($result) {
 	    if (mysql_num_rows($result)) {
 		list($aog) = mysql_fetch_array($result);
 		return $aog;

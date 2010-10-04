@@ -158,10 +158,31 @@
         
     $pdf=new PDF('L','mm','Legal');
     //Column titles
-    $header= $_SESSION[tbl_header];
-    $contents = $_SESSION[daily_service_contents];
     //Data loading
+
+    switch($_GET["arr"]){
+	case 'consult':
+    		//print_r($_SESSION["arr_consult"]);
+		$arr_report = $_SESSION["arr_consult"];
+		break;
+	case 'ccdev':
+		//print_r($_SESSION["arr_ccdev"]);
+		$arr_report = $_SESSION["arr_ccdev"];
+		break;
+	case 'mc':
+		//print_r($_SESSION["arr_mc"]);
+		$arr_report = $_SESSION["arr_mc"];
+		break;
+	default:
+		print "<font color='red'>Cannot produce report. Parameter is not accepted.</font>";
+		break;
+    }
     
+    $header = $_SESSION["tbl_header"] = $arr_report[0];
+    $contents = $arr_report[1];
+    $_SESSION["record_count"] = $arr_report[2];
+
+
     $pdf->SetFont('Arial','',13);
     $pdf->AddPage();
     $pdf->ShowTable($header,$contents);
