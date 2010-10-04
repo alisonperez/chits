@@ -112,9 +112,9 @@
         $date_lab_exam = $y.'-'.$m.'-'.$d;
                                 
         if(mysql_num_rows($q_request)!=0):
-          $update_urinalysis = mysql_query("UPDATE m_consult_lab_urinalysis SET consult_id='$_GET[consult_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',physical_color='$_POST[sel_color]',physical_reaction='$_POST[sel_reaction]',physical_transparency='$_POST[sel_transparency]',physical_gravity='$_POST[sel_gravity]',physical_ph='$_POST[sel_ph]',chem_albumin='$_POST[sel_albumin]',chem_sugar='$_POST[sel_sugar]',chem_pregnancy='$_POST[sel_pregnancy]',sediments_rbc='$_POST[txt_red]',sediments_pus='$_POST[txt_pus]',sediments_epithelial='$_POST[txt_epithelial]',sediments_urates='$_POST[txt_amorphous]',sediments_calcium='$_POST[txt_calcium_oxelates]',sediments_fat='$_POST[txt_fat]',sediments_phosphate='$_POST[txt_triple]',sediments_uric='$_POST[txt_uric]',sediments_amorphous='$_POST[txt_amorphouse_phosphate]',sediments_carbonates='$_POST[txt_calcium_carb]',sediments_bacteria='$_POST[txt_bacteria]',sediments_mucus='$_POST[txt_mucus]',cast_coarsely='$_POST[txt_granular]',cast_pus='$_POST[txt_pus_cast]',cast_hyaline='$_POST[txt_hyaline]',cast_finely='$_POST[txt_finely_cast]',cast_redcell='$_POST[txt_red_cell]',cast_waxy='$_POST[txt_wax]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]' WHERE request_id='$_POST[request_id]'") or die("Cannot query 114".mysql_error()); //update the db contents of urinalysis form
+          $update_urinalysis = mysql_query("UPDATE m_consult_lab_urinalysis SET consult_id='$_GET[consult_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',physical_color='$_POST[sel_color]',physical_reaction='$_POST[sel_reaction]',physical_transparency='$_POST[sel_transparency]',physical_gravity='$_POST[sel_gravity]',physical_ph='$_POST[sel_ph]',chem_albumin='$_POST[sel_albumin]',chem_sugar='$_POST[sel_sugar]',chem_pregnancy='$_POST[sel_pregnancy]',sediments_rbc='$_POST[txt_red]',sediments_pus='$_POST[txt_pus]',sediments_epithelial='$_POST[txt_epithelial]',sediments_urates='$_POST[txt_amorphous]',sediments_calcium='$_POST[txt_calcium_oxelates]',sediments_fat='$_POST[txt_fat]',sediments_phosphate='$_POST[txt_triple]',sediments_uric='$_POST[txt_uric]',sediments_amorphous='$_POST[txt_amorphouse_phosphate]',sediments_carbonates='$_POST[txt_calcium_carb]',sediments_bacteria='$_POST[txt_bacteria]',sediments_mucus='$_POST[txt_mucus]',cast_coarsely='$_POST[txt_granular]',cast_pus='$_POST[txt_pus_cast]',cast_hyaline='$_POST[txt_hyaline]',cast_finely='$_POST[txt_finely_cast]',cast_redcell='$_POST[txt_red_cell]',cast_waxy='$_POST[txt_wax]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]',gravindex='$_POST[txt_gravindex]',others='$_POST[txt_others]' WHERE request_id='$_POST[request_id]'") or die("Cannot query 114".mysql_error()); //update the db contents of urinalysis form
         else:        
-          $update_urinalysis = mysql_query("INSERT INTO m_consult_lab_urinalysis SET consult_id='$_GET[consult_id]',request_id='$_POST[request_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',physical_color='$_POST[sel_color]',physical_reaction='$_POST[sel_reaction]',physical_transparency='$_POST[sel_transparency]',physical_gravity='$_POST[sel_gravity]',physical_ph='$_POST[sel_ph]',chem_albumin='$_POST[sel_albumin]',chem_sugar='$_POST[sel_sugar]',chem_pregnancy='$_POST[sel_pregnancy]',sediments_rbc='$_POST[txt_red]',sediments_pus='$_POST[txt_pus]',sediments_epithelial='$_POST[txt_epithelial]',sediments_urates='$_POST[txt_amorphous]',sediments_calcium='$_POST[txt_calcium_oxelates]',sediments_fat='$_POST[txt_fat]',sediments_phosphate='$_POST[txt_triple]',sediments_uric='$_POST[txt_uric]',sediments_amorphous='$_POST[txt_amorphouse_phosphate]',sediments_carbonates='$_POST[txt_calcium_carb]',sediments_bacteria='$_POST[txt_bacteria]',sediments_mucus='$_POST[txt_mucus]',cast_coarsely='$_POST[txt_granular]',cast_pus='$_POST[txt_pus_cast]',cast_hyaline='$_POST[txt_hyaline]',cast_finely='$_POST[txt_finely_cast]',cast_redcell='$_POST[txt_red_cell]',cast_waxy='$_POST[txt_wax]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]',") or die("Cannot query 116".mysql_error()); //insert into the db the contents of urinalysis form
+          $update_urinalysis = mysql_query("INSERT INTO m_consult_lab_urinalysis SET consult_id='$_GET[consult_id]',request_id='$_POST[request_id]',patient_id='$pxid',date_lab_exam='$date_lab_exam',physical_color='$_POST[sel_color]',physical_reaction='$_POST[sel_reaction]',physical_transparency='$_POST[sel_transparency]',physical_gravity='$_POST[sel_gravity]',physical_ph='$_POST[sel_ph]',chem_albumin='$_POST[sel_albumin]',chem_sugar='$_POST[sel_sugar]',chem_pregnancy='$_POST[sel_pregnancy]',sediments_rbc='$_POST[txt_red]',sediments_pus='$_POST[txt_pus]',sediments_epithelial='$_POST[txt_epithelial]',sediments_urates='$_POST[txt_amorphous]',sediments_calcium='$_POST[txt_calcium_oxelates]',sediments_fat='$_POST[txt_fat]',sediments_phosphate='$_POST[txt_triple]',sediments_uric='$_POST[txt_uric]',sediments_amorphous='$_POST[txt_amorphouse_phosphate]',sediments_carbonates='$_POST[txt_calcium_carb]',sediments_bacteria='$_POST[txt_bacteria]',sediments_mucus='$_POST[txt_mucus]',cast_coarsely='$_POST[txt_granular]',cast_pus='$_POST[txt_pus_cast]',cast_hyaline='$_POST[txt_hyaline]',cast_finely='$_POST[txt_finely_cast]',cast_redcell='$_POST[txt_red_cell]',cast_waxy='$_POST[txt_wax]',release_flag='$release',release_date='$release_date',user_id='$_SESSION[userid]',gravindex='$_POST[txt_gravindex]',others='$_POST[txt_others]'") or die("Cannot query 116".mysql_error()); //insert into the db the contents of urinalysis form
         endif;
       
       
@@ -133,11 +133,13 @@
     }
     
     function _consult_lab_urinalysis_results(){
-      $q_lab_urinalysis = mysql_query("SELECT date_format(date_lab_exam,'%m/%d/%Y') as 'date_lab_exam',physical_color,physical_reaction,physical_transparency,physical_gravity,physical_ph,chem_albumin,chem_sugar,chem_pregnancy,sediments_rbc,sediments_pus,sediments_epithelial,sediments_urates,sediments_calcium,sediments_fat,sediments_phosphate,sediments_uric,sediments_amorphous,sediments_carbonates,sediments_bacteria,sediments_mucus,cast_coarsely,cast_pus,cast_hyaline,cast_finely,cast_redcell,cast_waxy FROM m_consult_lab_urinalysis WHERE request_id='$_GET[request_id]' AND release_flag='Y'") or die("Cannot query 146".mysql_error());
+      $q_lab_urinalysis = mysql_query("SELECT date_format(date_lab_exam,'%m/%d/%Y') as 'date_lab_exam',physical_color,physical_reaction,physical_transparency,physical_gravity,physical_ph,chem_albumin,chem_sugar,chem_pregnancy,sediments_rbc,sediments_pus,sediments_epithelial,sediments_urates,sediments_calcium,sediments_fat,sediments_phosphate,sediments_uric,sediments_amorphous,sediments_carbonates,sediments_bacteria,sediments_mucus,cast_coarsely,cast_pus,cast_hyaline,cast_finely,cast_redcell,cast_waxy,gravindex,others FROM m_consult_lab_urinalysis WHERE request_id='$_GET[request_id]' AND release_flag='Y'") or die("Cannot query 146".mysql_error());
       $q_lab_details = mysql_query("SELECT patient_id,date_format(request_timestamp,'%a %d %b %Y, %h %i %p') as 'date_requested', request_user_id, date_format(done_timestamp,'%a %d %b %Y, %h %i %p') as 'date_done', request_done, done_user_id FROM m_consult_lab WHERE request_id='$_GET[request_id]' AND request_done='Y'") or die("Cannot query 147:".mysql_error());
 
-      list($date_lab_exam,$color,$reaction,$transparency,$gravity,$ph,$albumin,$sugar,$pregnancy,$rbc,$pus,$epithelial,$urates,$calcium,$fat,$phosphate,$uric,$amorphous,$carbonates,$bacteria,$mucus,$cast_coarsely,$cast_pus,$cast_hyaline,$cast_finely,$cast_redcell,$cast_waxy) = mysql_fetch_array($q_lab_urinalysis);      
-      list($pxid,$date_request,$request_user_id,$date_done,$request_done,$done_user_id) = mysql_fetch_array($q_lab_details);      
+      list($date_lab_exam,$color,$reaction,$transparency,$gravity,$ph,$albumin,$sugar,$pregnancy,$rbc,$pus,$epithelial,$urates,$calcium,$fat,$phosphate,$uric,$amorphous,$carbonates,$bacteria,$mucus,$cast_coarsely,$cast_pus,$cast_hyaline,$cast_finely,$cast_redcell,$cast_waxy,$gravindex,$others) = mysql_fetch_array($q_lab_urinalysis);      
+      list($pxid,$date_request,$request_user_id,$date_done,$request_done,$done_user_id) = mysql_fetch_array($q_lab_details);   
+
+	
       
       echo "<a name='urinalysis_result'></a>";
       echo "<table style='border: 1px dotted black' width='400'><tr><td colspan='2'>";
@@ -174,14 +176,12 @@
       
       
       echo "<td valign='top'>";
-      
       echo "<table>";      
       echo "<tr><td class='boxtitle'>ALBUMIN:</td><td class='tinylight'>$albumin</td></tr>";          
       echo "<tr><td class='boxtitle'>SUGAR:</td><td class='tinylight'>$sugar</td></tr>";               
       echo "<tr><td class='boxtitle'>PREGNANCY TEST:</td><td class='tinylight'>$pregnancy</td></tr>";
       echo "</table>";
-
-      echo "</td>";                  
+      echo "</td>";
       
       echo "</tr>";
            
@@ -225,15 +225,23 @@
       
       echo "<td class='boxtitle'>";
       echo "<table>";    
-      echo "<tr><td class='boxtitle'>FINELY GRANULAR CAST:</td><td class='tinylight'>$cast_finely</td></tr>";
+      echo "<tr><td class='boxtitle'>FINELY GRANULAR CAST:</td></tr>";
       echo "<tr><td class='boxtitle'>RED CELL CAST:</td><td class='tinylight'>$cast_redcell</td></tr>";
       echo "<tr><td class='boxtitle'>WAXY CAST:</td><td class='tinylight'>$cast_waxy</td></tr>";      
+      echo "</table>";      
+      echo "</td>";      
+      echo "</tr>";
+      
+      echo "<tr><td class='boxtitle' colspan='2'><hr size='1'>MISCELLANEOUS</td></tr>";
+      echo "<tr>";      
+      echo "<td class='boxtitle'>";
+      echo "<table>";    
+      echo "<tr><td class='boxtitle'>GRAVINDEX:</td><td class='tinylight'>$gravindex</td></tr>";
+      echo "<tr><td class='boxtitle'>OTHERS:</td><td class='tinylight'>$others</td></tr>";            
       echo "</table>";
-      
       echo "</td>";
-      
-      echo "</tr>";      
-      
+      echo "</tr>";
+
       echo "</span>";
             
       echo "</table>";
@@ -251,11 +259,11 @@
       endif;
 
       
-      $q_lab_urinalysis = mysql_query("SELECT date_format(date_lab_exam,'%m/%d/%Y') as 'date_lab_exam',physical_color,physical_reaction,physical_transparency,physical_gravity,physical_ph,chem_albumin,chem_sugar,chem_pregnancy,sediments_rbc,sediments_pus,sediments_epithelial,sediments_urates,sediments_calcium,sediments_fat,sediments_phosphate,sediments_uric,sediments_amorphous,sediments_carbonates,sediments_bacteria,sediments_mucus,cast_coarsely,cast_pus,cast_hyaline,cast_finely,cast_redcell,cast_waxy FROM m_consult_lab_urinalysis WHERE request_id='$_GET[request_id]'") or die("Cannot query 146".mysql_error());
+      $q_lab_urinalysis = mysql_query("SELECT date_format(date_lab_exam,'%m/%d/%Y') as 'date_lab_exam',physical_color,physical_reaction,physical_transparency,physical_gravity,physical_ph,chem_albumin,chem_sugar,chem_pregnancy,sediments_rbc,sediments_pus,sediments_epithelial,sediments_urates,sediments_calcium,sediments_fat,sediments_phosphate,sediments_uric,sediments_amorphous,sediments_carbonates,sediments_bacteria,sediments_mucus,cast_coarsely,cast_pus,cast_hyaline,cast_finely,cast_redcell,cast_waxy,gravindex,others FROM m_consult_lab_urinalysis WHERE request_id='$_GET[request_id]'") or die("Cannot query 146".mysql_error());
       $q_lab_details = mysql_query("SELECT patient_id,date_format(request_timestamp,'%a %d %b %Y, %h %i %p') as 'date_requested', request_user_id, date_format(done_timestamp,'%a %d %b %Y, %h %i %p') as 'date_done', request_done, done_user_id FROM m_consult_lab WHERE request_id='$_GET[request_id]'") or die("Cannot query 147:".mysql_error());
       
       if(mysql_num_rows($q_lab_urinalysis)!=0):
-        list($date_lab_exam,$color,$reaction,$transparency,$gravity,$ph,$albumin,$sugar,$pregnancy,$rbc,$pus,$epithelial,$urates,$calcium,$fat,$phosphate,$uric,$amorphous,$carbonates,$bacteria,$mucus,$cast_coarsely,$cast_pus,$cast_hyaline,$cast_finely,$cast_redcell,$cast_waxy) = mysql_fetch_array($q_lab_urinalysis);
+        list($date_lab_exam,$color,$reaction,$transparency,$gravity,$ph,$albumin,$sugar,$pregnancy,$rbc,$pus,$epithelial,$urates,$calcium,$fat,$phosphate,$uric,$amorphous,$carbonates,$bacteria,$mucus,$cast_coarsely,$cast_pus,$cast_hyaline,$cast_finely,$cast_redcell,$cast_waxy,$gravindex,$others) = mysql_fetch_array($q_lab_urinalysis);
       else:
         $date_lab_exam = date('m/d/Y');
       endif;        
