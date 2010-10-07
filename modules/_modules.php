@@ -1,7 +1,7 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-09-08 13:27:53
+// Generated 2010-10-07 17:15:39
 // Module: _module.php
 // Author: Herman Tolentino MD
 //
@@ -234,6 +234,17 @@ if (file_exists('../modules/healthcenter/class.healthcenter.php')) {
 		$healthcenter->init_deps();
 		$healthcenter->init_lang();
 		$healthcenter->init_help();
+	}
+}
+if (file_exists('../modules/health_facility/class.health_facility.php')) {
+	include '../modules/health_facility/class.health_facility.php';
+	$health_facility = new health_facility;
+	if (!$module->activated('health_facility') && $initmod) {
+		$health_facility->init_sql();
+		$health_facility->init_menu();
+		$health_facility->init_deps();
+		$health_facility->init_lang();
+		$health_facility->init_help();
 	}
 }
 if (file_exists('../modules/hematology/class.hematology.php')) {
