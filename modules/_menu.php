@@ -1,7 +1,7 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-10-07 17:15:39
+// Generated 2010-10-08 00:36:56
 // Module: _menu.php
 // Author: Herman Tolentino MD
 //
@@ -76,8 +76,8 @@ if ($HTTP_GET_VARS["menu_id"]) {
 	case 1328:
 		$healthcenter->_modules($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
 		break;
-	case 1362:
-		$health_facility->_health_center($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
+	case 1364:
+		$health_facility->_health_facility($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
 		break;
 	case 1055:
 		$icd10->_icd10($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);

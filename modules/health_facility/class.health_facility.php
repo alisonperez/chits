@@ -27,7 +27,7 @@ class health_facility extends module{
 			$arg_list = func_get_args();
 		endif;
 
-		module::set_menu($this->module,"Health Facility","LIBRARIES","_health_center");
+		module::set_menu($this->module,"Health Facility","LIBRARIES","_health_facility");
 
 		module::set_detail($this->description,$this->version,$this->author,$this->module);
 	}
@@ -43,7 +43,7 @@ class health_facility extends module{
 	
 	//----- CUSTOM BUILT FUNCTION ---- //
 	
-	function _health_center(){
+	function _health_facility(){
 		echo "nosila";
 	}
 
