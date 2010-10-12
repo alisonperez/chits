@@ -53,9 +53,12 @@ class health_facility extends module{
 
 		$q_barangay = mysql_query("SELECT barangay_id, barangay_name FROM m_lib_barangay ORDER BY barangay_name ASC") or die("Cannot query 47 ".mysql_error());
 
-		echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]' method='POST' name='form_health_facility'>";
+		$this->unassign_brgy($_POST,$_GET);
+
+		echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#health_facility' method='POST' name='form_health_facility'>";
 
 		echo "<table border='1'>";
+		echo "<a name='health_facility'></a>";
 		echo "<tr><td colspan='2'>HEALTH FACILITY - BARANGAY MAPPING OF CATCHMENT AREA</td></tr>";
 		echo "<tr>";
 		
@@ -106,16 +109,12 @@ class health_facility extends module{
 
 	function assign_hf_brgy($post_vars){
 		$str_brgy = implode(",",$post_vars["sel_barangay"]);
-		
-		echo $str_brgy;
-
-		//$delete_hf = mysql_query("DELETE FROM m_lib_health_facility_barangay WHERE facility_id='$post_vars[sel_health_facility]'") or die("CAnnot query 106 ".mysql_error());
-
+		 
 		foreach($post_vars["sel_barangay"] as $key=>$value){
 			$q_brgy = mysql_query("SELECT barangay_id FROM m_lib_health_facility_barangay WHERE barangay_id='$value'") or die("Cannot query 116 ".mysql_error());
 			if(mysql_num_rows($q_brgy)):
 				echo "<script language='Javascript'>";
-				echo "window.alert('Health facility and barangay was not mapped. Please check if the barangay is already assigned to a health facility. To unassign a barangay, click the REMOVE icon below next to the barangay name.')";
+				echo "window.alert('Health facility and barangay was not mapped. Please check if the barangay is already assigned to a health facility. To unassign a barangay, click the barangay name at the table below.')";
 				echo "</script>";
 			else:
 				$insert_value = mysql_query("INSERT INTO m_lib_health_facility_barangay SET barangay_id='$value',facility_id='$post_vars[sel_health_facility]'") or die("Cannot query 109 ".mysql_error());
@@ -130,34 +129,78 @@ class health_facility extends module{
 	}
 
 	function show_barangay_hf(){
-		$q_hf = mysql_query("SELECT DISTINCT(a.facility_id),b.facility_name FROM m_lib_health_facility_barangay a,m_lib_health_facility b WHERE a.facility_id=b.facility_id ORDER by b.facility_name ASC") or die("Cannot query 133 ".mysql_error());
+		$q_hf = mysql_query("SELECT DISTINCT(a.facility_id),b.facility_name FROM m_lib_health_facility_barangay a,m_lib_health_facility b WHERE a.facility_id=b.facility_id ORDER by b.facility_name ASC") or die("Cannot query 133 ".mysql_error());		
 
 		if(mysql_num_rows($q_hf)!=0):
 			echo "<table border='1'>";
 			echo "<tr><td>HEALTH FACILITY</td>";
-			echo "<td>BARANGAYS</td>";
+			echo "<td>BARANGAYS (click barangay name to remove barangay)</td>";
 			echo "</tr>";
 
 			while(list($fac_id,$fac_name) = mysql_fetch_array($q_hf)){	
 				$arr_brgy = array();
-				$q_brgy = mysql_query("SELECT a.barangay_name FROM m_lib_barangay a,m_lib_health_facility_barangay b WHERE a.barangay_id=b.barangay_id AND b.facility_id='$fac_id' ORDER BY a.barangay_name") or die("Cannot query 142 ".mysql_error());
+				$q_brgy = mysql_query("SELECT a.barangay_name,a.barangay_id FROM m_lib_barangay a,m_lib_health_facility_barangay b WHERE a.barangay_id=b.barangay_id AND b.facility_id='$fac_id' ORDER BY a.barangay_name") or die("Cannot query 142 ".mysql_error());
 
-				while(list($brgy_name) = mysql_fetch_array($q_brgy)){	
-					array_push($arr_brgy,$brgy_name);
+				while(list($brgy_name,$brgy_id) = mysql_fetch_array($q_brgy)){	
+					array_push($arr_brgy,array($brgy_name,$brgy_id));
 				}
 				
 				$str_brgy = implode(",",$arr_brgy);
-
+				
 				echo "<tr>";
 				echo "<td>".$fac_name."</td>";
-				echo "<td>".$str_brgy."</td>";
+				echo "<td>";
+				foreach($arr_brgy as $key=>$value){
+					echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&action=delete&brgy_id=$value[1]&facility_id=$fac_id'>".$value[0]."</a> /";
+				}
+				echo "</td>";
 				echo "</tr>";
 			}
 			echo "</table>";
 		else:
 
 		endif;
+	}
 
+	function unassign_brgy(){
+		if(func_num_args()>0):
+			$arr = func_get_args();
+			$postvars = $arr[0];
+			$getvars = $arr[1];
+		endif;
+
+		if($getvars["action"]=='delete'):
+			
+			$q_brgy = mysql_query("SELECT barangay_id,barangay_name FROM m_lib_barangay WHERE barangay_id='$getvars[brgy_id]'") or die("Cannot query: 176 ".mysql_error());
+
+			$q_facility = mysql_query("SELECT facility_name FROM m_lib_health_facility WHERE facility_id='$getvars[facility_id]'") or die("Cannot query: 178 ".mysql_error());
+			
+			list($facility_name) = mysql_fetch_array($q_facility);
+		
+			if(mysql_num_rows($q_brgy)!=0):
+				list($brgy_id,$brgy_name) = mysql_fetch_array($q_brgy);
+				
+				//echo "You are about to unassign <b>".$brgy_name."</b> from <b>".$facility_name."</b><br>";
+				if(module::confirm_delete($getvars["menu_id"],$postvars,$getvars)):
+					$delete_brgy = mysql_query("DELETE FROM m_lib_health_facility_barangay WHERE barangay_id='$getvars[brgy_id]'") or die("Cannot query 188 ".mysql_error());
+
+					if($delete_brgy):
+						echo "<script language='Javascript'>";
+						echo "window.alert('The barangay $brgy_name was successfully been unassigned to the $facility_name!')";
+						echo "</script>";
+					endif;
+
+				else:
+
+				endif;
+
+			else:
+				echo "<script language='Javascript'>";
+				echo "window.alert('Cannot delete. The barangay ID does not exists!')";
+				echo "</script>";
+			endif;
+		endif;
+		
 	}
 }
 ?>
