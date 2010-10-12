@@ -9,11 +9,12 @@ class consult_report extends module {
         // do not forget to update version
         //
         $this->author = 'Herman Tolentino MD';
-        $this->version = "0.3-".date("Y-m-d");
+        $this->version = "0.4-".date("Y-m-d");
         $this->module = "consult_report";
         $this->description = "CHITS Module - Consult Report";
 
 	//0.3 added printer-friendly PDF versions
+	//0.4 added maternal care and child care PDF files
     }
 
     // --------------- STANDARD MODULE FUNCTIONS ------------------

@@ -1221,11 +1221,37 @@ class healthcenter extends module{
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
-        $sql = "select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag ".
-               "from m_consult c, m_patient p where c.patient_id = p.patient_id ".
-               "and consult_end = '0000-00-00 00:00:00' order by c.consult_date asc";
+
+	$arr_facility = array();
+
+	if(mysql_num_rows(mysql_query("SHOW TABLES LIKE 'm_lib_health_facility_barangay'"))!=0):
+		$q_facility = mysql_query("SELECT DISTINCT(a.facility_id),b.facility_name FROM m_lib_health_facility_barangay a,m_lib_health_facility b WHERE a.facility_id=b.facility_id ORDER by b.facility_name ASC") or die("Cannot query 1226 ".mysql_error());
+		
+		if(mysql_num_rows($q_facility)!=0):
+			while(list($facility_id,$facility_name)=mysql_fetch_array($q_facility)){
+				array_push($arr_facility,array($facility_id,$facility_name));
+			}
+			array_push($arr_facility,array('NA','Unassigned / No Barangays'));
+		endif;
+	endif;
+
+
+	if(empty($arr_facility)):
+        	$sql = "select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag ".
+               		"from m_consult c, m_patient p where c.patient_id = p.patient_id ".
+               		"and consult_end = '0000-00-00 00:00:00' order by c.consult_date asc";
+	else:
+		$sql = "select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag ".
+               		"from m_consult c, m_patient p where c.patient_id = p.patient_id ".
+               		"and consult_end = '0000-00-00 00:00:00' order by c.consult_date asc";
+	endif;
+
+	
         if ($result = mysql_query($sql)) {
             print "<span class='patient'>".FTITLE_CONSULTS_TODAY."</span><br>";
+
+	    $this->show_tab_headers($arr_facility);
+
             print "<table width=600 bgcolor='#FFFFFF' cellpadding='3' cellspacing='0' style='border: 2px solid black'>";
             print "<tr><td>";
             print "<span class='tinylight'>HIGHLIGHTED NAMES OR THOSE MARKED WITH <img src='../images/star.gif' border='0'/> WILL SEE PHYSICIAN.</span><br/>";
@@ -1238,28 +1264,27 @@ class healthcenter extends module{
                 while (list($cid, $pid, $plast, $pfirst, $see_doctor) = mysql_fetch_array($result)) {
 
                     $q_lab = mysql_query("SELECT request_id,request_done FROM m_consult_lab WHERE patient_id='$pid' AND consult_id='$cid'") or die("Cannot query 1224".mysql_error());
-                                        
-                    
+
                     if(mysql_num_rows($q_lab)!=0):
                         $arr_done = array();
                         $arr_id = array();
                         while(list($req_id,$done_status) = mysql_fetch_array($q_lab)){
                             array_push($arr_id,$req_id);
-                            array_push($arr_done,$done_status);                                                    
+                            array_push($arr_done,$done_status);
                         }
-                        
+
                         $done = (in_array("N",$arr_done)?"N":"Y");
-                        $request_id = $arr_id[0];                        
+                        $request_id = $arr_id[0];
                         $url = "page=CONSULTS&menu_id=1327&consult_id=$cid&ptmenu=LABS";
                     else:
                         $request_id = $done = "";
                     endif;
-                                                            
-                    
+
+
                     $visits = healthcenter::get_total_visits($pid);
                     $consult_array[$i] = "<a href='".$_SERVER["PHP_SELF"]."?page=CONSULTS&menu_id=$consult_menu_id&consult_id=$cid&ptmenu=DETAILS' title='".INSTR_CLICK_TO_VIEW_RECORD."' ".($see_doctor=="Y"?"style='background-color: #FFFF33'":"").">".
-                                         "<b>$plast, $pfirst</b></a> [$visits] ".($see_doctor=="Y"?"<img src='../images/star.gif' border='0'/>":"").(($request_id!="")?(($done=="Y")?"<a href='$_SERVER[PHP_SELF]?$url' title='lab completed'><img src='../images/lab.png' width='15px' height='15px' border='0' alt='lab completed' /></a>":"<a href='$_SERVER[PHP_SELF]?$url' title='lab pending'><img src='../images/lab_untested.png' width='15px' height='15px' border='0' alt='lab pending' /></a>"):"");
-                                         
+                    "<b>$plast, $pfirst</b></a> [$visits] ".($see_doctor=="Y"?"<img src='../images/star.gif' border='0'/>":"").(($request_id!="")?(($done=="Y")?"<a href='$_SERVER[PHP_SELF]?$url' title='lab completed'><img src='../images/lab.png' width='15px' height='15px' border='0' alt='lab completed' /></a>":"<a href='$_SERVER[PHP_SELF]?$url' title='lab pending'><img src='../images/lab_untested.png' width='15px' height='15px' border='0' alt='lab pending' /></a>"):"");
+
                     $i++;
                 }
                 // pass on patient list to be columnized
@@ -1701,6 +1726,31 @@ function hypertension_code() {
 			echo $expiry_date;
 		endif;
 	}	
+	
+	function show_tab_headers(){
+		if(func_num_args()>0):
+			$arr_facility = func_get_args();
+		endif;
+
+		$str_facility = '';
+
+		if(!empty($arr_facility)):
+			echo "<table width=600 bgcolor='#FFFFFF' cellpadding='3' cellspacing='0' style='border: 1px solid black'>";
+			echo "<tr>";
+			echo "<td>";
+			foreach($arr_facility as $key=>$value){
+				foreach($value as $key2=>$value2){
+					//$str_facility .= $value2[1].'&nbsp;&nbsp;&nbsp;&nbsp;';
+					$str_facility = $value2[1];
+					echo "<a href='$_SERVER[PHP_SELF]?key=$value2[0]'>".$str_facility."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				}
+			}
+			echo "</td>";
+			echo "</tr>";
+			echo "</table>";
+			
+		endif;
+	}
 
 // end of class
 }
