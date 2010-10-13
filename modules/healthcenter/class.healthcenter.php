@@ -1238,13 +1238,12 @@ class healthcenter extends module{
 
 
 	if(empty($arr_facility)):
-        	$sql = "select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag ".
-               		"from m_consult c, m_patient p where c.patient_id = p.patient_id ".
-               		"and consult_end = '0000-00-00 00:00:00' order by c.consult_date asc";
+        	$result = mysql_query("select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag from m_consult c, m_patient p where c.patient_id = p.patient_id and consult_end = '0000-00-00 00:00:00' order by c.consult_date asc") or die("Cannot query 1241 ".mysql_error());
 	else:
 		if(!empty($_GET["facid"])):
+				
 			if($_GET["facid"]!='NA'):
-
+			
 				$q_facid = mysql_query("SELECT a.barangay_id FROM m_lib_barangay a, m_lib_health_facility_barangay b WHERE b.facility_id='$_GET[facid]' AND a.barangay_id=b.barangay_id") or die("Cannot query 1246 ".mysql_error());
 
 				if(mysql_num_rows($q_facid)!=0):
@@ -1255,8 +1254,10 @@ class healthcenter extends module{
 					
 					$str_brgy = implode(",",$arr_brgy);
 
-			$result = mysql_query("select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag from m_consult c, m_patient p, m_family_members x, m_family_address y, m_lib_barangay z where c.patient_id = p.patient_id and consult_end = '0000-00-00 00:00:00' AND p.patient_id=x.patient_id AND x.family_id=y.family_id AND y.barangay_id IN ('$str') order by c.consult_date asc") or die("Cannot query 1258 ".mysql_error());
-					
+			$result = mysql_query("select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag from m_consult c, m_patient p, m_family_members x, m_family_address y, m_lib_barangay z where c.patient_id = p.patient_id and consult_end = '0000-00-00 00:00:00' AND p.patient_id=x.patient_id AND x.family_id=y.family_id AND y.barangay_id IN ('$str_brgy') order by c.consult_date asc") or die("Cannot query 1258 ".mysql_error());
+			
+			echo $str_brgy;
+			
 				else:	
 					echo "<script language='Javascript'>";
 					echo "window.alert('Invalid health facility code!')";
