@@ -1236,20 +1236,46 @@ class healthcenter extends module{
 	endif;
 
 
+
 	if(empty($arr_facility)):
         	$sql = "select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag ".
                		"from m_consult c, m_patient p where c.patient_id = p.patient_id ".
                		"and consult_end = '0000-00-00 00:00:00' order by c.consult_date asc";
 	else:
-		$sql = "select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag ".
-               		"from m_consult c, m_patient p where c.patient_id = p.patient_id ".
-               		"and consult_end = '0000-00-00 00:00:00' order by c.consult_date asc";
+		if(!empty($_GET["facid"])):
+			if($_GET["facid"]!='NA'):
+
+				$q_facid = mysql_query("SELECT a.barangay_id FROM m_lib_barangay a, m_lib_health_facility_barangay b WHERE b.facility_id='$_GET[facid]' AND a.barangay_id=b.barangay_id") or die("Cannot query 1246 ".mysql_error());
+
+				if(mysql_num_rows($q_facid)!=0):
+					$arr_brgy = array();
+					while(list($brgy_id)=mysql_fetch_array($q_facid)){
+						array_push($arr_brgy,$brgy_id);
+					}
+					
+					$str_brgy = implode(",",$arr_brgy);
+
+			$result = mysql_query("select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag from m_consult c, m_patient p, m_family_members x, m_family_address y, m_lib_barangay z where c.patient_id = p.patient_id and consult_end = '0000-00-00 00:00:00' AND p.patient_id=x.patient_id AND x.family_id=y.family_id AND y.barangay_id IN ('$str') order by c.consult_date asc") or die("Cannot query 1258 ".mysql_error());
+					
+				else:	
+					echo "<script language='Javascript'>";
+					echo "window.alert('Invalid health facility code!')";
+					echo "</script>";
+				endif;
+
+			else:
+
+			endif;
+
+		else:
+			$result = mysql_query("select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag from m_consult c, m_patient p where c.patient_id = p.patient_id and consult_end = '0000-00-00 00:00:00' order by c.consult_date asc") or die("Cannot query 1271 ".mysql_error());	
+		endif;
 	endif;
 
 	
-        if ($result = mysql_query($sql)) {
+        if ($result) {
             print "<span class='patient'>".FTITLE_CONSULTS_TODAY."</span><br>";
-
+		
 	    $this->show_tab_headers($arr_facility);
 
             print "<table width=600 bgcolor='#FFFFFF' cellpadding='3' cellspacing='0' style='border: 2px solid black'>";
@@ -1729,7 +1755,8 @@ function hypertension_code() {
 	
 	function show_tab_headers(){
 		if(func_num_args()>0):
-			$arr_facility = func_get_args();
+			$arr = func_get_args();
+			$arr_facility = $arr[0];
 		endif;
 
 		$str_facility = '';
@@ -1739,16 +1766,12 @@ function hypertension_code() {
 			echo "<tr>";
 			echo "<td>";
 			foreach($arr_facility as $key=>$value){
-				foreach($value as $key2=>$value2){
-					//$str_facility .= $value2[1].'&nbsp;&nbsp;&nbsp;&nbsp;';
-					$str_facility = $value2[1];
-					echo "<a href='$_SERVER[PHP_SELF]?key=$value2[0]'>".$str_facility."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
-				}
+				
+				echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&facid=$value[0]'>".$value[1]."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 			echo "</td>";
 			echo "</tr>";
 			echo "</table>";
-			
 		endif;
 	}
 

@@ -186,7 +186,7 @@ class health_facility extends module{
 
 					if($delete_brgy):
 						echo "<script language='Javascript'>";
-						echo "window.alert('The barangay $brgy_name was successfully been unassigned to the $facility_name!')";
+						echo "window.alert('The barangay $brgy_name was successfully been unassigned from the $facility_name!')";
 						echo "</script>";
 					endif;
 
