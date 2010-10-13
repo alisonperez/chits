@@ -1231,7 +1231,6 @@ class healthcenter extends module{
 			while(list($facility_id,$facility_name)=mysql_fetch_array($q_facility)){
 				array_push($arr_facility,array($facility_id,$facility_name));
 			}
-			array_push($arr_facility,array('NA','Unassigned / No Barangays'));
 		endif;
 	endif;
 
@@ -1242,30 +1241,21 @@ class healthcenter extends module{
 	else:
 		if(!empty($_GET["facid"])):
 				
-			if($_GET["facid"]!='NA'):
+			$q_facid = mysql_query("SELECT a.barangay_id FROM m_lib_barangay a, m_lib_health_facility_barangay b WHERE b.facility_id='$_GET[facid]' AND a.barangay_id=b.barangay_id") or die("Cannot query 1246 ".mysql_error());
+
+			if(mysql_num_rows($q_facid)!=0):
+				$arr_brgy = array();
+				while(list($brgy_id)=mysql_fetch_array($q_facid)){
+					array_push($arr_brgy,$brgy_id);
+				}
+			$str_brgy = implode(",",$arr_brgy);
+
+			$result = mysql_query("select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag from m_consult c, m_patient p, m_family_members x, m_family_address y, m_lib_barangay z where c.patient_id = p.patient_id and consult_end = '0000-00-00 00:00:00' AND p.patient_id=x.patient_id AND x.family_id=y.family_id AND y.barangay_id IN ($str_brgy) AND y.barangay_id=z.barangay_id order by c.consult_date asc") or die("Cannot query 1258 ".mysql_error());
 			
-				$q_facid = mysql_query("SELECT a.barangay_id FROM m_lib_barangay a, m_lib_health_facility_barangay b WHERE b.facility_id='$_GET[facid]' AND a.barangay_id=b.barangay_id") or die("Cannot query 1246 ".mysql_error());
-
-				if(mysql_num_rows($q_facid)!=0):
-					$arr_brgy = array();
-					while(list($brgy_id)=mysql_fetch_array($q_facid)){
-						array_push($arr_brgy,$brgy_id);
-					}
-					
-					$str_brgy = implode(",",$arr_brgy);
-
-			$result = mysql_query("select c.consult_id, p.patient_id, p.patient_lastname, p.patient_firstname, see_doctor_flag from m_consult c, m_patient p, m_family_members x, m_family_address y, m_lib_barangay z where c.patient_id = p.patient_id and consult_end = '0000-00-00 00:00:00' AND p.patient_id=x.patient_id AND x.family_id=y.family_id AND y.barangay_id IN ('$str_brgy') order by c.consult_date asc") or die("Cannot query 1258 ".mysql_error());
-			
-			echo $str_brgy;
-			
-				else:	
-					echo "<script language='Javascript'>";
-					echo "window.alert('Invalid health facility code!')";
-					echo "</script>";
-				endif;
-
-			else:
-
+			else:	
+				echo "<script language='Javascript'>";
+				echo "window.alert('Invalid health facility code!')";
+				echo "</script>";
 			endif;
 
 		else:
@@ -1275,9 +1265,11 @@ class healthcenter extends module{
 
 	
         if ($result) {
+	    print "<a name='consults'></a>";
+
             print "<span class='patient'>".FTITLE_CONSULTS_TODAY."</span><br>";
-		
-	    $this->show_tab_headers($arr_facility);
+
+	    healthcenter::show_tab_headers($arr_facility);
 
             print "<table width=600 bgcolor='#FFFFFF' cellpadding='3' cellspacing='0' style='border: 2px solid black'>";
             print "<tr><td>";
@@ -1302,7 +1294,7 @@ class healthcenter extends module{
 
                         $done = (in_array("N",$arr_done)?"N":"Y");
                         $request_id = $arr_id[0];
-                        $url = "page=CONSULTS&menu_id=1327&consult_id=$cid&ptmenu=LABS";
+                        $url = "page=CONSULTS&menu_id=1327&consult_id=$cid&ptmenu=LABS#consults";
                     else:
                         $request_id = $done = "";
                     endif;
@@ -1763,12 +1755,16 @@ function hypertension_code() {
 		$str_facility = '';
 
 		if(!empty($arr_facility)):
+			array_unshift($arr_facility,array('','ALL'));
 			echo "<table width=600 bgcolor='#FFFFFF' cellpadding='3' cellspacing='0' style='border: 1px solid black'>";
 			echo "<tr>";
 			echo "<td>";
 			foreach($arr_facility as $key=>$value){
-				
-				echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&facid=$value[0]'>".$value[1]."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				if($key==''):
+					echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#consults'>".$value[1]."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				else:
+					echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&facid=$value[0]#consults'>".$value[1]."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				endif;
 			}
 			echo "</td>";
 			echo "</tr>";
