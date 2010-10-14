@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 ob_start();
@@ -145,9 +144,9 @@ function show_philhealth_list(){
 	//print_r($arr_px);
 
 	for($i=0;$i<count($arr_px);$i++){
-		$q_px = mysql_query("SELECT patient_lastname, patient_firstname, date_format(patient_dob,'%m-%d-%Y') as patient_dob FROM m_patient WHERE patient_id='$arr_px[$i]'") or die("Cannot query 147 ".mysql_error("Cannot query 147" .mysql_error()));
+		$q_px = mysql_query("SELECT patient_lastname, patient_firstname, patient_middle, date_format(patient_dob,'%m-%d-%Y') as patient_dob FROM m_patient WHERE patient_id='$arr_px[$i]'") or die("Cannot query 147 ".mysql_error("Cannot query 147" .mysql_error()));
 
-		list($px_lastname,$px_firstname,$px_dob) = mysql_fetch_array($q_px);
+		list($px_lastname,$px_firstname,$px_middle,$px_dob) = mysql_fetch_array($q_px);
 
 		//echo $px_lastname.' '.$px_firstname.' '.$px_dob;
 		
@@ -166,7 +165,7 @@ function show_philhealth_list(){
 		$q_philhealth = mysql_query("SELECT philhealth_id,date_format(expiry_date,'%m-%d-%Y') as expiration_date FROM m_patient_philhealth WHERE patient_id='$arr_px[$i]' ORDER by expiry_date ASC") or die("Cannot query 165". mysql_error());
 		list($philhealth_id,$expiration) = mysql_fetch_array($q_philhealth);
 		
-		$this->Row(array($px_lastname.', '.$px_firstname,$address,$brgy_name,$px_dob,$philhealth_id,$expiration,$relatives));
+		$this->Row(array($px_lastname.', '.$px_firstname.'  '.$px_middle,$address,$brgy_name,$px_dob,$philhealth_id,$expiration,$relatives));
 	}
 }
     

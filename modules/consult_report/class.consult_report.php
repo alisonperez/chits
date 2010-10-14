@@ -305,7 +305,7 @@ class consult_report extends module {
                        "and to_days(c.consult_date) = to_days('$report_date')"; */
 
         $sql_patient = "select c.patient_id, c.consult_id, ".
-	               "concat(p.patient_lastname, ', ', p.patient_firstname) patient_name, ".
+	               "concat(p.patient_lastname, ', ', p.patient_firstname, ' ',p.patient_middle) patient_name, ".
                        "round((to_days(c.consult_date)-to_days(p.patient_dob))/365,2) patient_age, ".
                        "p.patient_gender ".
                        "from m_consult c, m_patient p ".
@@ -462,7 +462,7 @@ class consult_report extends module {
         $arr_contents = array();
 
         $sql = "select c.patient_id, c.consult_id, ".
-	               "concat(p.patient_lastname, ', ', p.patient_firstname) patient_name, ".
+	               "concat(p.patient_lastname, ', ', p.patient_firstname,' ',p.patient_middle) patient_name, ".
                        "round((to_days(c.consult_date)-to_days(p.patient_dob))/365,1) patient_age, ".
                        "p.patient_gender,date_format(c.consult_date,'%Y-%m-%d') as consult_date ".
                        "from m_consult c, m_patient p ".

@@ -49,7 +49,11 @@ class health_facility extends module{
 			$this->assign_hf_brgy($_POST);
 		endif;
 
-		$q_health_facility = mysql_query("SELECT facility_id, facility_name FROM m_lib_health_facility ORDER by facility_name ASC") or die("Cannot query 47 ".mysql_error());
+		//$q_health_facility = mysql_query("SELECT a.facility_id, a.facility_name,b.place_name FROM m_lib_health_facility a, m_lib_psgc_code b WHERE RPAD(a.psgc_provcode,(length(a.psgc_provcode)+2),'00')=b.municipality_code ORDER by b.place_name ASC, a.facility_name ASC") or die("Cannot query 47 ".mysql_error());
+
+		//$q_health_facility = mysql_query("SELECT a.facility_id, a.facility_name,b.place_name FROM m_lib_health_facility a, m_lib_psgc_code b WHERE a.psgc_provcode=b.province_code ORDER by b.place_name ASC, a.facility_name ASC") or die("Cannot query 47 ".mysql_error());
+
+		$q_health_facility = mysql_query("SELECT a.facility_id, a.facility_name,a.psgc_provcode FROM m_lib_health_facility a ORDER BY a.facility_name ASC") or die("Cannot query 47 ".mysql_error());
 
 		$q_barangay = mysql_query("SELECT barangay_id, barangay_name FROM m_lib_barangay ORDER BY barangay_name ASC") or die("Cannot query 47 ".mysql_error());
 
@@ -64,17 +68,14 @@ class health_facility extends module{
 		
 		echo "<td valign='top' colspan='2'>Health Facility&nbsp;&nbsp;<select name='sel_health_facility' size='1'>";
 		
-		while(list($fac_id,$fac_name)=mysql_fetch_array($q_health_facility)){
-			echo "<option value='$fac_id'>$fac_name</option>";
+		while(list($fac_id,$fac_name,$prov_code)=mysql_fetch_array($q_health_facility)){
+			$q_prov = mysql_query("SELECT place_name FROM m_lib_psgc_code WHERE province_code='$prov_code' AND classification=''") or die("Cannot query 72 ".mysql_error());
+			list($place) = mysql_fetch_array($q_prov);
+
+			echo "<option value='$fac_id'>$fac_name ($place)</option>";
 		}
 		echo "</select></td>";
 		
-		/*echo "<td valign='top'>Barangay&nbsp;&nbsp;<select name='sel_baragay' size='5' MULTIPLE>";
-		while(list($barangay_id,$barangay_name)=mysql_fetch_array($q_barangay)){
-			echo "<option value='$barangay_id'>$barangay_name</option>";
-		}
-		echo "</select></td>";*/
-		//echo "<td><input type=>"
 		echo "</tr>";
 
 		echo "<tr>";
