@@ -1004,7 +1004,8 @@ class healthcenter extends module{
         print LBL_FAMILY_NUMBER." <b>".family::search_family($ptinfo["patient_id"])."</b>&nbsp;&nbsp;&nbsp;"."AGE: <b>".($ptinfo["computed_age"]<1?($ptinfo["computed_age"]*12)."M":$ptinfo["computed_age"]."Y")."/".$ptinfo["patient_gender"]."</b>&nbsp;&nbsp;&nbsp; BIRTHDATE: <b>".$ptinfo["patient_dob"]."</b><br/>";
         print "</td></tr>";
         print "<tr valign='top' bgcolor='#FFFF99'><td>";
-        print LBL_PATIENT_ID.": <b>".module::pad_zero($ptinfo["patient_id"],7)."</b><br />";	
+        print LBL_PATIENT_ID.": <b>".module::pad_zero($ptinfo["patient_id"],7)."</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";	
+	print "ADDRESS: <b>".$this->get_address($ptinfo["patient_id"])."</b></br>";	
 	print "PHILHEALTH ID NUMBER: <b>".$this->get_philhealth_id($ptinfo["patient_id"])."</b>&nbsp;&nbsp;&nbsp;";	
 	print "EXPIRATION DATE: <b>";
 	
@@ -1770,6 +1771,25 @@ function hypertension_code() {
 			echo "</tr>";
 			echo "</table>";
 		endif;
+	}
+
+	function get_address(){
+		if(func_num_args()>0):
+			$arr = func_get_args();
+		endif;
+
+		$pxid = $arr[0];
+				
+		$q_demo = mysql_query("SELECT a.barangay_name,b.address,b.family_id FROM m_lib_barangay a, m_family_address b,m_family_members c WHERE c.patient_id='$pxid' AND a.barangay_id=b.barangay_id AND b.family_id=c.family_id") or die("Cannot query 149 ".mysql_error());
+		
+		if(mysql_num_rows($q_demo)!=0):
+			list($brgy_name,$address,$family_id) = mysql_fetch_array($q_demo);
+			$addr = $address.', '.$brgy_name;
+		else:
+			$addr = '-';
+		endif;
+
+		return $addr;
 	}
 
 // end of class

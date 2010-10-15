@@ -67,7 +67,7 @@ class health_facility extends module{
 		echo "<tr>";
 		
 		echo "<td valign='top' colspan='2'>Health Facility&nbsp;&nbsp;<select name='sel_health_facility' size='1'>";
-		 
+		
 		while(list($fac_id,$fac_name,$prov_code)=mysql_fetch_array($q_health_facility)){
 			$q_prov = mysql_query("SELECT place_name FROM m_lib_psgc_code WHERE province_code='$prov_code' AND classification=''") or die("Cannot query 72 ".mysql_error());
 			list($place) = mysql_fetch_array($q_prov);
