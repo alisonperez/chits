@@ -1757,14 +1757,20 @@ function hypertension_code() {
 
 		if(!empty($arr_facility)):
 			array_unshift($arr_facility,array('','ALL'));
-			echo "<table width=600 bgcolor='#FFFFFF' cellpadding='3' cellspacing='0' style='border: 1px solid black'>";
-			echo "<tr>";
+			//echo "<table width=600 bgcolor='#FFFFFF' cellpadding='3' cellspacing='0' style='border: 1px solid black'>";
+
+			echo "<table cellpadding='1' cellspacing='1' bgcolor='#33CC33' style='border: 1px solid black;'>";
+			echo "<tr style='font-size: 2px;'>";
 			echo "<td>";
 			foreach($arr_facility as $key=>$value){
-				if($key==''):
-					echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#consults'>".$value[1]."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				if($key=='' && empty($_GET["facid"])):
+					echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#consults' class='topmenu'><b><font style='color:#003300;background-color: yellow;border: 1px solid black'>&nbsp;".$value[1]."</font></b></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 				else:
-					echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&facid=$value[0]#consults'>".$value[1]."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+					if($value[0]!=$_GET["facid"]):
+						echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&facid=$value[0]#consults' class='topmenu'>".$value[1]."</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+					else:
+						echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&facid=$value[0]#consults' class='topmenu'><b><font style='color:#003300;background-color: yellow;border: 1px solid black'>&nbsp;".$value[1]."&nbsp;</font></b></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+					endif;
 				endif;
 			}
 			echo "</td>";

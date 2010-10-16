@@ -85,7 +85,7 @@ class health_facility extends module{
 		
 		
 		echo "<tr>";			
-		echo "<select name='sel_barangay[]' size='10' MULTIPLE>";
+		echo "<select name='sel_barangay[]' class='textbox' size='10' MULTIPLE>";
 		while(list($barangay_id,$barangay_name)=mysql_fetch_array($q_barangay)){
 			echo "<option value='$barangay_id'>$barangay_name</option>";
 		}
@@ -97,7 +97,7 @@ class health_facility extends module{
 		echo "</tr>";
 
 		echo "<tr>";
-		echo "<td colspan='2' align='center'><input type='submit' name='submit_brgy' value='Assign Barangay/s to Health Facility' />&nbsp;&nbsp;&nbsp;<input type='reset' name='reset_brgy' value='Reset'></td>";
+		echo "<td colspan='2' align='center'><input type='submit' name='submit_brgy' value='Assign Barangay/s to Health Facility' style='border: 1px solid black' />&nbsp;&nbsp;&nbsp;<input type='reset' name='reset_brgy' value='Reset' style='border: 1px solid black'></td>";
 		echo "</tr>";
 
 		echo "</table>";
