@@ -61,9 +61,9 @@ class health_facility extends module{
 
 		echo "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#health_facility' method='POST' name='form_health_facility'>";
 
-		echo "<table border='1'>";
+		echo "<table  style=\"font-family: arial;background-color:#99CCCC\">";
 		echo "<a name='health_facility'></a>";
-		echo "<tr><td colspan='2'>HEALTH FACILITY - BARANGAY MAPPING OF CATCHMENT AREA</td></tr>";
+		echo "<tr><td colspan='2' valign='top' align='center' style=\"background-color: #666666;color: #FFFF66;text-align: center;font-weight: bold;font-size:10pt;\">HEALTH FACILITY - BARANGAY MAPPING OF CATCHMENT AREA</td></tr>";
 		echo "<tr>";
 		
 		echo "<td valign='top' colspan='2'>Health Facility&nbsp;&nbsp;<select name='sel_health_facility' size='1'>";
@@ -133,8 +133,8 @@ class health_facility extends module{
 		$q_hf = mysql_query("SELECT DISTINCT(a.facility_id),b.facility_name FROM m_lib_health_facility_barangay a,m_lib_health_facility b WHERE a.facility_id=b.facility_id ORDER by b.facility_name ASC") or die("Cannot query 133 ".mysql_error());		
 
 		if(mysql_num_rows($q_hf)!=0):
-			echo "<table border='1'>";
-			echo "<tr><td>HEALTH FACILITY</td>";
+			echo "<table style=\"background-color: #99CCCC;text-align: center;font-size:10px;\">";
+			echo "<tr style=\"background-color: #666666;color: #FFFF66;text-align: center;font-weight: bold;font-size:10px;\"><td>HEALTH FACILITY</td>";
 			echo "<td>BARANGAYS (click barangay name to remove barangay)</td>";
 			echo "</tr>";
 
