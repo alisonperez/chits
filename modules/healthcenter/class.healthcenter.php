@@ -1764,7 +1764,7 @@ function hypertension_code() {
 			echo "<td>";
 			foreach($arr_facility as $key=>$value){
 				if($key=='' && empty($_GET["facid"])):
-					echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#consults' class='topmenu'><b><font style='color:#003300;background-color: yellow;border: 1px solid black'>&nbsp;".$value[1]."</font></b></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+					echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]#consults' class='topmenu'><b><font style='color:#003300;background-color: yellow;border: 1px solid black'>&nbsp;".$value[1]."&nbsp;</font></b></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 				else:
 					if($value[0]!=$_GET["facid"]):
 						echo "<a href='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&facid=$value[0]#consults' class='topmenu'>".$value[1]."</a>&nbsp;&nbsp;&nbsp;&nbsp;";

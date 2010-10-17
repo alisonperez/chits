@@ -250,7 +250,8 @@ function compute_indicator(){   //accepts two parameters. 1st is (NA, OTHERS, DR
         case 'NA':
         
             if($method=='all'):        
-                $q_methods = mysql_query("SELECT a.fp_px_id, a.date_registered,a.patient_id FROM m_patient_fp_method a WHERE a.client_code='NA' AND a.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]'") or die("Cannot query 226: ".mysql_error());                
+                $q_methods = mysql_query("SELECT a.fp_px_id, a.date_registered,a.patient_id FROM m_patient_fp_method a WHERE a.client_code='NA' AND a.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]'") or die("Cannot query 226: ".mysql_error());
+		
             else:
                 $q_methods = mysql_query("SELECT a.fp_px_id, a.date_registered,a.patient_id FROM m_patient_fp_method a WHERE a.client_code='NA' AND a.date_registered BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.method_id='$method'") or die("Cannot query 233: ".mysql_error());
             endif;
@@ -443,22 +444,18 @@ function get_current_users(){
         /* $q_prev_cu - get the previous FP Current Users. This will return CU for the previous period (before month)
            $q_pres_cu - get the present FP users (NA + RS + CM + CC)
            $q_pres_dropout - get the dropout from firstday_month to lastday_month */
-        
-        
-           
+
         $str_prev_cu = "SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_registered < '$firstday_month'";
         $str_prev_dropout = "SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_dropout < '$firstday_month' AND drop_out='Y'";
         $str_pres_cu = "SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_registered BETWEEN '$firstday_month' AND '$lastday_month'";
         $str_pres_dropout = "SELECT fp_px_id,patient_id,date_registered FROM m_patient_fp_method WHERE date_dropout BETWEEN '$firstday_month' AND '$lastday_month' AND drop_out='Y'";
         $str_method = " AND method_id='$method'";
-        
+
         $str_prev1 = ($method=='all')?$str_prev_cu:$str_prev_cu.$str_method;
         $str_prev2 = ($method=='all')?$str_prev_dropout:$str_prev_dropout.$str_method;
         $str_pres3 = ($method=='all')?$str_pres_cu:$str_pres_cu.$str_method;
         $str_pres4 = ($method=='all')?$str_pres_dropout:$str_pres_dropout.$str_method;
 
-
-        
         $q_prev_cu = mysql_query($str_prev1);
         $q_prev_dropout = mysql_query($str_prev2);
         $q_pres_cu = mysql_query($str_pres3);
