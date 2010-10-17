@@ -566,7 +566,7 @@ class consult_report extends module {
 		    //array_push($inner_record,array($pid,$pname." / ".$sex." / ".$age,$addr,$resbrgy[barangay_name],$brgy,$fid,$phid,'BP: '.$bp.', '.
 		    //'HR: '.$res_vitals[vitals_heartrate].', RR: '. $res_vitals[vitals_resprate].', Wt:' $res_vitals[vitals_weight] kg.', Temp:'. $res_vitals[vitals_temp],$cc,$dx,$tx));
 
-		    array_push($inner_record,array($pid,$pname." / ".$sex." / ".$age,$addr,$brgy,$fid,$phid,$vitals_sign,$cc,$dx,$tx));
+		    array_push($inner_record,array($pid,$pname." / ".$sex." / ".$age,$elapsed_time,$addr,$brgy,$fid,$phid,$vitals_sign,$cc,$dx,$tx));
 		    array_push($contents,$inner_record);		    		    
 		}
 		print "</table>";

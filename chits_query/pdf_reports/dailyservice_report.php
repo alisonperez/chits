@@ -1,5 +1,4 @@
 <?php
-  
     ob_start();
     
     require('./fpdf/fpdf.php');
@@ -164,7 +163,7 @@
 	case 'consult':
     		//print_r($_SESSION["arr_consult"]);
 		$arr_report = $_SESSION["arr_consult"];
-		$w = array(34,34,34,34,34,34,34,34,34,34);
+		$w = array(14,34,34,34,34,20,34,34,34,34,34);
 		$subtitle = 'GENERAL CONSULTS';
 		break;
 	case 'ccdev':
