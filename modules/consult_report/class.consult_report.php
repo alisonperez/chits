@@ -307,7 +307,7 @@ class consult_report extends module {
         $sql_patient = "select c.patient_id, c.consult_id, ".
 	               "concat(p.patient_lastname, ', ', p.patient_firstname, ' ',p.patient_middle) patient_name, ".
                        "round((to_days(c.consult_date)-to_days(p.patient_dob))/365,2) patient_age, ".
-                       "p.patient_gender ".
+                       "p.patient_gender,date_format(c.consult_date,'%h:%i %p') as consult_start,date_format(c.consult_end,'%h:%i %p') as consult_end, round((unix_timestamp(c.consult_end)-unix_timestamp(c.consult_date))/60,2) as consult_minutes, elapsed_time ".
                        "from m_consult c, m_patient p ".
                        "where c.patient_id = p.patient_id ".
                        "and c.consult_date BETWEEN '$report_date' AND '$end_report_date'";
@@ -317,7 +317,8 @@ class consult_report extends module {
 	if ($result_patient) {
 
             if (mysql_num_rows($result_patient)) {
-                while ($patient = mysql_fetch_array($result_patient)) {			
+                while ($patient = mysql_fetch_array($result_patient)) {
+			
                     // get family and address
                     if ($family_id = family::get_family_id($patient["patient_id"])) {
                         $patient_address = family::get_family_address($family_id);
@@ -341,6 +342,9 @@ class consult_report extends module {
 		    $visit_seq = healthcenter::get_total_visits($patient["patient_id"]);
 		    $philhealth_id = philhealth::get_philhealth_id($patient["patient_id"]);
 
+		    //get elapsed time and data and time started
+
+		    $elapsed_time = $this->get_str_elapsed($patient["consult_start"],$patient["consult_end"],$patient["elapsed_time"]);
 
 		    if ($mc_id = mc::registry_record_exists($patient["patient_id"])) {
 			$pp_weeks = mc::get_pp_weeks($mc_id, $patient["consult_id"]);
@@ -475,13 +479,13 @@ class consult_report extends module {
 	if ($result) {
 	    if (mysql_num_rows($result)) {
 		
-	        $header = array('PATIENT ID','PATIENT NAME / SEX / AGE','ADDRESS','BRGY','FAMILY ID','PHILHEALTH ID','VITAL SIGNS','COMPLAINTS','DIAGNOSIS','TREATMENT');
+	        $header = array('PATIENT ID','PATIENT NAME / SEX / AGE','CONSULT DATE / ELAPSED TIME','ADDRESS','BRGY','FAMILY ID','PHILHEALTH ID','VITAL SIGNS','COMPLAINTS','DIAGNOSIS','TREATMENT');
 	        $contents = array();
 	        
 	        //print "<a href='../chits_query/pdf_reports/dailyservice_report.php'>PRINTER FRIENDLY VERSION</a><br/>"; 
 		
 		print "<b><center>CONSULTS</center></b><br/>";
-		print "<table width='900' cellspacing='0' cellpadding='2' style='border: 1px solid #000000'>";
+		print "<table width='1000' cellspacing='0' cellpadding='2' style='border: 1px solid #000000'>";
 		print "<tr bgcolor='#FFCC33'>";
 		print "<td class='tinylight' valign='middle' align=center><b>$header[0]</b></td>";
 		print "<td class='tinylight' valign='middle' align=center><b>$header[1]</b></td>";
@@ -493,6 +497,7 @@ class consult_report extends module {
 		print "<td class='tinylight' valign='middle' align=center><b>$header[7]</b></td>";
 		print "<td class='tinylight' valign='middle' align=center><b>$header[8]</b></td>";
 		print "<td class='tinylight' valign='middle' align=center><b>$header[9]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[10]</b></td>";
 		print "</tr>";
 
 		while (list($pid,$consult_id,$pname,$age,$sex,$consult_date) = mysql_fetch_array($result)) {
@@ -522,6 +527,11 @@ class consult_report extends module {
 		    $selvitals = mysql_query("SELECT vitals_weight,vitals_temp,vitals_systolic,vitals_diastolic,vitals_heartrate,
 		    vitals_resprate, a.consult_id FROM m_consult a, m_consult_vitals b WHERE a.patient_id='$pid' AND a.consult_date BETWEEN '$report_date' AND '$end_report_date' AND  a.consult_id=b.consult_id") 
 		    or die(mysql_error());
+
+		    $sel_elapsed = mysql_query("SELECT date_format(consult_date,'%m/%d/%Y %h:%i %p') as consult_start,date_format(consult_end,'%m/%d/%Y %h:%i %p') as consult_end, round((unix_timestamp(consult_end)-unix_timestamp(consult_date))/60,2) as consult_minutes FROM m_consult WHERE consult_id='$consult_id'") or die("Cannot query 531 ".mysql_error());
+
+		    list($start,$end,$elapsed) = mysql_fetch_array($sel_elapsed);
+		    $elapsed_time = $this->get_str_elapsed($start,$end,$elapsed);
 		    
 		    $select_brgy = mysql_query("SELECT barangay_name from m_lib_barangay WHERE barangay_id='$bgy'") or die(mysql_error());		        
 		    $resbrgy = mysql_fetch_array($select_brgy);
@@ -534,6 +544,7 @@ class consult_report extends module {
 		    print "<tr bgcolor='$bgcolor'>";
 		    print "<td class='tinylight' align=center>".$pid."</td>";
 		    print "<td class='tinylight' align=center>".$pname." / ".$sex." / ".$age."</td>";
+		    print "<td class='tinylight' align=center>".$elapsed_time."</td>";
 		    print "<td class='tinylight' align=center>".$addr."</td>";                  
 		    //print "<td class='tinylight' align=center>".$resbrgy[barangay_name]."</td>";
 		    print "<td class='tinylight' align=center>".$brgy."</td>";
@@ -1078,6 +1089,25 @@ class consult_report extends module {
         }
     }
 
+
+	function get_str_elapsed($start,$end,$elapsed){
+		
+		if($elapsed>0):
+			if($elapsed>60):
+				$unit = 'hrs';
+			elseif($elapsed>1440):
+				$unit = 'days';
+			else:
+				$unit = 'minutes';
+			endif;
+			
+			$str = $start.' to '.$end.'( '.$elapsed.$unit.' )';
+		else:
+			$str = $start.' to -';
+		endif;
+
+			return $str;
+	}
 
 // end of class
 }
