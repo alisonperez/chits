@@ -446,7 +446,7 @@ class alert extends module{
 			$q_hh = mysql_query("SELECT DISTINCT a.family_id  FROM m_family_members a, m_family_address b WHERE b.barangay_id='$r_brgy[barangay_id]' AND a.family_id=b.family_id") or die("Cannot query 438 ".mysql_error());
 
 			while(list($fam_id) = mysql_fetch_array($q_hh)){
-				
+				$arr_prog = array();
 				$q_lastname = mysql_query("SELECT a.patient_id,a.patient_lastname FROM m_patient a,m_family_members b WHERE a.patient_id=b.patient_id AND b.family_id='$fam_id' AND b.family_role='head'") or die("Cannot query 449 ".mysql_error());
 
 				if(mysql_num_rows($q_lastname)!=0):
@@ -462,7 +462,12 @@ class alert extends module{
 				
 				foreach($this->mods as $program_id=>$program_arr){
 					$arr_prog = $this->get_indicator_instance($program_id,$fam_id);
-					echo "<td>".count($this->mods)."</td>";
+					//echo "<td>".count($this->mods)."</td>";
+					
+					echo "<td>";
+					print_r($arr_prog);
+					
+					echo "</td>";
 				}
 				echo "</tr>";
 			}
@@ -479,17 +484,24 @@ class alert extends module{
 			$program_id = $arr_args[0];
 			$family_id = $arr_args[1];
 		endif;
-
+		$arr_case = array();
 		$arr_members = $this->get_family_members($family_id); //arr_fam should contain patient_id of the members of family_id
 		
 		switch($program_id){
 			case 'mc':
-				$this->mc_alarms($family_id,$arr_members,'mc'); //function call for database query for mc indicators
+				$arr_px = $this->mc_alarms($family_id,$arr_members,'mc'); //function call for database query for mc indicators. this should return an array of patient id, indicator, case_id
 				break;
 			default:
 				//echo 'walalnglang';
 				break;
 		}
+		
+		if(!empty($arr_px)):
+			//print_r($arr_px);
+			array_push($arr_case,$arr_px);
+		endif;
+
+		return $arr_case;
 	}
 
 	function mc_alarms(){
@@ -547,7 +559,7 @@ class alert extends module{
 						break; //end case
 
 					case '2':			//indicator id for EDC
-
+						
 						break;
 					case '3':			//indicator id for postpartum visit
 		
@@ -582,8 +594,9 @@ class alert extends module{
 				
 		} //end foreach for patient id's
 
-		if(!empty($arr_fam))
-			print_r($arr_fam);
+		//if(!empty($arr_fam))
+		//	print_r($arr_fam);
+		return $arr_fam;
 
 		
 	} //end function
