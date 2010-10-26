@@ -570,7 +570,7 @@ class consult_report extends module {
 		    array_push($contents,$inner_record);		    		    
 		}
 		print "</table>";
-		                		
+	
 		$_SESSION[tbl_header] = $header;
 		$_SESSION[daily_service_contents] = $contents;
 		$_SESSION[record_count] = mysql_num_rows($result);

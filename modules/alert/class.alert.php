@@ -217,7 +217,7 @@ class alert extends module{
 			endif;
 		}
 		echo "</select>";
-		echo "&nbsp;&nbsp;days (setting to 0 means actual date)</td>";
+		echo "&nbsp;&nbsp;days (setting to 0 means alert will be displayed until record is updated)</td>";
 		echo "</tr>";
 
 		echo "<tr>";
@@ -447,7 +447,9 @@ class alert extends module{
 			while(list($fam_id,$px_id,$address,$px_lastname) = mysql_fetch_array($q_hh)){
 				echo "<tr>";
 				echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;$px_lastname</td>";
-				for($i=0;$i<(count($this->mods));$i++){
+				
+				foreach($this->mods as $program_id=>$program_arr){
+					$arr_prog = $this->get_indicator_instance($program_id,$fam_id);
 					echo "<td>".count($this->mods)."</td>";
 				}
 				echo "</tr>";
@@ -455,7 +457,79 @@ class alert extends module{
 		}
 
 	}
-}
+
+
+	function get_indicator_instance(){
+		//this function accepts the program id (i.e. mc, ccdev) and family id. this should determine if the family, through its individual patients will be able to determine if it is qualified for a reminder for the present week based on the indicator. function should return an array of the indicator with the indicator numbers. 
+
+		if(func_num_args()>0):
+			$arr_args = func_get_args();
+			$program_id = $arr_args[0];
+			$family_id = $arr_args[1];
+		endif;
+
+		$arr_members = $this->get_family_members($family_id); //arr_fam should contain patient_id of the members of family_id
+		
+		switch($program_id){
+			case 'mc':
+				$this->mc_alarms($family_id,$arr_members); //function call for database query for mc indicators
+				break;
+			default:
+				echo 'walalnglang';
+				break;
+		}
+	}
+
+	function mc_alarms(){
+		if(func_num_args()>0):
+			$arr = func_get_args();
+			$family_id = $arr[0];
+			$members = $arr[1];
+		endif;
+
+		/*the function will accept the family id and family_members
+		1).navigate through the mc tables using the patient id of the family. each indicator has its own SQL.
+		2). execute on SQL for the indicator, 
+		3). pushed the patient_id, indicator id and the consult id to an array back to the calling function (get_indicator_instance)
+		4). retrun value is an array of format family_id=>array(patient_id1=>array(indicator_id1=>array(consult_id1,consult_id2,...consult_id[n]),indicator_id2=>array(consult_id1,consult_id2,...,consult_id[n])),patient_id2...);
+		*/
+		foreach($members as $key=>$patient_id){
+			$q_mc = mysql_query("SELECT alert_indicator_id,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='mc' ORDER by sub_indicator ASC") or die("Cannot query 475: ".mysql_error());
+
+			while(list($indicator_id,$sub_indicator) = mysql_fetch_array($q_mc)){
+				$arr_definition = $this->get_indicator_definition($indicator_id); //composed of defition id, days before and after
+				
+			}
+
+		}
+		
+	}
+
+	function get_family_members($family_id){
+		$arr_members = array();
+
+		$q_members = mysql_query("SELECT patient_id FROM m_family_members WHERE family_id='$family_id'") or die("Cannot query 498 ".mysql_error());
+
+		while(list($pxid)=mysql_fetch_array($q_members)){
+			array_push($arr_members,$pxid);
+		}
+		return $arr_members;
+	}
+
+	function get_alert_definition($indicator_id){
+		$arr_alert = array();
+		$q_indicator = mysql_query("SELECT alert_id,date_pre,date_until FROM m_lib_alert_type WHERE alert_indicator_id='$indicator_id'") or die("Cannot query 521 ".mysql_error());
+
+		if(mysql_num_rows($q_indicator)!=0):
+			list($alert_id,$before,$until) = mysql_fetch_array($q_indicator);
+			array_push($arr_alert,$alert_id,$before,$until);
+		else:
+			array_push($arr_alert,0,7,0); //0 alert_id indicates that no alert definition. by default, alerts will be shown 7 days before. zero means that alert will be there until the record has been updated
+		endif;
+	}
+
 	
 	
+
+} //end of class
 ?>
