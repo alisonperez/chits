@@ -528,8 +528,6 @@ class alert extends module{
 		endif;
 	}
 
-	
-	
 
 } //end of class
 ?>
