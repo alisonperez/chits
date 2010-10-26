@@ -442,9 +442,21 @@ class alert extends module{
 
 			echo "</tr>";
 
-			$q_hh = mysql_query("SELECT a.family_id,a.patient_id,b.address,c.patient_lastname FROM m_family_members a, m_family_address b, m_patient c WHERE b.barangay_id='$r_brgy[barangay_id]' AND a.family_id=b.family_id AND a.patient_id=c.patient_id ORDER by c.patient_lastname ASC") or die("Cannot query 438 ".mysql_error());
+			//$q_hh = mysql_query("SELECT DISTINCT a.family_id,a.patient_id,b.address,c.patient_lastname FROM m_family_members a, m_family_address b, m_patient c WHERE b.barangay_id='$r_brgy[barangay_id]' AND a.family_id=b.family_id AND a.patient_id=c.patient_id ORDER by c.patient_lastname ASC") or die("Cannot query 438 ".mysql_error());
+			$q_hh = mysql_query("SELECT DISTINCT a.family_id  FROM m_family_members a, m_family_address b WHERE b.barangay_id='$r_brgy[barangay_id]' AND a.family_id=b.family_id") or die("Cannot query 438 ".mysql_error());
 
-			while(list($fam_id,$px_id,$address,$px_lastname) = mysql_fetch_array($q_hh)){
+			while(list($fam_id) = mysql_fetch_array($q_hh)){
+				
+				$q_lastname = mysql_query("SELECT a.patient_id,a.patient_lastname FROM m_patient a,m_family_members b WHERE a.patient_id=b.patient_id AND b.family_id='$fam_id' AND b.family_role='head'") or die("Cannot query 449 ".mysql_error());
+
+				if(mysql_num_rows($q_lastname)!=0):
+					list($pxid,$px_lastname) = mysql_fetch_array($q_lastname);
+				else:
+					$q_lastname = mysql_query("SELECT a.patient_id,a.patient_lastname FROM m_patient a,m_family_members b WHERE a.patient_id=b.patient_id AND b.family_id='$fam_id' ORDER by a.patient_lastname ASC LIMIT 1") or die("Cannot query 449 ".mysql_error());		
+					
+					list($pxid,$px_lastname) = mysql_fetch_array($q_lastname);
+				endif;
+
 				echo "<tr>";
 				echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;$px_lastname</td>";
 				
@@ -472,10 +484,10 @@ class alert extends module{
 		
 		switch($program_id){
 			case 'mc':
-				$this->mc_alarms($family_id,$arr_members); //function call for database query for mc indicators
+				$this->mc_alarms($family_id,$arr_members,'mc'); //function call for database query for mc indicators
 				break;
 			default:
-				echo 'walalnglang';
+				//echo 'walalnglang';
 				break;
 		}
 	}
@@ -485,7 +497,11 @@ class alert extends module{
 			$arr = func_get_args();
 			$family_id = $arr[0];
 			$members = $arr[1];
+			$program_id = $arr[2];
 		endif;
+		
+		$arr_px = array(); //will contain patient id of family_members with any of the cases under indicators
+		$arr_fam = array();
 
 		/*the function will accept the family id and family_members
 		1).navigate through the mc tables using the patient id of the family. each indicator has its own SQL.
@@ -493,17 +509,85 @@ class alert extends module{
 		3). pushed the patient_id, indicator id and the consult id to an array back to the calling function (get_indicator_instance)
 		4). retrun value is an array of format family_id=>array(patient_id1=>array(indicator_id1=>array(consult_id1,consult_id2,...consult_id[n]),indicator_id2=>array(consult_id1,consult_id2,...,consult_id[n])),patient_id2...);
 		*/
+		
+		
 		foreach($members as $key=>$patient_id){
-			$q_mc = mysql_query("SELECT alert_indicator_id,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='mc' ORDER by sub_indicator ASC") or die("Cannot query 475: ".mysql_error());
+			$arr_px = array();
+			
+			$arr_indicator = array();   //this will contain indicator_id and array of consult_id
+
+			$q_mc = mysql_query("SELECT alert_indicator_id,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$program_id' ORDER by sub_indicator ASC") or die("Cannot query 475: ".mysql_error());
 
 			while(list($indicator_id,$sub_indicator) = mysql_fetch_array($q_mc)){
-				$arr_definition = $this->get_indicator_definition($indicator_id); //composed of defition id, days before and after
-				
-			}
+				$arr_case_id = array(); //this will contain the consult_id and enrollment id's
 
-		}
+				$arr_definition = $this->get_alert_definition($indicator_id); //composed of defition id, days before and after. 
+				$alert_id = $arr_definition[0];
+				$days_before = $arr_definition[1];
+				$days_after = $arr_definition[2];
+
+				switch($indicator_id){
+
+					case '1':			//indicator id for quality prenatal visit
+						$q_mc = mysql_query("SELECT mc_id,trimester1_date,trimester2_date,trimester3_date FROM m_patient_mc WHERE patient_id='$patient_id' AND end_pregnancy_flag='N' AND delivery_date='0000-00-00' AND patient_edc >= NOW()") or die("Cannot query 510 ".mysql_error());
+	
+						if(mysql_num_rows($q_mc)!=0):
+							list($mc_id,$tri1,$tri2,$tri3) = mysql_fetch_array($q_mc);
+							$reference_date = (date('Y-m-d')<=$tri1)?$tri1:((date('Y-m-d')<=$tri2)?$tri2:((date('Y-m-d')<=$tri3)?$tri3:''));
+							
+							$trimester = ($reference_date==$tri1)?1:(($reference_date==$tri2)?2:3);
+							//echo $reference_date.'/'.$mc_id.'/'.$trimester;
+
+							if($reference_date):
+								array_push($arr_case_id,$mc_id); //push if the present date is on or before the reference prenatal visit date
+							endif;
+
+						endif;
+					
+						break; //end case
+
+					case '2':			//indicator id for EDC
+
+						break;
+					case '3':			//indicator id for postpartum visit
 		
-	}
+						break;
+					case '4':			//tetanus toxoid intake (CPAB)
+			
+						break;
+					case '5':			//vitamin A intake (20,000 units)
+
+						break;
+
+					case '6':			//iron with folic acid intake
+
+						break;
+					default:			
+
+						break;
+
+				} //end switch for case id's
+
+				if(!empty($arr_case_id)):
+					array_push($arr_indicator,array($indicator_id=>$arr_case_id));
+					//print_r($arr_indicator);
+				endif;
+
+			} //end while for indicators
+			
+			if(!empty($arr_indicator)):
+				array_push($arr_px,array($patient_id=>$arr_indicator)); 
+				array_push($arr_fam,$arr_px);
+			endif;
+				
+		} //end foreach for patient id's
+
+		if(!empty($arr_fam))
+			print_r($arr_fam);
+
+		
+	} //end function
+
 
 	function get_family_members($family_id){
 		$arr_members = array();
@@ -516,6 +600,7 @@ class alert extends module{
 		return $arr_members;
 	}
 
+
 	function get_alert_definition($indicator_id){
 		$arr_alert = array();
 		$q_indicator = mysql_query("SELECT alert_id,date_pre,date_until FROM m_lib_alert_type WHERE alert_indicator_id='$indicator_id'") or die("Cannot query 521 ".mysql_error());
@@ -526,6 +611,8 @@ class alert extends module{
 		else:
 			array_push($arr_alert,0,7,0); //0 alert_id indicates that no alert definition. by default, alerts will be shown 7 days before. zero means that alert will be there until the record has been updated
 		endif;
+
+		return $arr_alert;
 	}
 
 
