@@ -528,15 +528,19 @@ class alert extends module{
 			
 			$arr_indicator = array();   //this will contain indicator_id and array of consult_id
 
-			$q_mc = mysql_query("SELECT alert_indicator_id,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$program_id' ORDER by sub_indicator ASC") or die("Cannot query 475: ".mysql_error());
+			$q_mc_indicators = mysql_query("SELECT alert_indicator_id,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$program_id' ORDER by sub_indicator ASC") or die("Cannot query 475: ".mysql_error());
 
-			while(list($indicator_id,$sub_indicator) = mysql_fetch_array($q_mc)){
-				$arr_case_id = array(); //this will contain the consult_id and enrollment id's
 
+			$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
+
+			while(list($indicator_id,$sub_indicator) = mysql_fetch_array($q_mc_indicators)){
+				$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
+				
 				$arr_definition = $this->get_alert_definition($indicator_id); //composed of defition id, days before and after. 
 				$alert_id = $arr_definition[0];
 				$days_before = $arr_definition[1];
 				$days_after = $arr_definition[2];
+
 
 				switch($indicator_id){
 
@@ -559,6 +563,12 @@ class alert extends module{
 						break; //end case
 
 					case '2':			//indicator id for EDC
+						$q_mc = mysql_query("SELECT mc_id, patient_edc FROM m_patient_mc WHERE patient_id='$patient_id' AND end_pregnancy_flag='N' AND delivery_date='0000-00-00' AND NOW() BETWEEN patient_lmp AND patient_edc") or die("Cannot query 562 ".mysql_error());
+						
+						if(mysql_num_rows($q_mc)!=0):
+							list($mc_id,$patient_edc)=mysql_fetch_array($q_mc);
+							array_push($arr_case_id,$mc_id);
+						endif;
 						
 						break;
 					case '3':			//indicator id for postpartum visit
@@ -579,10 +589,9 @@ class alert extends module{
 						break;
 
 				} //end switch for case id's
-
-				if(!empty($arr_case_id)):
+				
+				if(!empty($arr_case_id)):	
 					array_push($arr_indicator,array($indicator_id=>$arr_case_id));
-					//print_r($arr_indicator);
 				endif;
 
 			} //end while for indicators
@@ -596,6 +605,7 @@ class alert extends module{
 
 		//if(!empty($arr_fam))
 		//	print_r($arr_fam);
+		
 		return $arr_fam;
 
 		
