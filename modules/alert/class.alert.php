@@ -609,7 +609,7 @@ class alert extends module{
 						break;
 					case '5':			//vitamin A intake (200,000 units)
 						$q_mc = mysql_query("SELECT mc_id, patient_edc FROM m_patient_mc WHERE patient_id='$patient_id' AND end_pregnancy_flag='N' AND delivery_date='0000-00-00' AND patient_edc >= NOW()") or die("Cannot query 596 ".mysql_error());
-				
+
 						if(mysql_num_rows($q_mc)!=0):
 							list($mc_id,$patient_edc) = mysql_fetch_array($q_mc);
 							// sql here to determine the vitamin A quantity intake
@@ -625,6 +625,19 @@ class alert extends module{
 						break;
 
 					case '6':			//iron with folic acid intake
+						$q_mc = mysql_query("SELECT mc_id, patient_edc FROM m_patient_mc WHERE patient_id='$patient_id' AND end_pregnancy_flag='N' AND delivery_date='0000-00-00' AND patient_edc >= NOW()") or die("Cannot query 596 ".mysql_error());
+
+
+						if(mysql_num_rows($q_mc)!=0):
+							list($mc_id,$patient_edc) = mysql_fetch_array($q_mc);
+							$q_iron = mysql_query("SELECT SUM(service_qty) as sum_iron FROM m_consult_mc_services WHERE mc_id='$mc_id' AND service_id='IRON'") or die("Cannot query 633 ".mysql_error());
+							
+							list($sum_iron) = mysql_fetch_array($q_iron);
+							
+							if($sum_iron==0): //push the mc_id to the arr_case_id if no ironintake
+								array_push($arr_case_id,$mc_id);
+							endif;
+						endif;
 
 						break;
 					default:			
