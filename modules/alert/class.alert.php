@@ -607,7 +607,20 @@ class alert extends module{
 						endif;
 
 						break;
-					case '5':			//vitamin A intake (20,000 units)
+					case '5':			//vitamin A intake (200,000 units)
+						$q_mc = mysql_query("SELECT mc_id, patient_edc FROM m_patient_mc WHERE patient_id='$patient_id' AND end_pregnancy_flag='N' AND delivery_date='0000-00-00' AND patient_edc >= NOW()") or die("Cannot query 596 ".mysql_error());
+				
+						if(mysql_num_rows($q_mc)!=0):
+							list($mc_id,$patient_edc) = mysql_fetch_array($q_mc);
+							// sql here to determine the vitamin A quantity intake
+							$q_vit = mysql_query("SELECT SUM(service_qty) as sum_vita FROM m_consult_mc_services WHERE mc_id='$mc_id' AND service_id='VITA'") or die("Cannot query 615 ".mysql_error());
+
+							list($sum_vita) = mysql_fetch_array($q_vit);
+							
+							if($sum_vita < 200000): //throw to the arr_case_id if the sum is less than 200000 units of vitamin A
+								array_push($arr_case_id,$mc_id);
+							endif;
+						endif;
 
 						break;
 
