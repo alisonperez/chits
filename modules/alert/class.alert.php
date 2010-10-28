@@ -534,13 +534,17 @@ class alert extends module{
 			$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
 
 			while(list($indicator_id,$sub_indicator) = mysql_fetch_array($q_mc_indicators)){
+				
+		
 				$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
 				
 				$arr_definition = $this->get_alert_definition($indicator_id); //composed of defition id, days before and after. 
 				$alert_id = $arr_definition[0];
 				$days_before = $arr_definition[1];
 				$days_after = $arr_definition[2];
+				$date_today = date('Y-m-d');
 
+				//echo $indicator_id.' '.$days_before.'<br>';
 
 				switch($indicator_id){
 
@@ -559,20 +563,34 @@ class alert extends module{
 							endif;
 
 						endif;
-					
+
 						break; //end case
 
 					case '2':			//indicator id for EDC
-						$q_mc = mysql_query("SELECT mc_id, patient_edc FROM m_patient_mc WHERE patient_id='$patient_id' AND end_pregnancy_flag='N' AND delivery_date='0000-00-00' AND NOW() BETWEEN patient_lmp AND patient_edc") or die("Cannot query 562 ".mysql_error());
-						
+						$q_mc = mysql_query("SELECT mc_id, patient_edc FROM m_patient_mc WHERE patient_id='$patient_id' AND end_pregnancy_flag='N' AND delivery_date='0000-00-00' AND '$date_today' BETWEEN patient_lmp AND patient_edc AND (to_days(patient_edc)-to_days('$date_today')) <= '$days_before'") or die("Cannot query 562 ".mysql_error());
+
 						if(mysql_num_rows($q_mc)!=0):
 							list($mc_id,$patient_edc)=mysql_fetch_array($q_mc);
 							array_push($arr_case_id,$mc_id);
+						else: 
 						endif;
 						
 						break;
 					case '3':			//indicator id for postpartum visit
-		
+						//refence date will be the date of delivery. message will appear as long as the duration set in the days_after value (0 - persistent, n - days)
+
+						$q_mc = mysql_query("SELECT mc_id,delivery_date FROM m_patient_mc WHERE patient_id='$patient_id' AND delivery_date!='0000-00-00' AND (to_days('$date_today')-to_days(delivery_date)) >= 0") or die("Cannot query 580 ".mysql_error());
+
+						if(mysql_num_rows($q_mc)!=0):
+							list($mc_id,$delivery_date) = mysql_fetch_row($q_mc);
+							$q_postpartum = mysql_query("SELECT mc_id FROM m_consult_mc_postpartum WHERE mc_id='$mc_id'") or die("Cannot query 586 ".mysql_error()); //check if the patient has visited during postpartum period
+
+							if(mysql_num_rows($q_postpartum) < 2):  //at least 2 postpartum visits are required. if not satisfied, set 1 to alert flag
+								array_push($arr_case_id,$mc_id);
+							endif;
+						endif;
+
+
 						break;
 					case '4':			//tetanus toxoid intake (CPAB)
 			
