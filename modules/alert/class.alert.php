@@ -593,7 +593,19 @@ class alert extends module{
 
 						break;
 					case '4':			//tetanus toxoid intake (CPAB)
-			
+						//determine if the patient has an active pregnancy. 
+						$q_mc = mysql_query("SELECT mc_id, patient_edc FROM m_patient_mc WHERE patient_id='$patient_id' AND end_pregnancy_flag='N' AND delivery_date='0000-00-00' AND patient_edc >= NOW()") or die("Cannot query 596 ".mysql_error());
+						
+						//if it does, determine the status of the tetanus toxoid
+						if(mysql_num_rows($q_mc)!=0):
+							list($mc_id,$patient_edc) = mysql_fetch_array($q_mc);
+							$tt_status = mc::get_tt_status($mc_id,$patient_id,$patient_edc);
+							
+							if(eregi('not',$tt_status)): // a not substring means that the tt is not active
+								array_push($arr_case_id,$mc_id);
+							endif;
+						endif;
+
 						break;
 					case '5':			//vitamin A intake (20,000 units)
 
