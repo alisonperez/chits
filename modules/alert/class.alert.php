@@ -975,7 +975,7 @@ class alert extends module{
 				endif;
 			endif;
 
-		else: return 0;
+		else: return 0; //this will going to return 0
 		endif;
 
 	}
