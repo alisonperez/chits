@@ -711,12 +711,9 @@ class alert extends module{
 						if(mysql_num_rows($q_fp)!=0):
 							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
 							
-							$q_fp_method = $this->get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before);
-
-							//echo mysql_num_rows($q_fp_method);
-
-							if(mysql_num_rows($q_fp_method)!=0):
-								list($fp_service_id,$sum_date) = mysql_fetch_array($q_fp_method);
+							$fp_service_id= $this->get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before,'PILLS');
+							
+							if($fp_service_id!=0):
 								array_push($arr_case_id,$fp_service_id);
 							endif;
 						endif;
@@ -729,38 +726,30 @@ class alert extends module{
 
 					case '24':			//IUD follow-up
 
-						//$q_fp = mysql_query("SELECT fp_px_id,date_registered FROM m_patient_fp_method WHERE patient_id='$patient_id' AND method_id='IUD' AND drop_out='N' ORDER by date_registered DESC") or die("Cannot query 710 ".mysql_error());
 						$q_fp = $this->check_active_user($patient_id,'IUD');
 
 						if(mysql_num_rows($q_fp)!=0):
 							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+												
+							$fp_service_id = $this->get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before,'IUD');
 							
-							/*$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before'") or die("Cannot query 714 ".mysql_error());*/
-							
-							$q_fp_method = $this->get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before);
-							//echo mysql_num_rows($q_fp_method);
-
-							if(mysql_num_rows($q_fp_method)!=0):
-								list($fp_service_id,$sum_date) = mysql_fetch_array($q_fp_method);
+							if($fp_service_id!=0):
 								array_push($arr_case_id,$fp_service_id);
 							endif;
+
 						endif;
 
 						break;
 
 					case '25':		//injectables follow-up reminder
-						//$q_fp = mysql_query("SELECT fp_px_id,date_registered FROM m_patient_fp_method WHERE patient_id='$patient_id' AND method_id='DMPA' AND drop_out='N' ORDER by date_registered DESC") or die("Cannot query 710 ".mysql_error());
 						$q_fp = $this->check_active_user($patient_id,'DMPA');
 
 						if(mysql_num_rows($q_fp)!=0):
 							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+
+							$fp_service_id = $this->get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before,'DMPA');
 							
-							/*$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before'") or die("Cannot query 714 ".mysql_error());*/
-
-							$q_fp_method = $this->get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before);
-
-							if(mysql_num_rows($q_fp_method)!=0):
-								list($fp_service_id, $sum_date) = mysql_fetch_array($q_fp_method);
+							if($fp_service_id!=0):
 								array_push($arr_case_id,$fp_service_id);
 							endif;
 						endif;
@@ -768,11 +757,45 @@ class alert extends module{
 						break;
 
 					case '26':		//pills drop-out alert
-						//$q_fp = mysql_query("SELECT fp_px_id,date_registered FROM m_patient_fp_method WHERE patient_id='$patient_id' AND method_id='PILLS' AND drop_out='N' ORDER by date_registered DESC") or die("Cannot query 710 ".mysql_error());
 						$q_fp = $this->check_active_user($patient_id,'PILLS');
 						if(mysql_num_rows($q_fp)!=0):
 							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+
+							$fp_service_id = $this->get_post_reminder($fp_px_id,$date_registered,$patient_id);
 							
+							if($fp_service_id!=0):
+								array_push($arr_case_id,$fp_service_id);
+							endif;
+
+							/*$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id'") or die("Cannot query 771 ".mysql_error());
+
+							if(mysql_num_rows($q_fp_service)!=0):
+								list($fp_service_id,$date_service,$next_service_date) = mysql_fetch_array($q_fp_service);
+
+								if($next_service_date!='0000-00-00'):
+									if($this->compare_date($date_today,$next_service_date)):
+										array_push($arr_case_id,$fp_service_id);
+									endif;
+								else:	//the next service date was not set
+									$proj_next = $this->get_proj_service_date($date_service,'PILLS');
+									
+									if($this->compare_date($date_today,$proj_next)):
+										array_push($arr_case_id,$fp_service_id);
+									endif;
+								endif;
+							endif;*/
+							
+						endif;
+
+						break;
+					
+					case '28':		//IUD dropout alert
+						$q_fp = $this->check_active_user($patient_id,'IUD');
+						
+						if(mysql_num_rows($q_fp)!=0):
+
+							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+
 							$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id'") or die("Cannot query 771 ".mysql_error());
 
 							if(mysql_num_rows($q_fp_service)!=0):
@@ -781,18 +804,54 @@ class alert extends module{
 								if($next_service_date!='0000-00-00'):
 									if($this->compare_date($date_today,$next_service_date)):	
 										array_push($arr_case_id,$fp_service_id);
-									else:
-										$this->get_proj_service_date($date_service,'PILLS');	
 									endif;
 								else:	//the next service date was not set
-									echo $fp_service_id;
+									$proj_next = $this->get_proj_service_date($date_service,'DMPA');
+
+									if($this->compare_date($date_today,$proj_next)):
+										array_push($arr_case_id,$fp_service_id);
+									endif;
 								endif;
+							endif;						
+						endif;
+
+
+						break;
+
+					case '29':		//DMPA/injectables dropout alert
+						$q_fp = $this->check_active_user($patient_id,'DMPA');
+						
+						if(mysql_num_rows($q_fp)!=0):
+							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+
+							$fp_service_id = $this->get_post_reminder($fp_px_id,$date_registered,$patient_id);
+							
+							if($fp_service_id!=0):
+								
+								array_push($arr_case_id,$fp_service_id);
 							endif;
 							
+							/*$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id'") or die("Cannot query 771 ".mysql_error());
+
+							if(mysql_num_rows($q_fp_service)!=0):
+								list($fp_service_id,$date_service,$next_service_date) = mysql_fetch_array($q_fp_service);
+
+								if($next_service_date!='0000-00-00'):
+									if($this->compare_date($date_today,$next_service_date)):	
+										array_push($arr_case_id,$fp_service_id);
+									endif;
+								else:	//the next service date was not set
+									$proj_next = $this->get_proj_service_date($date_service,'DMPA');
+
+									if($this->compare_date($date_today,$proj_next)):
+										array_push($arr_case_id,$fp_service_id);
+									endif;
+								endif;
+							endif;*/
 						endif;
 
 						break;
-					default:			
+					default:
 
 						break;
 
@@ -856,40 +915,138 @@ class alert extends module{
 		return $q_fp;
 	}
 
-	function get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before){   //performs a query by getting the reference date, compares it with $days_before and returns true if the reference date is within the range of the 0 and $days_before.
+	function get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before,$method_id){   //performs a query by getting the reference date, compares it with $days_before and returns true if the reference date is within the range of the 0 and $days_before.
 
-		$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before' ORDER by date_service DESC") or die("Cannot query 714 ".mysql_error());
+		$q_next_service_date = mysql_query("SELECT date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' ORDER by date_service DESC") or die("Cannot query 877 ".mysql_error());
 
-		return $q_fp_method;
-			
+		if(mysql_num_rows($q_next_service_date)!=0):
+
+			list($service_date, $next_service_date) = mysql_fetch_array($q_next_service_date);
+
+			if($next_service_date!='0000-00-00'):
+				$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before' ORDER by date_service DESC") or die("Cannot query 714 ".mysql_error());	
+
+			else:   //create a projected service date once the 
+				$proj_next_service_date = $this->get_proj_service_date($service_date,$method_id);
+				$q_fp_method = mysql_query("SELECT fp_service_id,(to_days('$proj_next_service_date')-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days('$proj_next_service_date')-to_days('$date_today')) BETWEEN 0 AND '$days_before' ORDER by date_service DESC") or die("Cannot query 714 ".mysql_error());	
+				
+			endif;
+
+			if(mysql_num_rows($q_fp_method)!=0):
+				list($fp_service_id,$sum_date) = mysql_fetch_array($q_fp_method);
+				return $fp_service_id;
+			else:
+				return 0;
+			endif;
+
+		else:
+			return 0;			
+		endif;
 	}
 
 	function get_post_reminder(){
 
+		if(func_num_args()>0):
+			$arr = func_get_args();
+			$fp_px_id = $arr[0];
+			$date_registered = $arr[1];
+			$patient_id = $arr[2];
+		endif;
+		
+
+		$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' ORDER by date_service ASC") or die("Cannot query 951 ".mysql_error());
+
+		if(mysql_num_rows($q_fp_service)!=0):
+			list($fp_service_id,$date_service,$next_service_date) = mysql_fetch_array($q_fp_service);
+
+			if($next_service_date!='0000-00-00'):
+				if($this->compare_date(date('Y-m-d'),$next_service_date)):	
+					return $fp_service_id;
+				else:
+					return 0;
+				endif;
+			else:	//the next service date was not set
+				$proj_next = $this->get_proj_service_date($date_service,'DMPA');
+
+				if($this->compare_date(date('Y-m-d'),$proj_next)):
+					return $fp_service_id;
+				else:
+					return 0;
+				endif;
+			endif;
+
+		else: return 0; 
+		endif;
 
 	}
 
-	function get_proj_service_date($service_date,$method_id){
-		//set the buffer days from the service_date for the method_id
+	function get_proj_service_date(){
+		//set the buffer (unit: days) from the service_date for the method_id
 		//returns the end_date after the buffer is added to the service_date
-
+		if(func_num_args()>0):
+			$arr = func_get_args();
+			$service_date = $arr[0];
+			$method_id = $arr[1];
+			$fp_px_id = $arr[2];
+			$patient_id = $arr[3];
+		endif;
 		
 		switch($method_id){
 			case 'PILLS':
 				$buffer = 30;
 				break;
+			case 'DMPA':
+				$buffer = 90;
+				break;
 
+			case 'CONDOM':
+
+				break;
+
+			case 'IUD':
+				$buffer = get_iud_span_days($fp_px_id,$patient_id);
+				break;
 			default:
 				$buffer = 30;
 				break;
 		}
 
-		list($y,$m,$d) = explode('-',$service_date);
+		return $this->compute_buffer_date($service_date,$buffer);
+
+	}
+
+	function get_iud_span_days($fp_px_id,$patient_id){
+		//function will generate number of buffer days before the next visit based on the number of IUD realignments
+		//1st: 30, 2nd: 180, >3rd: 365
+
+		$q_iud_visits = mysql_query("SELECT COUNT(fp_service_id) FROM m_patient_fp_method_service WHERE patient_id='$patient_id' AND fp_px_id='$fp_px_id'") or die("Cannot query 935 ".mysql_error());
+
+		if(mysql_num_rows($q_iud_visits)!=0):
+			list($visit_count) = mysql_fetch_array($q_iud_visits);
+			if($visit_count==1):
+				$buffer = 30;
+			elseif($visit_count==2):
+				$buffer = 180; 
+			else:
+				$buffer = 365;
+			endif;
+		else:
+			$buffer = 30;
+		endif;
+
+		return $buffer;
+	}
+
+
+	function compute_buffer_date($date_to_adjust,$buffer){
+
+		list($y,$m,$d) = explode('-',$date_to_adjust);
 
 		$d = mktime(0,0,0,$m,$d,$y);
 		$end_date = date('Y-m-d',strtotime('+'.$buffer.'days',$d));
-
+		
 		return $end_date;
+
 		
 	}
 
