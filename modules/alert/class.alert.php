@@ -800,7 +800,18 @@ class alert extends module{
 						break;
 
 					case '27':		//condom dropout alert
-						
+						$q_fp = $this->check_active_user($patient_id,'CONDOM');
+
+						if(mysql_num_rows($q_fp)!=0):
+							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+							
+							$fp_service_id = $this->get_post_reminder($fp_px_id,$date_registered,$patient_id,'CONDOM');
+							
+							if($fp_service_id!=0):
+								array_push($arr_case_id,$fp_service_id);
+							endif;
+						endif;
+
 						break;
 					
 					case '28':		//IUD dropout alert
@@ -809,8 +820,14 @@ class alert extends module{
 						if(mysql_num_rows($q_fp)!=0):
 
 							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+							
+							$fp_service_id = $this->get_post_reminder($fp_px_id,$date_registered,$patient_id,'IUD');
+							
+							if($fp_service_id!=0):
+								array_push($arr_case_id,$fp_service_id);
+							endif;
 
-							$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id'") or die("Cannot query 771 ".mysql_error());
+							/*$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id'") or die("Cannot query 771 ".mysql_error());
 
 							if(mysql_num_rows($q_fp_service)!=0):
 								list($fp_service_id,$date_service,$next_service_date) = mysql_fetch_array($q_fp_service);
@@ -826,7 +843,7 @@ class alert extends module{
 										array_push($arr_case_id,$fp_service_id);
 									endif;
 								endif;
-							endif;						
+							endif; */
 						endif;
 
 
