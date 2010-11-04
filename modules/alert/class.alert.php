@@ -882,6 +882,22 @@ class alert extends module{
 						endif;
 
 						break;
+
+					case '30':		//female sterilization dropout
+						$q_fp = $this->check_active_user($patient_id,'FSTR/BTL');
+
+						if(mysql_num_rows($q_fp)!=0):
+							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+							
+							$px_age = $this->get_patient_age($patient_id);
+
+							if($px_age >= 50):	//candidate for dropout in BTL is px_age>=50
+								array_push($arr_case_id,$fp_px_id);
+							endif;
+						endif;
+						
+
+						break;
 					default:
 
 						break;
@@ -1097,6 +1113,13 @@ class alert extends module{
 		$end_date = date('Y-m-d',strtotime('+'.$buffer.'days',$d));
 		
 		return $end_date;
+	}
+
+	function get_patient_age($patient_id){
+		$q_age = mysql_query("SELECT round((TO_DAYS(NOW()) - TO_DAYS(patient_dob))/365 ,2) as 'px_age' FROM m_patient WHERE patient_id='$patient_id'") or die("Cannot query: 1113");
+
+		list($px_age) = mysql_fetch_array($q_age);
+		return $px_age;
 	}
 
 } //end of class
