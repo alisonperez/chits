@@ -491,8 +491,11 @@ class alert extends module{
 				break;
 
 			case 'fp':
-				
-				$arr_px = $this->fp_alarms($family_id,$arr_members,'fp');				
+				$arr_px = $this->fp_alarms($family_id,$arr_members,'fp');
+				break;
+
+			case 'epi':
+				$arr_px = $this->epi_alarms($family_id,$arr_members,'epi');
 				break;
 			default:
 				//echo 'walalnglang';
@@ -500,7 +503,6 @@ class alert extends module{
 		}
 		
 		if(!empty($arr_px)):
-			//print_r($arr_px);
 			array_push($arr_case,$arr_px);
 		endif;
 
@@ -684,8 +686,7 @@ class alert extends module{
 		*/
 
 		foreach($members as $key=>$patient_id){
-			$arr_px = array();
-			
+			$arr_px = array();	
 			$arr_indicator = array();   //this will contain indicator_id and array of consult_id
 
 			$q_fp_indicators = mysql_query("SELECT alert_indicator_id,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$program_id' ORDER by sub_indicator ASC") or die("Cannot query 475: ".mysql_error());
@@ -705,7 +706,6 @@ class alert extends module{
 
 				switch($indicator_id){
 					case '22': 			//pill intake reminder
-						//$q_fp = mysql_query("SELECT fp_px_id,date_registered FROM m_patient_fp_method WHERE patient_id='$patient_id' AND method_id='PILLS' AND drop_out='N' ORDER by date_registered DESC") or die("Cannot query 710 ".mysql_error());
 						$q_fp = $this->check_active_user($patient_id,'PILLS');
 
 						if(mysql_num_rows($q_fp)!=0):
@@ -777,24 +777,6 @@ class alert extends module{
 								array_push($arr_case_id,$fp_service_id);
 							endif;
 
-							/*$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id'") or die("Cannot query 771 ".mysql_error());
-
-							if(mysql_num_rows($q_fp_service)!=0):
-								list($fp_service_id,$date_service,$next_service_date) = mysql_fetch_array($q_fp_service);
-
-								if($next_service_date!='0000-00-00'):
-									if($this->compare_date($date_today,$next_service_date)):
-										array_push($arr_case_id,$fp_service_id);
-									endif;
-								else:	//the next service date was not set
-									$proj_next = $this->get_proj_service_date($date_service,'PILLS');
-									
-									if($this->compare_date($date_today,$proj_next)):
-										array_push($arr_case_id,$fp_service_id);
-									endif;
-								endif;
-							endif;*/
-							
 						endif;
 
 						break;
@@ -827,23 +809,6 @@ class alert extends module{
 								array_push($arr_case_id,$fp_service_id);
 							endif;
 
-							/*$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id'") or die("Cannot query 771 ".mysql_error());
-
-							if(mysql_num_rows($q_fp_service)!=0):
-								list($fp_service_id,$date_service,$next_service_date) = mysql_fetch_array($q_fp_service);
-
-								if($next_service_date!='0000-00-00'):
-									if($this->compare_date($date_today,$next_service_date)):	
-										array_push($arr_case_id,$fp_service_id);
-									endif;
-								else:	//the next service date was not set
-									$proj_next = $this->get_proj_service_date($date_service,'DMPA');
-
-									if($this->compare_date($date_today,$proj_next)):
-										array_push($arr_case_id,$fp_service_id);
-									endif;
-								endif;
-							endif; */
 						endif;
 
 
@@ -861,27 +826,11 @@ class alert extends module{
 								
 								array_push($arr_case_id,$fp_service_id);
 							endif;
-							
-							/*$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id'") or die("Cannot query 771 ".mysql_error());
 
-							if(mysql_num_rows($q_fp_service)!=0):
-								list($fp_service_id,$date_service,$next_service_date) = mysql_fetch_array($q_fp_service);
-
-								if($next_service_date!='0000-00-00'):
-									if($this->compare_date($date_today,$next_service_date)):	
-										array_push($arr_case_id,$fp_service_id);
-									endif;
-								else:	//the next service date was not set
-									$proj_next = $this->get_proj_service_date($date_service,'DMPA');
-
-									if($this->compare_date($date_today,$proj_next)):
-										array_push($arr_case_id,$fp_service_id);
-									endif;
-								endif;
-							endif;*/
 						endif;
 
 						break;
+
 
 					case '30':		//female sterilization dropout
 						$q_fp = $this->check_active_user($patient_id,'FSTR/BTL');
@@ -919,6 +868,64 @@ class alert extends module{
 		} //end foreach for patient id's
 		
 		return $arr_fam;				
+	}
+
+	function epi_alarms(){
+		if(func_num_args()>0):
+			$arr = func_get_args();
+			$family_id = $arr[0];
+			$members = $arr[1];
+			$program_id = $arr[2];
+		endif;
+
+		$arr_px = array(); //will contain patient id of family_members with any of the cases under indicators
+		$arr_fam = array();
+
+		foreach($members as $key=>$patient_id){
+			$arr_px = array();	
+			$arr_indicator = array();   //this will contain indicator_id and array of consult_id
+
+			$q_epi_indicators = mysql_query("SELECT alert_indicator_id,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$program_id' ORDER by sub_indicator ASC") or die("Cannot query 475: ".mysql_error());
+
+			$q_epi = $this->check_ccdev_enrollment($patient_id);
+			
+			if(mysql_num_rows($q_epi)!=0):
+			
+				list($ccdev_id,$dob) = mysql_fetch_array($q_epi);
+				echo $ccdev_id.' '.$patient_id.' '.$dob.'<br>';
+
+			while(list($indicator_id,$sub_indicator) = mysql_fetch_array($q_epi_indicators)){
+				$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
+				
+				$arr_definition = $this->get_alert_definition($indicator_id); //composed of defition id, days before and after. 
+				$alert_id = $arr_definition[0];
+				$days_before = $arr_definition[1];
+				$days_after = $arr_definition[2];
+				$date_today = date('Y-m-d');
+
+
+				switch($indicator_id){
+
+					case '7':		//BCG immunization
+						$this->check_vaccine_eligibility($patient_id,$dob,'BCG');
+						break;
+
+					case '8':		//DPT1 immunization
+						$this->check_vaccine_eligibility($patient_id,$dob,'DPT1');
+						break;
+
+					default:
+						
+						break;
+				}
+
+			}
+
+			endif;
+
+		}
+
+
 	}
 
 	function get_family_members($family_id){
@@ -1115,6 +1122,7 @@ class alert extends module{
 		return $end_date;
 	}
 
+
 	function get_patient_age($patient_id){
 		$q_age = mysql_query("SELECT round((TO_DAYS(NOW()) - TO_DAYS(patient_dob))/365 ,2) as 'px_age' FROM m_patient WHERE patient_id='$patient_id'") or die("Cannot query: 1113");
 
@@ -1122,5 +1130,115 @@ class alert extends module{
 		return $px_age;
 	}
 
+	function check_ccdev_enrollment($patient_id){
+		$q_ccdev = mysql_query("SELECT ccdev_id,ccdev_dob FROM m_patient_ccdev WHERE patient_id='$patient_id'") or die("Cannot query 1123 ".mysql_error());
+
+		return $q_ccdev;
+	}
+
+	function check_vaccine_eligibility(){
+		/*	to check for the eligbility of patient_id:
+			1. check if the patient has achieved the minimum required months and within the maximum amount of time (5 years old?)
+			2. check if the patient hasn't received any immunization
+			3. find out the target date for the next immunization for the patient then display 
+		*/
+	
+		if(func_num_args()>0):
+			$arr = func_get_args();
+			$patient_id = $arr[0];
+			$dob = $arr[1];
+			$vaccine = $arr[2];
+		endif;
+
+
+		//query will determine 3 things: 1. determine if the patient is enrolled in ccdev, 2. determine if the patient has a vaccination record, 3. determine if the patient hasn't been vaccinated with $vaccine yet.
+
+		$q_ccdev = mysql_query("SELECT a.ccdev_id FROM m_patient_ccdev a WHERE a.patient_id='$patient_id' ORDER by a.ccdev_timestamp DESC") or die("Cannot query 1149 ".mysql_error()); 
+
+
+		if(mysql_num_rows($q_ccdev)!=0):
+			list($ccdev_id) = mysql_fetch_array($q_ccdev);
+			
+			
+			$q_vaccine = mysql_query("SELECT consult_id FROM m_consult_ccdev_vaccine WHERE ccdev_id='$ccdev_id' AND patient_id='$patient_id' AND vaccine_id='$vaccine'") or die("Cannot query 1158 ".mysql_error());
+				
+			if(mysql_num_rows($q_vaccine)==0):
+				echo $patient_id.' '.$vaccine.'<br>';
+				if($this->get_vaccine_min_age_eligibility($vaccine)<=($this->get_patient_age($patient_id)*12)):
+					return true;
+				else: 
+					return false;
+				endif;
+			else:
+				return false;
+			endif;
+
+		else:
+			return false;
+		endif;
+	}
+
+	function get_vaccine_min_age_eligibility(){
+		//function returns the minimum number of months 
+		
+		if(func_num_args()>0):
+			$arr = func_get_args();
+			$vaccine = $arr[0];
+		endif;
+
+		switch($vaccine){
+	
+			case 'BCG':
+				$min_age = 0;		//newborn (0 months old) and above
+				break;
+
+			case 'DPT1':
+				$min_age = 1.5;		//6 weeks
+				break;
+
+			case 'DPT2':
+				$min_age = 2.5;		//10 weeks
+				break;
+
+			case 'DPT3':
+				$min_age = 3.5;		//14 weeks
+				break;
+
+			case 'OPV1':
+				$min_age = 1.5;		//6 weeks
+				break;
+
+			case 'OPV2':
+				$min_age = 2.5;		//10 weeks
+				break;
+
+			case 'OPV3':
+				$min_age = 3.5;		//14 weeks
+				break;
+
+			case 'HEPB1':			//at birth
+				$min_age = 0;		
+				break;
+
+			case 'HEPB2':
+				$min_age = 1; 		//4 weeks
+				break;
+
+			case 'HEPB3':
+				$min_age = 2; 		//8 weeks
+				break;
+
+			case 'MSL':
+				$min_age = 9; 		//9 months
+				break;
+
+			default:
+				
+				break; 
+		}
+
+		return $min_age; 
+	}	
+	
 } //end of class
 ?>
