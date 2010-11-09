@@ -462,8 +462,10 @@ class alert extends module{
 				
 				foreach($this->mods as $program_id=>$program_arr){
 					$arr_prog = $this->get_indicator_instance($program_id,$fam_id);
+					$str = empty($arr_prog)?'test':'mic';
 					echo "<td>";
-					print_r($arr_prog);
+					echo $str;
+					//print_r($arr_prog);
 					//print ' '.$program_id;
 					echo "</td>";
 				}
@@ -498,7 +500,7 @@ class alert extends module{
 				$arr_px = $this->epi_alarms($family_id,$arr_members,'epi');
 				break;
 			default:
-				//echo 'walalnglang';
+				
 				break;
 		}
 		
