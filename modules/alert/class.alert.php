@@ -892,7 +892,7 @@ class alert extends module{
 			if(mysql_num_rows($q_epi)!=0):
 			
 				list($ccdev_id,$dob) = mysql_fetch_array($q_epi);
-				echo $ccdev_id.' '.$patient_id.' '.$dob.'<br>';
+				//echo $ccdev_id.' '.$patient_id.' '.$dob.'<br>';
 
 			while(list($indicator_id,$sub_indicator) = mysql_fetch_array($q_epi_indicators)){
 				$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
@@ -907,25 +907,75 @@ class alert extends module{
 				switch($indicator_id){
 
 					case '7':		//BCG immunization
-						$this->check_vaccine_eligibility($patient_id,$dob,'BCG');
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'BCG');
 						break;
 
 					case '8':		//DPT1 immunization
-						$this->check_vaccine_eligibility($patient_id,$dob,'DPT1');
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'DPT1');
+						break;
+
+					case '9':		//DPT2 immunization
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'DPT2');
+						break;
+
+					case '10':		//DPT3 immunization
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'DPT3');
+						break;
+					case '11':
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'OPV1');
+						break;
+					case '12':
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'OPV2');
+						break;
+					case '13':
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'OPV3');
+						break;
+					case '14':
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'HEPB1');
+						break;
+					case '15':
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'HEPB2');
+						break;
+					case '16':
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'HEPB3');
+						break;
+					case '17':
+						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'MSL');
+						break;
+					case '18':
+						//$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'MSL');
+						break;
+
+					case '19':		//FIC
+						break;
+
+					case '20':		//CIC
 						break;
 
 					default:
-						
+						 
 						break;
-				}
+				}	//end switch
+				
+				if($eligibility==true):
+					array_push($arr_case_id,$ccdev_id);
+				endif;
 
-			}
+				if(!empty($arr_case_id)):
+					array_push($arr_indicator,array($indicator_id=>$arr_case_id));
+				endif;
 
+			}	//end while
+
+				if(!empty($arr_indicator)):
+					array_push($arr_px,array($patient_id=>$arr_indicator)); 
+					array_push($arr_fam,$arr_px);
+				endif;
 			endif;
 
-		}
+		} //end for each
 
-
+		return $arr_fam;
 	}
 
 	function get_family_members($family_id){
@@ -1163,8 +1213,9 @@ class alert extends module{
 			$q_vaccine = mysql_query("SELECT consult_id FROM m_consult_ccdev_vaccine WHERE ccdev_id='$ccdev_id' AND patient_id='$patient_id' AND vaccine_id='$vaccine'") or die("Cannot query 1158 ".mysql_error());
 				
 			if(mysql_num_rows($q_vaccine)==0):
-				echo $patient_id.' '.$vaccine.'<br>';
 				if($this->get_vaccine_min_age_eligibility($vaccine)<=($this->get_patient_age($patient_id)*12)):
+				
+				echo $patient_id.' '.$this->get_vaccine_min_age_eligibility($vaccine).' '.$vaccine.'<br>';
 					return true;
 				else: 
 					return false;
