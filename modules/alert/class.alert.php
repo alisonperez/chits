@@ -942,21 +942,24 @@ class alert extends module{
 					case '17':
 						$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'MSL');
 						break;
-					case '18':
+					case '18':		//FIC
 						//$eligibility = $this->check_vaccine_eligibility($patient_id,$dob,'MSL');
+						$eligibility = eregi('FIC',ccdev::determine_vacc_status($patient_id))?false:true;
 						break;
 
-					case '19':		//FIC
-						break;
+					case '19':		//CIC
+						if((eregi('CIC',ccdev::determine_vacc_status($patient_id))==true) && (eregi('FIC',ccdev::determine_vacc_status($patient_id))==false)):
+							$eligibility = true;
+						else:
+							$eligibility = false;
+						endif;
 
-					case '20':		//CIC
 						break;
 
 					default:
 						 
 						break;
 				}	//end switch
-				
 				if($eligibility==true):
 					array_push($arr_case_id,$ccdev_id);
 				endif;
@@ -1215,7 +1218,7 @@ class alert extends module{
 			if(mysql_num_rows($q_vaccine)==0):
 				if($this->get_vaccine_min_age_eligibility($vaccine)<=($this->get_patient_age($patient_id)*12)):
 				
-				echo $patient_id.' '.$this->get_vaccine_min_age_eligibility($vaccine).' '.$vaccine.'<br>';
+				//echo $patient_id.' '.$this->get_vaccine_min_age_eligibility($vaccine).' '.$vaccine.'<br>';
 					return true;
 				else: 
 					return false;
