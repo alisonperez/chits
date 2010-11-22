@@ -710,7 +710,7 @@ class alert extends module{
 						if(mysql_num_rows($q_fp)!=0):
 							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
 							
-							$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before'") or die("Cannot query 714 ".mysql_error());
+							$q_fp_method = $this->get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before);
 
 							//echo mysql_num_rows($q_fp_method);
 
@@ -733,8 +733,9 @@ class alert extends module{
 						if(mysql_num_rows($q_fp)!=0):
 							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
 							
-							$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before'") or die("Cannot query 714 ".mysql_error());
-
+							/*$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before'") or die("Cannot query 714 ".mysql_error());*/
+							
+							$q_fp_method = $this->get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before);
 							//echo mysql_num_rows($q_fp_method);
 
 							if(mysql_num_rows($q_fp_method)!=0):
@@ -751,9 +752,9 @@ class alert extends module{
 						if(mysql_num_rows($q_fp)!=0):
 							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
 							
-							$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before'") or die("Cannot query 714 ".mysql_error());
+							/*$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before'") or die("Cannot query 714 ".mysql_error());*/
 
-							//echo mysql_num_rows($q_fp_method);
+							$q_fp_method = $this->get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before);
 
 							if(mysql_num_rows($q_fp_method)!=0):
 								list($fp_service_id, $sum_date) = mysql_fetch_array($q_fp_method);
@@ -763,6 +764,31 @@ class alert extends module{
 						
 						break;
 
+					case '26':		//pills drop-out alert
+						$q_fp = mysql_query("SELECT fp_px_id,date_registered FROM m_patient_fp_method WHERE patient_id='$patient_id' AND method_id='PILLS' AND drop_out='N' ORDER by date_registered DESC") or die("Cannot query 710 ".mysql_error());
+						
+						if(mysql_num_rows($q_fp)!=0):
+							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+							
+							$q_fp_service = mysql_query("SELECT fp_service_id,date_service,next_service_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id'") or die("Cannot query 771 ".mysql_error());
+
+							if(mysql_num_rows($q_fp_service)!=0):
+								list($fp_service_id,$date_service,$next_service_date) = mysql_fetch_array($q_fp_service);
+
+								if($next_service_date!='0000-00-00'):
+									if($this->compare_date($date_today,$next_service_date)):	
+										array_push($arr_case_id,$fp_service_id);
+									else:
+										
+									endif;
+								else:	//the next service date was not set
+									echo $fp_service_id;
+								endif;
+							endif;
+							
+						endif;
+
+						break;
 					default:			
 
 						break;
@@ -810,6 +836,28 @@ class alert extends module{
 		endif;
 
 		return $arr_alert;
+	}
+
+	function compare_date($date_for_test,$date_basis){  //returns true if the first date is after the second date
+		if(strtotime($date_for_test) > strtotime($date_basis)):
+			return true;
+		else:
+			return false;
+		endif;
+
+	}
+
+	function get_fp_pre_reminder($date_today,$fp_px_id,$patient_id,$days_before){   //performs a query by getting the reference date, compares it with $days_before and returns true if the reference date is within the range of the 0 and $days_before.
+
+		$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before' ORDER by date_service DESC") or die("Cannot query 714 ".mysql_error());
+
+		return $q_fp_method;
+			
+	}
+
+	function get_post_reminder(){
+
+
 	}
 
 
