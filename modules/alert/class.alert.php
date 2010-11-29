@@ -462,11 +462,9 @@ class alert extends module{
 				
 				foreach($this->mods as $program_id=>$program_arr){
 					$arr_prog = $this->get_indicator_instance($program_id,$fam_id);
-					//echo "<td>".count($this->mods)."</td>";
-					
 					echo "<td>";
 					print_r($arr_prog);
-					
+					//print ' '.$program_id;
 					echo "</td>";
 				}
 				echo "</tr>";
@@ -490,6 +488,11 @@ class alert extends module{
 		switch($program_id){
 			case 'mc':
 				$arr_px = $this->mc_alarms($family_id,$arr_members,'mc'); //function call for database query for mc indicators. this should return an array of patient id, indicator, case_id
+				break;
+
+			case 'fp':
+				
+				$arr_px = $this->fp_alarms($family_id,$arr_members,'fp');				
 				break;
 			default:
 				//echo 'walalnglang';
@@ -521,8 +524,7 @@ class alert extends module{
 		3). pushed the patient_id, indicator id and the consult id to an array back to the calling function (get_indicator_instance)
 		4). retrun value is an array of format family_id=>array(patient_id1=>array(indicator_id1=>array(consult_id1,consult_id2,...consult_id[n]),indicator_id2=>array(consult_id1,consult_id2,...,consult_id[n])),patient_id2...);
 		*/
-		
-		
+
 		foreach($members as $key=>$patient_id){
 			$arr_px = array();
 			
@@ -531,7 +533,7 @@ class alert extends module{
 			$q_mc_indicators = mysql_query("SELECT alert_indicator_id,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$program_id' ORDER by sub_indicator ASC") or die("Cannot query 475: ".mysql_error());
 
 
-			$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
+			//$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
 
 			while(list($indicator_id,$sub_indicator) = mysql_fetch_array($q_mc_indicators)){
 				
@@ -659,14 +661,93 @@ class alert extends module{
 				
 		} //end foreach for patient id's
 
-		//if(!empty($arr_fam))
-		//	print_r($arr_fam);
-		
-		return $arr_fam;
-
-		
+		return $arr_fam;		
 	} //end function
 
+	function fp_alarms(){
+		
+		if(func_num_args()>0):
+			$arr = func_get_args();
+			$family_id = $arr[0];
+			$members = $arr[1];
+			$program_id = $arr[2];
+		endif;
+
+		$arr_px = array(); //will contain patient id of family_members with any of the cases under indicators
+		$arr_fam = array();
+
+		/*the function will accept the family id and family_members
+		1).navigate through the mc tables using the patient id of the family. each indicator has its own SQL.
+		2). execute on SQL for the indicator, 
+		3). pushed the patient_id, indicator id and the consult id to an array back to the calling function (get_indicator_instance)
+		4). retrun value is an array of format family_id=>array(patient_id1=>array(indicator_id1=>array(consult_id1,consult_id2,...consult_id[n]),indicator_id2=>array(consult_id1,consult_id2,...,consult_id[n])),patient_id2...);
+		*/
+
+		foreach($members as $key=>$patient_id){
+			$arr_px = array();
+			
+			$arr_indicator = array();   //this will contain indicator_id and array of consult_id
+
+			$q_fp_indicators = mysql_query("SELECT alert_indicator_id,sub_indicator FROM m_lib_alert_indicators WHERE main_indicator='$program_id' ORDER by sub_indicator ASC") or die("Cannot query 475: ".mysql_error());
+
+
+			//$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
+
+			while(list($indicator_id,$sub_indicator) = mysql_fetch_array($q_fp_indicators)){
+				
+				$arr_case_id = array(); //this will contain the consult_id and enrollment id's		
+				
+				$arr_definition = $this->get_alert_definition($indicator_id); //composed of defition id, days before and after. 
+				$alert_id = $arr_definition[0];
+				$days_before = $arr_definition[1];
+				$days_after = $arr_definition[2];
+				$date_today = date('Y-m-d');
+
+				switch($indicator_id){
+					case '22': 			//pill intake reminder
+						$q_fp = mysql_query("SELECT fp_px_id,date_registered FROM m_patient_fp_method WHERE patient_id='$patient_id' AND method_id='PILLS' AND drop_out='N' ORDER by date_registered DESC") or die("Cannot query 710 ".mysql_error());
+
+						if(mysql_num_rows($q_fp)!=0):
+							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+							
+							$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before'") or die("Cannot query 714 ".mysql_error());
+
+							//echo mysql_num_rows($q_fp_method);
+
+							if(mysql_num_rows($q_fp_method)!=0):
+								list($fp_service_id) = mysql_fetch_array($q_fp_method);
+								array_push($arr_case_id,$fp_service_id);
+							endif;
+						endif;
+				
+
+						break;
+
+					case '23':			//condom re-supply reminder
+						break;
+
+					default:			
+
+						break;
+
+				} //end switch for case id's
+				
+				if(!empty($arr_case_id)):	
+					array_push($arr_indicator,array($indicator_id=>$arr_case_id));
+				endif;
+
+			} //end while for indicators
+			
+			if(!empty($arr_indicator)):
+				
+				array_push($arr_px,array($patient_id=>$arr_indicator)); 
+				array_push($arr_fam,$arr_px);
+			endif;
+				
+		} //end foreach for patient id's
+		
+		return $arr_fam;				
+	}
 
 	function get_family_members($family_id){
 		$arr_members = array();

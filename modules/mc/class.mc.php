@@ -2461,8 +2461,6 @@ class mc extends module {
 		$tt_stat.=($protected==1)?' Active':' Not Active';
 		$tt_stat.="&nbsp;(".$date_tt.")";
 		return $tt_stat;
-
-		
 	}
 
 
