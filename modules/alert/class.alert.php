@@ -715,7 +715,7 @@ class alert extends module{
 							//echo mysql_num_rows($q_fp_method);
 
 							if(mysql_num_rows($q_fp_method)!=0):
-								list($fp_service_id) = mysql_fetch_array($q_fp_method);
+								list($fp_service_id,$sum_date) = mysql_fetch_array($q_fp_method);
 								array_push($arr_case_id,$fp_service_id);
 							endif;
 						endif;
@@ -738,11 +738,29 @@ class alert extends module{
 							//echo mysql_num_rows($q_fp_method);
 
 							if(mysql_num_rows($q_fp_method)!=0):
-								list($fp_service_id) = mysql_fetch_array($q_fp_method);
+								list($fp_service_id,$sum_date) = mysql_fetch_array($q_fp_method);
 								array_push($arr_case_id,$fp_service_id);
 							endif;
 						endif;
 
+						break;
+
+					case '25':		//injectables follow-up reminder
+						$q_fp = mysql_query("SELECT fp_px_id,date_registered FROM m_patient_fp_method WHERE patient_id='$patient_id' AND method_id='DMPA' AND drop_out='N' ORDER by date_registered DESC") or die("Cannot query 710 ".mysql_error());
+
+						if(mysql_num_rows($q_fp)!=0):
+							list($fp_px_id,$date_registered) = mysql_fetch_array($q_fp);
+							
+							$q_fp_method = mysql_query("SELECT fp_service_id,(to_days(next_service_date)-to_days('$date_today')) as sum_date FROM m_patient_fp_method_service WHERE fp_px_id='$fp_px_id' AND patient_id='$patient_id' AND (to_days(next_service_date)-to_days('$date_today')) BETWEEN 0 AND '$days_before'") or die("Cannot query 714 ".mysql_error());
+
+							//echo mysql_num_rows($q_fp_method);
+
+							if(mysql_num_rows($q_fp_method)!=0):
+								list($fp_service_id, $sum_date) = mysql_fetch_array($q_fp_method);
+								array_push($arr_case_id,$fp_service_id);
+							endif;
+						endif;
+						
 						break;
 
 					default:			
