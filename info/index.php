@@ -55,10 +55,11 @@ $module = new Module;
 include "../lang.php";
 
 // check if any users exist
-if ($user->check_users()) {
+if ($user->check_users()) {    
     // redirect to welcome page
     header("location: ".$_SERVER["PHP_SELF"]."?page=WELCOME");
 }
+
 
 
 // load module class includes
@@ -136,15 +137,19 @@ small { font-family: verdana, sans serif}
 
 
 <body text="black" bgcolor="#FFFFCC" link="black" vlink="black">
-<? 
+<?php        
 	//echo "Print page module: ";
-	//print_r($_GET);
-
+	//print_r($_GET);	
 ?>
+
 <br/>
-<table border="0" cellspacing="0" bgcolor="#000000" style="border: 4px solid black" width="100%" cellpadding="0">
-  <tr bgcolor="#FF0000">
-    <td valign="top"><img src="../images/chitsbanner.png" border="0"></td>
+<!-- <table border="0" cellspacing="0" bgcolor="#000000" style="border: 4px solid black" width="100%" cellpadding="0"> -->
+<table border="0" cellspacing="0" style="border: 4px solid black" width="100%" cellpadding="0">
+  <tr bgcolor="#006600">
+  <tr>
+  <tr>
+    <td valign="top"><img src="../images/<?php echo $_SESSION["banner"] ?>" border="0" width="100%" height="50%"></td>
+    
   </tr>
   <tr>
     <td>
@@ -192,7 +197,7 @@ small { font-family: verdana, sans serif}
             }
             if (!$_SESSION["validuser"]) {
                 $user->authenticate();
-            } else {
+            } else {            
                 $user->signoff($_SESSION["user_first"], $_SESSION["user_last"], $_SESSION["datanode"]["name"], $_SESSION["isadmin"], $_SERVER["REMOTE_ADDR"], $_SESSION["userid"]);
             }
             ?>
@@ -284,7 +289,7 @@ small { font-family: verdana, sans serif}
             }
             if (module::in_menu($_GET["page"],array_values($menu_array[0]))) {
                 $module->default_action($_GET["page"]);
-            } else {
+            } else {                            
                 $site->content($menu_id, $_POST, $_GET);
 
             }

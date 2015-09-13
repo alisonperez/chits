@@ -221,7 +221,7 @@ class drug extends module {
             header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=".$get_vars["module"]."&drug=DISP".($get_vars["drug_id"]?"&drug_id=".$get_vars["drug_id"]:""));
         }
 
-		echo print_r($get_vars);
+        
         print "<table cellpadding='1' cellspacing='1' width='300' bgcolor='#9999FF' style='border: 1px solid black'><tr valign='top'><td nowrap>";
         /*print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=drug&drug=DISP".($get_vars["drug_id"]?"&drug_id=".$get_vars["drug_id"]:"")."' class='groupmenu'>".strtoupper(($get_vars["drug"]=="DISP"?"<b>DISPENSING</b>":"DISPENSING"))."</a>"; */
 

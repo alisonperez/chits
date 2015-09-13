@@ -284,17 +284,21 @@ class notes extends module {
             $get_vars = $arg_list[2];
             $validuser = $arg_list[3];
             $isadmin = $arg_list[4];
-            print_r($arg_list);
+            //print_r($arg_list);
         }
         $patient_id = healthcenter::get_patient_id($get_vars["consult_id"]);
         $consult_date = healthcenter::get_consult_date($get_vars["consult_id"]);
+
+	$note_link = $this->switch_notes($get_vars["notes"]);
+	
         switch($post_vars["submitnotes"]) {
         case "Create Notes":
             $sql = "insert into m_consult_notes (consult_id, patient_id, user_id, notes_timestamp) ".
                    "values ('".$get_vars["consult_id"]."', '$patient_id', '".$_SESSION["userid"]."', sysdate())";
             if ($result = mysql_query($sql)) {
                 $insert_id = mysql_insert_id();
-                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=NOTES&notes_id=$insert_id#menu");
+                //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=NOTES&notes_id=$insert_id#menu");
+		header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=$note_link&notes_id=$insert_id#menu");
             }
             break;
         case "Save Complaint":
@@ -306,7 +310,8 @@ class notes extends module {
                 }                                                
             }
                 $update_complaint_note = mysql_query("UPDATE m_consult_notes SET notes_complaint='$post_vars[complaint_notes]' WHERE consult_id='$get_vars[consult_id]'") or die("Cannot query: 302 ".mysql_error());                                        
-                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=CC&notes_id=".$get_vars["notes_id"]."#menu");                
+                //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=CC&notes_id=".$get_vars["notes_id"]."#menu");
+		header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=$note_link&notes_id=".$get_vars["notes_id"]."#menu");                                
             break;
             
         case "Save History":
@@ -315,7 +320,8 @@ class notes extends module {
                        "notes_history = '".addslashes($post_vars["history_text"])."' ".
                        "where notes_id = '".$get_vars["notes_id"]."'";
                 if ($result = mysql_query($sql)) {
-                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=HX&notes_id=".$get_vars["notes_id"]."#menu");
+                    //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=HX&notes_id=".$get_vars["notes_id"]."#menu");
+		header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=$note_link&notes_id=".$get_vars["notes_id"]."#menu");
                 }
             }
             break;
@@ -325,7 +331,9 @@ class notes extends module {
                        "notes_physicalexam = '".addslashes($post_vars["pe_text"])."' ".
                        "where notes_id = '".$get_vars["notes_id"]."'";
                 if ($result = mysql_query($sql)) {
-                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=PE&notes_id=".$get_vars["notes_id"]."#menu");
+                    //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=PE&notes_id=".$get_vars["notes_id"]."#menu");
+			header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=$note_link&notes_id=".$get_vars["notes_id"]."#menu");
+
                 }
             }
             break;
@@ -337,7 +345,8 @@ class notes extends module {
                            "values ('".$get_vars["notes_id"]."', '".$get_vars["consult_id"]."', '$patient_id', '$value', '$consult_date', '".$_SESSION["userid"]."', sysdate())";
                     $result = mysql_query($sql) or die(mysql_error());
                 }
-                header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=DX&notes_id=".$get_vars["notes_id"]."#menu");
+                //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=DX&notes_id=".$get_vars["notes_id"]."#menu");
+		header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=$note_link&notes_id=".$get_vars["notes_id"]."#menu");
             }
 
             break;
@@ -347,11 +356,12 @@ class notes extends module {
                        "notes_plan = '".addslashes($post_vars["plan_text"])."' ".
                        "where notes_id = '".$get_vars["notes_id"]."'";
                 if ($result = mysql_query($sql)) {
-                    header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=TX&notes_id=".$get_vars["notes_id"]."#menu");
+                    //header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=TX&notes_id=".$get_vars["notes_id"]."#menu");
+		header("location: ".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=NOTES&module=notes&notes=$note_link&notes_id=".$get_vars["notes_id"]."#menu");
                 }
             }
             break;
-        }
+        } 
     }
 
     function form_consult_notes() {
@@ -1794,6 +1804,42 @@ class notes extends module {
                 }
             }
         }
+    }
+
+    function switch_notes($notes_id){
+
+	switch($notes_id){
+		case 'NOTES':
+			return 'CC';
+			break;
+		case 'CC':
+			return 'HX';
+			break;
+		case 'HX':
+			return 'PE';
+			break;
+
+		case 'PE':
+			return 'DX';
+			break;
+		
+		case 'DX':
+			return 'TX';
+			break;
+
+		case 'TX':
+			return 'NOTES';
+			break;
+		
+		default:
+			return 'NOTES';
+			break;
+
+	}
+
+
+
+
     }
 
 }

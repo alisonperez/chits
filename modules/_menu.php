@@ -1,12 +1,18 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-04-12 10:43:36
+// Generated 2010-10-08 00:36:56
 // Module: _menu.php
 // Author: Herman Tolentino MD
 //
 if ($HTTP_GET_VARS["menu_id"] && $_SESSION["validuser"]) {
 	switch ($HTTP_GET_VARS["menu_id"]) {
+	case 1361:
+		$alert->_alert($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
+		break;
+	case 1360:
+		$alert->_alert_type($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
+		break;
 	case 1329:
 		$appointment->_appointments($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
 		break;
@@ -33,6 +39,9 @@ if ($HTTP_GET_VARS["menu_id"] && $_SESSION["validuser"]) {
 		break;
 	case 1335:
 		$database->_database_support($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
+		break;
+	case 1359:
+		$demographic_profile->_demographic_profile($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
 		break;
 	case 1341:
 		$drug->_drugs($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
@@ -66,6 +75,9 @@ if ($HTTP_GET_VARS["menu_id"] && $_SESSION["validuser"]) {
 		break;
 	case 1328:
 		$healthcenter->_modules($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
+		break;
+	case 1364:
+		$health_facility->_health_facility($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);
 		break;
 	case 1055:
 		$icd10->_icd10($menu_id, $HTTP_POST_VARS, $HTTP_GET_VARS,$_SESSION["validuser"],$_SESSION["isadmin"]);

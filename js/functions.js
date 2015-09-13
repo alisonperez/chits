@@ -123,3 +123,44 @@ function delete_sputum(){
                 window.alert('The Sputum Record record was successfully been removed.');
         }
 }
+
+function set_var_dropdown(){
+	window.alert('The list has been set');
+	window.alert(form_alert_lib.sel_mods.value);
+
+	switch(form_alert_lib.sel_mods.value){
+		case 'ccdev':
+			form_alert_lib.tbl_name.value = 'm_consult_ccdev_services,m_patient_ccdev';
+			break;
+
+		case 'epi':
+			form_alert_lib.tbl_name.value = 'm_consult_ccdev_services';
+			break;
+
+		case 'mc':
+			form_alert_lib.tbl_name.value = 'm_patient_mc,m_consult_mc_services';
+			break;
+
+		case 'notifiable':
+			form_alert_lib.tbl_name.value = 'm_consult_notes,m_consult_notes_dxclass';
+			break;
+
+		case 'fp':
+			form_alert_lib.tbl_name.value = 'm_patient_fp';
+			break;	
+		default:
+			form_alert_lib.tbl_name.value = '';
+			break;
+	}
+	window.alert(form_alert_lib.tbl_name.value);
+	window.reload();
+	
+}
+
+function autoSubmit_alert()
+{
+	var formObject = document.forms['form_alert_lib'];
+	if(formObject!=0){
+		formObject.submit();
+	}
+}

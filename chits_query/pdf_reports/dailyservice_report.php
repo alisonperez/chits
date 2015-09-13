@@ -1,5 +1,4 @@
 <?php
-  
     ob_start();
     
     require('./fpdf/fpdf.php');
@@ -109,7 +108,7 @@
           $municipality_label = $_SESSION[datanode][name];
           
           $this->SetFont('Arial','B','15');
-          $this->Cell(0,5,'D A I L Y   S E R V I C E    R E P O R T'.' - '.$municipality_label,0,1,'C');
+          $this->Cell(0,5,'D A I L Y   S E R V I C E    R E P O R T ( '.$_SESSION["subtitle"].' ) - '.$municipality_label,0,1,'C');
           $this->Ln();
           
           if($_SESSION[report_date]==$_SESSION[end_report_date]):
@@ -123,23 +122,23 @@
         $this->Cell(0,5,'Total Number of Records: '.$_SESSION[record_count],0,1,'L');          
         
         $this->SetFont('Arial','',13);        
-        $w = array(34,34,34,34,34,34,34,34,34,34);      
+        $w = $_SESSION["col_width"];
 	$this->SetWidths($w);
 	$this->Row($_SESSION[tbl_header]);		
       }    
       
       
-      function ShowTable($header,$contents){                
-        $w = array(34,34,34,34,34,34,34,34,34,34);
+      function ShowTable($header,$contents){
+        $w = $_SESSION["col_width"];
       
 	//$this->SetWidths($w);
-	//$this->Row($header);        
+	//$this->Row($header);
         //$this->Ln();
         $this->SetFont('Arial','',9);
-	foreach($contents as $key=>$value){	    
-	    foreach($value as $key2=>$value2){	        	    
+	foreach($contents as $key=>$value){
+	    foreach($value as $key2=>$value2){
 	       $this->SetWidths($w);
-	       $this->Row($value2);     	    
+	       $this->Row($value2);
 	    }
 	}
       
@@ -158,10 +157,38 @@
         
     $pdf=new PDF('L','mm','Legal');
     //Column titles
-    $header= $_SESSION[tbl_header];
-    $contents = $_SESSION[daily_service_contents];
     //Data loading
+
+    switch($_GET["arr"]){
+	case 'consult':
+    		//print_r($_SESSION["arr_consult"]);
+		$arr_report = $_SESSION["arr_consult"];
+		$w = array(14,34,34,34,34,20,34,34,34,34,34);
+		$subtitle = 'GENERAL CONSULTS';
+		break;
+	case 'ccdev':
+		//print_r($_SESSION["arr_ccdev"]);
+		$arr_report = $_SESSION["arr_ccdev"];
+		$w = array(38,45,38,30,38,38,38,38,38);
+		$subtitle = 'CHILD CARE';
+		break;
+	case 'mc':
+		//print_r($_SESSION["arr_mc"]);
+		$arr_report = $_SESSION["arr_mc"];
+		$w = array(28,40,28,28,28,25,28,31,28,20,28,30);
+		$subtitle = 'MATERNAL CARE';
+		break;
+	default:
+		print "<font color='red'>Cannot produce report. Parameter is not accepted.</font>";
+		break;
+    }
     
+    $header = $_SESSION["tbl_header"] = $arr_report[0];
+    $contents = $arr_report[1];
+    $_SESSION["record_count"] = $arr_report[2];
+    $_SESSION["col_width"] = $w;
+    $_SESSION["subtitle"] = $subtitle;
+
     $pdf->SetFont('Arial','',13);
     $pdf->AddPage();
     $pdf->ShowTable($header,$contents);
@@ -171,5 +198,4 @@
     $pdf->FancyTable($header,$data);
     */
     $pdf->Output();
-    
 ?>

@@ -1501,11 +1501,12 @@ class ccdev extends module {
                "from m_consult_ccdev_services ".
                "where patient_id = '$patient_id' order by service_id, ccdev_timestamp desc";
 		
-		$result = mysql_query($sql) or die(mysql_error());
+	$result = mysql_query($sql) or die(mysql_error());
+
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
                 while (list($cid, $service, $sdate, $ts,$actual_service_date,$serv_date) = mysql_fetch_array($result)) {
-
+		
 
                     print "<img src='../images/arrow_redwhite.gif' border='0'/> ";
                     print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=ccdev&ccdev=SVC&service_id=$service&sts=$ts&ccdev_id=$cid#detail'>".ccdev::get_service_name($service)."</a>&nbsp;";
@@ -1708,7 +1709,7 @@ class ccdev extends module {
             $arg_list = func_get_args();
             $service_id = $arg_list[0];
         }
-        $sql = "select service_id, service_name from m_lib_ccdev_services order by service_name";
+        $sql = "select service_id, service_name from m_lib_ccdev_services order by order_seq ASC";
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
                 while (list($id, $name) = mysql_fetch_array($result)) {

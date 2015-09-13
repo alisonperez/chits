@@ -1707,7 +1707,7 @@ class mc extends module {
                         print "<input type='hidden' name='trimester' value='$trimester' />";
                         print "<input type='hidden' name='visit_sequence' value='$visit_sequence' />";
                     }
-                    print "<br><input type='submit' value = 'Save Prenatal Data' class='textbox' name='submitmc' style='border: 1px solid #000000'><br>";
+                    print "<input type='submit' value = 'Save Prenatal Data' class='textbox' name='submitmc' style='border: 1px solid #000000'><br>";
                 }
             }
             print "</td></tr>";
@@ -2340,7 +2340,8 @@ class mc extends module {
                     print "&nbsp;SYS BP: ".($systolic?$systolic:"NA")."<br/>";
                     print "&nbsp;DIAS BP: ".($diastolic?$diastolic:"NA")."<br/>";
                     if ($systolic && $diastolic) {
-                        print "&nbsp;STAGE: ".healthcenter::hypertension_stage($systolic, $diastolic)."<br/>";
+                        print "&nbsp;STAGE: ";
+			healthcenter::hypertension_stage($systolic, $diastolic,$patient_age)."<br/>";
                     }
                     print "</span>";
                     print "</td></tr></table>";
@@ -2460,8 +2461,6 @@ class mc extends module {
 		$tt_stat.=($protected==1)?' Active':' Not Active';
 		$tt_stat.="&nbsp;(".$date_tt.")";
 		return $tt_stat;
-
-		
 	}
 
 

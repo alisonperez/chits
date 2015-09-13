@@ -93,7 +93,7 @@ class Site {
             site::process_content($menu_id, $post_vars, $get_vars);
         }
         site::form_content($menu_id, $post_vars, $get_vars);
-        site::display_content($menu_id, $post_vars, $get_vars);
+        site::display_content($menu_id, $post_vars, $get_vars);        
     }
 
     function form_content() {
@@ -481,10 +481,10 @@ class Site {
                     print "<font face='Verdana'>";
                     $sql = "select m.menu_id, m.module_id, c.module_name, m.menu_cat, m.menu_title, m.menu_action ".
                            "from module_menu m, modules c ".
-                           "where m.menu_cat = '$page' and m.module_id = c.module_id and menu_visible='Y' order by m.menu_cat, menu_rank";
+                           "where m.menu_cat = '$page' and m.module_id = c.module_id and menu_visible='Y' order by m.menu_title,m.menu_cat, menu_rank";
                     if ($result = mysql_query($sql)) {
                         if (mysql_num_rows($result)) {
-                            while (list($menu_id, $module_id, $module_name, $menu_cat, $menu_title, $menu_action) = mysql_fetch_array($result)) {
+                            while (list($menu_id, $module_id, $module_name, $menu_cat, $menu_title, $menu_action) = mysql_fetch_array($result)) {                            
                                 // take circuitous route to location permissions
                                 $location_allowed = $this->location_user_permission_status($menu_id, $_SESSION["userid"]);
                                 $module_allowed = module::module_permission_status($module_id, $_SESSION["userid"], $menu_id);
@@ -510,7 +510,7 @@ class Site {
                                     // show all
                                     $show_menu = true;
                                 }
-                                if ($show_menu) {
+                                if ($show_menu) {                                
                                     $menu_list .= "<a href='".$_SERVER["PHP_SELF"]."?page=$menu_cat&menu_id=$menu_id' class='sidemenu'>".($get_vars["menu_id"]==$menu_id?"<b>$menu_title</b>":"$menu_title")."</a><br>";
                                 }
                             }

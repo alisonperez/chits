@@ -2,20 +2,20 @@
 <config>
     <node>
         <name>RHU NAME</name>
-        <code>030810000</code>
+        <code>036901000</code>
         <telephone>2444284</telephone>
         <level>self</level>
     </node>
     <node>
         <name>PHO</name>
-        <code>030810000</code>
+	<code>036900000</code>
         <telephone>2444284</telephone>
         <level>parent</level>        
     </node>
     <node>
         <name>RHU NAME</name>
-        <code>030810000</code>
+	<code>036900000</code>
         <telephone>2444284</telephone>
-        <level>child</level>        
+        <level>child</level>
     </node>
 </config>

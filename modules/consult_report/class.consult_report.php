@@ -9,9 +9,12 @@ class consult_report extends module {
         // do not forget to update version
         //
         $this->author = 'Herman Tolentino MD';
-        $this->version = "0.2-".date("Y-m-d");
+        $this->version = "0.4-".date("Y-m-d");
         $this->module = "consult_report";
         $this->description = "CHITS Module - Consult Report";
+
+	//0.3 added printer-friendly PDF versions
+	//0.4 added maternal care and child care PDF files
     }
 
     // --------------- STANDARD MODULE FUNCTIONS ------------------
@@ -267,6 +270,8 @@ class consult_report extends module {
             $isadmin = $arg_list[4];
             //print_r($arg_list);
         }
+                
+        
         list($month, $day, $year) = explode("/", $post_vars["report_date"]);
         //$report_date = $year."-".str_pad($month, 2, "0", STR_PAD_LEFT)."-".str_pad($day, 2, "0", STR_PAD_LEFT);
         $report_date = $year.'-'.$month.'-'.str_pad($day, 2, "0", STR_PAD_LEFT);
@@ -278,14 +283,15 @@ class consult_report extends module {
         $_SESSION[report_date] = $report_date;
         $_SESSION[end_report_date] = $end_report_date;
         
+        
         // STEP 1. empty report tables for given date
-        $sql_delete = "delete from m_consult_report_dailyservice where service_date = '$report_date'";
+        $sql_delete = "delete from m_consult_report_dailyservice where service_date BETWEEN '$report_date' AND '$end_report_date'";
         $result_delete = mysql_query($sql_delete);
 
-        $sql_delete = "delete from m_consult_ccdev_report_dailyservice where service_date = '$report_date'";
+        $sql_delete = "delete from m_consult_ccdev_report_dailyservice where service_date BETWEEN '$report_date' AND '$end_report_date'";
         $result_delete = mysql_query($sql_delete);
 
-        $sql_delete = "delete from m_consult_mc_report_dailyservice where service_date = '$report_date'";
+        $sql_delete = "delete from m_consult_mc_report_dailyservice where service_date BETWEEN '$report_date' AND '$end_report_date'";
         $result_delete = mysql_query($sql_delete);
 
         // STEP 2. get all consults for specified report date
@@ -297,22 +303,22 @@ class consult_report extends module {
                        "from m_consult c, m_patient p ".
                        "where c.patient_id = p.patient_id ".
                        "and to_days(c.consult_date) = to_days('$report_date')"; */
-        
-        
+
         $sql_patient = "select c.patient_id, c.consult_id, ".
-	               "concat(p.patient_lastname, ', ', p.patient_firstname) patient_name, ".
+	               "concat(p.patient_lastname, ', ', p.patient_firstname, ' ',p.patient_middle) patient_name, ".
                        "round((to_days(c.consult_date)-to_days(p.patient_dob))/365,2) patient_age, ".
-                       "p.patient_gender ".
+                       "p.patient_gender,date_format(c.consult_date,'%h:%i %p') as consult_start,date_format(c.consult_end,'%h:%i %p') as consult_end, round((unix_timestamp(c.consult_end)-unix_timestamp(c.consult_date))/60,2) as consult_minutes, elapsed_time ".
                        "from m_consult c, m_patient p ".
                        "where c.patient_id = p.patient_id ".
                        "and c.consult_date BETWEEN '$report_date' AND '$end_report_date'";
-        
+
         $result_patient = mysql_query($sql_patient) or die("Cannot query: 305 ".mysql_error());
-                        
-        if ($result_patient) {
-          
+
+	if ($result_patient) {
+
             if (mysql_num_rows($result_patient)) {
                 while ($patient = mysql_fetch_array($result_patient)) {
+			
                     // get family and address
                     if ($family_id = family::get_family_id($patient["patient_id"])) {
                         $patient_address = family::get_family_address($family_id);
@@ -329,13 +335,17 @@ class consult_report extends module {
 		    $treatment = notes::get_plan($patient["patient_id"], $report_date);
 
 		    //get vaccines 
-		    $vaccines = $this->get_vaccines($patient["patient_id"], $report_date);
-		    $services = $this->get_services($patient["consult_id"], $patient["patient_id"], $report_date);
-		    $ptgroup = $this->get_ptgroup($patient["consult_id"], $report_date);
-		    $aog = $this->get_aog($patient["patient_id"], $report_date);
+		    $vaccines = $this->get_vaccines($patient["patient_id"], $report_date,$end_report_date);
+		    $services = $this->get_services($patient["consult_id"], $patient["patient_id"], $report_date,$end_report_date);
+		    $ptgroup = $this->get_ptgroup($patient["consult_id"], $report_date,$end_report_date);
+		    $aog = $this->get_aog($patient["patient_id"], $report_date,$end_report_date);
 		    $visit_seq = healthcenter::get_total_visits($patient["patient_id"]);
 		    $philhealth_id = philhealth::get_philhealth_id($patient["patient_id"]);
-		
+
+		    //get elapsed time and data and time started
+
+		    $elapsed_time = $this->get_str_elapsed($patient["consult_start"],$patient["consult_end"],$patient["elapsed_time"]);
+
 		    if ($mc_id = mc::registry_record_exists($patient["patient_id"])) {
 			$pp_weeks = mc::get_pp_weeks($mc_id, $patient["consult_id"]);
                 	//$visit_sequence = mc::get_ppvisit_sequence($mc_id, $patient["consult_id"]);
@@ -351,9 +361,10 @@ class consult_report extends module {
 				      "'$complaints', '$diagnosis', '$treatment', '$report_date')";
 			$result_insert = mysql_query($sql_insert);
 		    }
-
+		
                     if ($vaccines != '' || $services != '') {
-			if ($ptgroup == 'CHILD') {                
+			
+			if ($ptgroup == 'CHILD') {
 			    $sql_insert = "insert into m_consult_ccdev_report_dailyservice (patient_id, ".
 					  "patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
 					  "family_id, philhealth_id, service_given, vaccine_given, service_date) values ".
@@ -363,8 +374,8 @@ class consult_report extends module {
 					  "'$services', '$vaccines', '$report_date')";
 			    $result_insert = mysql_query($sql_insert);
 			}
-			
-			if ($ptgroup == 'MATERNAL') {                
+
+			if ($ptgroup == 'MATERNAL') {
 			    $sql_insert = "insert into m_consult_mc_report_dailyservice (patient_id, ".
 					  "patient_name, patient_gender, patient_age, aog_weeks, postpartum_weeks, patient_address, ".
 					  "patient_bgy, family_id, philhealth_id, visit_sequence, service_given, vaccine_given, ".  
@@ -374,6 +385,7 @@ class consult_report extends module {
 					  "'$aog', '$pp_weeks', '$patient_address', '$barangay_id', '$family_id', '$philhealth_id', ".
 					  "'$visit_seq', '$services', '$vaccines', '$report_date')";
 			    $result_insert = mysql_query($sql_insert);
+				
 			}
 		    }
                 }
@@ -385,7 +397,7 @@ class consult_report extends module {
                 $pdf = new PDF('L','pt','A4');
                 $pdf->SetFont('Arial','',12); 
                 $pdf->AliasNbPages();
-                $pdf->connect('localhost','root','kambing','game');
+                $pdf->connect('localhost','$_SESSION[dbuser]','$_SESSION[dbpass]','$_SESSION[dbname]');
                 $attr=array('titleFontSize'=>14,'titleText'=>'DAILY SERVICE REGISTER - CONSULTS');
 		$pdf->mysql_report($sql,false,$attr,"../modules/_uploads/consult_reg.pdf");
 		header("location:".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&report_menu=SUMMARY");
@@ -398,7 +410,7 @@ class consult_report extends module {
                 //$pdf = new PDF('L','pt','A4');
                 //$pdf->SetFont('Arial','',12); 
                 //$pdf->AliasNbPages();
-                //$pdf->connect('localhost','root','kambing','game');
+                //$pdf->connect('localhost','$_SESSION[dbuser]','$_SESSION[dbpass]','$_SESSION[dbname]');
                 //$attr=array('titleFontSize'=>14,'titleText'=>'DAILY SERVICE REGISTER - CHILD CARE SERVICES');
 		//$pdf->mysql_report($sql,false,$attr,"../modules/_uploads/consult_ccdev_reg.pdf");
 		//header("location:".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&report_menu=SUMMARY");
@@ -413,7 +425,7 @@ class consult_report extends module {
                 $pdf = new PDF('L','pt','A4');
                 $pdf->SetFont('Arial','',12); 
                 $pdf->AliasNbPages();
-                $pdf->connect('localhost','root','kambing','game');
+                $pdf->connect('localhost','$_SESSION[dbuser]','$_SESSION[dbpass]','$_SESSION[dbname]');
                 $attr=array('titleFontSize'=>14,'titleText'=>'DAILY SERVICE REGISTER - MATERNAL CARE SERVICES');
 		$pdf->mysql_report($sql,false,$attr,"../modules/_uploads/consult_mc_reg.pdf");
 		header("location:".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&report_menu=SUMMARY");
@@ -425,10 +437,15 @@ class consult_report extends module {
 	print "<br/>";
 	print "<b>DAILY SERVICE REPORT</b><br/>";
 	print "REPORT DATE : <b>".$post_vars["report_date"]." to ".$post_vars["end_report_date"]."</b><br/><br/>";
-	$this->display_consults($report_date,"patient_id",$end_report_date); //pass the report_date and patient_id
-	$this->display_ccdev($report_date);
-	$this->display_mc($report_date);
-        
+	
+	print "PRINTER FRIENDLY VERSION: <a href='../chits_query/pdf_reports/dailyservice_report.php?arr=consult' target='new'>CONSULTS</a>&nbsp;&nbsp;&nbsp;";
+	print "<a href='../chits_query/pdf_reports/dailyservice_report.php?arr=ccdev' target='new'>CHILD CARE</a>&nbsp;&nbsp;&nbsp;";
+	print "<a href='../chits_query/pdf_reports/dailyservice_report.php?arr=mc' target='new'>MATERNAL CARE</a><br />";
+
+	$_SESSION["arr_consult"] = $this->display_consults($report_date,"patient_id",$end_report_date); //pass the report_date and patient_id
+	$_SESSION["arr_ccdev"] = $this->display_ccdev($report_date,$end_report_date);
+	$_SESSION["arr_mc"] = $this->display_mc($report_date,$end_report_date);	 
+
 	$sql = "select count(distinct(patient_id)) from m_consult where ".
 	       "to_days(consult_date) = to_days('$report_date') and patient_id != '0'";
 	$result = mysql_result(mysql_query($sql),0);
@@ -443,35 +460,32 @@ class consult_report extends module {
 	    $report_date = $arg_list[0];
 	    $patient_id = $arg_list[1]; //a handler for the patient ID
 	    $end_report_date = $arg_list[2];
-	}
-		    
+	}		
 	
-	if($report_date == $end_report_date):
 	
-        $sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
-	       "family_id, philhealth_id, notes_cc, notes_dx, notes_tx ".
-	       "from m_consult_report_dailyservice ".
-	       "where to_days(service_date) = to_days('$report_date') order by patient_name";	       
+        $arr_contents = array();
+
+        $sql = "select c.patient_id, c.consult_id, ".
+	               "concat(p.patient_lastname, ', ', p.patient_firstname,' ',p.patient_middle) patient_name, ".
+                       "round((to_days(c.consult_date)-to_days(p.patient_dob))/365,1) patient_age, ".
+                       "p.patient_gender,date_format(c.consult_date,'%Y-%m-%d') as consult_date ".
+                       "from m_consult c, m_patient p ".
+                       "where c.patient_id = p.patient_id ".
+                       "and c.consult_date BETWEEN '$report_date 00:00:00' AND '$end_report_date 23:59:00' ORDER by c.consult_date ASC";
         
-        else:
+        	                        
+        $result = mysql_query($sql) or die("Cannot query: 456 ".mysql_error());        
         
-        $sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
-	       "family_id, philhealth_id, notes_cc, notes_dx, notes_tx ".
-	       "from m_consult_report_dailyservice ".
-	       "where service_date BETWEEN '$report_date' AND '$end_report_date' order by patient_name";                
-        
-        endif;
-        $result = mysql_query($sql) or die("Cannot query: 456 ".mysql_error());
-                      
 	if ($result) {
 	    if (mysql_num_rows($result)) {
-	        $header = array('PATIENT ID','PATIENT NAME / SEX / AGE','ADDRESS','BRGY','FAMILY ID','PHILHEALTH ID','VITAL SIGNS','COMPLAINTS','DIAGNOSIS','TREATMENT');
+		
+	        $header = array('PATIENT ID','PATIENT NAME / SEX / AGE','CONSULT DATE / ELAPSED TIME','ADDRESS','BRGY','FAMILY ID','PHILHEALTH ID','VITAL SIGNS','COMPLAINTS','DIAGNOSIS','TREATMENT');
 	        $contents = array();
 	        
-	        print "<a href='../chits_query/pdf_reports/dailyservice_report.php'>PRINTER FRIENDLY VERSION</a><br/>"; 
+	        //print "<a href='../chits_query/pdf_reports/dailyservice_report.php'>PRINTER FRIENDLY VERSION</a><br/>"; 
 		
 		print "<b><center>CONSULTS</center></b><br/>";
-		print "<table width='900' cellspacing='0' cellpadding='2' style='border: 1px solid #000000'>";
+		print "<table width='1000' cellspacing='0' cellpadding='2' style='border: 1px solid #000000'>";
 		print "<tr bgcolor='#FFCC33'>";
 		print "<td class='tinylight' valign='middle' align=center><b>$header[0]</b></td>";
 		print "<td class='tinylight' valign='middle' align=center><b>$header[1]</b></td>";
@@ -483,31 +497,54 @@ class consult_report extends module {
 		print "<td class='tinylight' valign='middle' align=center><b>$header[7]</b></td>";
 		print "<td class='tinylight' valign='middle' align=center><b>$header[8]</b></td>";
 		print "<td class='tinylight' valign='middle' align=center><b>$header[9]</b></td>";
+		print "<td class='tinylight' valign='middle' align=center><b>$header[10]</b></td>";
 		print "</tr>";
 
-		while (list($pid,$pname,$sex,$age,$addr,$bgy,$fid,$phid,$cc,$dx,$tx) = mysql_fetch_array($result)) {
-		    
+		while (list($pid,$consult_id,$pname,$age,$sex,$consult_date) = mysql_fetch_array($result)) {
+                
 		    $inner_record = array();
 		    
-		    $q_brgy = mysql_query("SELECT c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$pid' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 451 ".mysql_error());		    
+                    if ($fid = family::get_family_id($pid)) {
+                        $addr = family::get_family_address($fid);
+                        $barangay_id = family::barangay_id($family_id);
+                    } else {
+                        $fid = 0;
+                        $barangay_id = 0;
+                        $addr = family::get_family_address($fid);                        
+                    }
+
+                    $phid = philhealth::get_philhealth_id($pid);                    		    
+
+                    $cc = notes::get_complaints($pid, $consult_date);
+		    $dx = notes::get_diagnosis_list($pid, $consult_date);
+   		    $tx = notes::get_plan($pid, $consult_date);                    
+                                      
+     		    
+     		    $q_brgy = mysql_query("SELECT c.barangay_name FROM m_family_members a, m_family_address b, m_lib_barangay c WHERE a.patient_id='$pid' AND a.family_id=b.family_id AND b.barangay_id=c.barangay_id") or die("Cannot query 451 ".mysql_error());		    
 		    list($brgy) = mysql_fetch_array($q_brgy);		    		    
 		
 		    //for displaying the vitals signs
 		    $selvitals = mysql_query("SELECT vitals_weight,vitals_temp,vitals_systolic,vitals_diastolic,vitals_heartrate,
-		    vitals_resprate, a.consult_id FROM m_consult a, m_consult_vitals b WHERE a.patient_id='$pid' AND to_days(a.consult_date)=to_days('$report_date') AND  a.consult_id=b.consult_id") 
+		    vitals_resprate, a.consult_id FROM m_consult a, m_consult_vitals b WHERE a.patient_id='$pid' AND a.consult_date BETWEEN '$report_date' AND '$end_report_date' AND  a.consult_id=b.consult_id") 
 		    or die(mysql_error());
+
+		    $sel_elapsed = mysql_query("SELECT date_format(consult_date,'%m/%d/%Y %h:%i %p') as consult_start,date_format(consult_end,'%m/%d/%Y %h:%i %p') as consult_end, round((unix_timestamp(consult_end)-unix_timestamp(consult_date))/60,2) as consult_minutes FROM m_consult WHERE consult_id='$consult_id'") or die("Cannot query 531 ".mysql_error());
+
+		    list($start,$end,$elapsed) = mysql_fetch_array($sel_elapsed);
+		    $elapsed_time = $this->get_str_elapsed($start,$end,$elapsed);
 		    
 		    $select_brgy = mysql_query("SELECT barangay_name from m_lib_barangay WHERE barangay_id='$bgy'") or die(mysql_error());		        
 		    $resbrgy = mysql_fetch_array($select_brgy);
 		    		    
 		    $res_vitals = mysql_fetch_array($selvitals);
 		    $bp = (empty($res_vitals[vitals_systolic]) && empty($res_vitals[vitals_diastolic]))?'-':$res_vitals[vitals_systolic].'/'.$res_vitals[vitals_diastolic];
-		    $count = mysql_num_rows($selvitals);		    
+		    $count = mysql_num_rows($selvitals);
 		    
 		    $bgcolor=($bgcolor=="#FFFF99"?"white":"#FFFF99");
 		    print "<tr bgcolor='$bgcolor'>";
 		    print "<td class='tinylight' align=center>".$pid."</td>";
 		    print "<td class='tinylight' align=center>".$pname." / ".$sex." / ".$age."</td>";
+		    print "<td class='tinylight' align=center>".$elapsed_time."</td>";
 		    print "<td class='tinylight' align=center>".$addr."</td>";                  
 		    //print "<td class='tinylight' align=center>".$resbrgy[barangay_name]."</td>";
 		    print "<td class='tinylight' align=center>".$brgy."</td>";
@@ -529,32 +566,44 @@ class consult_report extends module {
 		    //array_push($inner_record,array($pid,$pname." / ".$sex." / ".$age,$addr,$resbrgy[barangay_name],$brgy,$fid,$phid,'BP: '.$bp.', '.
 		    //'HR: '.$res_vitals[vitals_heartrate].', RR: '. $res_vitals[vitals_resprate].', Wt:' $res_vitals[vitals_weight] kg.', Temp:'. $res_vitals[vitals_temp],$cc,$dx,$tx));
 
-		    array_push($inner_record,array($pid,$pname." / ".$sex." / ".$age,$addr,$brgy,$fid,$phid,$vitals_sign,$cc,$dx,$tx));
+		    array_push($inner_record,array($pid,$pname." / ".$sex." / ".$age,$elapsed_time,$addr,$brgy,$fid,$phid,$vitals_sign,$cc,$dx,$tx));
 		    array_push($contents,$inner_record);		    		    
 		}
-		print "</table>";		                		
+		print "</table>";
+	
 		$_SESSION[tbl_header] = $header;
 		$_SESSION[daily_service_contents] = $contents;
 		$_SESSION[record_count] = mysql_num_rows($result);
+
+		array_push($arr_contents,$header,$contents,mysql_num_rows($result));
             }
 	}
+	return $arr_contents;
     }
 
     function display_ccdev() {
         if (func_num_args()>0) {
 	    $arg_list = func_get_args();
 	    $report_date = $arg_list[0];
-	    $patient_id = $arg_list[1];
+	    $end_date = $arg_list[1];
 	}
+	
 
-	$sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
+	$arr_content = array();
+	$content = array();
+	$header = array("PATIENT ID","PATIENT NAME/AGE/SEX","ADDRESS","BRGY","FAMILY ID","PHILHEALTH ID","VITAL SIGNS","VACCINE/S GIVEN","SERVICE/S GIVEN");
+
+/*	$sql = "select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy, ".
 	       "family_id, philhealth_id,vaccine_given, service_given ".
 	       "from m_consult_ccdev_report_dailyservice ".
-   	       "where to_days(service_date) = to_days('$report_date') order by patient_name";
-        
-        
+   	       "where service_date BETWEEN $report_date AND $end_date) order by patient_name";
+*/
+	$result = mysql_query("select patient_id, patient_name, patient_gender, patient_age, patient_address, patient_bgy,family_id, philhealth_id,vaccine_given, service_given from m_consult_ccdev_report_dailyservice where service_date BETWEEN '$report_date' AND '$end_date' order by patient_name ASC") or die("Cannot query 585 ".mysql_error());
 
-	if ($result = mysql_query($sql)) {
+	//$sql = mysql_query("SELECT a.patient_id,a.patient_lastname,a.patient_firstname,a.patient_gender,date_format(a.patient_dob,'%m-%d-%Y') as patient_dob,b.address,c.barangay_name,b.family_id FROM m_patient a,m_family_address b,m_lib_barangay c,m_consult d, WHERE d.consult_date BETWEEN '$report_date' AND '$end_date' AND a.patient_id=b.patient_id AND b.barangay_id=c.barangay_id ORDER by c.barangay_name ASC, a.patient_lastname ASC") or die("Cannot query 571 ".mysql_error());
+	
+	if ($result) {
+		
 	    if (mysql_num_rows($result)) {
 		print "<br/>";
 		print "<b><center>CHILD CARE SERVICES</center></b><br/>";
@@ -570,10 +619,11 @@ class consult_report extends module {
 		print "<td class='tinylight' valign='middle' align=center><b>VACCINE(S) GIVEN</b></td>";
 		print "<td class='tinylight' valign='middle' align=center><b>SERVICE(S) GIVEN</b></td>";
 		print "</tr>";
-				
+
 		while (list($pid,$pname,$sex,$age,$addr,$bgy,$fid,$phid,$vaccine,$srvc) = mysql_fetch_array($result)) { 
-		    $selvitals = mysql_query("SELECT vitals_weight,vitals_temp, vitals_resprate, a.consult_id FROM m_consult a, m_consult_vitals b WHERE a.patient_id='$pid' AND to_days(a.consult_date)=to_days('$report_date') AND a.consult_id=b.consult_id") 
-		    or die(mysql_error());
+		    $inner_record = array();
+
+		    $selvitals = mysql_query("SELECT vitals_weight,vitals_temp, vitals_resprate, a.consult_id FROM m_consult a, m_consult_vitals b WHERE a.patient_id='$pid' AND a.consult_date BETWEEN '$report_date' AND '$end_date' AND a.consult_id=b.consult_id") or die(mysql_error());
 		    
 		    $select_brgy = mysql_query("SELECT barangay_name from m_lib_barangay WHERE barangay_id='$bgy'") or die(mysql_error());		        
 		    $resbrgy = mysql_fetch_array($select_brgy);
@@ -601,23 +651,40 @@ class consult_report extends module {
 		    print "<td class='tinylight' align=center>".$vaccine."</td>";                        
 		    print "<td class='tinylight' align=center>".$srvc."</td>";                        
 		    print "</tr>";
+		
+		$vitals_sign = "BP: ".$bp.", HR: ".$res_vitals[vitals_heartrate].",RR: ".$res_vitals[vitals_resprate].", Wt: ". $res_vitals[vitals_weight]. "kg, Temp: ".$res_vitals[vitals_temp];
+	
+		array_push($inner_record,array($pid,$pname.'/'.$sex.'/'.$age,$addr,$brgy,$fid,$phid,$vitals_sign,$vaccine,$srvc));
+		array_push($content,$inner_record);
+
 		}
-		print "</table>";                
+		print "</table>";
 	    }
+		array_push($arr_content,$header,$content,mysql_num_rows($result));
 	}
+	
+	return $arr_content;
     }
 
     function display_mc() {
         if (func_num_args()>0) {
             $arg_list = func_get_args();
             $report_date = $arg_list[0];
-            $patient_id = $arg_list[1];
+            $end_date = $arg_list[1];
 	}
 
-	$sql = "select * from m_consult_mc_report_dailyservice ".
-	       "where to_days(service_date) = to_days('$report_date') order by patient_name";
 
-	if ($result = mysql_query($sql)) {
+	/*$sql = "select * from m_consult_mc_report_dailyservice ".
+	      "where service_date BETWEEN $report_date') order by patient_name";
+	*/
+
+	$result = mysql_query("SELECT * FROM m_consult_mc_report_dailyservice WHERE service_date BETWEEN '$report_date' AND '$end_date' ORDER by patient_name ASC") or die("Cannot query 663 ".mysql_error());
+	
+	$header = array("PATIENT ID","PATIENT NAME/SEX/AGE","AOG (wks)","POSTPARTUM WK","ADDRESS","BRGY","FAMILY ID","PHILHEALTH ID","VITAL SIGNS","VISIT SEQ.","VACCINE/S GIVEN","SERVICE/S GIVEN");
+	$content = array();
+	$arr_content = array();
+
+	if ($result) {
 	    if (mysql_num_rows($result)) {
 		print "<br/>";
 		print "<b><center>MATERNAL CARE SERVICES</center></b><br/>";
@@ -638,8 +705,10 @@ class consult_report extends module {
 		print "</tr>";
 						
 		while(list($pid,$pname,$sex,$age,$aog,$pp_wk,$addr,$bgy,$fid,$phid,$visit,$srvc,$vaccine) = mysql_fetch_array($result)) {
+
+		    $inner_record = array();
 		    //query for the bp and weight
-		    $selvitals = mysql_query("SELECT vitals_weight,vitals_systolic,vitals_diastolic, a.consult_id FROM m_consult a, m_consult_vitals b WHERE a.patient_id='$pid' AND to_days(a.consult_date)=to_days('$report_date') AND a.consult_id=b.consult_id") 
+		    $selvitals = mysql_query("SELECT vitals_weight,vitals_systolic,vitals_diastolic, a.consult_id FROM m_consult a, m_consult_vitals b WHERE a.patient_id='$pid' AND a.consult_date BETWEEN '$report_date' AND '$end_date' AND a.consult_id=b.consult_id") 
 		    or die(mysql_error());
 		    
 		    $select_brgy = mysql_query("SELECT barangay_name from m_lib_barangay WHERE barangay_id='$bgy'") or die(mysql_error());		        
@@ -670,13 +739,21 @@ class consult_report extends module {
 		    print "<td class='tinylight' align=center>".$vaccine."</td>";
 		    print "<td class='tinylight' align=center>".$srvc."</td>";
 		    print "</tr>";
+		    
+		    $vitals_sign = "BP: ".$bp.", HR: ".$res_vitals[vitals_heartrate].",RR: ".$res_vitals[vitals_resprate].", Wt: ". $res_vitals[vitals_weight]. "kg, Temp: ".$res_vitals[vitals_temp];
+
+		    array_push($inner_record,array($pid,$pname.'/'.$sex.'/'.$age,$aog,$pp_wk,$addr,$brgy,$fid,$phid,$vitals_sign,$visit,$vaccine,$srvc));
+		    array_push($content,$inner_record);
 		}
-		print "<tr>";
+		//print "<tr>";
 		//print "<td class='tinylight' colspan=4>* 0 AOG - postpartum; with AOG - prenatal</td>";
-		print "</tr>";
+		//print "</tr>";
 		print "</table>";
 	    }
+
+	    array_push($arr_content,$header,$content,mysql_num_rows($result));
 	}
+	return $arr_content;
     }
 
     function get_vaccines() {
@@ -687,16 +764,22 @@ class consult_report extends module {
 	    $arg_list = func_get_args();
 	    $patient_id = $arg_list[0];
 	    $consult_date = $arg_list[1];
+	    $end_report_date = $arg_list[2];
 	}
-	    
-	$sql = "select l.vaccine_id ".
+
+	/*$sql = "select l.vaccine_id ".
 	       "from m_lib_vaccine l, m_consult_vaccine v ".
 	       "where l.vaccine_id = v.vaccine_id and ".
 	       "v.patient_id = '$patient_id' and ".
 	       "to_days(v.actual_vaccine_date) = to_days('$consult_date')";
+	*/
+
+	$result = mysql_query("SELECT l.vaccine_id FROM m_lib_vaccine l, m_consult_vaccine v WHERE l.vaccine_id=v.vaccine_id AND v.patient_id = '$patient_id' AND v.actual_vaccine_date BETWEEN '$consult_date' AND '$end_report_date'") or die("Cannot query 761 ".mysql_error());
 	
-	if ($result = mysql_query($sql)) {
+	if ($result) {
+		
 	    if (mysql_num_rows($result)) {
+		
 	        while (list($vaccine_name) = mysql_fetch_array($result)) {
 		    $vaccines .= $vaccine_name.", ";
 		}
@@ -715,25 +798,32 @@ class consult_report extends module {
 	    $consult_id = $arg_list[0];
 	    $patient_id = $arg_list[1];
 	    $consult_date = $arg_list[2];
+	    $end_date = $arg_list[3];
 	}
-
-	$ptgroup = $this->get_ptgroup($consult_id, $consult_date);
+	
+	$ptgroup = $this->get_ptgroup($consult_id, $consult_date,$end_date);
 
 	if ($ptgroup == 'CHILD') {
-	    $sql = "select l.service_name ".
+	    /*$sql = "select l.service_name ".
 	           "from m_lib_ccdev_services l, m_consult_ccdev_services v ".
 	           "where l.service_id = v.service_id and ".
 	           "v.patient_id = '$patient_id' and to_days(v.ccdev_timestamp) = to_days('$consult_date')";
+	    */
+	    $result = mysql_query("SELECT l.service_name FROM m_lib_ccdev_services l,m_consult_ccdev_services v WHERE l.service_id=v.service_id AND v.patient_id='$patient_id' AND v.ccdev_timestamp BETWEEN '$consult_date' AND '$end_date'") or die("Cannot query 798 ".mysql_error());
+		
 	}
 
 	if ($ptgroup == 'MATERNAL') {
-            $sql = "select l.service_name ".
+            /*$sql = "select l.service_name ".
 	           "from m_lib_mc_services l, m_consult_mc_services v ".
 	           "where l.service_id = v.service_id and ".
 		   "v.patient_id = '$patient_id' and to_days(v.mc_timestamp) = to_days('$consult_date')";
+	    */
+
+	    $result = mysql_query("SELECT l.service_name FROM m_lib_mc_services l,m_consult_mc_services v WHERE l.service_id=v.service_id AND v.patient_id='$patient_id' AND v.mc_timestamp BETWEEN '$consult_date' AND '$end_date'") or die("Cannot query 807 ".mysql_error());
 	}
 								     
-	if ($result = mysql_query($sql)) {
+	if ($result) {
 	    if (mysql_num_rows($result)) {
 		while (list($service_name) = mysql_fetch_array($result)) {
 		    $services .= $service_name.", ";
@@ -752,14 +842,18 @@ class consult_report extends module {
             $arg_list = func_get_args();
 	    $consult_id = $arg_list[0];
             $consult_date = $arg_list[1];
+	    $end_date = $arg_list[2];
 	}
-
+	
 	$sql = "select l.ptgroup_id ".
 	       "from m_lib_ptgroup l, m_consult_ptgroup c ".
 	       "where l.ptgroup_id = c.ptgroup_id and c.consult_id = '$consult_id' and ".
 	       "to_days(c.ptgroup_timestamp) = to_days('$consult_date')";
 
-	if ($result = mysql_query($sql)) {
+	$result = mysql_query("SELECT l.ptgroup_id FROM m_lib_ptgroup l, m_consult_ptgroup c WHERE l.ptgroup_id = c.ptgroup_id AND c.consult_id = '$consult_id' AND c.ptgroup_timestamp BETWEEN '$consult_date' AND '$end_date'") or die("Cannot query 825 ".mysql_error());
+	
+	
+	if ($result) {
 	    if (mysql_num_rows($result)) {
 		list($ptgroup) = mysql_fetch_array($result);
 		return $ptgroup;
@@ -776,13 +870,16 @@ class consult_report extends module {
 	    $arg_list = func_get_args();
 	    $patient_id = $arg_list[0];
 	    $consult_date = $arg_list[1];
+	    $end_date = $arg_list[2];
 	}
 		
-	$sql = "select aog_weeks from m_consult_mc_prenatal m ".
+	/*$sql = "select aog_weeks from m_consult_mc_prenatal m ".
 	       "where patient_id = '$patient_id' and ".
 	       "to_days(prenatal_date) = to_days('$consult_date')";
-
-	if ($result = mysql_query($sql)) {
+	*/ 
+	$result = mysql_query("SELECT aog_weeks FROM m_consult_mc_prenatal m WHERE patient_id='$patient_id' AND prenatal_date BETWEEN '$consult_date' AND '$end_date'") or die("Cannot query 870 ".mysql_error());
+ 	
+	if ($result) {
 	    if (mysql_num_rows($result)) {
 		list($aog) = mysql_fetch_array($result);
 		return $aog;
@@ -992,6 +1089,25 @@ class consult_report extends module {
         }
     }
 
+
+	function get_str_elapsed($start,$end,$elapsed){
+		
+		if($elapsed>0):
+			if($elapsed>60):
+				$unit = 'hrs';
+			elseif($elapsed>1440):
+				$unit = 'days';
+			else:
+				$unit = 'minutes';
+			endif;
+			
+			$str = $start.' to '.$end.'( '.$elapsed.$unit.' )';
+		else:
+			$str = $start.' to -';
+		endif;
+
+			return $str;
+	}
 
 // end of class
 }

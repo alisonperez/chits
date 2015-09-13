@@ -195,10 +195,15 @@ function Header()
 
 function show_mc_summary(){
 	
+	$arr_csv = array();
+	
+	$criteria = array('Pregnant Women with 4 or more prenatal visits','Pregnant Women given 2 doses of TT','Pregnant Women given TT2 plus','Pregnant given complete iron with folic acid','Pregnant given Vit. A','Postpartum women with at least 2 PPV','Postpartum women given complete iron','Postpartum women given Vit. A','Postpartum women initiated breastfeeding');			
+    	
+	$q_brgy = mysql_query("SELECT barangay_name from m_lib_barangay LIMIT 1") or die("Cannot query: 202");
+	list($csv_brgy) = mysql_fetch_array($q_brgy);
 
+	array_push($arr_csv,strtoupper($csv_brgy),$_SESSION["edate_orig"]);
 
-	$criteria = array('Pregnant Women with 4 or more prenatal visits','Pregnant Women given 2 doses of TT','Pregnant Women given TT2 plus','Pregnant given complete iron with folic acid','Postpartum women with at least 2 PPV','Postpartum women given complete iron','Postpartum women given Vit. A','Postpartum women initiated breastfeeding');			
-    
 	for($i=0;$i<count($criteria);$i++){
 	
 		$array_target = array();
@@ -223,18 +228,20 @@ function show_mc_summary(){
 
 		$q_array = $this->get_quarterly_total($mstat,$target);
 		$gt = array_sum($mstat);
-                
+
+		array_push($arr_csv,$q_array[$_SESSION["quarter"]]);
+
                 if($_SESSION[ques]==36):
                     $w = array(30,18,18,18,18,15,18,18,18,15,18,18,18,15,18,18,18,15,18); //340
                     $this->SetWidths($w);                		
                     $this->Row(array($criteria[$i],$target,$mstat[1],$mstat[2],$mstat[3],$q_array[1],$mstat[4],$mstat[5],$mstat[6],$q_array[2],$mstat[7],$mstat[8],$mstat[9],$q_array[3],$mstat[10],$mstat[11],$mstat[12],$q_array[4],$gt));
-                elseif($_SESSION[ques]==80):                    
-                    $w = array(200,40); //340 //monthly report                   
+                elseif($_SESSION[ques]==80):
+                    $w = array(200,40); //340 //monthly report
                     $this->SetWidths($w);
                     $arr_disp = array();
                     $this->SetFont('Arial','',13);
-                    array_push($arr_disp,$criteria[$i],$mstat[$_SESSION[smonth]]);                    
-                    
+                    array_push($arr_disp,$criteria[$i],$mstat[$_SESSION[smonth]]);
+
                     for($x=0;$x<count($arr_disp);$x++){
                         if($x==0):
                             $this->Cell($w[$x],6,($i+1).'. '.$arr_disp[$x],'1',0,'1');
@@ -242,17 +249,17 @@ function show_mc_summary(){
                             $this->Cell($w[$x],6,$arr_disp[$x],'1',0,'1');
                         endif;
                     }
-                    
+
                     $this->Ln();
-                                        
+
                 elseif($_SESSION[ques]==81): //quarterly report
                     $w = array(161,30,25,25,50,45);
                     $this->SetWidths($w);
                     $arr_disp = array();
-                    $this->SetFont('Arial','',13);                                                            
-                    
+                    $this->SetFont('Arial','',13);
+
                     array_push($arr_disp,$criteria[$i],$target,$q_array[$_SESSION[quarter]],$this->compute_mc_rate($target,$q_array[$_SESSION[quarter]]).'%',' ',' ');
-                    
+
                     for($x=0;$x<count($arr_disp);$x++){
                         if($x==0):
                             $this->Cell($w[$x],6,($i+1).'. '.$arr_disp[$x],'1',0,'1');
@@ -260,15 +267,17 @@ function show_mc_summary(){
                             $this->Cell($w[$x],6,$arr_disp[$x],'1',0,'1');
                         endif;
                     }
-                    
+
                     $this->Ln();
                 else:
-                
+
                 endif;
-                		
+	
 		//$this->Row(array($criteria[$i],$target,$array_target[1],$array_target[2],$array_target[3],$q_array[1],$array_target[4],$array_target[5],$array_target[6],$q_array[2],$array_target[7],$array_target[8],$array_target[9],$q_array[3],$array_target[10],$array_target[11],$array_target[12],$q_array[4],$gt));
 
 	}
+
+	return $arr_csv;
  }
 
 function compute_indicator($crit){
@@ -439,8 +448,36 @@ function compute_indicator($crit){
 			endif;
 
 			break;
-		
-		case 5:
+
+
+		case 5: // pregnant given vitamin A
+
+			if(in_array('all',$_SESSION[brgy])):
+				$get_vita = mysql_query("SELECT distinct mc_id,patient_id FROM m_consult_mc_services WHERE service_id='VITA' ORDER by mc_id ASC, actual_service_date ASC") or die("Cannot query: 358");
+			else:
+				$get_vita = mysql_query("SELECT distinct a.mc_id,a.patient_id FROM m_consult_mc_services a,m_family_members b,m_family_address c WHERE a.service_id='VITA' AND a.patient_id=b.patient_id AND b.family_id=c.family_id AND c.barangay_id IN ($brgy_array) ORDER by a.mc_id ASC, a.actual_service_date ASC") or die("Cannot query: 358");	
+			endif;
+
+			if(mysql_num_rows($get_vita)!=0):
+				while(list($mcid,$pxid)=mysql_fetch_array($get_vita)){
+					$vit_total = 0;
+					$target_reach = 0;
+						$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='VITA' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date <= b.patient_edc ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
+
+					while(list($qty,$serv_date)=mysql_fetch_array($q_mc)){						
+						$vita_total+=$qty;
+
+						if($vita_total >= 200000 && $target_reach==0):							
+							$target_reach = 1;
+							$month_stat[$this->get_max_month($serv_date)]+=1;
+							//echo $max_date.'<br>'.$mcid;
+						endif;
+					}
+				}			
+			endif;
+
+			break;
+		case 6:
 			
 			if(in_array('all',$_SESSION[brgy])):
 				$q_post = mysql_query("SELECT a.mc_id,a.postpartum_date,b.delivery_date,a.patient_id FROM m_consult_mc_postpartum a, m_patient_mc b WHERE a.mc_id=b.mc_id AND (TO_DAYS(a.postpartum_date)-TO_DAYS(b.delivery_date))<=1") or die("Cannot query: 297"); // get mc_id of patients who visited 24 hours after giving birth			
@@ -465,7 +502,7 @@ function compute_indicator($crit){
 
 			break; 
 
-		case 6: //postpartum mothers wih complete iron w/ folic acid intake
+		case 7://postpartum mothers wih complete iron w/ folic acid intake
 			if(in_array('all',$_SESSION[brgy])):
 				$get_iron_mc = mysql_query("SELECT distinct mc_id,patient_id FROM m_consult_mc_services WHERE service_id='IRON' ORDER by mc_id ASC, actual_service_date ASC") or die("Cannot query: 316");
 			else:
@@ -479,7 +516,7 @@ function compute_indicator($crit){
 					$iron_total = 0;
 					$target_reach = 0;
 
-					$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='IRON' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date BETWEEN b.delivery_date AND b.postpartum_date ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
+					$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='IRON' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date BETWEEN b.patient_edc AND b.postpartum_date ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
 					
 					
 					while(list($qty,$serv_date)=mysql_fetch_array($q_mc)){
@@ -496,7 +533,7 @@ function compute_indicator($crit){
 
 			break;
 
-		case 7: // postpartum women given vitamin A supplementation
+		case 8: // postpartum women given vitamin A supplementation
 			if(in_array('all',$_SESSION[brgy])):
 				$get_vita = mysql_query("SELECT distinct mc_id,patient_id FROM m_consult_mc_services WHERE service_id='VITA' ORDER by mc_id ASC, actual_service_date ASC") or die("Cannot query: 358");
 			else:
@@ -507,7 +544,7 @@ function compute_indicator($crit){
 				while(list($mcid,$pxid)=mysql_fetch_array($get_vita)){
 					$vit_total = 0;
 					$target_reach = 0;
-						$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='VITA' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date BETWEEN b.delivery_date AND b.postpartum_date ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
+						$q_mc = mysql_query("SELECT a.service_qty, a.actual_service_date FROM m_consult_mc_services a,m_patient_mc b WHERE a.mc_id=b.mc_id AND a.mc_id='$mcid' AND a.service_id='VITA' AND a.actual_service_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' AND a.actual_service_date BETWEEN b.patient_edc AND b.postpartum_date ORDER by a.actual_service_date ASC") or die("Cannot query; 277");
 
 					while(list($qty,$serv_date)=mysql_fetch_array($q_mc)){						
 						$vita_total+=$qty;
@@ -523,7 +560,7 @@ function compute_indicator($crit){
 
 			break;
 
-		case 8: //postpartum women initiated breadstfeeding after giving birth
+		case 9: //postpartum women initiated breadstfeeding after giving birth
 			if(in_array('all',$_SESSION[brgy])):
 				$get_post_bfeed = mysql_query("SELECT mc_id, delivery_date, patient_id FROM m_patient_mc WHERE breastfeeding_asap='Y' AND delivery_date BETWEEN '$_SESSION[sdate2]' AND '$_SESSION[edate2]' ORDER by delivery_date") or die("cannot query: 350");
 			else:
@@ -589,7 +626,7 @@ function get_brgy_pop(){
 }
 
 function get_target($criteria){
-	if($criteria>=1 && $criteria<=4):
+	if($criteria>=1 && $criteria<=5):
 		$perc = '.035';
 	else:
 		$perc = '.03';
@@ -662,13 +699,79 @@ function Footer(){
 
 }
 
+
 $pdf = new PDF('L','mm','Legal');
 $pdf->AliasNbPages();
 $pdf->SetFont('Arial','',10);
 $pdf->AddPage();
 
-$pdf->show_mc_summary();
+ini_set("include_path", "/var/www/html/chits/site/Csv/");
 
-$pdf->Output();
+
+$arr_csv = $pdf->show_mc_summary();
+
+if($_GET["form"]=='csv' || $_GET["form"]=='email'):
+
+	$fhsis_csv = fopen("../../site/data_field_efhsis.csv","r");
+	
+	if($fhsis_csv):
+
+	while(!feof($fhsis_csv)){
+		$line = fgets($fhsis_csv,4096);	
+		$arr_line = explode(',',$line);
+		if($arr_line[0]=='MATERNAL CARE'):
+			for($i=1;$i<count($arr_line);$i++){
+				if($i==(count($arr_line)-1)):
+				$header_csv .= $arr_line[$i];
+				else:
+					$header_csv .= $arr_line[$i].',';
+				endif;
+				
+				
+			}
+		endif;
+	}
+
+	endif;		
+
+	$mch_csv = implode($arr_csv,',');
+	
+	$filename = '../../site/csv_dir/'.ereg_replace(' +','',$_SESSION["lgu"]).'_MCH_'.$_SESSION["quarter"].'Q'.$_SESSION["year"].'.csv';
+	$filehandle = fopen($filename,'w') or die("file cannot be opened");
+
+	fwrite($filehandle,$header_csv);
+	fwrite($filehandle,$mch_csv);
+	
+	fclose($filehandle);
+	
+	if($_GET["form"]=='csv'):
+		header("location: ".$filename);
+	else:
+		/*$subj = $_SESSION["lgu"].' Maternal Care Quarterly Report'.' - '.$_SESSION["quarter"].'Q '.$_SESSION["year"];
+		$headers = "From: moncadarhu1@gmail.com\r\nReply-To: moncadarhu1@gmail.com";
+		$attachment = chunk_split(base64_encode(file_get_contents($filename)));
+		$message = "Attached is the ".$_SESSION["lgu"]." health center maternal care report for ".$_SESSION["quarter"]. "of ".$_SESSION["year"];
+
+		$email_list = fopen("../../site/email_list.txt","r");
+		
+		while(!feof($email_list)){
+			$email_receiver = fgets($email_list,4096);
+			$message = ob_get_clean();
+			
+			$sent_mail = mail($email_receiver,$subj,$message,$headers);
+		}
+
+		echo $sent_mail?"Mail sent!":"Mail failed"; */
+
+		
+		
+	endif;
+	
+//	print_r($_SESSION);
+	
+
+else:
+	$pdf->Output();
+endif;
 
 ?>

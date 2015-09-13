@@ -259,8 +259,8 @@ class lab extends module {
             }
         }
         print "<b>".FTITLE_PENDING_LAB_REQUESTS."</b><br/><br/>";
-        $sql = "select c.request_id, l.lab_name, l.lab_module, date_format(c.request_timestamp, '%a %d %b %Y, %h:%i%p') from m_lib_laboratory l, m_consult_lab c where l.lab_id = c.lab_id and c.done_timestamp = '0000-00-00' AND request_done='N' AND patient_id='$pxid'";
-               
+        //$sql = "select c.request_id, l.lab_name, l.lab_module, date_format(c.request_timestamp, '%a %d %b %Y, %h:%i%p') from m_lib_laboratory l, m_consult_lab c where l.lab_id = c.lab_id and c.done_timestamp = '0000-00-00' AND request_done='N' AND patient_id='$pxid'";
+        $sql = "select c.request_id, l.lab_name, l.lab_module, date_format(c.request_timestamp, '%a %d %b %Y, %h:%i%p') from m_lib_laboratory l, m_consult_lab c where l.lab_id = c.lab_id AND request_done='N' AND patient_id='$pxid'";               
         
         if ($result = mysql_query($sql)) {
             if (mysql_num_rows($result)) {
@@ -280,6 +280,7 @@ class lab extends module {
                         if (class_exists($mod)) {                        
                             //echo $eval_string;    
                             eval("$eval_string");
+			    
                         } else {
                             print "<b><font color='red'>WARNING:</font> $mod missing.</b><br/>";
                         }
@@ -299,7 +300,7 @@ class lab extends module {
                 print "<table><tr><td>";
                 while (list($id, $name, $mod, $ts1, $ts2) = mysql_fetch_array($result)) {
                     print "<img src='../images/arrow_redwhite.gif' align='left' border='0'/> ";
-                    print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=$mod&request_id=$id#sputum_result' title='".INSTR_CLICK_VIEW_RESULTS."'>$name</a> ";
+                    print "<a href='".$_SERVER["PHP_SELF"]."?page=".$get_vars["page"]."&menu_id=".$get_vars["menu_id"]."&consult_id=".$get_vars["consult_id"]."&ptmenu=".$get_vars["ptmenu"]."&module=$mod&request_id=$id#$mod"."_result"."' title='".INSTR_CLICK_VIEW_RESULTS."'>$name</a> ";
                     print "<br/>&nbsp;&nbsp;&nbsp;$ts1<br/>";
                     if ($get_vars["request_id"]==$id && $get_vars["module"]==$mod) {
                         // access result API for lab exam
@@ -309,6 +310,14 @@ class lab extends module {
                             //echo $eval_string;                            
                             //sputum::_consult_lab_sputum($_GET["menu_id"],$_POST,$_GET);
                             eval("$eval_string");
+			    
+			    print "<form action='$_SERVER[PHP_SELF]?page=$_GET[page]&menu_id=$_GET[menu_id]&consult_id=$_GET[consult_id]&ptmenu=$_GET[ptmenu]&module=$_GET[module]&request_id=$_GET[request_id]' method='POST'>";
+			    
+			    print "<center><input type='submit' value = 'Edit Lab Exam' class='textbox' name='submitlab' style='border: 1px solid #000000'></center>&nbsp;&nbsp;";
+    			    
+			    
+			    echo '</form>';
+
                         } else {
                             print "<b><font color='red'>WARNING:</font> $mod missing.</b><br/>";
                         }
@@ -347,6 +356,13 @@ class lab extends module {
             break;
         case "Print Referral":
             break;
+
+	case "Edit Lab Exam":	        
+	    	$q_lab = mysql_query("UPDATE m_consult_lab SET request_done='N' WHERE request_id='$_GET[request_id]'") or die("Cannot query: 362 ".mysql_error());
+	    	break;
+	default:
+		
+		break;
         }
     }
 
@@ -591,7 +607,6 @@ class lab extends module {
         }
         print "</table><br>";
     }
-
 
 // end of class
 }

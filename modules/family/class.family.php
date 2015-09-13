@@ -139,7 +139,7 @@ class family extends module{
             return print($exitinfo);
         }
         
-        mysql_query("ALTER TABLE `m_consult_notes` DROP PRIMARY KEY , ADD PRIMARY KEY (`notes_id`)");
+        mysql_query("ALTER TABLE `m_family` DROP PRIMARY KEY , ADD PRIMARY KEY (`family_id`)");
         
         
         print "<span class='patient'>".FTITLE_FAMILY_RECORDS."</span><br/>";

@@ -14,10 +14,10 @@
 
 	  if(mysql_num_rows($query_cat)!=0):
 
-	  echo "<table border=\"1\">";
-          echo "<tr><td colspan=\"2\">Select Classification</td></tr>";
+	  echo "<table bgcolor='#CCCCCC'>";
+          echo "<tr><td colspan=\"2\" style=\"background-color: #666666;color: #FFFF66;text-align: center;font-weight: bold\">Select Classification</td></tr>";
 	  echo "<tr>";
-	  echo "<td>Classification</td>";
+	  echo "<td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Classification</td>";
 
   	  echo "<form action=\"$_SERVER[PHP_SELF]\" name=\"form_cat\" method=\"post\">";
 	  echo "<td><select size=\"1\" name=\"sel_class\" onChange=\"autoSubmit();\">";
@@ -42,7 +42,7 @@
 			  if(mysql_num_rows($query_ques)!=0):
 			  
 				echo "<tr>";
-				echo "<td>Queries</td>";
+				echo "<td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Queries</td>";
 
 				echo "<form action=\"$_SERVER[PHP_SELF]\" name=\"form_ques\" method=\"post\">";
 				echo "<td><select size=\"1\" name=\"sel_ques\" onChange=\"submitQues();\">";
@@ -88,8 +88,8 @@
 	  echo "<form action=\"$_SERVER[PHP_SELF]\" method=\"POST\" name=\"form_query\">";
 	  echo "<input type=\"hidden\" name=\"ques_name\" value=\"$res_ques[ques_label]\"></input>";
 
-	  echo "<table border=\"1\">";
-	  echo "<tr><td colspan=\"2\">SET FILTERS ($res_ques[ques_label])</td></tr>";		
+	  echo "<table bgcolor='#CCCCCC'>";
+	  echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;font-weight: bold\" colspan='2'>&nbsp;&nbsp;Set Filters ($res_ques[ques_label])&nbsp;&nbsp;</td></tr>";		
         
 		$query_brgy = mysql_query("SELECT barangay_id,barangay_name FROM m_lib_barangay ORDER by barangay_name ASC") or die(mysql_error());
 
@@ -98,15 +98,15 @@
 		if($set_filter == 1): // start date, end date and barangay dropdown list
 
 
-		echo "<tr><td>Start Date (yyyy-mm-dd)</td>";
+		echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Start Date (yyyy-mm-dd)</td>";
 		echo "<td><input name=\"sdate\" type=\"text\" size=\"12\" maxlength=\"10\" value=\"$psdate\" readonly></input>";		
 		echo "<a href=\"javascript:show_calendar4('document.form_query.sdate', document.form_query.sdate.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a>";
 		echo "</td></tr>";
-                echo "<tr><td>End Date (yyyy-mm-dd)</td>";
+                echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">End Date (yyyy-mm-dd)</td>";
                 echo "<td><input name=\"edate\" type=\"text\" size=\"12\" maxlength=\"10\" value=\"$pedate\" readonly>";
 		echo "<a href=\"javascript:show_calendar4('document.form_query.edate', document.form_query.edate.value);\"><img src='../images/cal.gif' width='16' height='16' border='0' alt='Click Here to Pick up the date'></a>";		
 		echo "</td></tr>";
-		echo "<tr><td>Barangay</td>";
+		echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Barangay</td>";
 
 		if(mysql_num_rows($query_brgy)!=0):        
 		        echo "<td><select name=\"sel_brgy\" size=\"1\">";
@@ -179,7 +179,7 @@
                 $buwan = array('1'=>'January','2'=>'February','3'=>'March','4'=>'April','5'=>'May','6'=>'June','7'=>'July','8'=>'August','9'=>'September','10'=>'October','11'=>'November','12'=>'December');
 		$_SESSION[months] = $buwan_label;
 
-		echo "<tr><td>Start Month</td>";
+		echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Start Month</td>";
 
 		echo "<td>";
 		echo "<select name='smonth' size='1'>";
@@ -190,7 +190,7 @@
 		echo "</td></tr>";
 
 
-		echo "<tr><td>End Month</td>";
+		echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">End Month</td>";
 		echo "<td>";
 		echo "<select name='emonth' size='1'>";
 		foreach($buwan as $key=>$value){                        		
@@ -200,7 +200,7 @@
 		echo "</td></tr>";
 
 
-		echo "<tr><td>Year</td>";
+		echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Year</td>";
 		
 		echo "<td><select name='year' size='1'>";
 
@@ -223,7 +223,7 @@
                 $q_fp_method = mysql_query("SELECT method_name, method_id, fhsis_code FROM m_lib_fp_methods ORDER by method_name ASC") or die("Cannot query: Check FP tables");
 	
                 if(mysql_num_rows($q_fp_method)!=0):
-                        echo "<tr><td>$label</td>";
+                        echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">$label</td>";
                         echo "<td><select name='sel_fp_method' size='1'>";
                         while(list($method_name,$method_id,$fhsis_code) = mysql_fetch_array($q_fp_method)){
                                 echo "<option value='$method_id'>$method_name ($fhsis_code)</option>";
@@ -241,7 +241,7 @@
 	
 	function disp_filter_quarterly($q_brgy){
 	        
-	                echo "<tr><td>Quarter</td>";
+	                echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Quarter</td>";
 	                echo "<td><select name='sel_quarter' size='1'>";
 	                        for($i=1;$i<5;$i++){	                
                                         echo "<option value='$i'>$i</option>";                                        
@@ -260,7 +260,7 @@
                 $buwan = array('1'=>'January','2'=>'February','3'=>'March','4'=>'April','5'=>'May','6'=>'June','7'=>'July','8'=>'August','9'=>'September','10'=>'October','11'=>'November','12'=>'December');
 		$_SESSION[months] = $buwan_label;
 
-		echo "<tr><td>Month</td>";
+		echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Month</td>";
 
 		echo "<td>";
 		echo "<select name='smonth' size='1'>";
@@ -277,12 +277,12 @@
 	function disp_filter_weekly($q_brgy){
 	        $this->disp_week();
 	        $this->show_year();
-	        $this->checkbox_brgy($q_brgy);	        	        
+	        $this->checkbox_brgy($q_brgy);
 	}
 		
 	
 	function disp_week(){
-	        echo "<tr><td>Week</td>";
+	        echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Week</td>";
                 echo "<td><select name='sel_week' value='1'>";
 	        
 	        for($i=1;$i<53;$i++){
@@ -300,7 +300,7 @@
 	
 	function checkbox_brgy($q_brgy){
 	        
-	        echo "<tr><td valign='top'>Barangay</td><td>";
+	        echo "<tr><td valign='top' style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Barangay</td><td>";
 		
 		echo "<input type='checkbox' name='brgy[]' value='all' checked>All</input>&nbsp;";
 		$counter = 1;
@@ -316,7 +316,7 @@
 	
 
 	function show_year(){
-	        echo "<tr><td>Year</td>";
+	        echo "<tr><td style=\"background-color: #666666;color: #FFFF66;text-align: center;\">Year</td>";
 		
 		echo "<td><select name='year' size='1'>";
 

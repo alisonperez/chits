@@ -1,10 +1,21 @@
 <?
 // BEGIN SERVER CODE: DO NOT EDIT
 // Server generated code
-// Generated 2010-04-12 10:43:36
+// Generated 2010-10-08 00:36:56
 // Module: _module.php
 // Author: Herman Tolentino MD
 //
+if (file_exists('../modules/alert/class.alert.php')) {
+	include '../modules/alert/class.alert.php';
+	$alert = new alert;
+	if (!$module->activated('alert') && $initmod) {
+		$alert->init_sql();
+		$alert->init_menu();
+		$alert->init_deps();
+		$alert->init_lang();
+		$alert->init_help();
+	}
+}
 if (file_exists('../modules/appointment/class.appointment.php')) {
 	include '../modules/appointment/class.appointment.php';
 	$appointment = new appointment;
@@ -82,6 +93,17 @@ if (file_exists('../modules/complaint/class.complaint.php')) {
 		$complaint->init_help();
 	}
 }
+if (file_exists('../modules/consult_graph/class.consult_graph.php')) {
+	include '../modules/consult_graph/class.consult_graph.php';
+	$consult_graph = new consult_graph;
+	if (!$module->activated('consult_graph') && $initmod) {
+		$consult_graph->init_sql();
+		$consult_graph->init_menu();
+		$consult_graph->init_deps();
+		$consult_graph->init_lang();
+		$consult_graph->init_help();
+	}
+}
 if (file_exists('../modules/consult_report/class.consult_report.php')) {
 	include '../modules/consult_report/class.consult_report.php';
 	$consult_report = new consult_report;
@@ -102,6 +124,17 @@ if (file_exists('../modules/database/class.database.php')) {
 		$database->init_deps();
 		$database->init_lang();
 		$database->init_help();
+	}
+}
+if (file_exists('../modules/demographic_profile/class.demographic_profile.php')) {
+	include '../modules/demographic_profile/class.demographic_profile.php';
+	$demographic_profile = new demographic_profile;
+	if (!$module->activated('demographic_profile') && $initmod) {
+		$demographic_profile->init_sql();
+		$demographic_profile->init_menu();
+		$demographic_profile->init_deps();
+		$demographic_profile->init_lang();
+		$demographic_profile->init_help();
 	}
 }
 if (file_exists('../modules/dental/class.dental.php')) {
@@ -201,6 +234,28 @@ if (file_exists('../modules/healthcenter/class.healthcenter.php')) {
 		$healthcenter->init_deps();
 		$healthcenter->init_lang();
 		$healthcenter->init_help();
+	}
+}
+if (file_exists('../modules/health_facility/class.health_facility.php')) {
+	include '../modules/health_facility/class.health_facility.php';
+	$health_facility = new health_facility;
+	if (!$module->activated('health_facility') && $initmod) {
+		$health_facility->init_sql();
+		$health_facility->init_menu();
+		$health_facility->init_deps();
+		$health_facility->init_lang();
+		$health_facility->init_help();
+	}
+}
+if (file_exists('../modules/hematology/class.hematology.php')) {
+	include '../modules/hematology/class.hematology.php';
+	$hematology = new hematology;
+	if (!$module->activated('hematology') && $initmod) {
+		$hematology->init_sql();
+		$hematology->init_menu();
+		$hematology->init_deps();
+		$hematology->init_lang();
+		$hematology->init_help();
 	}
 }
 if (file_exists('../modules/icd10/class.icd10.php')) {
@@ -487,6 +542,17 @@ if (file_exists('../modules/template/class.template.php')) {
 		$template->init_deps();
 		$template->init_lang();
 		$template->init_help();
+	}
+}
+if (file_exists('../modules/urinalysis/class.urinalysis.php')) {
+	include '../modules/urinalysis/class.urinalysis.php';
+	$urinalysis = new urinalysis;
+	if (!$module->activated('urinalysis') && $initmod) {
+		$urinalysis->init_sql();
+		$urinalysis->init_menu();
+		$urinalysis->init_deps();
+		$urinalysis->init_lang();
+		$urinalysis->init_help();
 	}
 }
 if (file_exists('../modules/vaccine/class.vaccine.php')) {
